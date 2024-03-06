@@ -28,7 +28,7 @@ struct SearchAPIRequest: APIRequest {
             "api_key": apiKey
         ].map { URLQueryItem(name: $0.key, value: $0.value) }
         
-        var request = URLRequest(url: urlComponents.url!)
+        let request = URLRequest(url: urlComponents.url!)
         return request
     }
     

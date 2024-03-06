@@ -29,7 +29,14 @@ class SearchTableViewCell: UITableViewCell {
     
     let plusButton: UIButton = {
         let button = UIButton(type: .custom)
-        button.setImage(UIImage(named: "plus"), for: .normal)
+        button.setImage(UIImage(systemName: "plus"), for: .normal)
+        button.setContentHuggingPriority(.required, for: .horizontal)
+        button.setContentCompressionResistancePriority(.required, for: .horizontal)
+        NSLayoutConstraint.activate([
+            button.widthAnchor.constraint(equalToConstant: 40),
+            button.heightAnchor.constraint(equalToConstant: 40)
+        ])
+//        button.backgroundColor = .gray
         return button
     }()
     
@@ -43,6 +50,7 @@ class SearchTableViewCell: UITableViewCell {
         let hstack = UIStackView()
         hstack.axis = .horizontal
         hstack.translatesAutoresizingMaskIntoConstraints = false
+//        hstack.backgroundColor = .orange
         return hstack
     }()
     
@@ -56,6 +64,8 @@ class SearchTableViewCell: UITableViewCell {
         
         contentView.addSubview(container)
         
+//        labelContainer.backgroundColor = .blue
+
         NSLayoutConstraint.activate([
             container.topAnchor.constraint(equalTo: contentView.layoutMarginsGuide.topAnchor),
             container.bottomAnchor.constraint(equalTo: contentView.layoutMarginsGuide.bottomAnchor),
@@ -68,22 +78,52 @@ class SearchTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func update(with model: ResultsTableViewController.Model) {
+    func update(with model: FoodItem) {
         titleLabel.text = model.foodSearchResults.getNameFormatted()
         descriptionLabel.text = getDescriptionFormatted(model: model)
     }
     
-    private func getDescriptionFormatted(model: ResultsTableViewController.Model) -> String {
+    private func getDescriptionFormatted(model: FoodItem) -> String {
         let foodSearchResult = model.foodSearchResults
         let food = model.food
-        if model.food.foodPortions == nil || model.food.foodPortions!.isEmpty {
-            return [foodSearchResult.getCaloriesFormatted(), foodSearchResult.getServingSizeFormatted(), foodSearchResult.getBrandNameFormatted()]
+        if foodSearchResult.servingSize != nil {
+            return [model.getCaloriesPerServingFormatted(), foodSearchResult.getServingSizeFormatted(), foodSearchResult.getBrandNameFormatted()/*, "[1]"*/]
+                .compactMap { $0 }
+                .joined(separator: ", ")
+        } else if food.foodPortions.count > 0 {
+            return [model.getCaloriesPerServingFormatted(), food.averageFoodPortionSize.getServingSizeFormatted(), foodSearchResult.getBrandNameFormatted()/*, "[2]"*/]
                 .compactMap { $0 }
                 .joined(separator: ", ")
         } else {
-            return [food.getCaloriesFormatted(), food.getServingSizeFormatted(), foodSearchResult.getBrandNameFormatted()]
-                .compactMap { $0 }
-                .joined(separator: ", ")
+            return "Error description"
         }
+        
+//        if model.food.foodPortions.count == 1 {
+//            return [foodSearchResult.getCaloriesFormatted(), "100 g", foodSearchResult.getBrandNameFormatted(), "Only has 100g"]
+//                .compactMap { $0 }
+//                .joined(separator: ", ")
+//        } else {
+//            return [food.getCaloriesFormatted(), food.foodPortions.first?.getServingSizeFormatted(), foodSearchResult.getBrandNameFormatted()]
+//                .compactMap { $0 }
+//                .joined(separator: ", ")
+//        }
     }
+}
+
+#Preview(traits: .sizeThatFitsLayout) {
+    let cell = SearchTableViewCell()
+    cell.update(with: FoodItem.sample)
+    NSLayoutConstraint.activate([
+        cell.heightAnchor.constraint(equalToConstant: 60)
+    ])
+    cell.layer.borderWidth = 1
+    cell.layer.borderColor = UIColor.blue.cgColor
+            
+    return cell
+}
+
+extension FoodItem {
+    static let sample = FoodItem(
+        foodSearchResults: FoodSearchResults(fdcId: 0, description: "Banana", foodNutrients: [], foodMeasures: []),
+        food: Food(foodNutrients: [FoodNutrient(nutrient: Nutrient(name: "Calories", unitName: "kcal"), amount: 89)], foodPortions: [FoodPortion(portionDescription: "", amount: 1, gramWeight: 118, modifier: "medium (7\" to 7-7/8\" long)")], servingSizeUnit: "g"))
 }

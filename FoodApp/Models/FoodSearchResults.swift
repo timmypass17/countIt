@@ -15,12 +15,11 @@ struct FoodSearchResults: Codable {
     var foodNutrients: [Nutrient]
     var servingSize: Float?
     var servingSizeUnit: String?
+    var foodMeasures: [FoodMeasure]
     
-    var calories: Int? {
-        guard let calories = getNutrient(of: "KCAL")?.value,
-              let servingSize 
-        else { return nil }
-        return Int((calories * servingSize)) / 100
+    var caloriesPer100g: Int? {
+        guard let calories = getNutrient(of: "KCAL")?.value else { return -1 }
+        return Int(calories)
     }
     
     func getNutrient(of nutrient: String) -> Nutrient? {
@@ -43,10 +42,11 @@ extension FoodSearchResults {
         }
         return description
     }
-    func getCaloriesFormatted() -> String? {
-        guard let calories else { return nil }
-        return "\(calories) cal"
-    }
+    
+//    func getCaloriesFormatted() -> String? {
+//        guard let calories else { return nil }
+//        return "\(calories) cal"
+//    }
     
     func getServingSizeFormatted() -> String? {
         guard let servingSize, let servingSizeUnit else { return nil }
@@ -57,4 +57,10 @@ extension FoodSearchResults {
         guard let brandName else { return nil }
         return brandName.capitalized
     }
+}
+
+struct FoodMeasure: Codable {
+    var gramWeight: Int
+    var disseminationText: String
+    var rank: Int
 }
