@@ -9,21 +9,38 @@ import Foundation
 
 let apiKey = "tbRKfhWJR3T2FFbwOiEShaXHrTljAGkVa232iZPx"
 
-struct SearchAPIRequest: APIRequest {
+struct AbridgedSearchAPIRequest: APIRequest {
     let query: String
-    
-    enum DataType: String {
-        case branded = "Branded"
-        case foundation = "Foundation"
-        case survey = "Survey (FNDDS)"
-        case srLegacy = "SR Legacy"
-    }
     
     var urlRequest: URLRequest {
         var urlComponents = URLComponents(string: "https://api.nal.usda.gov/fdc/v1/foods/search")!
         urlComponents.queryItems = [
             "query": query,
-//            "dataType": DataType.srLegacy.rawValue,
+            "dataType": DataType.allCases.map { $0.rawValue }.joined(separator: ","),
+            "pageSize": "50",
+            "api_key": apiKey
+        ].map { URLQueryItem(name: $0.key, value: $0.value) }
+        
+        let request = URLRequest(url: urlComponents.url!)
+        return request
+    }
+    
+    func decodeResponse(data: Data) throws -> AbridgedSearchResponse {
+        let decoder = JSONDecoder()
+        let searchResponse = try decoder.decode(AbridgedSearchResponse.self, from: data)
+        return searchResponse
+    }
+}
+
+// Returns data, separated by data type: [BrandedItems, SR items]
+struct SearchAPIRequest: APIRequest {
+    let query: String
+    
+    var urlRequest: URLRequest {
+        var urlComponents = URLComponents(string: "https://api.nal.usda.gov/fdc/v1/foods/search")!
+        urlComponents.queryItems = [
+            "query": query,
+            "dataType": DataType.allCases.map { $0.rawValue }.joined(separator: ","),
             "pageSize": "10",
             "api_key": apiKey
         ].map { URLQueryItem(name: $0.key, value: $0.value) }
@@ -39,22 +56,43 @@ struct SearchAPIRequest: APIRequest {
     }
 }
 
-struct FoodAPIRequest: APIRequest {
-    let id: Int
+//struct FoodAPIRequest: APIRequest {
+//    let id: Int
+//    
+//    var urlRequest: URLRequest {
+//        var urlComponents = URLComponents(string: "https://api.nal.usda.gov/fdc/v1/food/\(id)")!
+//        urlComponents.queryItems = [
+//            "api_key": apiKey
+//        ].map { URLQueryItem(name: $0.key, value: $0.value) }
+//        
+//        let request = URLRequest(url: urlComponents.url!)
+//        return request
+//    }
+//    
+//    func decodeResponse(data: Data) throws -> Food {
+//        let decoder = JSONDecoder()
+//        let searchResponse = try decoder.decode(Food.self, from: data)
+//        return searchResponse
+//    }
+//}
+
+struct FoodListAPIRequest: APIRequest {
+    var foodIDs: [Int]
     
     var urlRequest: URLRequest {
-        var urlComponents = URLComponents(string: "https://api.nal.usda.gov/fdc/v1/food/\(id)")!
+        var urlComponents = URLComponents(string: "https://api.nal.usda.gov/fdc/v1/foods")!
         urlComponents.queryItems = [
+            "fdcIds": foodIDs.map { String($0) }.joined(separator: ","),
             "api_key": apiKey
         ].map { URLQueryItem(name: $0.key, value: $0.value) }
-        
+
         let request = URLRequest(url: urlComponents.url!)
         return request
     }
     
-    func decodeResponse(data: Data) throws -> Food {
+    func decodeResponse(data: Data) throws -> [SearchResultFood] {
         let decoder = JSONDecoder()
-        let searchResponse = try decoder.decode(Food.self, from: data)
+        let searchResponse = try decoder.decode([SearchResultFood].self, from: data)
         return searchResponse
     }
 }

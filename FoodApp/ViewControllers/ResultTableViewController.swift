@@ -7,32 +7,32 @@
 
 import UIKit
 
-struct FoodItem {
-    var foodSearchResults: FoodSearchResults
-    var food: Food
-    
-    var caloriesPerServing: Int? {
-        guard let caloriesPer100g = foodSearchResults.caloriesPer100g else { return nil }
-        guard let servingSize = foodSearchResults.servingSize
-        else {
-            let otherServingSize = food.averageFoodPortionSize.gramWeight
-            return (caloriesPer100g * Int(otherServingSize)) / 100
-        }
-        
-        return (caloriesPer100g * Int(servingSize)) / 100
-    }
-}
-
-extension FoodItem {
-    func getCaloriesPerServingFormatted() -> String? {
-        guard let caloriesPerServing else { return nil }
-        return "\(caloriesPerServing) cal"
-    }
-}
+//struct FoodItem {
+//    var foodSearchResults: FoodSearchResults
+//    var food: Food
+//    
+//    var caloriesPerServing: Int? {
+//        guard let caloriesPer100g = foodSearchResults.caloriesPer100g else { return nil }
+//        guard let servingSize = foodSearchResults.servingSize
+//        else {
+//            let otherServingSize = food.averageFoodPortionSize.gramWeight
+//            return (caloriesPer100g * Int(otherServingSize)) / 100
+//        }
+//        
+//        return (caloriesPer100g * Int(servingSize)) / 100
+//    }
+//}
+//
+//extension FoodItem {
+//    func getCaloriesPerServingFormatted() -> String? {
+//        guard let caloriesPerServing else { return nil }
+//        return "\(caloriesPerServing) cal"
+//    }
+//}
 
 class ResultsTableViewController: UITableViewController {
     
-    var foods: [FoodItem] = []
+    var foods: [SearchResultFood] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -53,7 +53,6 @@ class ResultsTableViewController: UITableViewController {
         let cell = tableView.dequeueReusableCell(withIdentifier: SearchTableViewCell.reuseIdentifier, for: indexPath) as! SearchTableViewCell
         let food = foods[indexPath.row]
         cell.update(with: food)
-        
         return cell
     }
     

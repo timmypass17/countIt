@@ -9,11 +9,11 @@ import UIKit
 
 class SelectTableViewController: UITableViewController {
     
-    let options: [String]
+    let food: SearchResultFood
     var selectedIndexPath: IndexPath?
     
-    init(options: [String]) {
-        self.options = options
+    init(food: SearchResultFood) {
+        self.food = food
         super.init(style: .plain)
     }
     
@@ -36,14 +36,14 @@ class SelectTableViewController: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return options.count
+        return food.self
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "SelectCell", for: indexPath)
-        let option = options[indexPath.row]
+        let foodPortion = foodPortion[indexPath.row]
         var config = cell.defaultContentConfiguration()
-        config.text = option
+        config.text = foodPortion
         cell.contentConfiguration = config
         return cell
     }

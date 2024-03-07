@@ -83,45 +83,45 @@ extension SearchFoodTableViewController: UISearchBarDelegate {
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         Task {
             do {
-                var models: [FoodItem] = []
-                let foodSearchResults: [FoodSearchResults] = try await foodService.getFoodSearchResults(query: searchBar.text!)
+                let foodIDs = try await foodService.getFoodIDs(query: searchBar.text!)
+                print(foodIDs.count)
+                let foods: [SearchResultFood] = try await foodService.getFoods(ids: foodIDs)
+                for food in foods {
+                    switch food {
+                    case .srLegacy(let sRLegacyFoodItem):
+                        print("SR Legacy: \(sRLegacyFoodItem.description)")
+                    case .branded(let brandedFoodItem):
+                        print("Branded: \(brandedFoodItem.description)")
+                    }
+                }
                 
-                for item in foodSearchResults {
-                    var food = try await foodService.getFood(id: item.fdcId)
-                    
-                    // update portion size (sizes may be in some parts)
-                    // TODO: Don't hard code 32g maybe, Use foodMeasures. Also liquids don't use g
-                    
-//                    for measure in item.foodMeasures {
-//                        let foodPortion = FoodPortion(gramWeight: Float(measure.gramWeight), modifier: measure.disseminationText) // TODO: food measures always in grams? (gramweight)
-//                        
+//                for item in foodSearchResults {
+//                    var food = try await foodService.getFood(id: item.fdcId)
+//
+//                    if let servingSize = item.servingSize,
+//                       let servingSizeUnit = item.servingSizeUnit {
+//                        let foodPortion = FoodPortion(portionDescription: nil, amount: nil, gramWeight: servingSize, modifier: servingSizeUnit)
 //                        food.foodPortions.append(foodPortion)
 //                    }
-                    
-                    if let servingSize = item.servingSize,
-                       let servingSizeUnit = item.servingSizeUnit {
-                        let foodPortion = FoodPortion(portionDescription: nil, amount: nil, gramWeight: servingSize, modifier: servingSizeUnit)
-                        food.foodPortions.append(foodPortion)
-                    }
-                    
-                    // Filter duplicate portions
-                    var uniquePortions: [FoodPortion] = []
-                    var seen: Set<FoodPortion> = []
-                    for portion in food.foodPortions {
-                        if !seen.contains(portion) {
-                            uniquePortions.append(portion)
-                            seen.insert(portion)
-                        }
-                    }
-                    
-                    food.foodPortions = uniquePortions
-                        .sorted { $0.gramWeight < $1.gramWeight }
-                    
-                    models.append(FoodItem(foodSearchResults: item, food: food))
-                }
+//                    
+//                    // Filter duplicate portions
+//                    var uniquePortions: [FoodPortion] = []
+//                    var seen: Set<FoodPortion> = []
+//                    for portion in food.foodPortions {
+//                        if !seen.contains(portion) {
+//                            uniquePortions.append(portion)
+//                            seen.insert(portion)
+//                        }
+//                    }
+//                    
+//                    food.foodPortions = uniquePortions
+//                        .sorted { $0.gramWeight < $1.gramWeight }
+//                    
+//                    models.append(FoodItem(foodSearchResults: item, food: food))
+//                }
                         
                 // Assuming resultsTableController is available in the scope
-                resultsTableController.foods = models
+                resultsTableController.foods = foods
                 resultsTableController.tableView.reloadData()
             } catch {
                 print("\(#function) \(error)")

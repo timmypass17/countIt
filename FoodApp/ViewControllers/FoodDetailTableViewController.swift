@@ -13,7 +13,7 @@ protocol FoodDetailTableViewControllerDelegate: AnyObject {
 
 class FoodDetailTableViewController: UITableViewController {
 
-    var food: FoodItem
+    var food: SearchResultFood
     let foodService = FoodService()
     weak var delegate: FoodDetailTableViewControllerDelegate?
     
@@ -26,10 +26,8 @@ class FoodDetailTableViewController: UITableViewController {
         case nutrition
     }
 
-    init(food: FoodItem) {
+    init(food: SearchResultFood) {
         self.food = food
-        print("Food portions #\(food.foodSearchResults.fdcId): \(food.food.foodPortions)")
-        print("Average Food portion: \(food.food.averageFoodPortionSize)")
         super.init(style: .plain)
     }
     
@@ -39,7 +37,7 @@ class FoodDetailTableViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        navigationItem.title = food.foodSearchResults.getNameFormatted()
+        navigationItem.title = food.description
         navigationItem.leftBarButtonItem = UIBarButtonItem(systemItem: .cancel, primaryAction: cancelButtonTapped())
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Add", primaryAction: addButtonTapped())
         tableView.register(NutritionTableViewCell.self, forCellReuseIdentifier: NutritionTableViewCell.reuseIdentifier)
@@ -63,7 +61,7 @@ class FoodDetailTableViewController: UITableViewController {
         case .dailyValue:
             return 0    // 1
         case .nutrition:
-            return food.food.foodNutrients.count
+            return food.foodNutrients.count
         }
     }
     
@@ -75,7 +73,7 @@ class FoodDetailTableViewController: UITableViewController {
             if indexPath.row == 0 {
                 cell.update(
                     primaryText: "Serving Size",
-                    secondaryText: food.food.getServingSizeFormatted(of: food.food.averageFoodPortionSize),
+                    secondaryText: "[Serving Size here]",
                     image: UIImage(systemName: "square.and.pencil"),
                     bgColor: UIColor.systemBlue)
             }
@@ -86,7 +84,7 @@ class FoodDetailTableViewController: UITableViewController {
             return UITableViewCell()
         case .nutrition:
             let cell = tableView.dequeueReusableCell(withIdentifier: NutritionTableViewCell.reuseIdentifier, for: indexPath) as! NutritionTableViewCell
-            let nutrient = food.food.foodNutrients[indexPath.row]
+            let nutrient = food.foodNutrients[indexPath.row]
                 cell.update(with: nutrient)
         
             return cell
@@ -116,13 +114,6 @@ class FoodDetailTableViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if indexPath.section == 0 {
             if indexPath.row == 0 {
-                // Show list of serving sizes
-                var foodPortions: [FoodPortion] = food.food.foodPortions
-                var options: [String] = foodPortions
-                    .sorted { $0.gramWeight < $1.gramWeight }
-                    .compactMap { $0.getServingSizeFormatted()}
-                    
-                // TODO: Pass in FoodPortion, not string. So that we can use values to calculates tuff
                 let selectTableViewController = SelectTableViewController(options: options)
                 present(UINavigationController(rootViewController: selectTableViewController), animated: true)
             }
