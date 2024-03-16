@@ -32,7 +32,7 @@ import UIKit
 
 class ResultsTableViewController: UITableViewController {
     
-    var foods: [SearchResultFood] = []
+    var foods: [Food] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()

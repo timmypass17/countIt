@@ -17,7 +17,7 @@ struct AbridgedSearchAPIRequest: APIRequest {
         urlComponents.queryItems = [
             "query": query,
             "dataType": DataType.allCases.map { $0.rawValue }.joined(separator: ","),
-            "pageSize": "50",
+            "pageSize": "10",
             "api_key": apiKey
         ].map { URLQueryItem(name: $0.key, value: $0.value) }
         
@@ -90,9 +90,9 @@ struct FoodListAPIRequest: APIRequest {
         return request
     }
     
-    func decodeResponse(data: Data) throws -> [SearchResultFood] {
+    func decodeResponse(data: Data) throws -> [Food] {
         let decoder = JSONDecoder()
-        let searchResponse = try decoder.decode([SearchResultFood].self, from: data)
+        let searchResponse = try decoder.decode([Food].self, from: data)
         return searchResponse
     }
 }

@@ -33,11 +33,11 @@ struct SRLegacyFoodItem: Codable {
 }
 
 extension SRLegacyFoodItem {
-    func getServingSizeFormatted(foodPortion: FoodPortion) -> String {
-        guard let nutrient = foodNutrients.getNutrient(name: "Energy"),
-              let caloriesPer100g = nutrient.amount
-        else { return "No calories" }
-        let caloriesPerServing = calculateCaloriePerServing(caloriesPer100g: caloriesPer100g, servingGramWeight: foodPortion.gramWeight)
-        return "\(Int(caloriesPerServing)) cal, \(foodPortion.amount ?? -1) \(foodPortion.modifier) (\(foodPortion.gramWeight.formattedString()) g)"
-    }
+//    func getServingSizeFormatted(foodPortion: FoodPortion) -> String {
+//        guard let nutrient = foodNutrients.getNutrient(name: "Energy"),
+//              let caloriesPer100g = nutrient.amount
+//        else { return "No calories" }
+//        let caloriesPerServing = calculateCaloriePerServing(caloriesPer100g: caloriesPer100g, servingGramWeight: foodPortion.gramWeight)
+//        return "\(Int(caloriesPerServing)) cal, \(foodPortion.amount ?? -1) \(foodPortion.modifier) (\(foodPortion.gramWeight.formattedString()) g)"
+//    }
 }

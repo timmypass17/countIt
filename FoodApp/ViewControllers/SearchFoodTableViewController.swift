@@ -31,7 +31,7 @@ class SearchFoodTableViewController: UITableViewController {
         super.viewDidLoad()
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "ItemCell")
         
-        resultsTableController = ResultsTableViewController()
+        resultsTableController = ResultsTableViewController(style: .insetGrouped)
         
         searchController = UISearchController(searchResultsController: resultsTableController)
         searchController.delegate = self
@@ -85,16 +85,19 @@ extension SearchFoodTableViewController: UISearchBarDelegate {
             do {
                 let foodIDs = try await foodService.getFoodIDs(query: searchBar.text!)
                 print(foodIDs.count)
-                let foods: [SearchResultFood] = try await foodService.getFoods(ids: foodIDs)
+                let foods: [Food] = try await foodService.getFoods(ids: foodIDs)
                 for food in foods {
-                    switch food {
-                    case .srLegacy(let sRLegacyFoodItem):
-                        print("SR Legacy: \(sRLegacyFoodItem.description)")
-                    case .branded(let brandedFoodItem):
-                        print("Branded: \(brandedFoodItem.description)")
-                    }
+                    print(food.description)
                 }
-                
+//                for food in foods {
+//                    switch food {
+//                    case .srLegacy(let sRLegacyFoodItem):
+//                        print("SR Legacy: \(sRLegacyFoodItem.description)")
+//                    case .branded(let brandedFoodItem):
+//                        print("Branded: \(brandedFoodItem.description)")
+//                    }
+//                }
+//                
 //                for item in foodSearchResults {
 //                    var food = try await foodService.getFood(id: item.fdcId)
 //

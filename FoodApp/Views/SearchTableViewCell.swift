@@ -78,9 +78,9 @@ class SearchTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func update(with food: SearchResultFood) {
+    func update(with food: Food) {
         titleLabel.text = food.description
-        descriptionLabel.text = food.getServingSizeFormatted()
+        descriptionLabel.text = food.getDescriptionFormatted(foodPortion: food.foodPortions[(food.foodPortions.count - 1) / 2])
     }
 }
 

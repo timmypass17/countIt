@@ -1,14 +1,14 @@
 //
-//  SelectTableViewCell.swift
+//  QuantityTableViewCell.swift
 //  FoodApp
 //
-//  Created by Timmy Nguyen on 3/5/24.
+//  Created by Timmy Nguyen on 3/8/24.
 //
 
 import UIKit
 
-class SelectTableViewCell: UITableViewCell {
-    static let reuseIdentifier = "SelectCell"
+class QuantityTableViewCell: UITableViewCell {
+    static let reuseIdentifier = "QuantityCell"
     
     private let iconContainer: UIView = {
         let view = UIView()
@@ -34,17 +34,19 @@ class SelectTableViewCell: UITableViewCell {
         let label = UILabel()
         label.numberOfLines = 1
         label.lineBreakMode = .byTruncatingTail
+        // wrap content
+        label.setContentHuggingPriority(.required, for: .horizontal)
         label.setContentCompressionResistancePriority(.required, for: .horizontal)
         return label
     }()
     
-    var secondaryLabel: UILabel = {
-        let label = UILabel()
-        label.textColor = .secondaryLabel
-        label.numberOfLines = 1
-        label.lineBreakMode = .byTruncatingTail
-        label.textAlignment = .right
-        return label
+    var quantityTextField: UITextField = {
+        let textField = UITextField()
+        textField.text = "1"
+        textField.placeholder = "1"
+        textField.keyboardType = .decimalPad
+        textField.textAlignment = .right
+        return textField
     }()
 
     var container: UIStackView = {
@@ -54,17 +56,17 @@ class SelectTableViewCell: UITableViewCell {
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
     }()
-        
+
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-
+        
         iconContainer.addSubview(iconImageView)
         container.addArrangedSubview(iconContainer)
         container.addArrangedSubview(primaryLabel)
-        container.addArrangedSubview(secondaryLabel)
+        container.addArrangedSubview(quantityTextField)
         
         contentView.addSubview(container)
-               
+                
 //        NSLayoutConstraint.activate([
 //            container.topAnchor.constraint(equalTo: contentView.layoutMarginsGuide.topAnchor),
 //            container.bottomAnchor.constraint(equalTo: contentView.layoutMarginsGuide.bottomAnchor),
@@ -92,11 +94,9 @@ class SelectTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func update(primaryText: String, secondaryText: String?, image: UIImage?, bgColor: UIColor?) {
+    func update(primaryText: String, image: UIImage?, bgColor: UIColor?) {
         primaryLabel.text = primaryText
-        secondaryLabel.text = secondaryText
         iconImageView.image = image
         iconContainer.backgroundColor = bgColor
-        accessoryType = .disclosureIndicator
     }
 }

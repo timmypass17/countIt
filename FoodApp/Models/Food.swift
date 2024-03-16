@@ -7,117 +7,83 @@
 
 import Foundation
 
-//protocol SearchResultFood: Codable {
-//    var fdcId: Int { get }
-//    var description: String { get }
-//    var foodNutrients: [FoodNutrient] { get }
-//}
+struct Food: Codable {
+    let fdcId: Int
+    var description: String
+    var foodNutrients: [FoodNutrient]
+    var foodPortions: [FoodPortion] // added
+    let brandName: String?
+    let dataType: DataType
+    
+    let servingSize: Float?
+    let servingSizeUnit: String?
+    
+    enum CodingKeys: String, CodingKey {
+        case fdcId
+        case description
+        case foodNutrients
+        case foodPortions
+        case brandName
+        case dataType
+        case servingSize
+        case servingSizeUnit
+    }
+    
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.fdcId = try container.decode(Int.self, forKey: .fdcId)
+        self.description = try container.decode(String.self, forKey: .description)
+        self.foodNutrients = try container.decode([FoodNutrient].self, forKey: .foodNutrients)
+        self.foodPortions = try container.decodeIfPresent([FoodPortion].self, forKey: .foodPortions) ?? []
+        self.brandName = try container.decodeIfPresent(String.self, forKey: .brandName)?.capitalized
+        self.dataType = try container.decode(DataType.self, forKey: .dataType)
+        self.servingSize = try container.decodeIfPresent(Float.self, forKey: .servingSize)
+        self.servingSizeUnit = try container.decodeIfPresent(String.self, forKey: .servingSizeUnit)
 
+        // Branded foods have additional info
+        if dataType == .branded {
+            self.description = description.capitalized
+            if let servingSize, let servingSizeUnit, servingSizeUnit == "g" {
+                self.foodPortions.append(FoodPortion(gramWeight: servingSize, modifier: ""))
+            }
+        }
+        // Implicit portion for all food
+        self.foodPortions.append(FoodPortion(gramWeight: 100, modifier: ""))
+        self.foodPortions.sort()
+        
+        // Filter out nutritents with 0 value
+        self.foodNutrients = foodNutrients.filter { ($0.amount ?? 0.0) != 0 }
+    }
+    
+    func getNutrient(_ id: NutrientID) -> FoodNutrient? {
+        print(foodNutrients)
+        return foodNutrients.first { $0.nutrient.id == id }
+    }
+}
 
-//struct Food: Codable {
-//    var foodNutrients: [FoodNutrient]
-//    var foodPortions: [FoodPortion]
-//    var servingSizeUnit: String?
-//    
-//    enum CodingKeys: String, CodingKey {
-//        case foodNutrients
-//        case foodPortions
-//        case servingSizeUnit
-//    }
-//    
-//    var calories: Int? {
-//        guard let nutrient = getFoodNutrient(of: "kcal"),
-//              let calories = nutrient.amount,
-//              let foodPortion = foodPortions.first
-//        else { return nil }
-//        
-//        let servingSize = foodPortion.gramWeight
-//        return Int((calories * servingSize)) / 100
-//    }
-//    
-//    func getFoodNutrient(of nutrient: String) -> FoodNutrient? {
-//        return foodNutrients.first { $0.nutrient.unitName == nutrient }
-//    }
-//    
-//    var averageFoodPortionSize: FoodPortion {
-//        let count = foodPortions.count
-//        if count % 2 == 0 {
-//            // No middle, choose left most
-//            return foodPortions[(count / 2) - 1]
-//        }
-//        return foodPortions[count / 2]
-//    }
-//    
-//    func getServingSizeFormatted(of foodPortion: FoodPortion) -> String? {
-//        if let servingSizeUnit, foodPortion.gramWeight == 100  {
-//            return "100 \(servingSizeUnit) [1]"
-//        }
-//        if let portionDescription = foodPortion.portionDescription {
-//            return "\(portionDescription) (\(Int(foodPortion.gramWeight)) g) [2]"
-//        }
-//        guard let amount = foodPortion.amount else { return "\(Int(foodPortion.gramWeight)) g [3]" }
-//        return "\(Int(amount)) \(foodPortion.modifier) (\(foodPortion.gramWeight) g) [4]" // TODO: always in grams?
-//    }
-//    
-////    func getServingSizeFormatted(of foodPortion: FoodPortion) -> String? {
-////        guard let amount = foodPortion.amount else { return "\(Int(foodPortion.gramWeight)) \(servingSizeUnit ?? "")" }
-////        return "\(Int(amount)) \(foodPortion.modifier) (\(Int(foodPortion.gramWeight))  \(servingSizeUnit ?? ""))"
-////    }
-//}
-//
-//extension Food {
-//    init(from decoder: Decoder) throws {
-//        let values = try decoder.container(keyedBy: CodingKeys.self)
-//        foodNutrients = try values.decode([FoodNutrient].self, forKey: .foodNutrients)
-//        foodPortions = try values.decode([FoodPortion].self, forKey: .foodPortions)
-//        foodPortions.append(FoodPortion(portionDescription: nil, gramWeight: 100, modifier: "unspecified"))  // add implicit portion
-//        foodPortions.sort { $0.gramWeight < $1.gramWeight }
-//        servingSizeUnit = try values.decodeIfPresent(String.self, forKey: .servingSizeUnit)
-//
-//    }
-//}
-//
-//// MARK: - UI Methods
-//
-//extension Food {
-//    func getCaloriesFormatted() -> String? {
-//        guard let calories else { return nil }
-//        return "\(calories) cal"
-//    }
-//}
-//
-//struct FoodNutrient: Codable {
-//    var nutrient: Nutrient
-//    var amount: Float?   // per 100g
-//}
-//
-//struct Nutrient: Codable {
-//    var name: String
-//    var unitName: String
-//}
-//
-//struct FoodPortion: Codable, Hashable, Equatable {
-//    var portionDescription: String?
-//    var amount: Float?
-//    var gramWeight: Float
-//    var modifier: String
-//    
-//    func getServingSizeFormatted() -> String? {
-//        if gramWeight == 100 {
-//            return "100 g [5]"
-//        }
-//        if let portionDescription {
-//            return "\(portionDescription) (\(Int(gramWeight)) g) [6]"
-//        }
-//        guard let amount else { return "\(Int(gramWeight)) g [7]" }
-//        return "\(Int(amount)) \(modifier) (\(gramWeight) g) [8]" // TODO: always in grams?
-//    }
-//        
-//    func hash(into hasher: inout Hasher) {
-//        hasher.combine(gramWeight)
-//    }
-//    
-//    static func == (lhs: FoodPortion, rhs: FoodPortion) -> Bool {
-//        return lhs.gramWeight == rhs.gramWeight
-//    }
-//}
+extension Food {
+    func getDescriptionFormatted(foodPortion: FoodPortion) -> String {
+        guard let nutrient = getNutrient(.calories),
+              let caloriesPer100g = nutrient.amount
+        else { return "No calories" }
+
+        let caloriesPerServing = calculateNutrientPerServing(nutrientPer100g: caloriesPer100g, servingSizeGramWeight: foodPortion.gramWeight)
+        var descriptionParts = ["\(Int(caloriesPerServing)) cal"]
+        descriptionParts.append(foodPortion.getServingSizeFormatted())
+        if let brandName {
+            descriptionParts.append("\(brandName)")
+        }
+        
+        return descriptionParts.joined(separator: ", ")
+    }
+}
+
+// TODO: this only works for grams (overload this to convert other units)
+func calculateNutrientPerServing(nutrientPer100g: Float, servingSizeGramWeight: Float) -> Float {
+    return (nutrientPer100g * servingSizeGramWeight) / 100
+}
+
+enum DataType: String, Codable, CaseIterable {
+    case srLegacy = "SR Legacy"
+    case branded = "Branded"
+}
