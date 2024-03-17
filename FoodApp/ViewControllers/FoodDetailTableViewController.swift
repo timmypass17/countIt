@@ -8,17 +8,23 @@
 import UIKit
 import SwiftUI
 
-protocol FoodDetailTableViewControllerDelegate: AnyObject {
+protocol FoodDetailTableViewControllerDismissDelegate: AnyObject {
     func foodDetailTableViewController(_ tableViewController: FoodDetailTableViewController, didDismiss: Bool)
+}
+
+protocol FoodDetailTableViewControllerDelegate: AnyObject {
+    func foodDetailTableViewController(_ tableViewController: FoodDetailTableViewController, didAddFoodEntry foodEntry: FoodEntry)
 }
 
 class FoodDetailTableViewController: UITableViewController {
 
     var food: Food
+    let meal: Meal?
     var selectedFoodPortion: FoodPortion
     var numberOfServings = 1
     let foodService: FoodService
     weak var delegate: FoodDetailTableViewControllerDelegate?
+    weak var dismissDelegate: FoodDetailTableViewControllerDismissDelegate?
     var mainNutrients: [FoodNutrient] = []
     var vitamins: [FoodNutrient] = []
     var minerals: [FoodNutrient] = []
@@ -35,8 +41,9 @@ class FoodDetailTableViewController: UITableViewController {
         // TODO: all nutrition, minerals, vitamins..
     }
 
-    init(food: Food, foodService: FoodService) {
+    init(food: Food, meal: Meal?, foodService: FoodService) {
         self.food = food
+        self.meal = meal
         self.foodService = foodService
         self.selectedFoodPortion = food.foodPortions[(food.foodPortions.count - 1) / 2]
         for nutrientID in NutrientID.mainNutrients {
@@ -180,7 +187,7 @@ class FoodDetailTableViewController: UITableViewController {
     
     override func viewWillDisappear(_ animated: Bool) {
         if navigationController?.isBeingDismissed ?? isBeingDismissed {
-            delegate?.foodDetailTableViewController(self, didDismiss: true)
+            dismissDelegate?.foodDetailTableViewController(self, didDismiss: true)
         }
     }
     
@@ -200,7 +207,10 @@ class FoodDetailTableViewController: UITableViewController {
     
     func addButtonTapped() -> UIAction {
         return UIAction { [self] _ in
-            // TODO: Add to user's meal plan
+            if let meal {
+                let foodEntry = CoreDataStack.shared.addFoodEntry(food, to: meal, servingSize: selectedFoodPortion, numberOfServings: numberOfServings)
+                delegate?.foodDetailTableViewController(self, didAddFoodEntry: foodEntry)
+            }
             dismiss(animated: true)
         }
     }

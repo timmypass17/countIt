@@ -7,10 +7,18 @@
 
 import UIKit
 
+protocol AddFoodButtonDelegate: AnyObject {
+    func addFoodButton(_ sender: AddFoodButton, didTapButton: Bool, forSectionAt section: Int)
+}
+
 class AddFoodButton: UIButton {
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+    let section: Int
+    weak var delegate: AddFoodButtonDelegate?
+    
+    init(section: Int) {
+        self.section = section
+        super.init(frame: .zero)
         configuration = .tinted()
         setImage(UIImage(systemName: "plus"), for: .normal)
         addTarget(self, action: #selector(didTapButton), for: .touchUpInside)
@@ -25,6 +33,6 @@ class AddFoodButton: UIButton {
     }
     
     @objc func didTapButton() {
-//        delegate?.didTapAddButton(self)
+        delegate?.addFoodButton(self, didTapButton: true, forSectionAt: section)
     }
 }

@@ -14,12 +14,16 @@ class SearchFoodTableViewController: UITableViewController {
     var searchController: UISearchController!
     private var resultsTableController: ResultsTableViewController!
     
+    let meal: Meal?
     let foodService: FoodService
     var searchTask: Task<Void, Never>? = nil
     var debounceTimer: Timer?
     
-    init(foodService: FoodService) {
+    weak var delegate: FoodDetailTableViewControllerDelegate?
+    
+    init(foodService: FoodService, meal: Meal? = nil) {
         self.foodService = foodService
+        self.meal = meal
         super.init(style: .plain)
     }
     
@@ -31,8 +35,8 @@ class SearchFoodTableViewController: UITableViewController {
         super.viewDidLoad()
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "ItemCell")
         
-        resultsTableController = ResultsTableViewController(foodService: foodService)
-        
+        resultsTableController = ResultsTableViewController(meal: meal, foodService: foodService)
+        resultsTableController.delegate = delegate
         searchController = UISearchController(searchResultsController: resultsTableController)
         searchController.delegate = self
         searchController.searchBar.delegate = self
@@ -71,7 +75,6 @@ class SearchFoodTableViewController: UITableViewController {
 //        let food = history[indexPath.row]
 //        let detailVC = FoodDetailTableViewController(food: food)
 //        navigationController?.pushViewController(detailVC, animated: true)
-        
     }
 }
 
@@ -84,45 +87,7 @@ extension SearchFoodTableViewController: UISearchBarDelegate {
         Task {
             do {
                 let foodIDs = try await foodService.getFoodIDs(query: searchBar.text!)
-                print(foodIDs.count)
                 let foods: [Food] = try await foodService.getFoods(ids: foodIDs)
-                for food in foods {
-                    print(food.description)
-                }
-//                for food in foods {
-//                    switch food {
-//                    case .srLegacy(let sRLegacyFoodItem):
-//                        print("SR Legacy: \(sRLegacyFoodItem.description)")
-//                    case .branded(let brandedFoodItem):
-//                        print("Branded: \(brandedFoodItem.description)")
-//                    }
-//                }
-//                
-//                for item in foodSearchResults {
-//                    var food = try await foodService.getFood(id: item.fdcId)
-//
-//                    if let servingSize = item.servingSize,
-//                       let servingSizeUnit = item.servingSizeUnit {
-//                        let foodPortion = FoodPortion(portionDescription: nil, amount: nil, gramWeight: servingSize, modifier: servingSizeUnit)
-//                        food.foodPortions.append(foodPortion)
-//                    }
-//                    
-//                    // Filter duplicate portions
-//                    var uniquePortions: [FoodPortion] = []
-//                    var seen: Set<FoodPortion> = []
-//                    for portion in food.foodPortions {
-//                        if !seen.contains(portion) {
-//                            uniquePortions.append(portion)
-//                            seen.insert(portion)
-//                        }
-//                    }
-//                    
-//                    food.foodPortions = uniquePortions
-//                        .sorted { $0.gramWeight < $1.gramWeight }
-//                    
-//                    models.append(FoodItem(foodSearchResults: item, food: food))
-//                }
-                        
                 // Assuming resultsTableController is available in the scope
                 resultsTableController.foods = foods
                 resultsTableController.tableView.reloadData()

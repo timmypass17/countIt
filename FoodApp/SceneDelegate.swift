@@ -11,13 +11,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
 
-
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let windowScene = (scene as? UIWindowScene) else { return }
 
         let tabBarController = UITabBarController()
         let foodService = FoodService()
-        let homeTableViewController = HomeTableViewController()
+        let homeTableViewController = HomeTableViewController(foodService: foodService)
         let searchFoodTableViewController = SearchFoodTableViewController(foodService: foodService)
         
         homeTableViewController.tabBarItem = UITabBarItem(title: "Food", image: UIImage(systemName: "fork.knife"), tag: 0)
@@ -60,6 +59,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
         // Save changes in the application's managed object context when the application transitions to the background.
     // TODO: Keep this?
+        CoreDataStack.shared.saveContext()
 //        (UIApplication.shared.delegate as? AppDelegate)?.saveContext()
     }
 

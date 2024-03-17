@@ -26,6 +26,21 @@ extension CDFood {
     @NSManaged public var servingSizeUnit_: String?
     @NSManaged public var foodEntries_: NSSet?
 
+    var brandName: String {
+        get { brandName_ ?? "" }
+        set { brandName_ = newValue }
+    }
+    
+    var dataType: String {
+        get { dataType_ ?? "SR Legacy" }
+        set { dataType_ = newValue }
+    }
+    
+    var name: String {
+        get { description_ ?? "" }
+        set { description_ = newValue }
+    }
+    
     var foodNutrients: [FoodNutrient] {
         get { foodNutrients_ ?? [] }
         set { foodNutrients_ = newValue }
@@ -36,10 +51,6 @@ extension CDFood {
         set { foodPortions_ = newValue }
     }
     
-    var brandName: String {
-        get { brandName_ ?? "" }
-        set { brandName_ = newValue }
-    }
     
     var servingSizeUnit: String {
         get { servingSizeUnit_ ?? "" }
@@ -66,4 +77,25 @@ extension CDFood {
 
 extension CDFood : Identifiable {
 
+}
+
+extension CDFood {
+    static let sample = {
+        let context = CoreDataStack.shared.context
+        let banana = CDFood(context: context)
+        banana.name = "Banana"
+        banana.brandName = "USDA"
+        banana.dataType = "SR Legacy"
+        banana.fdcId = 1
+        banana.foodNutrients = [FoodNutrient(nutrient: Nutrient(id: .calories, name: "Calories", unitName: "g"), amount: 105)]
+        banana.foodPortions = [FoodPortion(amount: 1, gramWeight: 126, modifier: "NLEA serving")]
+        banana.servingSize = 1
+        banana.servingSizeUnit = "g"
+        return banana
+    }()
+    
+    func convertToFDCFood() -> Food {
+        let food = Food(fdcId: Int(fdcId), description: name, foodNutrients: foodNutrients, foodPortions: foodPortions, brandName: brandName, dataType: DataType(rawValue: dataType) ?? .srLegacy, servingSize: servingSize, servingSizeUnit: servingSizeUnit)
+        return food
+    }
 }

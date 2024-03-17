@@ -16,6 +16,11 @@ class CoreDataStack {
     }
     
     lazy var persistentContainer: NSPersistentContainer = {
+        ValueTransformer.setValueTransformer(NutrientToDataTransformer(), forName: .nutrientToDataTransformer)
+        ValueTransformer.setValueTransformer(FoodPortionsToDataTransformer(), forName: .foodPortionsToDataTransformer)
+        ValueTransformer.setValueTransformer(FoodPortionToDataTransformer(), forName: .foodPortionToDataTransformer)
+
+
         let container = NSPersistentContainer(name: "FoodApp")
         container.loadPersistentStores(completionHandler: { (storeDescription, error) in
             if let error = error as NSError? {
@@ -29,14 +34,12 @@ class CoreDataStack {
 
 extension CoreDataStack {
     func saveContext () {
+        print(#function)
         if context.hasChanges {
             do {
                 try context.save()
             } catch {
-                // Replace this implementation with code to handle the error appropriately.
-                // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-                let nserror = error as NSError
-                fatalError("Unresolved error \(nserror), \(nserror.userInfo)")
+                print("Error saving: \(error)")
             }
         }
     }
@@ -54,5 +57,19 @@ extension CoreDataStack {
             print("Error fetching meal plan: \(error)")
             return nil
         }
+    }
+    
+    func addFoodEntry(_ food: Food, to meal: Meal, servingSize: FoodPortion, numberOfServings: Int) -> FoodEntry {
+        
+        let foodEntry = FoodEntry(context: context)
+        foodEntry.food = food.convertToCDFood(context: context)
+        foodEntry.index = Int16(meal.foodEntries.count)
+        foodEntry.servingSize = servingSize
+        foodEntry.numberOfServings = Int16(numberOfServings)
+        foodEntry.meal = meal
+        meal.addToFoodEntries_(foodEntry)
+
+        return foodEntry
+//        saveContext()
     }
 }

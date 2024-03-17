@@ -2,7 +2,7 @@
 //  FoodPortionToDataTransformer.swift
 //  FoodApp
 //
-//  Created by Timmy Nguyen on 3/16/24.
+//  Created by Timmy Nguyen on 3/17/24.
 //
 
 import Foundation
@@ -29,10 +29,10 @@ class FoodPortionToDataTransformer: NSSecureUnarchiveFromDataTransformer {
     }
     
     override func reverseTransformedValue(_ value: Any?) -> Any? {
-        guard let color = value as? FoodPortion else {
+        guard let foodPortions = value as? FoodPortion else {
             fatalError("Wrong data type: value must be a FoodPortion object; received \(type(of: value))")
         }
-        return super.reverseTransformedValue(color)
+        return super.reverseTransformedValue(foodPortions)
     }
 }
 

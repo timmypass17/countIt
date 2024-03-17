@@ -6,15 +6,15 @@
         <attribute name="description_" optional="YES" attributeType="String"/>
         <attribute name="fdcId" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="foodNutrients_" optional="YES" attributeType="Transformable" valueTransformerName="NutrientToDataTransformer" customClassName="[FoodNutrient]"/>
-        <attribute name="foodPortions_" optional="YES" attributeType="Transformable" valueTransformerName="FoodPortionToDataTransformer" customClassName="[FoodPortion]"/>
+        <attribute name="foodPortions_" optional="YES" attributeType="Transformable" valueTransformerName="FoodPortionsToDataTransformer" customClassName="[FoodPortion]"/>
         <attribute name="servingSize" optional="YES" attributeType="Float" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="servingSizeUnit_" optional="YES" attributeType="String"/>
         <relationship name="foodEntries_" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="FoodEntry" inverseName="food" inverseEntity="FoodEntry"/>
     </entity>
     <entity name="FoodEntry" representedClassName="FoodEntry" syncable="YES">
         <attribute name="index" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
-        <attribute name="servingSize" optional="YES" attributeType="Float" defaultValueString="0.0" usesScalarValueType="YES"/>
-        <attribute name="servingSizeUnits_" optional="YES" attributeType="String"/>
+        <attribute name="numberOfServings" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="servingSize" optional="YES" attributeType="Transformable" valueTransformerName="FoodPortionToDataTransformer" customClassName="FoodPortion"/>
         <relationship name="food" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CDFood" inverseName="foodEntries_" inverseEntity="CDFood"/>
         <relationship name="meal" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Meal" inverseName="foodEntries_" inverseEntity="Meal"/>
     </entity>

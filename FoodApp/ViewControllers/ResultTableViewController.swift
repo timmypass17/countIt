@@ -7,38 +7,19 @@
 
 import UIKit
 
-//struct FoodItem {
-//    var foodSearchResults: FoodSearchResults
-//    var food: Food
-//    
-//    var caloriesPerServing: Int? {
-//        guard let caloriesPer100g = foodSearchResults.caloriesPer100g else { return nil }
-//        guard let servingSize = foodSearchResults.servingSize
-//        else {
-//            let otherServingSize = food.averageFoodPortionSize.gramWeight
-//            return (caloriesPer100g * Int(otherServingSize)) / 100
-//        }
-//        
-//        return (caloriesPer100g * Int(servingSize)) / 100
-//    }
-//}
-//
-//extension FoodItem {
-//    func getCaloriesPerServingFormatted() -> String? {
-//        guard let caloriesPerServing else { return nil }
-//        return "\(caloriesPerServing) cal"
-//    }
-//}
-
 class ResultsTableViewController: UITableViewController {
     
     var foods: [Food] = []
+    let meal: Meal?
     let foodService: FoodService
-    
-    init(foodService: FoodService) {
+        
+    init(meal: Meal?, foodService: FoodService) {
+        self.meal = meal
         self.foodService = foodService
         super.init(style: .insetGrouped)
     }
+    
+    weak var delegate: FoodDetailTableViewControllerDelegate?
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -68,13 +49,15 @@ class ResultsTableViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let food = foods[indexPath.row]
-        let foodDetailTableViewController = FoodDetailTableViewController(food: food, foodService: foodService)
-        foodDetailTableViewController.delegate = self
+        let foodDetailTableViewController = FoodDetailTableViewController(food: food, meal: meal, foodService: foodService)
+        foodDetailTableViewController.dismissDelegate = self
+        foodDetailTableViewController.delegate = delegate
+        
         present(UINavigationController(rootViewController: foodDetailTableViewController), animated: true)
     }
 }
 
-extension ResultsTableViewController: FoodDetailTableViewControllerDelegate {
+extension ResultsTableViewController: FoodDetailTableViewControllerDismissDelegate {
     func foodDetailTableViewController(_ tableViewController: FoodDetailTableViewController, didDismiss: Bool) {
         if let indexPath = tableView.indexPathForSelectedRow {
             tableView.deselectRow(at: indexPath, animated: true)

@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import CoreData
 
 struct Food: Codable {
     let fdcId: Int
@@ -28,6 +29,17 @@ struct Food: Codable {
         case servingSize
         case servingSizeUnit
     }
+    
+    init(fdcId: Int, description: String, foodNutrients: [FoodNutrient], foodPortions: [FoodPortion], brandName: String?, dataType: DataType, servingSize: Float?, servingSizeUnit: String?) {
+            self.fdcId = fdcId
+            self.description = description
+            self.foodNutrients = foodNutrients
+            self.foodPortions = foodPortions
+            self.brandName = brandName
+            self.dataType = dataType
+            self.servingSize = servingSize
+            self.servingSizeUnit = servingSizeUnit
+        }
     
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
@@ -60,6 +72,10 @@ struct Food: Codable {
     func getNutrient(_ id: NutrientID) -> FoodNutrient? {
         return foodNutrients.first { $0.nutrient.id == id }
     }
+    
+    var calories: Int {
+        return Int(getNutrient(.calories)?.amount ?? 0.0)
+    }
 }
 
 extension Food {
@@ -77,6 +93,19 @@ extension Food {
         }
         
         return descriptionParts.joined(separator: ", ")
+    }
+    
+    func convertToCDFood(context: NSManagedObjectContext) -> CDFood {
+        let food = CDFood(context: context)
+        food.name = description
+        food.brandName = brandName ?? "SR Legacy"
+        food.dataType = dataType.rawValue
+        food.fdcId = Int64(fdcId)
+        food.foodNutrients = foodNutrients
+        food.foodPortions = foodPortions
+        food.servingSize = servingSize ?? 0
+        food.servingSizeUnit = servingSizeUnit ?? ""
+        return food
     }
 }
 
