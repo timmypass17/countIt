@@ -17,7 +17,7 @@ class FoodDetailTableViewController: UITableViewController {
     var food: Food
     var selectedFoodPortion: FoodPortion
     var numberOfServings = 1
-    let foodService = FoodService()
+    let foodService: FoodService
     weak var delegate: FoodDetailTableViewControllerDelegate?
     var mainNutrients: [FoodNutrient] = []
     var vitamins: [FoodNutrient] = []
@@ -35,8 +35,9 @@ class FoodDetailTableViewController: UITableViewController {
         // TODO: all nutrition, minerals, vitamins..
     }
 
-    init(food: Food) {
+    init(food: Food, foodService: FoodService) {
         self.food = food
+        self.foodService = foodService
         self.selectedFoodPortion = food.foodPortions[(food.foodPortions.count - 1) / 2]
         for nutrientID in NutrientID.mainNutrients {
             let emptyNutrient = FoodNutrient(nutrient: Nutrient(id: nutrientID, name: nutrientID.description, unitName: nutrientID.unit), amount: 0)

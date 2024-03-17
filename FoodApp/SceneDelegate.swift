@@ -17,9 +17,13 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
         let tabBarController = UITabBarController()
         let foodService = FoodService()
+        let homeTableViewController = HomeTableViewController()
         let searchFoodTableViewController = SearchFoodTableViewController(foodService: foodService)
+        
+        homeTableViewController.tabBarItem = UITabBarItem(title: "Food", image: UIImage(systemName: "fork.knife"), tag: 0)
         searchFoodTableViewController.tabBarItem = UITabBarItem(title: "Search", image: UIImage(systemName: "magnifyingglass"), tag: 0)
-        tabBarController.viewControllers = [searchFoodTableViewController].map { UINavigationController(rootViewController: $0) }
+        tabBarController.viewControllers = [homeTableViewController, searchFoodTableViewController]
+            .map { UINavigationController(rootViewController: $0) }
         
         window = UIWindow(frame: windowScene.coordinateSpace.bounds)
         window?.windowScene = windowScene
@@ -55,7 +59,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // to restore the scene back to its current state.
 
         // Save changes in the application's managed object context when the application transitions to the background.
-        (UIApplication.shared.delegate as? AppDelegate)?.saveContext()
+    // TODO: Keep this?
+//        (UIApplication.shared.delegate as? AppDelegate)?.saveContext()
     }
 
 

@@ -33,6 +33,16 @@ import UIKit
 class ResultsTableViewController: UITableViewController {
     
     var foods: [Food] = []
+    let foodService: FoodService
+    
+    init(foodService: FoodService) {
+        self.foodService = foodService
+        super.init(style: .insetGrouped)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -58,7 +68,7 @@ class ResultsTableViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let food = foods[indexPath.row]
-        let foodDetailTableViewController = FoodDetailTableViewController(food: food)
+        let foodDetailTableViewController = FoodDetailTableViewController(food: food, foodService: foodService)
         foodDetailTableViewController.delegate = self
         present(UINavigationController(rootViewController: foodDetailTableViewController), animated: true)
     }

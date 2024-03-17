@@ -8,6 +8,8 @@
 import Foundation
 
 import Foundation
+import CoreData
+import UIKit
 
 protocol APIRequest {
     associatedtype Response

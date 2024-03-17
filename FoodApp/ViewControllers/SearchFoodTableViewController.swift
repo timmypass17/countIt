@@ -31,7 +31,7 @@ class SearchFoodTableViewController: UITableViewController {
         super.viewDidLoad()
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "ItemCell")
         
-        resultsTableController = ResultsTableViewController(style: .insetGrouped)
+        resultsTableController = ResultsTableViewController(foodService: foodService)
         
         searchController = UISearchController(searchResultsController: resultsTableController)
         searchController.delegate = self

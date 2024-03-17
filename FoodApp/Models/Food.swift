@@ -12,7 +12,7 @@ struct Food: Codable {
     var description: String
     var foodNutrients: [FoodNutrient]
     var foodPortions: [FoodPortion] // added
-    let brandName: String?
+    var brandName: String?
     let dataType: DataType
     
     let servingSize: Float?
@@ -46,6 +46,8 @@ struct Food: Codable {
             if let servingSize, let servingSizeUnit, servingSizeUnit == "g" {
                 self.foodPortions.append(FoodPortion(gramWeight: servingSize, modifier: ""))
             }
+        } else {
+            brandName = "USDA"
         }
         // Implicit portion for all food
         self.foodPortions.append(FoodPortion(gramWeight: 100, modifier: ""))
@@ -56,12 +58,12 @@ struct Food: Codable {
     }
     
     func getNutrient(_ id: NutrientID) -> FoodNutrient? {
-        print(foodNutrients)
         return foodNutrients.first { $0.nutrient.id == id }
     }
 }
 
 extension Food {
+    
     func getDescriptionFormatted(foodPortion: FoodPortion) -> String {
         guard let nutrient = getNutrient(.calories),
               let caloriesPer100g = nutrient.amount
