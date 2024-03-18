@@ -7,7 +7,7 @@
 
 import Foundation
 
-public class FoodPortion: NSObject, Codable {
+struct FoodPortion: Codable {
     var amount: Float?
     var gramWeight: Float
     var modifier: String    // "tbsp"

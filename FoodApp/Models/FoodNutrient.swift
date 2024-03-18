@@ -51,7 +51,7 @@ enum NutrientID: Int, Codable, CaseIterable {
     case sodium = 1093
     case fiber = 1079
     case totalSugar = 2000
-//    case addedSugar = 1235
+    //    case addedSugar = 1235
     case protein = 1003
     case other = -1
     
@@ -89,7 +89,7 @@ enum NutrientID: Int, Codable, CaseIterable {
     
     init(rawValue: Int) {
         switch rawValue {
-        // Macronutrients
+            // Macronutrients
         case 1008: self = .calories
         case 1004: self = .totalFat
         case 1258: self = .saturatedFat
@@ -99,9 +99,9 @@ enum NutrientID: Int, Codable, CaseIterable {
         case 1093: self = .sodium
         case 1079: self = .fiber
         case 2000: self = .totalSugar
-//        case 1235: self = .addedSugar
+            //        case 1235: self = .addedSugar
         case 1003: self = .protein
-        // Vitamins
+            // Vitamins
         case 1106: self = .vitaminA
         case 1162: self = .vitaminC
         case 1114: self = .vitaminD
@@ -116,7 +116,7 @@ enum NutrientID: Int, Codable, CaseIterable {
         case 1180: self = .choline
         case 1170: self = .pantothenicAcid
         case 1176: self = .biotin
-        // Minerals
+            // Minerals
         case 1087: self = .calcium
         case 1088: self = .chlorine
         case 1096: self = .chromium
@@ -130,7 +130,7 @@ enum NutrientID: Int, Codable, CaseIterable {
         case 1092: self = .potassium
         case 1103: self = .selenium
         case 1095: self = .zinc
-        // Default case for unknown raw values (need this when decoding nutrients idc about)
+            // Default case for unknown raw values (need this when decoding nutrients idc about)
         default: self = .other
         }
     }

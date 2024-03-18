@@ -16,10 +16,7 @@ class CoreDataStack {
     }
     
     lazy var persistentContainer: NSPersistentContainer = {
-        ValueTransformer.setValueTransformer(NutrientToDataTransformer(), forName: .nutrientToDataTransformer)
-        ValueTransformer.setValueTransformer(FoodPortionsToDataTransformer(), forName: .foodPortionsToDataTransformer)
-        ValueTransformer.setValueTransformer(FoodPortionToDataTransformer(), forName: .foodPortionToDataTransformer)
-
+//        ValueTransformer.setValueTransformer(FoodPortionToDataTransformer(), forName: .foodPortionToDataTransformer)
 
         let container = NSPersistentContainer(name: "FoodApp")
         container.loadPersistentStores(completionHandler: { (storeDescription, error) in
@@ -38,6 +35,7 @@ extension CoreDataStack {
         if context.hasChanges {
             do {
                 try context.save()
+                print("Saved Success")
             } catch {
                 print("Error saving: \(error)")
             }
@@ -45,14 +43,19 @@ extension CoreDataStack {
     }
     
     func getMealPlan(for date: Date) -> MealPlan? {
+        let date = Calendar.current.startOfDay(for: date)
         let request: NSFetchRequest<MealPlan> = MealPlan.fetchRequest()
         request.predicate = NSPredicate(format: "date_ == %@", date as NSDate)
         request.fetchLimit = 1
         
         do {
             let mealPlans = try context.fetch(request)
-            print(#function)
-            return mealPlans.first
+            if let mealPlan = mealPlans.first {
+                print("Found meal")
+                return mealPlan
+            }
+            print("No meal")
+            return nil
         } catch {
             print("Error fetching meal plan: \(error)")
             return nil
@@ -67,9 +70,11 @@ extension CoreDataStack {
         foodEntry.servingSize = servingSize
         foodEntry.numberOfServings = Int16(numberOfServings)
         foodEntry.meal = meal
-        meal.addToFoodEntries_(foodEntry)
 
+        meal.addToFoodEntries_(foodEntry)
+        foodEntry.food?.addToFoodEntries_(foodEntry)
+        
+        saveContext()
         return foodEntry
-//        saveContext()
     }
 }

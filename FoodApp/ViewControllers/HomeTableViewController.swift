@@ -72,7 +72,8 @@ class HomeTableViewController: UITableViewController {
         let cell = tableView.dequeueReusableCell(withIdentifier: FoodEntryTableViewCell.reuseIdentifier, for: indexPath) as! FoodEntryTableViewCell
         if let food = foodEntry.food {
             print("Has food")
-            cell.update(with: food.convertToFDCFood())
+//            cell.update(with: food.convertToFDCFood())
+            cell.titleLabel.text = food.name
         } else {
             print("No food")
         }
@@ -110,11 +111,9 @@ extension HomeTableViewController: AddFoodButtonDelegate {
 extension HomeTableViewController: FoodDetailTableViewControllerDelegate {
     func foodDetailTableViewController(_ tableViewController: FoodDetailTableViewController, didAddFoodEntry foodEntry: FoodEntry) {
         guard let mealIndex = foodEntry.meal?.index else { return }
-        print(foodEntry.meal?.name)
         let index = Int(mealIndex)
         mealPlan.meals[index].foodEntries.append(foodEntry)   // local
         mealPlan.meals[index].addToFoodEntries_(foodEntry)    // core data
-        print("Reloading section at : \(index + 1)")
         tableView.reloadSections(IndexSet(integer: index + 1), with: .automatic)
     }
 }

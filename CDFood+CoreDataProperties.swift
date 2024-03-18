@@ -20,8 +20,8 @@ extension CDFood {
     @NSManaged public var dataType_: String?
     @NSManaged public var description_: String?
     @NSManaged public var fdcId: Int64
-    @NSManaged public var foodNutrients_: [FoodNutrient]?
-    @NSManaged public var foodPortions_: [FoodPortion]?
+    @NSManaged public var foodNutrients_: String?
+    @NSManaged public var foodPortions_: String?
     @NSManaged public var servingSize: Float
     @NSManaged public var servingSizeUnit_: String?
     @NSManaged public var foodEntries_: NSSet?
@@ -41,15 +41,15 @@ extension CDFood {
         set { description_ = newValue }
     }
     
-    var foodNutrients: [FoodNutrient] {
-        get { foodNutrients_ ?? [] }
-        set { foodNutrients_ = newValue }
-    }
-    
-    var foodPortions: [FoodPortion] {
-        get { foodPortions_ ?? [] }
-        set { foodPortions_ = newValue }
-    }
+//    var foodNutrients: [FoodNutrient] {
+//        get { foodNutrients_ ?? [] }
+//        set { foodNutrients_ = newValue }
+//    }
+//    
+//    var foodPortions: [FoodPortion] {
+//        get { foodPortions_ ?? [] }
+//        set { foodPortions_ = newValue }
+//    }
     
     
     var servingSizeUnit: String {
@@ -87,15 +87,17 @@ extension CDFood {
         banana.brandName = "USDA"
         banana.dataType = "SR Legacy"
         banana.fdcId = 1
-        banana.foodNutrients = [FoodNutrient(nutrient: Nutrient(id: .calories, name: "Calories", unitName: "g"), amount: 105)]
-        banana.foodPortions = [FoodPortion(amount: 1, gramWeight: 126, modifier: "NLEA serving")]
+        banana.foodNutrients_ = ""
+        banana.foodPortions_ = ""
+//        banana.foodNutrients = [FoodNutrient(nutrient: Nutrient(id: .calories, name: "Calories", unitName: "g"), amount: 105)]
+//        banana.foodPortions = [FoodPortion(amount: 1, gramWeight: 126, modifier: "NLEA serving")]
         banana.servingSize = 1
         banana.servingSizeUnit = "g"
         return banana
     }()
     
-    func convertToFDCFood() -> Food {
-        let food = Food(fdcId: Int(fdcId), description: name, foodNutrients: foodNutrients, foodPortions: foodPortions, brandName: brandName, dataType: DataType(rawValue: dataType) ?? .srLegacy, servingSize: servingSize, servingSizeUnit: servingSizeUnit)
-        return food
-    }
+//    func convertToFDCFood() -> Food {
+//        let food = Food(fdcId: Int(fdcId), description: name, foodNutrients: foodNutrients, foodPortions: foodPortions, brandName: brandName, dataType: DataType(rawValue: dataType) ?? .srLegacy, servingSize: servingSize, servingSizeUnit: servingSizeUnit)
+//        return food
+//    }
 }

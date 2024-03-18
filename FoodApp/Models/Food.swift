@@ -101,10 +101,11 @@ extension Food {
         food.brandName = brandName ?? "SR Legacy"
         food.dataType = dataType.rawValue
         food.fdcId = Int64(fdcId)
-        food.foodNutrients = foodNutrients
-        food.foodPortions = foodPortions
-        food.servingSize = servingSize ?? 0
+        food.foodNutrients_ = ""
+        food.foodPortions_ = ""
+        food.servingSize = servingSize ?? 0.0
         food.servingSizeUnit = servingSizeUnit ?? ""
+        print(food)
         return food
     }
 }

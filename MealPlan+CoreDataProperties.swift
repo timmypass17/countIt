@@ -55,12 +55,8 @@ extension MealPlan : Identifiable {
 extension MealPlan {
     static let sample: MealPlan = {
         let context = CoreDataStack.shared.context
-        print("Sample: \(context)")
-        let dateComponents = Calendar.current.dateComponents([.year, .month, .day], from: .now) // don't include time so that we match predicate
-        let date = Calendar.current.date(from: dateComponents)!
-        
         let mealPlan = MealPlan(context: context)
-        mealPlan.date = date
+        mealPlan.date = Calendar.current.startOfDay(for: .now)
         
         let breakfast = Meal(context: context)
         breakfast.name = "Breakfast"
@@ -71,11 +67,11 @@ extension MealPlan {
 //        let bananaEntry = FoodEntry(context: context)
 //        bananaEntry.food = CDFood.sample
 //        bananaEntry.index = 0
-//        bananaEntry.servingSize = FoodPortion(amount: 1, gramWeight: 118, modifier: "medium (7\" to 7-7/8\" long) ")
+//        bananaEntry.servingSize = FoodPortion(amount: 1.0, gramWeight: 118, modifier: "medium (7\" to 7-7/8\" long) ")
 //        bananaEntry.numberOfServings = 1
 //        bananaEntry.meal = breakfast
 //        breakfast.addToFoodEntries_(bananaEntry)
-        
+//        
         let lunch = Meal(context: context)
         lunch.name = "Lunch"
         lunch.index = 1
@@ -86,15 +82,15 @@ extension MealPlan {
     }()
     
     func printPrettyString() {
-        print("Meal Plan: \(self.date.formatted())")
-        print("Meals Count \(self.meals.count)")
-        for meal in self.meals {
-            print("\(meal.name)")
-            for entry in meal.foodEntries {
-                print("\(entry.food?.description_ ?? "")")
-                print("\(entry.food?.foodPortions.first?.getServingSizeFormatted())")
-
-            }
-        }
+//        print("Meal Plan: \(self.date.formatted())")
+//        print("Meals Count \(self.meals.count)")
+//        for meal in self.meals {
+//            print("\(meal.name)")
+//            for entry in meal.foodEntries {
+//                print("\(entry.food?.description_ ?? "")")
+//                print("\(entry.food?.foodPortions.first?.getServingSizeFormatted())")
+//
+//            }
+//        }
     }
 }
