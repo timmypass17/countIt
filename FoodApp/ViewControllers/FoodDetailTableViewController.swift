@@ -143,25 +143,17 @@ class FoodDetailTableViewController: UITableViewController {
             return UITableViewCell()
         case .macros:
             let cell = tableView.dequeueReusableCell(withIdentifier: MacrosView.reuseIdentifier, for: indexPath)
-            let calories = calculateNutrientPerServing(
-                nutrientPer100g: food.getNutrient(.calories)?.amount ?? 0.0,
-                servingSizeGramWeight: selectedFoodPortion.gramWeight) * Float(numberOfServings)
-            let carbs = calculateNutrientPerServing(
-                nutrientPer100g: food.getNutrient(.carbs)?.amount ?? 0.0,
-                servingSizeGramWeight: selectedFoodPortion.gramWeight) * Float(numberOfServings)
-            let protein = calculateNutrientPerServing(
-                nutrientPer100g: food.getNutrient(.protein)?.amount ?? 0.0,
-                servingSizeGramWeight: selectedFoodPortion.gramWeight) * Float(numberOfServings)
-            let fats = calculateNutrientPerServing(
-                nutrientPer100g: food.getNutrient(.totalFat)?.amount ?? 0.0,
-                servingSizeGramWeight: selectedFoodPortion.gramWeight) * Float(numberOfServings)
-            
+            let calories = food.getNutrientPerServing(.calories, foodPortion: selectedFoodPortion) * Float(numberOfServings)
+            let carbs = food.getNutrientPerServing(.carbs, foodPortion: selectedFoodPortion) * Float(numberOfServings)
+            let protein = food.getNutrientPerServing(.protein, foodPortion: selectedFoodPortion) * Float(numberOfServings)
+            let fats = food.getNutrientPerServing(.totalFat, foodPortion: selectedFoodPortion) * Float(numberOfServings)
+            print(calories)
             cell.contentConfiguration = UIHostingConfiguration {
                 MacrosView(
-                    calories: (calories, Settings.shared.userDailyValues.calories),
-                    carbs: (carbs, Settings.shared.userDailyValues.carbs),
-                    protein: (protein, Settings.shared.userDailyValues.protein),
-                    fats: (fats, Settings.shared.userDailyValues.fat)
+                    calories: MacroData(amount: calories, userGoal: Settings.shared.userDailyValues.calories),
+                    carbs: MacroData(amount: carbs, userGoal: Settings.shared.userDailyValues.carbs),
+                    protein: MacroData(amount: protein, userGoal: Settings.shared.userDailyValues.protein),
+                    fats: MacroData(amount: fats, userGoal: Settings.shared.userDailyValues.fat)
                 )
             }
             
@@ -241,7 +233,7 @@ class FoodDetailTableViewController: UITableViewController {
                     servingSize: selectedFoodPortion,
                     numberOfServings: numberOfServings
                 )
-                delegate?.foodDetailTableViewController(self, didAddFoodEntry: updatedFoodEntry)
+                delegate?.foodDetailTableViewController(self, didUpdateFoodEntry: updatedFoodEntry)
             }
             dismiss(animated: true)
         }

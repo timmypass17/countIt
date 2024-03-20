@@ -79,16 +79,24 @@ extension CoreDataStack {
         return foodEntry
     }
     
-    // Decode: json -> object
+    func addMeal(mealName: String, to mealPlan: MealPlan) {
+        let meal = Meal(context: context)
+        meal.name = mealName
+        meal.index = Int16(mealPlan.meals.count)
+        meal.mealPlan = mealPlan
+    }
+}
+
+extension CoreDataStack {
+    // Decode: data -> your object
     static func decode<T: Decodable>(jsonString: String) -> T {
         let data = jsonString.data(using: .utf8)!
         return try! JSONDecoder().decode(T.self, from: data)
     }
     
-    // Encode: object -> json
+    // Encode: your object -> data
     static func encode<T: Encodable>(value: T) -> String {
         let reminderData = try! JSONEncoder().encode(value)
         return String(data: reminderData, encoding:.utf8)!
     }
-    
 }

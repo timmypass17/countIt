@@ -30,6 +30,14 @@ extension Meal {
         get { (foodEntries_?.allObjects as! [FoodEntry]).sorted() }
         set { foodEntries_ = NSSet(array: newValue) }
     }
+    
+    func getTotalNutrients(_ nutrientID: NutrientID) -> Float {
+        var nutrientAmount: Float = 0.0
+        for foodEntry in foodEntries {
+            nutrientAmount += foodEntry.getTotalNutrients(nutrientID)
+        }
+        return nutrientAmount
+    }
 }
 
 // MARK: Generated accessors for foodEntries_

@@ -45,7 +45,14 @@ extension MealPlan {
         get { (meals_?.allObjects as! [Meal]).sorted() }
         set { meals_ = NSSet(array: newValue) }
     }
-
+    
+    func getTotalNutrients(_ nutrientID: NutrientID) -> Float {
+        var nutrientAmount: Float = 0.0
+        for meal in meals {
+            nutrientAmount += meal.getTotalNutrients(nutrientID)
+        }
+        return nutrientAmount
+    }
 }
 
 extension MealPlan : Identifiable {
@@ -69,6 +76,18 @@ extension MealPlan {
         lunch.index = 1
         lunch.mealPlan = mealPlan
         mealPlan.addToMeals_(lunch)
+        
+//        let dinner = Meal(context: context)
+//        dinner.name = "Dinner"
+//        dinner.index = 2
+//        dinner.mealPlan = mealPlan
+//        mealPlan.addToMeals_(dinner)
+//        
+//        let snacks = Meal(context: context)
+//        snacks.name = "Snacks"
+//        snacks.index = 2
+//        snacks.mealPlan = mealPlan
+//        mealPlan.addToMeals_(snacks)
         
         return mealPlan
     }()

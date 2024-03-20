@@ -31,6 +31,12 @@ extension FoodEntry {
         get { return CoreDataStack.decode(jsonString: servingSize_!) }
         set { servingSize_ = CoreDataStack.encode(value: newValue) }
     }
+    
+    func getTotalNutrients(_ nutrientID: NutrientID) -> Float {
+        guard let food = food?.convertToFDCFood() else { return 0 }
+        let nutrientAmount = food.getNutrientPerServing(nutrientID, foodPortion: servingSize) * Float(numberOfServings)
+        return nutrientAmount
+    }
 }
 
 
