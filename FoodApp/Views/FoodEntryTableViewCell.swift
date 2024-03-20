@@ -72,9 +72,10 @@ class FoodEntryTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func update(with food: Food) {
+    func update(with foodEntry: FoodEntry) {
+        guard let food = foodEntry.food?.convertToFDCFood() else { return }
         titleLabel.text = food.description
-        descriptionLabel.text = food.getDescriptionFormatted(foodPortion: food.foodPortions[(food.foodPortions.count - 1) / 2])
-        caloriesLabel.text = "\(food.calories)"
+        descriptionLabel.text = food.getFoodEntryDescriptionFormatted(foodPortion: foodEntry.servingSize, numberOfServings: Int(foodEntry.numberOfServings))
+        caloriesLabel.text = "\(Int(food.getNutrientPerServing(.calories, foodPortion: foodEntry.servingSize) * Float(foodEntry.numberOfServings)))"
     }
 }

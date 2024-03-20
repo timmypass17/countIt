@@ -17,25 +17,22 @@ extension FoodEntry {
     }
 
     @NSManaged public var index: Int16
-    @NSManaged public var numberOfServings: Int16
+    @NSManaged public var numberOfServings_: Int16
     @NSManaged public var servingSize_: String?
     @NSManaged public var food: CDFood?
     @NSManaged public var meal: Meal?
 
+    var numberOfServings: Int {
+        get { return Int(numberOfServings_) }
+        set { numberOfServings_ = Int16(newValue) }
+    }
+    
     var servingSize : FoodPortion {
-        get {
-            return (try? JSONDecoder().decode(FoodPortion.self, from: Data(servingSize_!.utf8)))!
-        }
-        set {
-           do {
-               let servingSizeData = try JSONEncoder().encode(newValue)
-               servingSize_ = String(data: servingSizeData, encoding:.utf8)!
-           } catch {
-               servingSize_ = ""
-           }
-        }
+        get { return CoreDataStack.decode(jsonString: servingSize_!) }
+        set { servingSize_ = CoreDataStack.encode(value: newValue) }
     }
 }
+
 
 extension FoodEntry : Identifiable {
 

@@ -70,13 +70,7 @@ class HomeTableViewController: UITableViewController {
         
         let foodEntry = mealPlan.meals[indexPath.section - 1].foodEntries[indexPath.row]
         let cell = tableView.dequeueReusableCell(withIdentifier: FoodEntryTableViewCell.reuseIdentifier, for: indexPath) as! FoodEntryTableViewCell
-        if let food = foodEntry.food {
-            print("Has food")
-//            cell.update(with: food.convertToFDCFood())
-            cell.titleLabel.text = food.name
-        } else {
-            print("No food")
-        }
+        cell.update(with: foodEntry)
         return cell
     }
     
@@ -94,6 +88,38 @@ class HomeTableViewController: UITableViewController {
         cell.delegate = self
         return cell
     }
+    
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let meal = mealPlan.meals[indexPath.section - 1]
+        let foodEntry = meal.foodEntries[indexPath.row]
+        guard let food = foodEntry.food?.convertToFDCFood() else { return }
+        let foodDetailTableViewController = FoodDetailTableViewController(
+            food: food,
+            meal: meal,
+            foodService: foodService,
+            selectedFoodPortion: foodEntry.servingSize,
+            numberOfServings: foodEntry.numberOfServings,
+            state: .edit
+        )
+        foodDetailTableViewController.foodEntry = foodEntry
+        foodDetailTableViewController.dismissDelegate = self
+        foodDetailTableViewController.delegate = self
+        
+        present(UINavigationController(rootViewController: foodDetailTableViewController), animated: true)
+    }
+    
+    override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+        guard indexPath.section != 0 else { return false }
+        return true
+    }
+
+    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        if (editingStyle == .delete) {
+            let foodEntry = mealPlan.meals[indexPath.section - 1].foodEntries[indexPath.row]
+            mealPlan.meals[indexPath.section - 1].removeFromFoodEntries_(foodEntry)
+            tableView.deleteRows(at: [indexPath], with: .automatic)
+        }
+    }
 }
 
 extension HomeTableViewController: AddFoodButtonDelegate {
@@ -105,7 +131,6 @@ extension HomeTableViewController: AddFoodButtonDelegate {
         searchFoodTableViewController.navigationItem.title = meal.name
         present(vc, animated: true)
     }
-
 }
 
 extension HomeTableViewController: FoodDetailTableViewControllerDelegate {
@@ -115,5 +140,21 @@ extension HomeTableViewController: FoodDetailTableViewControllerDelegate {
         mealPlan.meals[index].foodEntries.append(foodEntry)   // local
         mealPlan.meals[index].addToFoodEntries_(foodEntry)    // core data
         tableView.reloadSections(IndexSet(integer: index + 1), with: .automatic)
+    }
+    
+    func foodDetailTableViewController(_ tableViewController: FoodDetailTableViewController, didUpdateFoodEntry foodEntry: FoodEntry) {
+        guard let section = mealPlan.meals.firstIndex(where: { $0 == foodEntry.meal! }),
+              let row = mealPlan.meals[section].foodEntries.firstIndex(where: { $0 == foodEntry })
+        else { return }
+        let indexPath = IndexPath(row: row, section: section)
+        tableView.reloadRows(at: [indexPath], with: .automatic)
+    }
+}
+
+extension HomeTableViewController: FoodDetailTableViewControllerDismissDelegate {
+    func foodDetailTableViewController(_ tableViewController: FoodDetailTableViewController, didDismiss: Bool) {
+        if let indexPath = tableView.indexPathForSelectedRow {
+            tableView.deselectRow(at: indexPath, animated: true)
+        }
     }
 }

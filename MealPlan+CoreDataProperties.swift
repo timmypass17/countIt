@@ -63,15 +63,7 @@ extension MealPlan {
         breakfast.index = 0
         breakfast.mealPlan = mealPlan
         mealPlan.addToMeals_(breakfast)
-        
-//        let bananaEntry = FoodEntry(context: context)
-//        bananaEntry.food = CDFood.sample
-//        bananaEntry.index = 0
-//        bananaEntry.servingSize = FoodPortion(amount: 1.0, gramWeight: 118, modifier: "medium (7\" to 7-7/8\" long) ")
-//        bananaEntry.numberOfServings = 1
-//        bananaEntry.meal = breakfast
-//        breakfast.addToFoodEntries_(bananaEntry)
-//        
+
         let lunch = Meal(context: context)
         lunch.name = "Lunch"
         lunch.index = 1

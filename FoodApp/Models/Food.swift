@@ -95,18 +95,46 @@ extension Food {
         return descriptionParts.joined(separator: ", ")
     }
     
+    func getFoodEntryDescriptionFormatted(foodPortion: FoodPortion, numberOfServings: Int) -> String {
+        let calories = Int(getNutrientPerServing(.calories, foodPortion: foodPortion) * Float(numberOfServings))
+
+//        var descriptionParts = ["\(Int(calories)) cal"]
+        var descriptionParts: [String] = []
+        
+        if let amount = foodPortion.amount {
+            let servings = Int(amount * Float(numberOfServings))
+            let gramWeight = Int(foodPortion.gramWeight * Float(numberOfServings))
+            descriptionParts.append("\(servings) \(foodPortion.modifier) (\(gramWeight) g)")
+        } else {
+            let gramWeight = Int(foodPortion.gramWeight * Float(numberOfServings))
+            descriptionParts.append("\(gramWeight) g")
+        }
+        
+        if let brandName {
+            descriptionParts.append("\(brandName)")
+        }
+        
+        return descriptionParts.joined(separator: ", ")
+    }
+    
     func convertToCDFood(context: NSManagedObjectContext) -> CDFood {
         let food = CDFood(context: context)
         food.name = description
         food.brandName = brandName ?? "SR Legacy"
         food.dataType = dataType.rawValue
         food.fdcId = Int64(fdcId)
-        food.foodNutrients_ = ""
-        food.foodPortions_ = ""
+        food.foodNutrients = foodNutrients
+        food.foodPortions = foodPortions
         food.servingSize = servingSize ?? 0.0
         food.servingSizeUnit = servingSizeUnit ?? ""
         print(food)
         return food
+    }
+    
+    func getNutrientPerServing(_ nutrientID: NutrientID, foodPortion: FoodPortion) -> Float {
+        guard let nutrient = getNutrient(nutrientID),
+              let nutrientPer100g = nutrient.amount else { return 0 }
+        return (nutrientPer100g * foodPortion.gramWeight) / 100
     }
 }
 

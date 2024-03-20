@@ -16,8 +16,6 @@ class CoreDataStack {
     }
     
     lazy var persistentContainer: NSPersistentContainer = {
-//        ValueTransformer.setValueTransformer(FoodPortionToDataTransformer(), forName: .foodPortionToDataTransformer)
-
         let container = NSPersistentContainer(name: "FoodApp")
         container.loadPersistentStores(completionHandler: { (storeDescription, error) in
             if let error = error as NSError? {
@@ -63,18 +61,34 @@ extension CoreDataStack {
     }
     
     func addFoodEntry(_ food: Food, to meal: Meal, servingSize: FoodPortion, numberOfServings: Int) -> FoodEntry {
-        
         let foodEntry = FoodEntry(context: context)
-        foodEntry.food = food.convertToCDFood(context: context)
         foodEntry.index = Int16(meal.foodEntries.count)
         foodEntry.servingSize = servingSize
-        foodEntry.numberOfServings = Int16(numberOfServings)
-        foodEntry.meal = meal
+        foodEntry.numberOfServings = numberOfServings
 
-        meal.addToFoodEntries_(foodEntry)
-        foodEntry.food?.addToFoodEntries_(foodEntry)
-        
-        saveContext()
+        // Relationship
+        foodEntry.food = food.convertToCDFood(context: context)
+        foodEntry.meal = meal   // equivalent: meal.addToFoodEntries_(foodEntry)
+
         return foodEntry
     }
+    
+    func updateFoodEntry(foodEntry: FoodEntry, servingSize: FoodPortion, numberOfServings: Int) -> FoodEntry {
+        foodEntry.servingSize = servingSize
+        foodEntry.numberOfServings = numberOfServings
+        return foodEntry
+    }
+    
+    // Decode: json -> object
+    static func decode<T: Decodable>(jsonString: String) -> T {
+        let data = jsonString.data(using: .utf8)!
+        return try! JSONDecoder().decode(T.self, from: data)
+    }
+    
+    // Encode: object -> json
+    static func encode<T: Encodable>(value: T) -> String {
+        let reminderData = try! JSONEncoder().encode(value)
+        return String(data: reminderData, encoding:.utf8)!
+    }
+    
 }

@@ -41,15 +41,15 @@ extension CDFood {
         set { description_ = newValue }
     }
     
-//    var foodNutrients: [FoodNutrient] {
-//        get { foodNutrients_ ?? [] }
-//        set { foodNutrients_ = newValue }
-//    }
-//    
-//    var foodPortions: [FoodPortion] {
-//        get { foodPortions_ ?? [] }
-//        set { foodPortions_ = newValue }
-//    }
+    var foodNutrients: [FoodNutrient] {
+        get { return CoreDataStack.decode(jsonString: foodNutrients_!) }
+        set { foodNutrients_ = CoreDataStack.encode(value: newValue) }
+    }
+    
+    var foodPortions: [FoodPortion] {
+        get { return CoreDataStack.decode(jsonString: foodPortions_!) }
+        set { foodPortions_ = CoreDataStack.encode(value: newValue) }
+    }
     
     
     var servingSizeUnit: String {
@@ -96,8 +96,17 @@ extension CDFood {
         return banana
     }()
     
-//    func convertToFDCFood() -> Food {
-//        let food = Food(fdcId: Int(fdcId), description: name, foodNutrients: foodNutrients, foodPortions: foodPortions, brandName: brandName, dataType: DataType(rawValue: dataType) ?? .srLegacy, servingSize: servingSize, servingSizeUnit: servingSizeUnit)
-//        return food
-//    }
+    func convertToFDCFood() -> Food {
+        let food = Food(
+            fdcId: Int(fdcId),
+            description: name,
+            foodNutrients: foodNutrients,
+            foodPortions: foodPortions,
+            brandName: brandName,
+            dataType: DataType(rawValue: dataType) ?? .srLegacy,
+            servingSize: servingSize,
+            servingSizeUnit: servingSizeUnit
+        )
+        return food
+    }
 }

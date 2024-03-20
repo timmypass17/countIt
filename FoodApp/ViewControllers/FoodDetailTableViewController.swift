@@ -14,15 +14,18 @@ protocol FoodDetailTableViewControllerDismissDelegate: AnyObject {
 
 protocol FoodDetailTableViewControllerDelegate: AnyObject {
     func foodDetailTableViewController(_ tableViewController: FoodDetailTableViewController, didAddFoodEntry foodEntry: FoodEntry)
+    func foodDetailTableViewController(_ tableViewController: FoodDetailTableViewController, didUpdateFoodEntry foodEntry: FoodEntry)
 }
 
 class FoodDetailTableViewController: UITableViewController {
 
     var food: Food
+    var foodEntry: FoodEntry?
     let meal: Meal?
     var selectedFoodPortion: FoodPortion
-    var numberOfServings = 1
+    var numberOfServings: Int
     let foodService: FoodService
+    let state: State
     weak var delegate: FoodDetailTableViewControllerDelegate?
     weak var dismissDelegate: FoodDetailTableViewControllerDismissDelegate?
     var mainNutrients: [FoodNutrient] = []
@@ -33,19 +36,29 @@ class FoodDetailTableViewController: UITableViewController {
     let quantityIndexPath = IndexPath(row: 1, section: 0)
 
     enum Section: Int, CaseIterable {
-        case servingSize   // servingSize, number of servings
-        case macros         // protein, carbs, fats
-        case nutrients  // TODO: Maybe split into nutrients, minerals, vitamins..
+        case servingSize
+        case macros
+        case nutrients
         case vitamins
         case minerals
-        // TODO: all nutrition, minerals, vitamins..
+    }
+    
+    enum State {
+        case add, edit
     }
 
-    init(food: Food, meal: Meal?, foodService: FoodService) {
+    init(food: Food, meal: Meal?, foodService: FoodService, selectedFoodPortion: FoodPortion? = nil, numberOfServings: Int = 1, state: State = .add) {
         self.food = food
         self.meal = meal
         self.foodService = foodService
-        self.selectedFoodPortion = food.foodPortions[(food.foodPortions.count - 1) / 2]
+        self.numberOfServings = numberOfServings
+        self.state = state
+        if let selectedFoodPortion {
+            self.selectedFoodPortion = selectedFoodPortion
+        } else {
+            self.selectedFoodPortion = food.foodPortions[(food.foodPortions.count - 1) / 2]
+        }
+        
         for nutrientID in NutrientID.mainNutrients {
             let emptyNutrient = FoodNutrient(nutrient: Nutrient(id: nutrientID, name: nutrientID.description, unitName: nutrientID.unit), amount: 0)
             let foodNutrient = food.getNutrient(nutrientID) ?? emptyNutrient
@@ -72,7 +85,12 @@ class FoodDetailTableViewController: UITableViewController {
         super.viewDidLoad()
         navigationItem.title = food.description
         navigationItem.leftBarButtonItem = UIBarButtonItem(systemItem: .cancel, primaryAction: cancelButtonTapped())
-        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Add", primaryAction: addButtonTapped())
+        switch state {
+        case .add:
+            navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Add", primaryAction: addButtonTapped())
+        case .edit:
+            navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Update", primaryAction: updateButtonTapped())
+        }
         tableView.register(SelectTableViewCell.self, forCellReuseIdentifier: SelectTableViewCell.reuseIdentifier)
         tableView.register(NutritionTableViewCell.self, forCellReuseIdentifier: NutritionTableViewCell.reuseIdentifier)
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: MacrosView.reuseIdentifier)
@@ -210,6 +228,20 @@ class FoodDetailTableViewController: UITableViewController {
             if let meal {
                 let foodEntry = CoreDataStack.shared.addFoodEntry(food, to: meal, servingSize: selectedFoodPortion, numberOfServings: numberOfServings)
                 delegate?.foodDetailTableViewController(self, didAddFoodEntry: foodEntry)
+            }
+            dismiss(animated: true)
+        }
+    }
+    
+    func updateButtonTapped() -> UIAction {
+        return UIAction { [self] _ in
+            if let foodEntry {
+                let updatedFoodEntry = CoreDataStack.shared.updateFoodEntry(
+                    foodEntry: foodEntry,
+                    servingSize: selectedFoodPortion,
+                    numberOfServings: numberOfServings
+                )
+                delegate?.foodDetailTableViewController(self, didAddFoodEntry: updatedFoodEntry)
             }
             dismiss(animated: true)
         }
