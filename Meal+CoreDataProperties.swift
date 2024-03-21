@@ -38,6 +38,12 @@ extension Meal {
         }
         return nutrientAmount
     }
+    
+    func updateIndexes() {
+        for (index, foodEntry) in foodEntries.enumerated() {
+            foodEntry.index = Int16(index)
+        }
+    }
 }
 
 // MARK: Generated accessors for foodEntries_

@@ -161,6 +161,10 @@ class HomeTableViewController: UITableViewController {
         let foodEntry = mealPlan.meals[sourceIndexPath.section - 1].foodEntries.remove(at: sourceIndexPath.row)
         mealPlan.meals[destinationIndexPath.section - 1].foodEntries.insert(foodEntry, at: destinationIndexPath.row)
 
+        // Update indicies
+        mealPlan.meals[sourceIndexPath.section - 1].updateIndexes()
+        mealPlan.meals[destinationIndexPath.section - 1].updateIndexes()
+        
         foodEntry.meal = mealPlan.meals[destinationIndexPath.section - 1]
     }
     
