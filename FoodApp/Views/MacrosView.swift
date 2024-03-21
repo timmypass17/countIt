@@ -33,8 +33,5 @@ struct MacrosView: View {
                 CircularProgressView(title: "Fat", current: fats.amount, total: fats.userGoal.goal, color: .green)
             }
         }
-        .onChange(of: calories.amount) { oldValue, newValue in
-            print("Calories updated")
-        }
     }
 }

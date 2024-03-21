@@ -60,6 +60,24 @@ extension MealPlan : Identifiable {
 }
 
 extension MealPlan {
+    static func createEmpty(for date: Date) -> MealPlan {
+        let context = CoreDataStack.shared.context
+        let mealPlan = MealPlan(context: context)
+        mealPlan.date = Calendar.current.startOfDay(for: date)
+        
+        let breakfast = Meal(context: context)
+        breakfast.name = "Breakfast"
+        breakfast.index = 0
+        breakfast.mealPlan = mealPlan
+        mealPlan.addToMeals_(breakfast)
+
+        let lunch = Meal(context: context)
+        lunch.name = "Lunch"
+        lunch.index = 1
+        lunch.mealPlan = mealPlan
+        mealPlan.addToMeals_(lunch)
+        return mealPlan
+    }
     static let sample: MealPlan = {
         let context = CoreDataStack.shared.context
         let mealPlan = MealPlan(context: context)
@@ -76,32 +94,19 @@ extension MealPlan {
         lunch.index = 1
         lunch.mealPlan = mealPlan
         mealPlan.addToMeals_(lunch)
-        
-//        let dinner = Meal(context: context)
-//        dinner.name = "Dinner"
-//        dinner.index = 2
-//        dinner.mealPlan = mealPlan
-//        mealPlan.addToMeals_(dinner)
-//        
-//        let snacks = Meal(context: context)
-//        snacks.name = "Snacks"
-//        snacks.index = 2
-//        snacks.mealPlan = mealPlan
-//        mealPlan.addToMeals_(snacks)
-        
         return mealPlan
     }()
     
     func printPrettyString() {
-//        print("Meal Plan: \(self.date.formatted())")
-//        print("Meals Count \(self.meals.count)")
-//        for meal in self.meals {
-//            print("\(meal.name)")
-//            for entry in meal.foodEntries {
-//                print("\(entry.food?.description_ ?? "")")
-//                print("\(entry.food?.foodPortions.first?.getServingSizeFormatted())")
-//
-//            }
-//        }
+        print("Meal Plan: \(self.date)")
+        print("Meals Count \(self.meals.count)")
+        for meal in self.meals {
+            print("\(meal.name)")
+            for entry in meal.foodEntries {
+                print("\(entry.food?.description_ ?? "")")
+                print("\(entry.food?.foodPortions.first?.getServingSizeFormatted())")
+            }
+        }
+        print()
     }
 }

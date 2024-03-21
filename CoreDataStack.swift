@@ -49,10 +49,10 @@ extension CoreDataStack {
         do {
             let mealPlans = try context.fetch(request)
             if let mealPlan = mealPlans.first {
-                print("Found meal")
+                print("Found meal: \(date)")
                 return mealPlan
             }
-            print("No meal")
+            print("No meal: \(date)")
             return nil
         } catch {
             print("Error fetching meal plan: \(error)")

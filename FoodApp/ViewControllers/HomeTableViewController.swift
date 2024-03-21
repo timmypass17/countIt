@@ -10,7 +10,7 @@ import SwiftUI
 
 class HomeTableViewController: UITableViewController {
         
-    let mealPlan: MealPlan
+    var mealPlan: MealPlan
     let foodService: FoodService
     let goalIndexPath = IndexPath(row: 0, section: 0)
     
@@ -20,9 +20,8 @@ class HomeTableViewController: UITableViewController {
     }
     
     init(foodService: FoodService) {
-        self.mealPlan = CoreDataStack.shared.getMealPlan(for: .now) ?? MealPlan.sample
+        self.mealPlan = CoreDataStack.shared.getMealPlan(for: .now) ?? MealPlan.createEmpty(for: .now)
         self.foodService = foodService
-        mealPlan.printPrettyString()
         super.init(style: .insetGrouped)
     }
     
@@ -32,10 +31,21 @@ class HomeTableViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        navigationItem.titleView = HomeTitleView()
+        
+        let mealPlanDateView = MealPlanDateView()
+        mealPlanDateView.delegate = self
+        navigationItem.titleView = mealPlanDateView
+        
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: MacrosView.reuseIdentifier)
         tableView.register(FoodEntryTableViewCell.self, forCellReuseIdentifier: FoodEntryTableViewCell.reuseIdentifier)
-        navigationItem.rightBarButtonItem = editButtonItem
+        
+        let copyMenu = UIMenu(title: "Copy Meal Plan",
+                              children: [copyAction(), otherAction()])
+        
+        let menu = UIMenu(children: [editAction(), copyMenu])
+        
+        let optionsButton = UIBarButtonItem(image: UIImage(systemName: "ellipsis"), menu: menu)
+        navigationItem.rightBarButtonItem = optionsButton
         
         let footerView = UIView()
         footerView.frame = CGRect(x: 0, y: 0, width: tableView.frame.width, height: 50)
@@ -186,6 +196,27 @@ class HomeTableViewController: UITableViewController {
         // show the alert
         self.present(alert, animated: true, completion: nil)
     }
+    
+    
+    func editAction() -> UIAction {
+        return UIAction(title: NSLocalizedString("Reorder Food", comment: ""),
+                        image: UIImage(systemName: "slider.horizontal.3")) { [self] action in
+            tableView.setEditing(!tableView.isEditing, animated: true)
+        }
+    }
+        
+    func copyAction() -> UIAction {
+        return UIAction(title: NSLocalizedString("DuplicateTitle", comment: ""),
+                        image: UIImage(systemName: "plus.square.on.square")) { action in
+        }
+    }
+        
+    func otherAction() -> UIAction {
+        return UIAction(title: NSLocalizedString("DeleteTitle", comment: ""),
+                        image: UIImage(systemName: "trash"),
+                        attributes: .destructive) { action in
+        }
+    }
 }
 
 extension HomeTableViewController: FoodDetailTableViewControllerDelegate {
@@ -214,5 +245,12 @@ extension HomeTableViewController: FoodDetailTableViewControllerDismissDelegate 
         if let indexPath = tableView.indexPathForSelectedRow {
             tableView.deselectRow(at: indexPath, animated: true)
         }
+    }
+}
+
+extension HomeTableViewController: MealPlanDateViewDelegate {
+    func mealPlanDateViewDelegate(_ sender: MealPlanDateView, datePickerValueChanged date: Date) {
+        self.mealPlan = CoreDataStack.shared.getMealPlan(for: date) ?? MealPlan.createEmpty(for: date)
+        tableView.reloadData()
     }
 }
