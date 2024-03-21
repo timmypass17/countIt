@@ -39,14 +39,6 @@ class HomeTableViewController: UITableViewController {
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: MacrosView.reuseIdentifier)
         tableView.register(FoodEntryTableViewCell.self, forCellReuseIdentifier: FoodEntryTableViewCell.reuseIdentifier)
         
-        let copyMenu = UIMenu(title: "Copy Meal Plan",
-                              children: [copyAction(), otherAction()])
-        
-        let menu = UIMenu(children: [editAction(), copyMenu])
-        
-        let optionsButton = UIBarButtonItem(image: UIImage(systemName: "ellipsis"), menu: menu)
-        navigationItem.rightBarButtonItem = optionsButton
-        
         let footerView = UIView()
         footerView.frame = CGRect(x: 0, y: 0, width: tableView.frame.width, height: 50)
         let addMealButton = AddFoodButton()
@@ -62,6 +54,20 @@ class HomeTableViewController: UITableViewController {
             addMealButton.leadingAnchor.constraint(equalTo: footerView.layoutMarginsGuide.leadingAnchor, constant: 12),
             addMealButton.trailingAnchor.constraint(equalTo: footerView.layoutMarginsGuide.trailingAnchor, constant: -12),
         ])
+        
+        updateUI()
+    }
+    
+    func updateUI() {
+        let copyMenu = UIMenu(title: "Copy From",
+                              image: UIImage(systemName: "doc.on.doc"),
+                              children: [copyYesterdayAction(), copyDateAction()])
+        
+        let menu = UIMenu(children: [editAction(), copyMenu])
+        
+        let optionsButton = UIBarButtonItem(image: UIImage(systemName: "ellipsis"), menu: menu)
+        navigationItem.rightBarButtonItem = optionsButton
+        tableView.reloadData()
     }
 
     // MARK: - Table view data source
@@ -205,16 +211,34 @@ class HomeTableViewController: UITableViewController {
         }
     }
         
-    func copyAction() -> UIAction {
-        return UIAction(title: NSLocalizedString("DuplicateTitle", comment: ""),
-                        image: UIImage(systemName: "plus.square.on.square")) { action in
+    func copyYesterdayAction() -> UIAction {
+        let isToday = Calendar.current.isDate(mealPlan.date, inSameDayAs: .now)
+        let previousDate = Calendar.current.date(byAdding: .day, value: -1, to: mealPlan.date)!
+        let title = isToday ? "Yesterday" : previousDate.formatted(date: .abbreviated, time: .omitted)
+        let copyAction = UIAction(title: title, image: UIImage(systemName: "clock")) { [self] action in
+            let mealPlan = CoreDataStack.shared.copy(mealPlanAt: previousDate, into: mealPlan)
+            self.mealPlan = mealPlan
+            tableView.reloadData()
         }
+        
+        let previousMealPlanExists = CoreDataStack.shared.getMealPlan(for: previousDate) != nil
+        if !previousMealPlanExists {
+            copyAction.attributes = .disabled
+        }
+        return copyAction
     }
         
-    func otherAction() -> UIAction {
-        return UIAction(title: NSLocalizedString("DeleteTitle", comment: ""),
-                        image: UIImage(systemName: "trash"),
-                        attributes: .destructive) { action in
+    func copyDateAction() -> UIAction {
+        return UIAction(title: NSLocalizedString("Date", comment: ""),
+                        image: UIImage(systemName: "calendar")) { [self] action in
+            let calendarViewController =  CalendarViewController(date: mealPlan.date)
+            calendarViewController.delegate = self
+            let navigationController = UINavigationController(rootViewController: calendarViewController)
+            if let sheet = navigationController.sheetPresentationController {
+                sheet.detents = [.medium()]
+            }
+            
+            self.present(navigationController, animated: true)
         }
     }
 }
@@ -250,7 +274,18 @@ extension HomeTableViewController: FoodDetailTableViewControllerDismissDelegate 
 
 extension HomeTableViewController: MealPlanDateViewDelegate {
     func mealPlanDateViewDelegate(_ sender: MealPlanDateView, datePickerValueChanged date: Date) {
+        // When moving between dates, clean up empty meals
+        if self.mealPlan.isEmpty {
+            CoreDataStack.shared.context.delete(mealPlan)
+        }
         self.mealPlan = CoreDataStack.shared.getMealPlan(for: date) ?? MealPlan.createEmpty(for: date)
-        tableView.reloadData()
+        updateUI()
+    }
+}
+
+extension HomeTableViewController: CalendarViewControllerDelegate {
+    func calendarViewController(_ sender: CalendarViewController, didSelectDate date: Date) {
+        self.mealPlan = CoreDataStack.shared.copy(mealPlanAt: date, into: self.mealPlan)
+        updateUI()
     }
 }

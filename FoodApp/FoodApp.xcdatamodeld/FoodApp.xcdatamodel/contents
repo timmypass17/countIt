@@ -21,11 +21,11 @@
     <entity name="Meal" representedClassName="Meal" syncable="YES">
         <attribute name="index" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="name_" optional="YES" attributeType="String"/>
-        <relationship name="foodEntries_" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="FoodEntry" inverseName="meal" inverseEntity="FoodEntry"/>
+        <relationship name="foodEntries_" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="FoodEntry" inverseName="meal" inverseEntity="FoodEntry"/>
         <relationship name="mealPlan" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="MealPlan" inverseName="meals_" inverseEntity="MealPlan"/>
     </entity>
     <entity name="MealPlan" representedClassName="MealPlan" syncable="YES">
         <attribute name="date_" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
-        <relationship name="meals_" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Meal" inverseName="mealPlan" inverseEntity="Meal"/>
+        <relationship name="meals_" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Meal" inverseName="mealPlan" inverseEntity="Meal"/>
     </entity>
 </model>

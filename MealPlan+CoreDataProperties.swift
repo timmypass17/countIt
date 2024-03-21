@@ -53,6 +53,10 @@ extension MealPlan {
         }
         return nutrientAmount
     }
+    
+    var isEmpty: Bool {
+        return meals.allSatisfy { $0.foodEntries.isEmpty }
+    }
 }
 
 extension MealPlan : Identifiable {
@@ -78,6 +82,7 @@ extension MealPlan {
         mealPlan.addToMeals_(lunch)
         return mealPlan
     }
+    
     static let sample: MealPlan = {
         let context = CoreDataStack.shared.context
         let mealPlan = MealPlan(context: context)

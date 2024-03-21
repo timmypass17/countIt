@@ -85,6 +85,33 @@ extension CoreDataStack {
         meal.index = Int16(mealPlan.meals.count)
         meal.mealPlan = mealPlan
     }
+    
+    func copy(mealPlanAt date: Date, into mealPlan: MealPlan) -> MealPlan {
+        let copiedMealPlan = getMealPlan(for: date) ?? MealPlan.createEmpty(for: date)
+        
+        // 1. Remove original meal plan
+        context.delete(mealPlan)
+        
+        // 2. Create new meal plan using selected meal plan
+        let newMealPlan = MealPlan(context: context)
+        newMealPlan.date = Calendar.current.startOfDay(for: mealPlan.date)
+        for copiedMeal in copiedMealPlan.meals {
+            let meal = Meal(context: context)
+            meal.name = copiedMeal.name
+            meal.index = copiedMeal.index
+            meal.mealPlan = newMealPlan
+            for copiedFoodEntry in copiedMeal.foodEntries {
+                let foodEntry = FoodEntry(context: context)
+                foodEntry.index = copiedFoodEntry.index
+                foodEntry.numberOfServings = copiedFoodEntry.numberOfServings
+                foodEntry.servingSize = copiedFoodEntry.servingSize
+                foodEntry.meal = meal
+                foodEntry.food = copiedFoodEntry.food
+            }
+        }
+        
+        return newMealPlan
+    }
 }
 
 extension CoreDataStack {
