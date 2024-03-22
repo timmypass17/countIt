@@ -17,6 +17,10 @@ protocol FoodDetailTableViewControllerDelegate: AnyObject {
     func foodDetailTableViewController(_ tableViewController: FoodDetailTableViewController, didUpdateFoodEntry foodEntry: FoodEntry)
 }
 
+protocol FoodDetailTableViewControllerHistoryDelegate: AnyObject {
+    func foodDetailTableViewController(_ tableViewController: FoodDetailTableViewController, didUpdateHistoryWithFood food: CDFood)
+}
+
 class FoodDetailTableViewController: UITableViewController {
 
     var food: Food
@@ -28,6 +32,7 @@ class FoodDetailTableViewController: UITableViewController {
     let state: State
     weak var delegate: FoodDetailTableViewControllerDelegate?
     weak var dismissDelegate: FoodDetailTableViewControllerDismissDelegate?
+    weak var historyDelegate: FoodDetailTableViewControllerHistoryDelegate?
     var mainNutrients: [FoodNutrient] = []
     var vitamins: [FoodNutrient] = []
     var minerals: [FoodNutrient] = []
@@ -147,7 +152,6 @@ class FoodDetailTableViewController: UITableViewController {
             let carbs = food.getNutrientPerServing(.carbs, foodPortion: selectedFoodPortion) * Float(numberOfServings)
             let protein = food.getNutrientPerServing(.protein, foodPortion: selectedFoodPortion) * Float(numberOfServings)
             let fats = food.getNutrientPerServing(.totalFat, foodPortion: selectedFoodPortion) * Float(numberOfServings)
-            print(calories)
             cell.contentConfiguration = UIHostingConfiguration {
                 MacrosView(
                     calories: MacroData(amount: calories, userGoal: Settings.shared.userDailyValues.calories),
@@ -220,6 +224,11 @@ class FoodDetailTableViewController: UITableViewController {
             if let meal {
                 let foodEntry = CoreDataStack.shared.addFoodEntry(food, to: meal, servingSize: selectedFoodPortion, numberOfServings: numberOfServings)
                 delegate?.foodDetailTableViewController(self, didAddFoodEntry: foodEntry)
+                
+                if let food = foodEntry.food {
+                    food.updatedAt = .now
+                    historyDelegate?.foodDetailTableViewController(self, didUpdateHistoryWithFood: food)
+                }
             }
             dismiss(animated: true)
         }
@@ -234,6 +243,11 @@ class FoodDetailTableViewController: UITableViewController {
                     numberOfServings: numberOfServings
                 )
                 delegate?.foodDetailTableViewController(self, didUpdateFoodEntry: updatedFoodEntry)
+                
+                if let food = foodEntry.food {
+                    food.updatedAt = .now
+                    historyDelegate?.foodDetailTableViewController(self, didUpdateHistoryWithFood: food)
+                }
             }
             dismiss(animated: true)
         }

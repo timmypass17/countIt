@@ -67,7 +67,8 @@ extension CoreDataStack {
         foodEntry.numberOfServings = numberOfServings
 
         // Relationship
-        foodEntry.food = food.convertToCDFood(context: context)
+        foodEntry.food = getCDFood(id: food.fdcId) ?? food.convertToCDFood(context: context)
+        foodEntry.food?.updatedAt = .now
         foodEntry.meal = meal   // equivalent: meal.addToFoodEntries_(foodEntry)
 
         return foodEntry
@@ -111,6 +112,39 @@ extension CoreDataStack {
         }
         
         return newMealPlan
+    }
+    
+    func getCDFood(id: Int) -> CDFood? {
+        let request: NSFetchRequest<CDFood> = CDFood.fetchRequest()
+        request.predicate = NSPredicate(format: "fdcId == %d", id)
+        request.fetchLimit = 1
+        
+        do {
+            let foods = try context.fetch(request)
+            if let food = foods.first {
+                print("Found food")
+                return food
+            }
+            print("No food, create it")
+            return nil
+        } catch {
+            print("Error fetching food: \(error)")
+            return nil
+        }
+    }
+    
+    func getFoodHistory() -> [CDFood] {
+        let request: NSFetchRequest<CDFood> = CDFood.fetchRequest()
+        let sortDescriptor = NSSortDescriptor(key: "updatedAt_", ascending: false)
+        request.sortDescriptors = [sortDescriptor]
+        
+        do {
+            let foods = try context.fetch(request)
+            return foods
+        } catch {
+            print("Error fetching history: \(error)")
+            return []
+        }
     }
 }
 

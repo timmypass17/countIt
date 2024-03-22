@@ -59,11 +59,15 @@ class HomeTableViewController: UITableViewController {
     }
     
     func updateUI() {
-        let copyMenu = UIMenu(title: "Copy From",
+        let copyMenu = UIMenu(title: "Copy Meal Plan",
                               image: UIImage(systemName: "doc.on.doc"),
                               children: [copyYesterdayAction(), copyDateAction()])
         
-        let menu = UIMenu(children: [editAction(), copyMenu])
+        let reorderMenu = UIMenu(title: "Reorder",
+                                 image: UIImage(systemName: "slider.horizontal.3"),
+                                 children: [reorderMealAction(), reorderFoodAction()])
+        
+        let menu = UIMenu(children: [reorderMenu, copyMenu])
         
         let optionsButton = UIBarButtonItem(image: UIImage(systemName: "ellipsis"), menu: menu)
         navigationItem.rightBarButtonItem = optionsButton
@@ -122,6 +126,7 @@ class HomeTableViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        guard indexPath.section != 0 else { return }
         let meal = mealPlan.meals[indexPath.section - 1]
         let foodEntry = meal.foodEntries[indexPath.row]
         guard let food = foodEntry.food?.convertToFDCFood() else { return }
@@ -158,14 +163,21 @@ class HomeTableViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
+        guard destinationIndexPath.section != 0 else { return }
+        
         let foodEntry = mealPlan.meals[sourceIndexPath.section - 1].foodEntries.remove(at: sourceIndexPath.row)
         mealPlan.meals[destinationIndexPath.section - 1].foodEntries.insert(foodEntry, at: destinationIndexPath.row)
 
         // Update indicies
-        mealPlan.meals[sourceIndexPath.section - 1].updateIndexes()
-        mealPlan.meals[destinationIndexPath.section - 1].updateIndexes()
+        mealPlan.meals[sourceIndexPath.section - 1].foodEntries.updateIndexes()
+        mealPlan.meals[destinationIndexPath.section - 1].foodEntries.updateIndexes()
         
         foodEntry.meal = mealPlan.meals[destinationIndexPath.section - 1]
+    }
+    
+    override func tableView(_ tableView: UITableView, targetIndexPathForMoveFromRowAt sourceIndexPath: IndexPath, toProposedIndexPath proposedDestinationIndexPath: IndexPath) -> IndexPath {
+        guard proposedDestinationIndexPath.section != 0 else { return sourceIndexPath }
+        return proposedDestinationIndexPath
     }
     
     func didTapAddFoodButton(section: Int) -> UIAction {
@@ -174,7 +186,6 @@ class HomeTableViewController: UITableViewController {
             let searchFoodTableViewController = SearchFoodTableViewController(foodService: foodService, meal: meal)
             searchFoodTableViewController.delegate = self
             let vc = UINavigationController(rootViewController: searchFoodTableViewController)
-            searchFoodTableViewController.navigationItem.title = meal.name
             present(vc, animated: true)
         }
     }
@@ -207,10 +218,18 @@ class HomeTableViewController: UITableViewController {
         self.present(alert, animated: true, completion: nil)
     }
     
+    func reorderMealAction() -> UIAction {
+        return UIAction(title: NSLocalizedString("Reorder Meal", comment: ""),
+                        image: UIImage(systemName: "takeoutbag.and.cup.and.straw")) { [self] action in
+            let reorderMealTableViewController = ReorderMealTableViewController(meals: mealPlan.meals)
+            reorderMealTableViewController.delegate = self
+            self.present(UINavigationController(rootViewController: reorderMealTableViewController), animated: true)
+        }
+    }
     
-    func editAction() -> UIAction {
+    func reorderFoodAction() -> UIAction {
         return UIAction(title: NSLocalizedString("Reorder Food", comment: ""),
-                        image: UIImage(systemName: "slider.horizontal.3")) { [self] action in
+                        image: UIImage(systemName: "carrot")) { [self] action in
             tableView.setEditing(!tableView.isEditing, animated: true)
         }
     }
@@ -290,6 +309,12 @@ extension HomeTableViewController: MealPlanDateViewDelegate {
 extension HomeTableViewController: CalendarViewControllerDelegate {
     func calendarViewController(_ sender: CalendarViewController, didSelectDate date: Date) {
         self.mealPlan = CoreDataStack.shared.copy(mealPlanAt: date, into: self.mealPlan)
+        updateUI()
+    }
+}
+
+extension HomeTableViewController: ReorderMealTableViewControllerDelegate {
+    func reorderMealTableViewController(_ viewController: ReorderMealTableViewController, didReorderMeals: Bool) {
         updateUI()
     }
 }

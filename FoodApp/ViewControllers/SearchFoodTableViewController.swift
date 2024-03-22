@@ -9,12 +9,12 @@ import UIKit
 
 class SearchFoodTableViewController: UITableViewController {
 
-    var history: [String] = ["Apple", "Banana", "Orange"]
+    var history: [CDFood] = []
     
     var searchController: UISearchController!
     private var resultsTableController: ResultsTableViewController!
     
-    let meal: Meal?
+    var meal: Meal?
     let foodService: FoodService
     var searchTask: Task<Void, Never>? = nil
     var debounceTimer: Timer?
@@ -22,6 +22,7 @@ class SearchFoodTableViewController: UITableViewController {
     weak var delegate: FoodDetailTableViewControllerDelegate?
     
     init(foodService: FoodService, meal: Meal? = nil) {
+        self.history = CoreDataStack.shared.getFoodHistory()
         self.foodService = foodService
         self.meal = meal
         super.init(style: .plain)
@@ -33,10 +34,18 @@ class SearchFoodTableViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "ItemCell")
+        tableView.register(HistoryTableViewCell.self, forCellReuseIdentifier: HistoryTableViewCell.reuseIdentifier)
+        if let meal, let meals = meal.mealPlan?.meals {
+            let titleView = SearchTitleView(selectedMeal: meal, meals: meals)
+            titleView.delegate = self
+            navigationItem.titleView = titleView
+        }
+        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Cancel", primaryAction: cancelButtonTapped())
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Done", primaryAction: doneButtonTapped())
         
         resultsTableController = ResultsTableViewController(meal: meal, foodService: foodService)
         resultsTableController.delegate = delegate
+        resultsTableController.historyDelegate = self
         searchController = UISearchController(searchResultsController: resultsTableController)
         searchController.delegate = self
         searchController.searchBar.delegate = self
@@ -63,18 +72,34 @@ class SearchFoodTableViewController: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "ItemCell", for: indexPath)
-        let product = history[indexPath.row]
-        var config = cell.defaultContentConfiguration()
-        config.text = product
-        cell.contentConfiguration = config
+        let cell = tableView.dequeueReusableCell(withIdentifier: HistoryTableViewCell.reuseIdentifier, for: indexPath) as! HistoryTableViewCell
+        let food = history[indexPath.row]
+        cell.update(with: food.convertToFDCFood())
         return cell
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-//        let food = history[indexPath.row]
-//        let detailVC = FoodDetailTableViewController(food: food)
-//        navigationController?.pushViewController(detailVC, animated: true)
+        let food = history[indexPath.row]
+        let detailVC = FoodDetailTableViewController(food: food.convertToFDCFood(), meal: meal, foodService: foodService)
+        detailVC.delegate = delegate
+        detailVC.historyDelegate = self
+        present(UINavigationController(rootViewController: detailVC), animated: true)
+    }
+    
+    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        return "History"
+    }
+    
+    func cancelButtonTapped() -> UIAction {
+        return UIAction { _ in
+            self.dismiss(animated: true)
+        }
+    }
+    
+    func doneButtonTapped() -> UIAction {
+        return UIAction { _ in
+            self.dismiss(animated: true)
+        }
     }
 }
 
@@ -140,3 +165,18 @@ extension SearchFoodTableViewController: UISearchControllerDelegate {
     
 }
 
+extension SearchFoodTableViewController: SearchTitleViewDelegate {
+    func searchTitleView(_ sender: SearchTitleView, didSelectMeal meal: Meal) {
+        self.meal = meal
+    }
+}
+
+extension SearchFoodTableViewController: FoodDetailTableViewControllerHistoryDelegate {
+    func foodDetailTableViewController(_ tableViewController: FoodDetailTableViewController, didUpdateHistoryWithFood food: CDFood) {
+        if !history.contains(food) {
+            history.append(food)
+        }
+        history = history.sorted { $0.updatedAt > $1.updatedAt }
+        tableView.reloadData()
+    }
+}

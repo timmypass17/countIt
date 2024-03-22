@@ -2,13 +2,13 @@
 //  SearchTableViewCell.swift
 //  FoodApp
 //
-//  Created by Timmy Nguyen on 3/21/24.
+//  Created by Timmy Nguyen on 3/2/24.
 //
 
 import UIKit
 
-class HistoryTableViewCell: UITableViewCell {
-    static let reuseIdentifier = "HistoryCell"
+class ResultTableViewCell: UITableViewCell {
+    static let reuseIdentifier = "ResultCell"
 
     let titleLabel: UILabel = {
         let label = UILabel()
@@ -27,10 +27,9 @@ class HistoryTableViewCell: UITableViewCell {
         return label
     }()
     
-    let deleteButton: UIButton = {
+    let plusButton: UIButton = {
         let button = UIButton(type: .custom)
-        button.setImage(UIImage(systemName: "xmark"), for: .normal)
-        button.tintColor = .secondaryLabel
+        button.setImage(UIImage(systemName: "plus"), for: .normal)
         button.setContentHuggingPriority(.required, for: .horizontal)
         button.setContentCompressionResistancePriority(.required, for: .horizontal)
         NSLayoutConstraint.activate([
@@ -51,6 +50,7 @@ class HistoryTableViewCell: UITableViewCell {
         let hstack = UIStackView()
         hstack.axis = .horizontal
         hstack.translatesAutoresizingMaskIntoConstraints = false
+//        hstack.backgroundColor = .orange
         return hstack
     }()
     
@@ -60,7 +60,7 @@ class HistoryTableViewCell: UITableViewCell {
         labelContainer.addArrangedSubview(descriptionLabel)
         
         container.addArrangedSubview(labelContainer)
-        container.addArrangedSubview(deleteButton)
+        container.addArrangedSubview(plusButton)
         
         contentView.addSubview(container)
         

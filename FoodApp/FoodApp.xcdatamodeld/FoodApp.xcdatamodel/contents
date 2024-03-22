@@ -9,6 +9,7 @@
         <attribute name="foodPortions_" optional="YES" attributeType="String" valueTransformerName="FoodPortionsToDataTransformer" customClassName="[FoodPortion]"/>
         <attribute name="servingSize" optional="YES" attributeType="Float" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="servingSizeUnit_" optional="YES" attributeType="String"/>
+        <attribute name="updatedAt_" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <relationship name="foodEntries_" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="FoodEntry" inverseName="food" inverseEntity="FoodEntry"/>
     </entity>
     <entity name="FoodEntry" representedClassName="FoodEntry" syncable="YES">

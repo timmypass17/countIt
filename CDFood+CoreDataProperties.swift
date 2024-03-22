@@ -25,6 +25,7 @@ extension CDFood {
     @NSManaged public var servingSize: Float
     @NSManaged public var servingSizeUnit_: String?
     @NSManaged public var foodEntries_: NSSet?
+    @NSManaged public var updatedAt_: Date?
 
     var brandName: String {
         get { brandName_ ?? "" }
@@ -55,6 +56,11 @@ extension CDFood {
     var servingSizeUnit: String {
         get { servingSizeUnit_ ?? "" }
         set { servingSizeUnit_ = newValue }
+    }
+    
+    var updatedAt: Date {
+        get { updatedAt_ ?? .now }
+        set { updatedAt_ = newValue }
     }
 }
 

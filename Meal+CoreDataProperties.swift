@@ -38,10 +38,12 @@ extension Meal {
         }
         return nutrientAmount
     }
-    
+}
+
+extension Array where Element == Meal {
     func updateIndexes() {
-        for (index, foodEntry) in foodEntries.enumerated() {
-            foodEntry.index = Int16(index)
+        for (index, meal) in self.enumerated() {
+            meal.index = Int16(index)
         }
     }
 }

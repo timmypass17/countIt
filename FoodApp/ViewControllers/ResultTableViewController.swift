@@ -20,6 +20,7 @@ class ResultsTableViewController: UITableViewController {
     }
     
     weak var delegate: FoodDetailTableViewControllerDelegate?
+    weak var historyDelegate: FoodDetailTableViewControllerHistoryDelegate?
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -27,7 +28,7 @@ class ResultsTableViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        tableView.register(SearchTableViewCell.self, forCellReuseIdentifier: SearchTableViewCell.reuseIdentifier)
+        tableView.register(ResultTableViewCell.self, forCellReuseIdentifier: ResultTableViewCell.reuseIdentifier)
     }
     
     // MARK: - UITableViewDataSource
@@ -41,7 +42,7 @@ class ResultsTableViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: SearchTableViewCell.reuseIdentifier, for: indexPath) as! SearchTableViewCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: ResultTableViewCell.reuseIdentifier, for: indexPath) as! ResultTableViewCell
         let food = foods[indexPath.row]
         cell.update(with: food)
         return cell
@@ -50,10 +51,15 @@ class ResultsTableViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let food = foods[indexPath.row]
         let foodDetailTableViewController = FoodDetailTableViewController(food: food, meal: meal, foodService: foodService)
-        foodDetailTableViewController.dismissDelegate = self
         foodDetailTableViewController.delegate = delegate
+        foodDetailTableViewController.dismissDelegate = self
+        foodDetailTableViewController.historyDelegate = historyDelegate
         
         present(UINavigationController(rootViewController: foodDetailTableViewController), animated: true)
+    }
+    
+    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        return "Results"
     }
 }
 

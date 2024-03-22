@@ -39,6 +39,13 @@ extension FoodEntry {
     }
 }
 
+extension Array where Element == FoodEntry {
+    func updateIndexes() {
+        for (index, foodEntry) in self.enumerated() {
+            foodEntry.index = Int16(index)
+        }
+    }
+}
 
 extension FoodEntry : Identifiable {
 
