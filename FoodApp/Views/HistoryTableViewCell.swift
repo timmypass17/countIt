@@ -7,9 +7,16 @@
 
 import UIKit
 
+protocol HistoryTableViewCellDelegate: AnyObject {
+    func historyTableViewCell(_ cell: HistoryTableViewCell, didDeleteFood food: CDFood)
+}
+
 class HistoryTableViewCell: UITableViewCell {
     static let reuseIdentifier = "HistoryCell"
 
+    var cdFood: CDFood!
+    weak var delegate: HistoryTableViewCellDelegate?
+    
     let titleLabel: UILabel = {
         let label = UILabel()
         label.numberOfLines = 1
@@ -56,6 +63,8 @@ class HistoryTableViewCell: UITableViewCell {
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
+        deleteButton.addAction(deleteButtonTapped(), for: .touchUpInside)
+        
         labelContainer.addArrangedSubview(titleLabel)
         labelContainer.addArrangedSubview(descriptionLabel)
         
@@ -76,8 +85,17 @@ class HistoryTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func update(with food: Food) {
+    func update(with cdFood: CDFood) {
+        self.cdFood = cdFood
+        let food = cdFood.convertToFDCFood()
         titleLabel.text = food.description
         descriptionLabel.text = food.getDescriptionFormatted(foodPortion: food.foodPortions[(food.foodPortions.count - 1) / 2])
+    }
+    
+    func deleteButtonTapped() -> UIAction {
+        return UIAction { [self] _ in
+            CoreDataStack.shared.deleteHistory(cdFood)
+            delegate?.historyTableViewCell(self, didDeleteFood: cdFood)
+        }
     }
 }

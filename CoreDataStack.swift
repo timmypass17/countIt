@@ -135,8 +135,8 @@ extension CoreDataStack {
     
     func getFoodHistory() -> [CDFood] {
         let request: NSFetchRequest<CDFood> = CDFood.fetchRequest()
-        let sortDescriptor = NSSortDescriptor(key: "updatedAt_", ascending: false)
-        request.sortDescriptors = [sortDescriptor]
+        request.predicate = NSPredicate(format: "updatedAt_ != nil")
+        request.sortDescriptors = [NSSortDescriptor(key: "updatedAt_", ascending: false)]
         
         do {
             let foods = try context.fetch(request)
@@ -145,6 +145,10 @@ extension CoreDataStack {
             print("Error fetching history: \(error)")
             return []
         }
+    }
+    
+    func deleteHistory(_ food: CDFood) {
+        food.updatedAt_ = nil
     }
 }
 

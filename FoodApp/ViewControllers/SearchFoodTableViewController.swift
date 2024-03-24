@@ -73,8 +73,9 @@ class SearchFoodTableViewController: UITableViewController {
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: HistoryTableViewCell.reuseIdentifier, for: indexPath) as! HistoryTableViewCell
+        cell.delegate = self
         let food = history[indexPath.row]
-        cell.update(with: food.convertToFDCFood())
+        cell.update(with: food)
         return cell
     }
     
@@ -178,5 +179,14 @@ extension SearchFoodTableViewController: FoodDetailTableViewControllerHistoryDel
         }
         history = history.sorted { $0.updatedAt > $1.updatedAt }
         tableView.reloadData()
+    }
+}
+
+extension SearchFoodTableViewController: HistoryTableViewCellDelegate {
+    func historyTableViewCell(_ cell: HistoryTableViewCell, didDeleteFood food: CDFood) {
+        guard let row = history.firstIndex(where: { $0 == food }) else { return }
+        history.remove(at: row)
+        let indexPath = IndexPath(row: row, section: 0)
+        tableView.deleteRows(at: [indexPath], with: .automatic)
     }
 }
