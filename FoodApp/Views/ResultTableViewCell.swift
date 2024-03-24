@@ -78,6 +78,7 @@ class ResultTableViewCell: UITableViewCell {
     
     func update(with food: Food) {
         titleLabel.text = food.description
-        descriptionLabel.text = food.getDescriptionFormatted(foodPortion: food.foodPortions[(food.foodPortions.count - 1) / 2])
+//        descriptionLabel.text = food.getDescriptionFormatted(foodPortion: food.foodPortions[(food.foodPortions.count - 1) / 2])
+        descriptionLabel.text = food.getFoodEntryDescriptionFormatted(foodPortion: food.foodPortions[(food.foodPortions.count - 1) / 2])
     }
 }

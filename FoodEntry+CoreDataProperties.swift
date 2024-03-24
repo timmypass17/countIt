@@ -19,6 +19,7 @@ extension FoodEntry {
     @NSManaged public var index: Int16
     @NSManaged public var numberOfServings_: Int16
     @NSManaged public var servingSize_: String?
+    @NSManaged public var servingSizeUnit_: String?
     @NSManaged public var food: CDFood?
     @NSManaged public var meal: Meal?
 
@@ -30,6 +31,11 @@ extension FoodEntry {
     var servingSize : FoodPortion {
         get { return CoreDataStack.decode(jsonString: servingSize_!) }
         set { servingSize_ = CoreDataStack.encode(value: newValue) }
+    }
+    
+    var servingSizeUnit: String {
+        get { servingSizeUnit_ ?? "g" }
+        set { servingSizeUnit_ = newValue }
     }
     
     func getTotalNutrients(_ nutrientID: NutrientID) -> Float {

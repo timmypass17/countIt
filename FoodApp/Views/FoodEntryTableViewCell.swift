@@ -75,7 +75,7 @@ class FoodEntryTableViewCell: UITableViewCell {
     func update(with foodEntry: FoodEntry) {
         guard let food = foodEntry.food?.convertToFDCFood() else { return }
         titleLabel.text = food.description
-        descriptionLabel.text = food.getFoodEntryDescriptionFormatted(foodPortion: foodEntry.servingSize, numberOfServings: Int(foodEntry.numberOfServings))
+        descriptionLabel.text = food.getFoodEntryDescriptionFormatted(foodPortion: foodEntry.servingSize, numberOfServings: Int(foodEntry.numberOfServings), options: [.servingSize, .brandName])
         caloriesLabel.text = "\(Int(food.getNutrientPerServing(.calories, foodPortion: foodEntry.servingSize) * Float(foodEntry.numberOfServings)))"
     }
 }

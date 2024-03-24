@@ -16,6 +16,7 @@
         <attribute name="index" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="numberOfServings_" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="servingSize_" optional="YES" attributeType="String" valueTransformerName="FoodPortionToDataTransformer" customClassName="FoodPortion"/>
+        <attribute name="servingSizeUnit_" optional="YES" attributeType="String"/>
         <relationship name="food" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CDFood" inverseName="foodEntries_" inverseEntity="CDFood"/>
         <relationship name="meal" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Meal" inverseName="foodEntries_" inverseEntity="Meal"/>
     </entity>

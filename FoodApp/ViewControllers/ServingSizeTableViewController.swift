@@ -12,13 +12,15 @@ protocol SelectTableViewControllerDelegate: AnyObject {
 }
 
 class ServingSizeTableViewController: UITableViewController {
+    let food: Food
     let foodPortions: [FoodPortion]
     var selectedFoodPortion: FoodPortion
     
     weak var delegate: SelectTableViewControllerDelegate?
     let reuseIdentifier = "SelectCell"
     
-    init(foodPortions: [FoodPortion], selectedFoodPortion: FoodPortion) {
+    init(food: Food, foodPortions: [FoodPortion], selectedFoodPortion: FoodPortion) {
+        self.food = food
         self.foodPortions = foodPortions
         self.selectedFoodPortion =  selectedFoodPortion
         super.init(style: .plain)
@@ -53,7 +55,8 @@ class ServingSizeTableViewController: UITableViewController {
         let cell = tableView.dequeueReusableCell(withIdentifier: reuseIdentifier, for: indexPath)
         let foodPortion = foodPortions[indexPath.row]
         var config = cell.defaultContentConfiguration()
-        config.text = foodPortion.getServingSizeFormatted()
+//        config.text = foodPortion.getServingSizeFormatted()
+        config.text = food.getServingSizeFormatted(foodPortion: foodPortion)
         cell.contentConfiguration = config
         cell.accessoryType = foodPortion == selectedFoodPortion ? .checkmark : .none
 
@@ -98,7 +101,8 @@ class ServingSizeTableViewController: UITableViewController {
     }
     
     func showAlert() {
-        let alert = UIAlertController(title: "Custom Serving Size", message: "Enter your own serving size (g) below", preferredStyle: .alert)
+        let servingSizeUnit = food.servingSizeUnit ?? "g"
+        let alert = UIAlertController(title: "Custom Serving Size", message: "Enter your own serving size (\(servingSizeUnit)) below", preferredStyle: .alert)
 
         alert.addTextField { textField in
             textField.placeholder = "Ex. 100"

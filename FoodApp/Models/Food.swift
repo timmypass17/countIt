@@ -58,6 +58,7 @@ struct Food: Codable {
             if let servingSize, let servingSizeUnit, servingSizeUnit == "g" {
                 self.foodPortions.append(FoodPortion(gramWeight: servingSize, modifier: ""))
             }
+            // TOOD: Add ml
         } else {
             brandName = "USDA"
         }
@@ -79,42 +80,36 @@ struct Food: Codable {
 }
 
 extension Food {
+    enum FoodEntryOptions: CaseIterable {
+        case calories, servingSize, brandName
+    }
     
-    func getDescriptionFormatted(foodPortion: FoodPortion) -> String {
-        guard let nutrient = getNutrient(.calories),
-              let caloriesPer100g = nutrient.amount
-        else { return "No calories" }
+    func getFoodEntryDescriptionFormatted(foodPortion: FoodPortion, numberOfServings: Int = 1, options: [FoodEntryOptions] = FoodEntryOptions.allCases) -> String {
+        var descriptionParts: [String] = []
 
-        let caloriesPerServing = calculateNutrientPerServing(nutrientPer100g: caloriesPer100g, servingSizeGramWeight: foodPortion.gramWeight)
-        var descriptionParts = ["\(Int(caloriesPerServing)) cal"]
-        descriptionParts.append(foodPortion.getServingSizeFormatted())
-        if let brandName {
+        if options.contains(.calories) {
+            descriptionParts.append("\(Int(getNutrientPerServing(.calories, foodPortion: foodPortion) * Float(numberOfServings))) cal")
+        }
+        if options.contains(.servingSize) {
+            descriptionParts.append(getServingSizeFormatted(foodPortion: foodPortion, numberOfServings: numberOfServings))
+        }
+        
+        if let brandName, options.contains(.brandName) {
             descriptionParts.append("\(brandName)")
         }
         
         return descriptionParts.joined(separator: ", ")
     }
     
-    func getFoodEntryDescriptionFormatted(foodPortion: FoodPortion, numberOfServings: Int) -> String {
-        let calories = Int(getNutrientPerServing(.calories, foodPortion: foodPortion) * Float(numberOfServings))
-
-//        var descriptionParts = ["\(Int(calories)) cal"]
-        var descriptionParts: [String] = []
-        
+    func getServingSizeFormatted(foodPortion: FoodPortion, numberOfServings: Int = 1) -> String {
         if let amount = foodPortion.amount {
             let servings = Int(amount * Float(numberOfServings))
             let gramWeight = Int(foodPortion.gramWeight * Float(numberOfServings))
-            descriptionParts.append("\(servings) \(foodPortion.modifier) (\(gramWeight) g)")
+            return "\(servings) \(foodPortion.modifier) (\(gramWeight) \(servingSizeUnit ?? "g"))"
         } else {
             let gramWeight = Int(foodPortion.gramWeight * Float(numberOfServings))
-            descriptionParts.append("\(gramWeight) g")
+            return "\(gramWeight) \(servingSizeUnit ?? "g")"
         }
-        
-        if let brandName {
-            descriptionParts.append("\(brandName)")
-        }
-        
-        return descriptionParts.joined(separator: ", ")
     }
     
     func convertToCDFood(context: NSManagedObjectContext) -> CDFood {
@@ -126,8 +121,7 @@ extension Food {
         food.foodNutrients = foodNutrients
         food.foodPortions = foodPortions
         food.servingSize = servingSize ?? 0.0
-        food.servingSizeUnit = servingSizeUnit ?? ""
-        print(food)
+        food.servingSizeUnit = servingSizeUnit ?? "g"
         return food
     }
     

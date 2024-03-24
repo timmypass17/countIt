@@ -131,7 +131,8 @@ class FoodDetailTableViewController: UITableViewController {
                 let cell = tableView.dequeueReusableCell(withIdentifier: SelectTableViewCell.reuseIdentifier, for: indexPath) as! SelectTableViewCell
                 cell.update(
                     primaryText: "Serving Size",
-                    secondaryText: selectedFoodPortion.getServingSizeFormatted(),
+                    secondaryText: food.getServingSizeFormatted(foodPortion: selectedFoodPortion),
+//                    secondaryText: selectedFoodPortion.getServingSizeFormatted(),
                     image: UIImage(systemName: "square.and.pencil"),
                     bgColor: UIColor.systemBlue)
                 return cell
@@ -207,7 +208,7 @@ class FoodDetailTableViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if indexPath == servingSizeIndexPath {
-            let selectTableViewController = ServingSizeTableViewController(foodPortions: food.foodPortions, selectedFoodPortion: selectedFoodPortion)
+            let selectTableViewController = ServingSizeTableViewController(food: food, foodPortions: food.foodPortions, selectedFoodPortion: selectedFoodPortion)
             selectTableViewController.delegate = self
             present(UINavigationController(rootViewController: selectTableViewController), animated: true)
         } else if indexPath == quantityIndexPath {
@@ -222,7 +223,7 @@ class FoodDetailTableViewController: UITableViewController {
     func addButtonTapped() -> UIAction {
         return UIAction { [self] _ in
             if let meal {
-                let foodEntry = CoreDataStack.shared.addFoodEntry(food, to: meal, servingSize: selectedFoodPortion, numberOfServings: numberOfServings)
+                let foodEntry = CoreDataStack.shared.addFoodEntry(food, to: meal, servingSize: selectedFoodPortion, numberOfServings: numberOfServings, servingSizeUnit: food.servingSizeUnit ?? "g")
                 delegate?.foodDetailTableViewController(self, didAddFoodEntry: foodEntry)
                 
                 if let food = foodEntry.food {

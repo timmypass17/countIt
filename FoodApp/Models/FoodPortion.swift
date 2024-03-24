@@ -20,13 +20,13 @@ struct FoodPortion: Codable {
 }
 
 extension FoodPortion {
-    func getServingSizeFormatted() -> String {
-        if let amount = amount {
-            return "\(Int(amount)) \(modifier) (\(Int(gramWeight)) g)"
-        } else {
-            return "\(Int(gramWeight)) g"
-        }
-    }
+//    func getServingSizeFormatted() -> String {
+//        if let amount = amount {
+//            return "\(Int(amount)) \(modifier) (\(Int(gramWeight)) g)"
+//        } else {
+//            return "\(Int(gramWeight)) g"
+//        }
+//    }
 }
 
 extension FoodPortion: Comparable {

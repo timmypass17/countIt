@@ -103,15 +103,15 @@ extension MealPlan {
     }()
     
     func printPrettyString() {
-        print("Meal Plan: \(self.date)")
-        print("Meals Count \(self.meals.count)")
-        for meal in self.meals {
-            print("\(meal.name)")
-            for entry in meal.foodEntries {
-                print("\(entry.food?.description_ ?? "")")
-                print("\(entry.food?.foodPortions.first?.getServingSizeFormatted())")
-            }
-        }
-        print()
+//        print("Meal Plan: \(self.date)")
+//        print("Meals Count \(self.meals.count)")
+//        for meal in self.meals {
+//            print("\(meal.name)")
+//            for entry in meal.foodEntries {
+//                print("\(entry.food?.description_ ?? "")")
+//                print("\(entry.food?.foodPortions.first?.getServingSizeFormatted())")
+//            }
+//        }
+//        print()
     }
 }

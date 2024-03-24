@@ -60,11 +60,12 @@ extension CoreDataStack {
         }
     }
     
-    func addFoodEntry(_ food: Food, to meal: Meal, servingSize: FoodPortion, numberOfServings: Int) -> FoodEntry {
+    func addFoodEntry(_ food: Food, to meal: Meal, servingSize: FoodPortion, numberOfServings: Int, servingSizeUnit: String) -> FoodEntry {
         let foodEntry = FoodEntry(context: context)
         foodEntry.index = Int16(meal.foodEntries.count)
         foodEntry.servingSize = servingSize
         foodEntry.numberOfServings = numberOfServings
+        foodEntry.servingSizeUnit = servingSizeUnit
 
         // Relationship
         foodEntry.food = getCDFood(id: food.fdcId) ?? food.convertToCDFood(context: context)

@@ -25,7 +25,7 @@ class SearchFoodTableViewController: UITableViewController {
         self.history = CoreDataStack.shared.getFoodHistory()
         self.foodService = foodService
         self.meal = meal
-        super.init(style: .plain)
+        super.init(style: .grouped)
     }
     
     required init?(coder: NSCoder) {
