@@ -61,16 +61,13 @@ class HomeTableViewController: UITableViewController {
     func updateUI() {
         let copyMenu = UIMenu(title: "Copy Meal Plan",
                               image: UIImage(systemName: "doc.on.doc"),
-                              children: [copyYesterdayAction(), copyDateAction()])
+                              children: [copyLatestAction(), copyDateAction()])
+
+        let menu = UIMenu(children: [reorderMealAction(), copyMenu])
         
-        let reorderMenu = UIMenu(title: "Reorder",
-                                 image: UIImage(systemName: "slider.horizontal.3"),
-                                 children: [reorderMealAction(), reorderFoodAction()])
-        
-        let menu = UIMenu(children: [reorderMenu, copyMenu])
-        
-        let optionsButton = UIBarButtonItem(image: UIImage(systemName: "ellipsis"), menu: menu)
-        navigationItem.rightBarButtonItem = optionsButton
+        let optionsButton = UIBarButtonItem(image: UIImage(systemName: "slider.horizontal.3"), menu: menu)
+        navigationItem.leftBarButtonItem = optionsButton
+        navigationItem.rightBarButtonItem = editButtonItem
         tableView.reloadData()
     }
 
@@ -90,10 +87,10 @@ class HomeTableViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if indexPath.section == 0 {
             let cell = tableView.dequeueReusableCell(withIdentifier: MacrosView.reuseIdentifier, for: indexPath)
-            let calories = MacroData(amount: mealPlan.getTotalNutrients(.calories), userGoal: Settings.shared.userDailyValues.calories)
-            let carbs = MacroData(amount: mealPlan.getTotalNutrients(.carbs), userGoal: Settings.shared.userDailyValues.carbs)
-            let protein = MacroData(amount: mealPlan.getTotalNutrients(.protein), userGoal: Settings.shared.userDailyValues.protein)
-            let fats = MacroData(amount: mealPlan.getTotalNutrients(.totalFat), userGoal: Settings.shared.userDailyValues.fat)
+            let calories = MacroData(amount: mealPlan.getTotalNutrients(.calories), goal: Settings.shared.userDailyValues[.calories, default: 0.0])
+            let carbs = MacroData(amount: mealPlan.getTotalNutrients(.carbs), goal: Settings.shared.userDailyValues[.carbs, default: 0.0])
+            let protein = MacroData(amount: mealPlan.getTotalNutrients(.protein), goal: Settings.shared.userDailyValues[.protein, default: 0.0])
+            let fats = MacroData(amount: mealPlan.getTotalNutrients(.totalFat), goal: Settings.shared.userDailyValues[.totalFat, default: 0.0])
 
             cell.contentConfiguration = UIHostingConfiguration { // affected by reloadData(), can't get it to update automatically
                 MacrosView(calories: calories, carbs: carbs, protein: protein, fats: fats)
@@ -126,7 +123,13 @@ class HomeTableViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        guard indexPath.section != 0 else { return }
+        if indexPath.section == 0 {
+            print(mealPlan.nutrientGoals)
+            let goalTableViewController = GoalTableViewController(nutrientGoals: mealPlan.nutrientGoals)
+            navigationController?.pushViewController(goalTableViewController, animated: true)
+            return
+        }
+        
         let meal = mealPlan.meals[indexPath.section - 1]
         let foodEntry = meal.foodEntries[indexPath.row]
         guard let food = foodEntry.food?.convertToFDCFood() else { return }
@@ -234,21 +237,20 @@ class HomeTableViewController: UITableViewController {
         }
     }
         
-    func copyYesterdayAction() -> UIAction {
-        let isToday = Calendar.current.isDate(mealPlan.date, inSameDayAs: .now)
-        let previousDate = Calendar.current.date(byAdding: .day, value: -1, to: mealPlan.date)!
-        let title = isToday ? "Yesterday" : previousDate.formatted(date: .abbreviated, time: .omitted)
-        let copyAction = UIAction(title: title, image: UIImage(systemName: "clock")) { [self] action in
-            let mealPlan = CoreDataStack.shared.copy(mealPlanAt: previousDate, into: mealPlan)
-            self.mealPlan = mealPlan
-            tableView.reloadData()
+    func copyLatestAction() -> UIAction {
+        if let previousMealPlan = CoreDataStack.shared.getLatestMealPlan(currentMealPlan: mealPlan), previousMealPlan.date != mealPlan.date {
+            let copyAction = UIAction(title: "Latest", image: UIImage(systemName: "clock")) { [self] action in
+                let mealPlan = CoreDataStack.shared.copy(mealPlanAt: previousMealPlan.date, into: mealPlan)
+                self.mealPlan = mealPlan
+                tableView.reloadData()
+            }
+            return copyAction
+            
+        } else {
+            let copyAction = UIAction(title: "Latest", image: UIImage(systemName: "clock"), attributes: .disabled) { _ in
+            }
+            return copyAction
         }
-        
-        let previousMealPlanExists = CoreDataStack.shared.getMealPlan(for: previousDate) != nil
-        if !previousMealPlanExists {
-            copyAction.attributes = .disabled
-        }
-        return copyAction
     }
         
     func copyDateAction() -> UIAction {

@@ -28,6 +28,7 @@
     </entity>
     <entity name="MealPlan" representedClassName="MealPlan" syncable="YES">
         <attribute name="date_" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="nutrientGoals_" optional="YES" attributeType="String"/>
         <relationship name="meals_" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Meal" inverseName="mealPlan" inverseEntity="Meal"/>
     </entity>
 </model>

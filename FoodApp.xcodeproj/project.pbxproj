@@ -28,6 +28,8 @@
 		328FA9672B9ABAE3002A6FB6 /* DailyValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 328FA9662B9ABAE2002A6FB6 /* DailyValue.swift */; };
 		328FA9692B9BE560002A6FB6 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 328FA9682B9BE560002A6FB6 /* Settings.swift */; };
 		328FA96B2B9BEEFD002A6FB6 /* QuantityTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 328FA96A2B9BEEFD002A6FB6 /* QuantityTableViewCell.swift */; };
+		3296C9B62BB0F21A00EC7770 /* GoalTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3296C9B52BB0F21A00EC7770 /* GoalTableViewController.swift */; };
+		3296C9B82BB1219700EC7770 /* GoalTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3296C9B72BB1219700EC7770 /* GoalTableViewCell.swift */; };
 		329B800A2BA7D92500737935 /* FoodEntry+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 329B80082BA7D92500737935 /* FoodEntry+CoreDataClass.swift */; };
 		329B800B2BA7D92500737935 /* FoodEntry+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 329B80092BA7D92500737935 /* FoodEntry+CoreDataProperties.swift */; };
 		32A8CBE52B9E888800AAA264 /* CircularProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32A8CBE42B9E888800AAA264 /* CircularProgressView.swift */; };
@@ -97,6 +99,8 @@
 		328FA9662B9ABAE2002A6FB6 /* DailyValue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyValue.swift; sourceTree = "<group>"; };
 		328FA9682B9BE560002A6FB6 /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
 		328FA96A2B9BEEFD002A6FB6 /* QuantityTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuantityTableViewCell.swift; sourceTree = "<group>"; };
+		3296C9B52BB0F21A00EC7770 /* GoalTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoalTableViewController.swift; sourceTree = "<group>"; };
+		3296C9B72BB1219700EC7770 /* GoalTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoalTableViewCell.swift; sourceTree = "<group>"; };
 		329B80082BA7D92500737935 /* FoodEntry+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FoodEntry+CoreDataClass.swift"; sourceTree = "<group>"; };
 		329B80092BA7D92500737935 /* FoodEntry+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FoodEntry+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		32A8CBE42B9E888800AAA264 /* CircularProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircularProgressView.swift; sourceTree = "<group>"; };
@@ -167,6 +171,7 @@
 				32723CF52BA63BE70074732C /* HomeTableViewController.swift */,
 				32CB60B52BABCE78002DA0C2 /* CalendarViewController.swift */,
 				32C9F3362BAC91D100703540 /* ReorderMealTableViewController.swift */,
+				3296C9B52BB0F21A00EC7770 /* GoalTableViewController.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -200,6 +205,7 @@
 				32B351F72BA758F200FF2752 /* FoodEntryTableViewCell.swift */,
 				32C9F33C2BACDBEA00703540 /* HistoryTableViewCell.swift */,
 				32EB4FAF2BACEBD9004898C8 /* SearchTitleView.swift */,
+				3296C9B72BB1219700EC7770 /* GoalTableViewCell.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -403,11 +409,13 @@
 			files = (
 				32A8CBE52B9E888800AAA264 /* CircularProgressView.swift in Sources */,
 				328FA96B2B9BEEFD002A6FB6 /* QuantityTableViewCell.swift in Sources */,
+				3296C9B82BB1219700EC7770 /* GoalTableViewCell.swift in Sources */,
 				328FA9532B954664002A6FB6 /* FoodDetailTableViewController.swift in Sources */,
 				32B0933D2B9C02F50047E6E2 /* QuantityViewController.swift in Sources */,
 				32C9F3372BAC91D100703540 /* ReorderMealTableViewController.swift in Sources */,
 				32B351EA2BA74F3900FF2752 /* CDFood+CoreDataProperties.swift in Sources */,
 				329B800A2BA7D92500737935 /* FoodEntry+CoreDataClass.swift in Sources */,
+				3296C9B62BB0F21A00EC7770 /* GoalTableViewController.swift in Sources */,
 				32EB4FB02BACEBD9004898C8 /* SearchTitleView.swift in Sources */,
 				328FA95B2B97C925002A6FB6 /* ServingSizeTableViewController.swift in Sources */,
 				32F51A522B92C1A70080CC09 /* FoodApp.xcdatamodeld in Sources */,

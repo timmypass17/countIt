@@ -122,25 +122,17 @@ class NutritionTableViewCell: UITableViewCell {
         nameLabel.text = "\(foodNutrient.nutrient.id.description)"
 //        descriptionLabel.text = "Essential for building and repairing tissues in the body."
         let nutrientAmount = (calculateNutrientPerServing(nutrientPer100g: foodNutrient.amount ?? 0, servingSizeGramWeight: foodPortion.gramWeight) * Float(quantity))
-        if let userNutrientGoal = Settings.shared.userDailyValues.getUserNutrientGoal(for: foodNutrient) {
-            let progress = nutrientAmount / userNutrientGoal.goal
+        if let nutrientGoal = Settings.shared.userDailyValues[foodNutrient.nutrient.id] {
+            let progress = nutrientAmount / nutrientGoal
             if nutrientAmount < 1 {
                 amountLabel.text = "\(nutrientAmount.formattedString(decimalPlaces: 1)) \(foodNutrient.nutrient.unitName)"
             } else {
                 amountLabel.text = "\(Int(nutrientAmount)) \(foodNutrient.nutrient.unitName)"
             }
             percentLabel.text = "\(Int((progress * 100).rounded()))%"
-            //            amountLabel.text = "\(Int(nutrientAmount)) \(foodNutrient.nutrient.unitName)"
-            //            goalLabel.text = "\(Int((progress * 100).rounded()))%"
             progressView.progress = progress
         } else {
             amountLabel.text = "Missing nutrient goal"
-//            if nutrientAmount < 1 {
-//                amountLabel.text = "\(nutrientAmount.formattedString(decimalPlaces: 1)) \(foodNutrient.nutrient.unitName)"
-//            } else {
-//                amountLabel.text = "\(Int(nutrientAmount)) \(foodNutrient.nutrient.unitName)"
-//            }
-//            progressView.progress = 0
         }
     }
 }

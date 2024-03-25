@@ -155,10 +155,10 @@ class FoodDetailTableViewController: UITableViewController {
             let fats = food.getNutrientPerServing(.totalFat, foodPortion: selectedFoodPortion) * Float(numberOfServings)
             cell.contentConfiguration = UIHostingConfiguration {
                 MacrosView(
-                    calories: MacroData(amount: calories, userGoal: Settings.shared.userDailyValues.calories),
-                    carbs: MacroData(amount: carbs, userGoal: Settings.shared.userDailyValues.carbs),
-                    protein: MacroData(amount: protein, userGoal: Settings.shared.userDailyValues.protein),
-                    fats: MacroData(amount: fats, userGoal: Settings.shared.userDailyValues.fat)
+                    calories: MacroData(amount: calories, goal: Settings.shared.userDailyValues[.calories, default: 0.0]),
+                    carbs: MacroData(amount: carbs, goal: Settings.shared.userDailyValues[.carbs, default: 0.0]),
+                    protein: MacroData(amount: protein, goal: Settings.shared.userDailyValues[.protein, default: 0.0]),
+                    fats: MacroData(amount: fats, goal: Settings.shared.userDailyValues[.totalFat, default: 0.0])
                 )
             }
             

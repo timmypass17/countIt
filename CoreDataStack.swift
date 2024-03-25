@@ -91,12 +91,13 @@ extension CoreDataStack {
     func copy(mealPlanAt date: Date, into mealPlan: MealPlan) -> MealPlan {
         let copiedMealPlan = getMealPlan(for: date) ?? MealPlan.createEmpty(for: date)
         
-        // 1. Remove original meal plan
+        // 1. Override original meal plan
         context.delete(mealPlan)
         
         // 2. Create new meal plan using selected meal plan
         let newMealPlan = MealPlan(context: context)
         newMealPlan.date = Calendar.current.startOfDay(for: mealPlan.date)
+        newMealPlan.nutrientGoals = copiedMealPlan.nutrientGoals
         for copiedMeal in copiedMealPlan.meals {
             let meal = Meal(context: context)
             meal.name = copiedMeal.name
@@ -150,6 +151,26 @@ extension CoreDataStack {
     
     func deleteHistory(_ food: CDFood) {
         food.updatedAt_ = nil
+    }
+    
+    func getLatestMealPlan(currentMealPlan: MealPlan) -> MealPlan? {
+        let request: NSFetchRequest<MealPlan> = MealPlan.fetchRequest()
+        request.predicate = NSPredicate(format: "date_ != %@", currentMealPlan.date as NSDate)  // ignore fetch current meal plan
+        request.sortDescriptors = [NSSortDescriptor(key: "date_", ascending: false)]
+        request.fetchLimit = 1
+        
+        do {
+            let mealPlans = try context.fetch(request)
+            if let mealPlan = mealPlans.first {
+                print("Found latest meal plan: \(mealPlan.date)")
+                return mealPlan
+            }
+            print("No latest meal plan")
+            return nil
+        } catch {
+            print("Error fetching latest meal plan: \(error)")
+            return nil
+        }
     }
 }
 

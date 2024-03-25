@@ -9,11 +9,11 @@ import SwiftUI
 
 class MacroData: ObservableObject {
     @Published var amount: Float
-    @Published var userGoal: UserNutrientGoal
+    @Published var goal: Float
     
-    init(amount: Float, userGoal: UserNutrientGoal) {
+    init(amount: Float, goal: Float) {
         self.amount = amount
-        self.userGoal = userGoal
+        self.goal = goal
     }
 }
 struct MacrosView: View {
@@ -27,10 +27,10 @@ struct MacrosView: View {
     var body: some View {
         Grid(horizontalSpacing: 24) {
             GridRow {
-                CircularProgressView(title: "Calories", current: calories.amount, total: calories.userGoal.goal, color: .blue)
-                CircularProgressView(title: "Carbs", current: carbs.amount, total: carbs.userGoal.goal, color: .yellow)
-                CircularProgressView(title: "Protein", current: protein.amount, total: protein.userGoal.goal, color: .pink)
-                CircularProgressView(title: "Fat", current: fats.amount, total: fats.userGoal.goal, color: .green)
+                CircularProgressView(title: "Calories", current: calories.amount, total: calories.goal, color: .blue)
+                CircularProgressView(title: "Carbs", current: carbs.amount, total: carbs.goal, color: .yellow)
+                CircularProgressView(title: "Protein", current: protein.amount, total: protein.goal, color: .pink)
+                CircularProgressView(title: "Fat", current: fats.amount, total: fats.goal, color: .green)
             }
         }
     }

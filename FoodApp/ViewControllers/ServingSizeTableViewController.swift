@@ -55,7 +55,6 @@ class ServingSizeTableViewController: UITableViewController {
         let cell = tableView.dequeueReusableCell(withIdentifier: reuseIdentifier, for: indexPath)
         let foodPortion = foodPortions[indexPath.row]
         var config = cell.defaultContentConfiguration()
-//        config.text = foodPortion.getServingSizeFormatted()
         config.text = food.getServingSizeFormatted(foodPortion: foodPortion)
         cell.contentConfiguration = config
         cell.accessoryType = foodPortion == selectedFoodPortion ? .checkmark : .none

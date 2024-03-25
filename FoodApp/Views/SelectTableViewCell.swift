@@ -64,13 +64,6 @@ class SelectTableViewCell: UITableViewCell {
         container.addArrangedSubview(secondaryLabel)
         
         contentView.addSubview(container)
-               
-//        NSLayoutConstraint.activate([
-//            container.topAnchor.constraint(equalTo: contentView.layoutMarginsGuide.topAnchor),
-//            container.bottomAnchor.constraint(equalTo: contentView.layoutMarginsGuide.bottomAnchor),
-//            container.leadingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.leadingAnchor),
-//            container.trailingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.trailingAnchor)
-//        ])
         
         NSLayoutConstraint.activate([
             container.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 8),

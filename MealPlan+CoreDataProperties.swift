@@ -16,9 +16,14 @@ extension MealPlan {
         return NSFetchRequest<MealPlan>(entityName: "MealPlan")
     }
 
+    @NSManaged public var nutrientGoals_: String?
     @NSManaged public var date_: Date?
     @NSManaged public var meals_: NSSet?
-
+    
+    var nutrientGoals : [NutrientID : Float] {
+        get { return CoreDataStack.decode(jsonString: nutrientGoals_!) }
+        set { nutrientGoals_ = CoreDataStack.encode(value: newValue) }
+    }
 }
 
 // MARK: Generated accessors for meals_
@@ -67,6 +72,7 @@ extension MealPlan {
     static func createEmpty(for date: Date) -> MealPlan {
         let context = CoreDataStack.shared.context
         let mealPlan = MealPlan(context: context)
+        mealPlan.nutrientGoals = UserDailyValues.default2000
         mealPlan.date = Calendar.current.startOfDay(for: date)
         
         let breakfast = Meal(context: context)
@@ -82,25 +88,6 @@ extension MealPlan {
         mealPlan.addToMeals_(lunch)
         return mealPlan
     }
-    
-    static let sample: MealPlan = {
-        let context = CoreDataStack.shared.context
-        let mealPlan = MealPlan(context: context)
-        mealPlan.date = Calendar.current.startOfDay(for: .now)
-        
-        let breakfast = Meal(context: context)
-        breakfast.name = "Breakfast"
-        breakfast.index = 0
-        breakfast.mealPlan = mealPlan
-        mealPlan.addToMeals_(breakfast)
-
-        let lunch = Meal(context: context)
-        lunch.name = "Lunch"
-        lunch.index = 1
-        lunch.mealPlan = mealPlan
-        mealPlan.addToMeals_(lunch)
-        return mealPlan
-    }()
     
     func printPrettyString() {
 //        print("Meal Plan: \(self.date)")
