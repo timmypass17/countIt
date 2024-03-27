@@ -1,5 +1,5 @@
 //
-//  AddFoodButton.swift
+//  AddFoodTableViewCell.swift
 //  FoodApp
 //
 //  Created by Timmy Nguyen on 3/17/24.
@@ -7,14 +7,30 @@
 
 import UIKit
 
-class AddFoodButton: UIButton {
-    
+class AddFoodButton: UIView {
     var section: Int?
+
+    let addButton: UIButton = {
+        let button = UIButton()
+        var config = UIButton.Configuration.plain()
+        config.title = "Add Food"
+        config.image = UIImage(systemName: "plus")
+        button.configuration = config
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
+    }()
     
-    init() {
-        super.init(frame: .zero)
-        configuration = .tinted()
-        setImage(UIImage(systemName: "plus"), for: .normal)
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        self.addSubview(addButton)
+//        backgroundColor = .gray
+        
+        NSLayoutConstraint.activate([
+            addButton.topAnchor.constraint(equalTo: self.topAnchor),
+            addButton.bottomAnchor.constraint(equalTo: self.bottomAnchor),
+            addButton.leadingAnchor.constraint(equalTo: self.leadingAnchor),
+//            addButton.trailingAnchor.constraint(equalTo: self.trailingAnchor)
+        ])
     }
     
     required init?(coder: NSCoder) {

@@ -21,6 +21,9 @@ class HomeTableViewController: UITableViewController {
     
     init(foodService: FoodService) {
         self.mealPlan = CoreDataStack.shared.getMealPlan(for: .now) ?? MealPlan.createEmpty(for: .now)
+        for meal in mealPlan.meals {
+            print(meal.name, meal.index)
+        }
         self.foodService = foodService
         super.init(style: .insetGrouped)
     }
@@ -39,10 +42,11 @@ class HomeTableViewController: UITableViewController {
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: MacrosView.reuseIdentifier)
         tableView.register(FoodEntryTableViewCell.self, forCellReuseIdentifier: FoodEntryTableViewCell.reuseIdentifier)
         tableView.register(MealHeaderView.self, forHeaderFooterViewReuseIdentifier: MealHeaderView.reuseIdentifier)
-        
+        tableView.register(AddFoodTableViewCell.self, forCellReuseIdentifier: AddFoodTableViewCell.reuseIdentifier)
+
         let footerView = UIView()
         footerView.frame = CGRect(x: 0, y: 0, width: tableView.frame.width, height: 50)
-        let addMealButton = AddFoodButton()
+        let addMealButton = AddMealButton()
         addMealButton.addAction(didTapFooterView(), for: .touchUpInside)
         addMealButton.setTitle("Add Meal", for: .normal)
         footerView.addSubview(addMealButton)
@@ -74,7 +78,6 @@ class HomeTableViewController: UITableViewController {
     }
     
     func reloadTableViewHeader(at section: Int) {
-        print(#function)
         guard let mealHeaderView = tableView.headerView(forSection: section) as? MealHeaderView else { return }
         let meal = mealPlan.meals[section - 1]
         mealHeaderView.update(with: meal)
@@ -90,7 +93,7 @@ class HomeTableViewController: UITableViewController {
         if section == 0 {
             return 1
         }
-        return self.mealPlan.meals[section - 1].foodEntries.count
+        return self.mealPlan.meals[section - 1].foodEntries.count + 1
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -107,6 +110,13 @@ class HomeTableViewController: UITableViewController {
         
             return cell
         }
+
+        let count = mealPlan.meals[indexPath.section - 1].foodEntries.count
+        if indexPath.row == count {
+            // Add Button
+            let cell = tableView.dequeueReusableCell(withIdentifier: AddFoodTableViewCell.reuseIdentifier, for: indexPath) as! AddFoodTableViewCell
+            return cell
+        }
         
         let foodEntry = mealPlan.meals[indexPath.section - 1].foodEntries[indexPath.row]
         let cell = tableView.dequeueReusableCell(withIdentifier: FoodEntryTableViewCell.reuseIdentifier, for: indexPath) as! FoodEntryTableViewCell
@@ -114,10 +124,14 @@ class HomeTableViewController: UITableViewController {
         cell.accessoryType = .disclosureIndicator
         return cell
     }
+    
+    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        guard section == 0 else { return nil }
+        return "Goals"
+    }
+    
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        if section == 0 {
-            return nil
-        }
+        guard section != 0 else { return nil }
         
         let header = tableView.dequeueReusableHeaderFooterView(withIdentifier: MealHeaderView.reuseIdentifier) as! MealHeaderView
         let meal = mealPlan.meals[section - 1]
@@ -125,19 +139,20 @@ class HomeTableViewController: UITableViewController {
         return header
     }
     
-    override func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
-        guard section != Section.goal.rawValue else { return nil }
-        let addFoodView = AddItemView()
-        addFoodView.section = section
-        addFoodView.addButton.addAction(didTapAddFoodButton(section: section), for: .touchUpInside)
-        addFoodView.addButton.setTitle("Add Food", for: .normal)
-        return addFoodView
-    }
-    
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if indexPath.section == 0 {
             let goalTableViewController = GoalTableViewController(nutrientGoals: mealPlan.nutrientGoals)
             navigationController?.pushViewController(goalTableViewController, animated: true)
+            return
+        }
+        
+        let count = mealPlan.meals[indexPath.section - 1].foodEntries.count
+        if indexPath.row == count {
+            let meal = mealPlan.meals[indexPath.section - 1]
+            let searchFoodTableViewController = SearchFoodTableViewController(foodService: foodService, meal: meal)
+            searchFoodTableViewController.delegate = self
+            let vc = UINavigationController(rootViewController: searchFoodTableViewController)
+            present(vc, animated: true)
             return
         }
         
@@ -193,6 +208,10 @@ class HomeTableViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, targetIndexPathForMoveFromRowAt sourceIndexPath: IndexPath, toProposedIndexPath proposedDestinationIndexPath: IndexPath) -> IndexPath {
         guard proposedDestinationIndexPath.section != 0 else { return sourceIndexPath }
         return proposedDestinationIndexPath
+    }
+    
+    override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return 24
     }
     
     func didTapAddFoodButton(section: Int) -> UIAction {
@@ -295,6 +314,7 @@ extension HomeTableViewController: FoodDetailTableViewControllerDismissDelegate 
         if let indexPath = tableView.indexPathForSelectedRow {
             tableView.deselectRow(at: indexPath, animated: true)
         }
+        // Note: pushing vc (navigationContoller.pushViewController()) doesn't require deselecting row (is free) but presenting (present()) vc modally does not have that out the box
     }
 }
 

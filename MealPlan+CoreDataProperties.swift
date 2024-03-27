@@ -22,7 +22,9 @@ extension MealPlan {
     
     var nutrientGoals : [NutrientID : Float] {
         get { return CoreDataStack.decode(jsonString: nutrientGoals_!) }
-        set { nutrientGoals_ = CoreDataStack.encode(value: newValue) }
+        set {
+            nutrientGoals_ = CoreDataStack.encode(value: newValue)
+        }
     }
 }
 

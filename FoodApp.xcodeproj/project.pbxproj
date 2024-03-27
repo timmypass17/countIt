@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3216CF792BB4D6C900D9E17A /* AddFoodTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3216CF782BB4D6C900D9E17A /* AddFoodTableViewCell.swift */; };
 		32216DBE2BA0FF4E0046A178 /* ProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32216DBD2BA0FF4E0046A178 /* ProgressView.swift */; };
 		323A7B782BA7BF6200F92FC1 /* FoodPortionToDataTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 323A7B772BA7BF6200F92FC1 /* FoodPortionToDataTransformer.swift */; };
 		324AB9372BA6B27900CECA72 /* CoreDataStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 324AB9362BA6B27900CECA72 /* CoreDataStack.swift */; };
@@ -43,8 +44,8 @@
 		32B351EE2BA74F3900FF2752 /* Meal+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32B351E62BA74F3900FF2752 /* Meal+CoreDataProperties.swift */; };
 		32B351EF2BA74F3900FF2752 /* MealPlan+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32B351E72BA74F3900FF2752 /* MealPlan+CoreDataClass.swift */; };
 		32B351F02BA74F3900FF2752 /* MealPlan+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32B351E82BA74F3900FF2752 /* MealPlan+CoreDataProperties.swift */; };
-		32B351F42BA7512600FF2752 /* AddItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32B351F32BA7512600FF2752 /* AddItemView.swift */; };
-		32B351F62BA7556A00FF2752 /* AddFoodButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32B351F52BA7556A00FF2752 /* AddFoodButton.swift */; };
+		32B351F42BA7512600FF2752 /* AddFoodButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32B351F32BA7512600FF2752 /* AddFoodButton.swift */; };
+		32B351F62BA7556A00FF2752 /* AddMealButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32B351F52BA7556A00FF2752 /* AddMealButton.swift */; };
 		32B351F82BA758F200FF2752 /* FoodEntryTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32B351F72BA758F200FF2752 /* FoodEntryTableViewCell.swift */; };
 		32C9F3372BAC91D100703540 /* ReorderMealTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32C9F3362BAC91D100703540 /* ReorderMealTableViewController.swift */; };
 		32C9F33D2BACDBEA00703540 /* HistoryTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32C9F33C2BACDBEA00703540 /* HistoryTableViewCell.swift */; };
@@ -80,6 +81,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		3216CF782BB4D6C900D9E17A /* AddFoodTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddFoodTableViewCell.swift; sourceTree = "<group>"; };
 		32216DBD2BA0FF4E0046A178 /* ProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressView.swift; sourceTree = "<group>"; };
 		323A7B772BA7BF6200F92FC1 /* FoodPortionToDataTransformer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodPortionToDataTransformer.swift; sourceTree = "<group>"; };
 		324AB9362BA6B27900CECA72 /* CoreDataStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataStack.swift; sourceTree = "<group>"; };
@@ -116,8 +118,8 @@
 		32B351E62BA74F3900FF2752 /* Meal+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Meal+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		32B351E72BA74F3900FF2752 /* MealPlan+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MealPlan+CoreDataClass.swift"; sourceTree = "<group>"; };
 		32B351E82BA74F3900FF2752 /* MealPlan+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MealPlan+CoreDataProperties.swift"; sourceTree = "<group>"; };
-		32B351F32BA7512600FF2752 /* AddItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddItemView.swift; sourceTree = "<group>"; };
-		32B351F52BA7556A00FF2752 /* AddFoodButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddFoodButton.swift; sourceTree = "<group>"; };
+		32B351F32BA7512600FF2752 /* AddFoodButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddFoodButton.swift; sourceTree = "<group>"; };
+		32B351F52BA7556A00FF2752 /* AddMealButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddMealButton.swift; sourceTree = "<group>"; };
 		32B351F72BA758F200FF2752 /* FoodEntryTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodEntryTableViewCell.swift; sourceTree = "<group>"; };
 		32C9F3362BAC91D100703540 /* ReorderMealTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReorderMealTableViewController.swift; sourceTree = "<group>"; };
 		32C9F33C2BACDBEA00703540 /* HistoryTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryTableViewCell.swift; sourceTree = "<group>"; };
@@ -204,14 +206,15 @@
 				32A8CBE62B9E8C9F00AAA264 /* MacrosView.swift */,
 				32216DBD2BA0FF4E0046A178 /* ProgressView.swift */,
 				32723CF72BA63CDB0074732C /* MealPlanDateView.swift */,
-				32B351F32BA7512600FF2752 /* AddItemView.swift */,
-				32B351F52BA7556A00FF2752 /* AddFoodButton.swift */,
+				32B351F32BA7512600FF2752 /* AddFoodButton.swift */,
+				32B351F52BA7556A00FF2752 /* AddMealButton.swift */,
 				32B351F72BA758F200FF2752 /* FoodEntryTableViewCell.swift */,
 				32C9F33C2BACDBEA00703540 /* HistoryTableViewCell.swift */,
 				32EB4FAF2BACEBD9004898C8 /* SearchTitleView.swift */,
 				3296C9B72BB1219700EC7770 /* GoalTableViewCell.swift */,
 				32783F262BB2320400A698E4 /* MealHeaderView.swift */,
 				32783F282BB2370800A698E4 /* NutrientView.swift */,
+				3216CF782BB4D6C900D9E17A /* AddFoodTableViewCell.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -423,6 +426,7 @@
 				32B351EA2BA74F3900FF2752 /* CDFood+CoreDataProperties.swift in Sources */,
 				329B800A2BA7D92500737935 /* FoodEntry+CoreDataClass.swift in Sources */,
 				3296C9B62BB0F21A00EC7770 /* GoalTableViewController.swift in Sources */,
+				3216CF792BB4D6C900D9E17A /* AddFoodTableViewCell.swift in Sources */,
 				32EB4FB02BACEBD9004898C8 /* SearchTitleView.swift in Sources */,
 				328FA95B2B97C925002A6FB6 /* ServingSizeTableViewController.swift in Sources */,
 				32F51A522B92C1A70080CC09 /* FoodApp.xcdatamodeld in Sources */,
@@ -454,9 +458,9 @@
 				324AB9372BA6B27900CECA72 /* CoreDataStack.swift in Sources */,
 				32F51A7B2B92C3150080CC09 /* SearchFoodTableViewController.swift in Sources */,
 				32CB60B62BABCE78002DA0C2 /* CalendarViewController.swift in Sources */,
-				32B351F42BA7512600FF2752 /* AddItemView.swift in Sources */,
+				32B351F42BA7512600FF2752 /* AddFoodButton.swift in Sources */,
 				328FA9572B969FEF002A6FB6 /* NutritionTableViewCell.swift in Sources */,
-				32B351F62BA7556A00FF2752 /* AddFoodButton.swift in Sources */,
+				32B351F62BA7556A00FF2752 /* AddMealButton.swift in Sources */,
 				328FA94E2B93B9D9002A6FB6 /* FoodService.swift in Sources */,
 				32216DBE2BA0FF4E0046A178 /* ProgressView.swift in Sources */,
 				328FA9652B9A2154002A6FB6 /* AbridgedSearchResponse.swift in Sources */,

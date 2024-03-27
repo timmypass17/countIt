@@ -59,7 +59,7 @@ class ReorderMealTableViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
         let foodEntry = meals.remove(at: sourceIndexPath.row)
         meals.insert(foodEntry, at: destinationIndexPath.row)
-        meals.updateIndexes()   // TODO: Maybe put this in setter whenever meals is updated
+        meals.updateIndexes()
         delegate?.reorderMealTableViewController(self, didReorderMeals: true)
     }
     
@@ -68,6 +68,7 @@ class ReorderMealTableViewController: UITableViewController {
             let removedMeal = meals.remove(at: indexPath.row)
             CoreDataStack.shared.context.delete(removedMeal)
             self.tableView.deleteRows(at: [indexPath], with: .automatic)
+            meals.updateIndexes()
             delegate?.reorderMealTableViewController(self, didReorderMeals: true)
         }
     }
