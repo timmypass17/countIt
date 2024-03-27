@@ -17,7 +17,7 @@ struct AbridgedSearchAPIRequest: APIRequest {
     var urlRequest: URLRequest {
         var urlComponents = URLComponents(string: "https://api.nal.usda.gov/fdc/v1/foods/search")!
         urlComponents.queryItems = [
-            "query": query,
+            "query": "\(query)",
             "dataType": DataType.allCases.map { $0.rawValue }.joined(separator: ","),
             "pageSize": "10",
             "api_key": apiKey

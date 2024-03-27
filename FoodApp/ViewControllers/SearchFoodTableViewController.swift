@@ -25,7 +25,7 @@ class SearchFoodTableViewController: UITableViewController {
         self.history = CoreDataStack.shared.getFoodHistory()
         self.foodService = foodService
         self.meal = meal
-        super.init(style: .grouped)
+        super.init(style: .insetGrouped)
     }
     
     required init?(coder: NSCoder) {
@@ -112,9 +112,7 @@ extension SearchFoodTableViewController: UISearchBarDelegate {
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         Task {
             do {
-                let foodIDs = try await foodService.getFoodIDs(query: searchBar.text!)
-                let foods: [Food] = try await foodService.getFoods(ids: foodIDs)
-                // Assuming resultsTableController is available in the scope
+                let foods: [Food] = try await foodService.getFoods(query: searchBar.text!)
                 resultsTableController.foods = foods
                 resultsTableController.tableView.reloadData()
             } catch {
@@ -122,17 +120,6 @@ extension SearchFoodTableViewController: UISearchBarDelegate {
             }
         }
         searchBar.resignFirstResponder()
-    }
-    
-    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        // Invalidate the previous timer if it exists
-        debounceTimer?.invalidate()
-
-        // Create a new timer
-        debounceTimer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: false) { _ in
-            // Call your API here with the searchText
-            print("fetchFood(\(searchText))")
-        }
     }
     
 }

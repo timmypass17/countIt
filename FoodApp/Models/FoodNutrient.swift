@@ -90,7 +90,7 @@ enum NutrientID: Int, Codable, CaseIterable {
     init(rawValue: Int) {
         switch rawValue {
             // Macronutrients
-        case 1008: self = .calories
+        case 1008, 2047, 2048: self = .calories
         case 1004: self = .totalFat
         case 1258: self = .saturatedFat
         case 1257: self = .transFat

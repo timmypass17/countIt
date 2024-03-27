@@ -10,14 +10,12 @@ import UIKit
 import CoreData
 
 class FoodService {
-    func getFoodIDs(query: String) async throws -> [Int] {
-        let request = AbridgedSearchAPIRequest(query: query)
-        let searchResult = try await sendRequest(request)
-        return searchResult.foods.map { $0.fdcId }
-    }
-
-    func getFoods(ids: [Int]) async throws -> [Food] {
-        let request = FoodListAPIRequest(foodIDs: ids)
+    func getFoods(query: String) async throws -> [Food] {
+        let abridgedRequest = AbridgedSearchAPIRequest(query: query)
+        let abridgedSearchResult = try await sendRequest(abridgedRequest)
+        let foodIds = abridgedSearchResult.foods.map { $0.fdcId }
+        
+        let request = FoodListAPIRequest(foodIDs: foodIds)
         let searchResult = try await sendRequest(request)
         return searchResult
     }

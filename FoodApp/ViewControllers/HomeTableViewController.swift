@@ -38,6 +38,7 @@ class HomeTableViewController: UITableViewController {
         
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: MacrosView.reuseIdentifier)
         tableView.register(FoodEntryTableViewCell.self, forCellReuseIdentifier: FoodEntryTableViewCell.reuseIdentifier)
+        tableView.register(MealHeaderView.self, forHeaderFooterViewReuseIdentifier: MealHeaderView.reuseIdentifier)
         
         let footerView = UIView()
         footerView.frame = CGRect(x: 0, y: 0, width: tableView.frame.width, height: 50)
@@ -68,7 +69,15 @@ class HomeTableViewController: UITableViewController {
         let optionsButton = UIBarButtonItem(image: UIImage(systemName: "slider.horizontal.3"), menu: menu)
         navigationItem.leftBarButtonItem = optionsButton
         navigationItem.rightBarButtonItem = editButtonItem
+        
         tableView.reloadData()
+    }
+    
+    func reloadTableViewHeader(at section: Int) {
+        print(#function)
+        guard let mealHeaderView = tableView.headerView(forSection: section) as? MealHeaderView else { return }
+        let meal = mealPlan.meals[section - 1]
+        mealHeaderView.update(with: meal)
     }
 
     // MARK: - Table view data source
@@ -105,12 +114,15 @@ class HomeTableViewController: UITableViewController {
         cell.accessoryType = .disclosureIndicator
         return cell
     }
-    
-    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+    override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         if section == 0 {
-            return "Goals"
+            return nil
         }
-        return mealPlan.meals[section - 1].name
+        
+        let header = tableView.dequeueReusableHeaderFooterView(withIdentifier: MealHeaderView.reuseIdentifier) as! MealHeaderView
+        let meal = mealPlan.meals[section - 1]
+        header.update(with: meal)
+        return header
     }
     
     override func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
@@ -124,7 +136,6 @@ class HomeTableViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if indexPath.section == 0 {
-            print(mealPlan.nutrientGoals)
             let goalTableViewController = GoalTableViewController(nutrientGoals: mealPlan.nutrientGoals)
             navigationController?.pushViewController(goalTableViewController, animated: true)
             return
@@ -154,7 +165,7 @@ class HomeTableViewController: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-        if (editingStyle == .delete) {
+        if editingStyle == .delete {
             let foodEntry = mealPlan.meals[indexPath.section - 1].foodEntries[indexPath.row]
             mealPlan.meals[indexPath.section - 1].removeFromFoodEntries_(foodEntry)
             
@@ -162,6 +173,7 @@ class HomeTableViewController: UITableViewController {
             tableView.reloadRows(at: [goalIndexPath], with: .automatic)
             tableView.deleteRows(at: [indexPath], with: .automatic)
             tableView.endUpdates()
+            reloadTableViewHeader(at: indexPath.section)
         }
     }
     
@@ -270,22 +282,11 @@ class HomeTableViewController: UITableViewController {
 
 extension HomeTableViewController: FoodDetailTableViewControllerDelegate {
     func foodDetailTableViewController(_ tableViewController: FoodDetailTableViewController, didAddFoodEntry foodEntry: FoodEntry) {
-        guard let section = mealPlan.meals.firstIndex(where: { $0 == foodEntry.meal! }) else { return }
-        let row = mealPlan.meals[section].foodEntries.count - 1
-        let indexPath = IndexPath(row: row, section: section + 1)
-        
-        tableView.beginUpdates()
-        tableView.reloadRows(at: [goalIndexPath], with: .automatic)
-        tableView.insertRows(at: [indexPath], with: .automatic)
-        tableView.endUpdates()
+        updateUI()
     }
     
     func foodDetailTableViewController(_ tableViewController: FoodDetailTableViewController, didUpdateFoodEntry foodEntry: FoodEntry) {
-        guard let section = mealPlan.meals.firstIndex(where: { $0 == foodEntry.meal! }),
-              let row = mealPlan.meals[section].foodEntries.firstIndex(where: { $0 == foodEntry })
-        else { return }
-        let indexPath = IndexPath(row: row, section: section + 1)
-        tableView.reloadRows(at: [indexPath, goalIndexPath], with: .automatic)
+        updateUI()
     }
 }
 

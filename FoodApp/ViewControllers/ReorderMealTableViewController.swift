@@ -63,6 +63,15 @@ class ReorderMealTableViewController: UITableViewController {
         delegate?.reorderMealTableViewController(self, didReorderMeals: true)
     }
     
+    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        if editingStyle == .delete {
+            let removedMeal = meals.remove(at: indexPath.row)
+            CoreDataStack.shared.context.delete(removedMeal)
+            self.tableView.deleteRows(at: [indexPath], with: .automatic)
+            delegate?.reorderMealTableViewController(self, didReorderMeals: true)
+        }
+    }
+    
     func didTapCancelButton() -> UIAction {
         return UIAction { _ in
             self.dismiss(animated: true)

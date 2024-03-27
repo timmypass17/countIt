@@ -55,10 +55,9 @@ struct Food: Codable {
         // Branded foods have additional info
         if dataType == .branded {
             self.description = description.capitalized
-            if let servingSize, let servingSizeUnit, servingSizeUnit == "g" {
+            if let servingSize {
                 self.foodPortions.append(FoodPortion(gramWeight: servingSize, modifier: ""))
             }
-            // TOOD: Add ml
         } else {
             brandName = "USDA"
         }
@@ -138,6 +137,7 @@ func calculateNutrientPerServing(nutrientPer100g: Float, servingSizeGramWeight: 
 }
 
 enum DataType: String, Codable, CaseIterable {
+    case foundation = "Foundation"
     case srLegacy = "SR Legacy"
     case branded = "Branded"
 }
