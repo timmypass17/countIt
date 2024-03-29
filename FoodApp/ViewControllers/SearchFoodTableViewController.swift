@@ -25,7 +25,7 @@ class SearchFoodTableViewController: UITableViewController {
         self.history = CoreDataStack.shared.getFoodHistory()
         self.foodService = foodService
         self.meal = meal
-        super.init(style: .insetGrouped)
+        super.init(style: .grouped)
     }
     
     required init?(coder: NSCoder) {
@@ -40,9 +40,7 @@ class SearchFoodTableViewController: UITableViewController {
             titleView.delegate = self
             navigationItem.titleView = titleView
         }
-        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Cancel", primaryAction: cancelButtonTapped())
-        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Done", primaryAction: doneButtonTapped())
-        
+
         resultsTableController = ResultsTableViewController(meal: meal, foodService: foodService)
         resultsTableController.delegate = delegate
         resultsTableController.historyDelegate = self
@@ -58,7 +56,6 @@ class SearchFoodTableViewController: UITableViewController {
         navigationItem.hidesSearchBarWhenScrolling = false
         
         definesPresentationContext = true
-
     }
 
     // MARK: - Table view data source
@@ -90,18 +87,7 @@ class SearchFoodTableViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         return "History"
     }
-    
-    func cancelButtonTapped() -> UIAction {
-        return UIAction { _ in
-            self.dismiss(animated: true)
-        }
-    }
-    
-    func doneButtonTapped() -> UIAction {
-        return UIAction { _ in
-            self.dismiss(animated: true)
-        }
-    }
+
 }
 
 

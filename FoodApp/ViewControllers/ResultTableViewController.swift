@@ -16,7 +16,7 @@ class ResultsTableViewController: UITableViewController {
     init(meal: Meal?, foodService: FoodService) {
         self.meal = meal
         self.foodService = foodService
-        super.init(style: .insetGrouped)
+        super.init(style: .grouped)
     }
     
     weak var delegate: FoodDetailTableViewControllerDelegate?

@@ -148,11 +148,11 @@ class HomeTableViewController: UITableViewController {
         
         let count = mealPlan.meals[indexPath.section - 1].foodEntries.count
         if indexPath.row == count {
+            tableView.deselectRow(at: indexPath, animated: true)
             let meal = mealPlan.meals[indexPath.section - 1]
             let searchFoodTableViewController = SearchFoodTableViewController(foodService: foodService, meal: meal)
             searchFoodTableViewController.delegate = self
-            let vc = UINavigationController(rootViewController: searchFoodTableViewController)
-            present(vc, animated: true)
+            navigationController?.pushViewController(searchFoodTableViewController, animated: true)
             return
         }
         
@@ -176,6 +176,8 @@ class HomeTableViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
         guard indexPath.section != 0 else { return false }
+        let addFoodRow = mealPlan.meals[indexPath.section - 1].foodEntries.count
+        guard indexPath.row != addFoodRow else { return false }
         return true
     }
 
@@ -192,23 +194,39 @@ class HomeTableViewController: UITableViewController {
         }
     }
     
+    // TODO: Bug with reordering
     override func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
         guard destinationIndexPath.section != 0 else { return }
         
         let foodEntry = mealPlan.meals[sourceIndexPath.section - 1].foodEntries.remove(at: sourceIndexPath.row)
+        mealPlan.meals[sourceIndexPath.section - 1].foodEntries.updateIndexes()
+        
+        // Shift everything in array to the right, then insert item (like implementing array insert). Update backwards (cause sorted by index)
+        let foodEntryCount = mealPlan.meals[destinationIndexPath.section - 1].foodEntries.count
+        for i in stride(from: foodEntryCount - 1, to: destinationIndexPath.row - 1, by: -1) {
+            mealPlan.meals[destinationIndexPath.section - 1].foodEntries[i].index += 1
+        }
+        
+        foodEntry.index = Int16(destinationIndexPath.row)
         mealPlan.meals[destinationIndexPath.section - 1].foodEntries.insert(foodEntry, at: destinationIndexPath.row)
 
-        // Update indicies
-        mealPlan.meals[sourceIndexPath.section - 1].foodEntries.updateIndexes()
-        mealPlan.meals[destinationIndexPath.section - 1].foodEntries.updateIndexes()
-        
         foodEntry.meal = mealPlan.meals[destinationIndexPath.section - 1]
+        updateUI()
     }
     
     override func tableView(_ tableView: UITableView, targetIndexPathForMoveFromRowAt sourceIndexPath: IndexPath, toProposedIndexPath proposedDestinationIndexPath: IndexPath) -> IndexPath {
+        // Restricts cell's reorder destination (i.e. repositioning food under "Add Food" button)
         guard proposedDestinationIndexPath.section != 0 else { return sourceIndexPath }
+        var addFoodRow = mealPlan.meals[proposedDestinationIndexPath.section - 1].foodEntries.count
+        if sourceIndexPath.section != proposedDestinationIndexPath.section {
+            addFoodRow += 1
+        }
+        guard proposedDestinationIndexPath.row != addFoodRow else { return sourceIndexPath }
+        print(proposedDestinationIndexPath)
         return proposedDestinationIndexPath
     }
+    
+    
     
     override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return 24
