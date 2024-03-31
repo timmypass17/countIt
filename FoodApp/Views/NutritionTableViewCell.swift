@@ -119,15 +119,16 @@ class NutritionTableViewCell: UITableViewCell {
     }
     
     func update(with foodNutrient: FoodNutrient, foodPortion: FoodPortion, quantity: Int) {
-        nameLabel.text = "\(foodNutrient.nutrient.id.description)"
+        nameLabel.text = foodNutrient.description
 //        descriptionLabel.text = "Essential for building and repairing tissues in the body."
         let nutrientAmount = (calculateNutrientPerServing(nutrientPer100g: foodNutrient.amount ?? 0, servingSizeGramWeight: foodPortion.gramWeight) * Float(quantity))
-        if let nutrientGoal = Settings.shared.userDailyValues[foodNutrient.nutrient.id] {
+        if let nutrientID = foodNutrient.nutrient?.id,
+           let nutrientGoal = Settings.shared.userDailyValues[nutrientID] {
             let progress = nutrientAmount / nutrientGoal
             if nutrientAmount < 1 {
-                amountLabel.text = "\(nutrientAmount.formattedString(decimalPlaces: 1)) \(foodNutrient.nutrient.unitName)"
+                amountLabel.text = "\(nutrientAmount.formattedString(decimalPlaces: 1)) \(foodNutrient.nutrient?.unitName ?? "Unspecified")"
             } else {
-                amountLabel.text = "\(Int(nutrientAmount)) \(foodNutrient.nutrient.unitName)"
+                amountLabel.text = "\(Int(nutrientAmount)) \(foodNutrient.nutrient?.unitName ?? "Unspecified")"
             }
             percentLabel.text = "\(Int((progress * 100).rounded()))%"
             progressView.progress = progress

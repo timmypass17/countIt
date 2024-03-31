@@ -7,13 +7,18 @@
 
 import Foundation
 
-public class FoodNutrient: NSObject, Codable {
-    let nutrient: Nutrient
+struct FoodNutrient: Codable {
+    let nutrient: Nutrient?
     let amount: Float?   // 590
     
     init(nutrient: Nutrient, amount: Float?) {
         self.nutrient = nutrient
         self.amount = amount
+    }
+    
+    var description: String {
+        guard let nutrient else { return "" }
+        return nutrient.id.description
     }
 }
 
@@ -24,10 +29,14 @@ public class FoodNutrient: NSObject, Codable {
 //}
 
 extension FoodNutrient: Comparable {
-    public static func < (lhs: FoodNutrient, rhs: FoodNutrient) -> Bool {
+    static func == (lhs: FoodNutrient, rhs: FoodNutrient) -> Bool {
+        return lhs.nutrient?.id == rhs.nutrient?.id
+    }
+    
+    static func < (lhs: FoodNutrient, rhs: FoodNutrient) -> Bool {
         // Sort based on enum case order
-        let lhsIndex = NutrientID.allCases.firstIndex { $0 == lhs.nutrient.id } ?? NutrientID.allCases.count
-        let rhsIndex = NutrientID.allCases.firstIndex { $0 == rhs.nutrient.id } ?? NutrientID.allCases.count
+        let lhsIndex = NutrientID.allCases.firstIndex { $0 == lhs.nutrient?.id } ?? NutrientID.allCases.count
+        let rhsIndex = NutrientID.allCases.firstIndex { $0 == rhs.nutrient?.id } ?? NutrientID.allCases.count
         return lhsIndex < rhsIndex
     }
 }

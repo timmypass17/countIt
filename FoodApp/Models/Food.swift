@@ -70,7 +70,7 @@ struct Food: Codable {
     }
     
     func getNutrient(_ id: NutrientID) -> FoodNutrient? {
-        return foodNutrients.first { $0.nutrient.id == id }
+        return foodNutrients.first { $0.nutrient?.id == id }
     }
     
     var calories: Int {
