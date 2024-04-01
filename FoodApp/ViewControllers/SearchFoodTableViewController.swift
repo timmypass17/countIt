@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import VisionKit
 
 class SearchFoodTableViewController: UITableViewController {
 
@@ -20,6 +21,11 @@ class SearchFoodTableViewController: UITableViewController {
     var debounceTimer: Timer?
     
     weak var delegate: FoodDetailTableViewControllerDelegate?
+    
+    var scannerAvailable: Bool {
+        DataScannerViewController.isSupported &&
+        DataScannerViewController.isAvailable
+    }
     
     init(foodService: FoodService, meal: Meal? = nil) {
         self.history = CoreDataStack.shared.getFoodHistory()
@@ -45,7 +51,7 @@ class SearchFoodTableViewController: UITableViewController {
         resultsTableController.delegate = delegate
         resultsTableController.historyDelegate = self
         searchController = UISearchController(searchResultsController: resultsTableController)
-        searchController.delegate = self
+//        searchController.delegate = self
         searchController.searchBar.delegate = self
         searchController.searchBar.autocapitalizationType = .none
         
@@ -56,6 +62,8 @@ class SearchFoodTableViewController: UITableViewController {
         navigationItem.hidesSearchBarWhenScrolling = false
         
         definesPresentationContext = true
+        
+        navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "barcode.viewfinder"), primaryAction: didTapBarcodeButton())
     }
 
     // MARK: - Table view data source
@@ -88,6 +96,23 @@ class SearchFoodTableViewController: UITableViewController {
         return "History"
     }
 
+    func didTapBarcodeButton() -> UIAction {
+        return UIAction { [self] _ in
+            guard scannerAvailable else { return }
+            let viewController = DataScannerViewController(
+                recognizedDataTypes: [.barcode()],
+                qualityLevel: .accurate,
+                recognizesMultipleItems: false,
+                isHighFrameRateTrackingEnabled: false,
+                isHighlightingEnabled: true)
+            
+            
+            viewController.delegate = self
+            try? viewController.startScanning()
+            present(viewController, animated: true)
+
+        }
+    }
 }
 
 
@@ -106,35 +131,6 @@ extension SearchFoodTableViewController: UISearchBarDelegate {
             }
         }
         searchBar.resignFirstResponder()
-    }
-    
-}
-
-
-// MARK: - UISearchControllerDelegate
-
-// Use these delegate functions for additional control over the search controller.
-
-extension SearchFoodTableViewController: UISearchControllerDelegate {
-    
-    func presentSearchController(_ searchController: UISearchController) {
-        //Swift.debugPrint("UISearchControllerDelegate invoked method: \(#function).")
-    }
-    
-    func willPresentSearchController(_ searchController: UISearchController) {
-        //Swift.debugPrint("UISearchControllerDelegate invoked method: \(#function).")
-    }
-    
-    func didPresentSearchController(_ searchController: UISearchController) {
-        //Swift.debugPrint("UISearchControllerDelegate invoked method: \(#function).")
-    }
-    
-    func willDismissSearchController(_ searchController: UISearchController) {
-        //Swift.debugPrint("UISearchControllerDelegate invoked method: \(#function).")
-    }
-    
-    func didDismissSearchController(_ searchController: UISearchController) {
-        //Swift.debugPrint("UISearchControllerDelegate invoked method: \(#function).")
     }
     
 }
@@ -161,5 +157,47 @@ extension SearchFoodTableViewController: HistoryTableViewCellDelegate {
         history.remove(at: row)
         let indexPath = IndexPath(row: row, section: 0)
         tableView.deleteRows(at: [indexPath], with: .automatic)
+    }
+}
+
+extension SearchFoodTableViewController: DataScannerViewControllerDelegate {
+    func dataScanner(_ dataScanner: DataScannerViewController, becameUnavailableWithError error: DataScannerViewController.ScanningUnavailable) {
+        // Implement this delegate method to disable or remove the data-scanning controls in your interface.
+        // For example, the scanner calls this method when users tap Don’t Allow the first time the system prompt appears, as described in Provide a reason for using the camera.
+        navigationItem.rightBarButtonItem?.isEnabled = scannerAvailable
+    }
+    
+    func dataScanner(_ dataScanner: DataScannerViewController, didAdd addedItems: [RecognizedItem], allItems: [RecognizedItem]) {
+        guard let item = addedItems.first else { return }
+        
+        if case .barcode(let barcode) = item {
+            Task {
+                guard let barcodeID = barcode.payloadStringValue,
+                      let food = try? await foodService.getFoods(query: barcodeID).first
+                else {
+                    let generator = UIImpactFeedbackGenerator(style: .medium)
+                    generator.impactOccurred()
+                    dismiss(animated: true)
+                    showFoodNotFoundAlert()
+                    return
+                }
+                
+                let generator = UIImpactFeedbackGenerator(style: .medium)
+                generator.impactOccurred()
+                
+                let foodDetailViewController = FoodDetailTableViewController(food: food, meal: meal, foodService: foodService)
+                foodDetailViewController.delegate = delegate
+                
+                // Only 1 view controlelr can be presented at once. Dismiss the barcode scanning view
+                dismiss(animated: true)
+                present(UINavigationController(rootViewController: foodDetailViewController), animated: true)
+            }
+        }
+    }
+    
+    func showFoodNotFoundAlert() {
+        let alert = UIAlertController(title: "Item not found", message: "This item is not in the database.", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Got it!", style: .cancel, handler: nil))
+        self.present(alert, animated: true, completion: nil)
     }
 }

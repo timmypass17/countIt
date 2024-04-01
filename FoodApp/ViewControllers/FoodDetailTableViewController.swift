@@ -167,13 +167,13 @@ class FoodDetailTableViewController: UITableViewController {
             let cell = tableView.dequeueReusableCell(withIdentifier: NutritionTableViewCell.reuseIdentifier, for: indexPath) as! NutritionTableViewCell
             let nutrient = mainNutrients[indexPath.row]
             cell.update(with: nutrient, foodPortion: selectedFoodPortion, quantity: numberOfServings)
-            cell.progressView.tintColor = .systemIndigo
+            cell.progressView.tintColor = .systemBlue
             return cell
         case .vitamins:
             let cell = tableView.dequeueReusableCell(withIdentifier: NutritionTableViewCell.reuseIdentifier, for: indexPath) as! NutritionTableViewCell
             let vitamin = vitamins[indexPath.row]
             cell.update(with: vitamin, foodPortion: selectedFoodPortion, quantity: numberOfServings)
-            cell.progressView.tintColor = .orange
+            cell.progressView.tintColor = .systemOrange
             return cell
         case .minerals:
             let cell = tableView.dequeueReusableCell(withIdentifier: NutritionTableViewCell.reuseIdentifier, for: indexPath) as! NutritionTableViewCell

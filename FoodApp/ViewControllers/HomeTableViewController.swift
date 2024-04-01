@@ -141,7 +141,7 @@ class HomeTableViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if indexPath.section == 0 {
-            let goalTableViewController = GoalTableViewController(nutrientGoals: mealPlan.nutrientGoals)
+            let goalTableViewController = GoalTableViewController(mealPlan: mealPlan, nutrientGoals: mealPlan.nutrientGoals)
             navigationController?.pushViewController(goalTableViewController, animated: true)
             return
         }

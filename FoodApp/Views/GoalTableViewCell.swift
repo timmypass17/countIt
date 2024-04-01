@@ -7,6 +7,10 @@
 
 import UIKit
 
+protocol GoalTableViewCellDelegate: AnyObject {
+    func goalTableViewCell(_ cell: GoalTableViewCell, amountValueChanged: String)
+}
+
 class GoalTableViewCell: UITableViewCell {
     static let reuseIdentifier = "GoalCell"
 
@@ -14,16 +18,22 @@ class GoalTableViewCell: UITableViewCell {
         let label = UILabel()
         label.numberOfLines = 1
         label.lineBreakMode = .byTruncatingTail
+        label.setContentHuggingPriority(.required, for: .horizontal)
         label.setContentCompressionResistancePriority(.required, for: .horizontal)
         return label
     }()
     
-    var secondaryLabel: UILabel = {
+    var amountTextField: UITextField = {
+        let textField = UITextField()
+        textField.textAlignment = .right
+//        textField.placeholder = "0"
+        textField.keyboardType = .numberPad
+        return textField
+    }()
+    
+    var unitLabel: UILabel = {
         let label = UILabel()
         label.textColor = .secondaryLabel
-        label.numberOfLines = 1
-        label.lineBreakMode = .byTruncatingTail
-        label.textAlignment = .right
         return label
     }()
 
@@ -34,12 +44,29 @@ class GoalTableViewCell: UITableViewCell {
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
     }()
+    
+    var toolbar: UIToolbar = {
+        let bar = UIToolbar(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 44))
+        let doneButton = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(didTapDoneButton))
+        bar.items = [.flexibleSpace(), doneButton]
+        bar.sizeToFit()
+        return bar
+    }()
+    
+    var nutrientID: NutrientID!
+    weak var delegate: GoalTableViewCellDelegate?
         
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
 
+        amountTextField.rightView = unitLabel
+        amountTextField.rightViewMode = .always
+        amountTextField.inputAccessoryView = toolbar
+        
+        amountTextField.addAction(amountTextFieldEditingChanged(), for: .editingChanged)
+        
         container.addArrangedSubview(primaryLabel)
-        container.addArrangedSubview(secondaryLabel)
+        container.addArrangedSubview(amountTextField)
         
         contentView.addSubview(container)
         
@@ -56,8 +83,22 @@ class GoalTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func update(primaryText: String, secondaryText: String) {
-        primaryLabel.text = primaryText
-        secondaryLabel.text = secondaryText
+    func update(nutrientID: NutrientID, goal: Int) {
+        self.nutrientID = nutrientID
+        primaryLabel.text = nutrientID.description
+        amountTextField.text = "\(goal)"
+        amountTextField.placeholder = "\(goal)"
+        unitLabel.text = nutrientID.unit
+    }
+    
+    func amountTextFieldEditingChanged() -> UIAction {
+        return UIAction { _ in
+            // delegate. Enable/disable done button if empty
+            self.delegate?.goalTableViewCell(self, amountValueChanged: self.amountTextField.text ?? "")
+        }
+    }
+    
+    @objc func didTapDoneButton() {
+        endEditing(true)
     }
 }

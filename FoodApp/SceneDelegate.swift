@@ -14,19 +14,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         
-        let tabBarController = UITabBarController()
         let foodService = FoodService()
         let homeTableViewController = HomeTableViewController(foodService: foodService)
-        let searchFoodTableViewController = SearchFoodTableViewController(foodService: foodService)
-        
-        homeTableViewController.tabBarItem = UITabBarItem(title: "Food", image: UIImage(systemName: "fork.knife"), tag: 0)
-        searchFoodTableViewController.tabBarItem = UITabBarItem(title: "Search", image: UIImage(systemName: "magnifyingglass"), tag: 0)
-        tabBarController.viewControllers = [homeTableViewController, searchFoodTableViewController]
-            .map { UINavigationController(rootViewController: $0) }
-        
+
         window = UIWindow(frame: windowScene.coordinateSpace.bounds)
         window?.windowScene = windowScene
-        window?.rootViewController = tabBarController
+        window?.rootViewController = UINavigationController(rootViewController: homeTableViewController)
         window?.makeKeyAndVisible()
     }
 

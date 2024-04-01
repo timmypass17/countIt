@@ -2,25 +2,23 @@
 //  GoalTableViewController.swift
 //  FoodApp
 //
-//  Created by Timmy Nguyen on 3/31/24.
+//  Created by Timmy Nguyen on 3/24/24.
 //
 
 import UIKit
 
-class GoalTableViewController: UITableViewController {
+class EditGoalTableViewController: UITableViewController {
     
-    let mealPlan: MealPlan
     var nutrientGoals: [NutrientID: Float]
     
     enum Section: CaseIterable {
-        static var allCases: [Section] =
+        static var allCases: [EditGoalTableViewController.Section] =
             [.nutrients(NutrientID.mainNutrients), .vitamins(NutrientID.vitamins), .minerals(NutrientID.minerals) ]
         
         case nutrients([NutrientID]), vitamins([NutrientID]), minerals([NutrientID])
     }
     
-    init(mealPlan: MealPlan, nutrientGoals: [NutrientID : Float]) {
-        self.mealPlan = mealPlan
+    init(nutrientGoals: [NutrientID : Float]) {
         self.nutrientGoals = nutrientGoals
         super.init(style: .insetGrouped)
     }
@@ -31,9 +29,12 @@ class GoalTableViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        tableView.register(NutritionTableViewCell.self, forCellReuseIdentifier: NutritionTableViewCell.reuseIdentifier)
-        title = "My Goals"
-        navigationItem.rightBarButtonItem = UIBarButtonItem(systemItem: .edit, primaryAction: didTapEditButton())
+        tableView.register(GoalTableViewCell.self, forCellReuseIdentifier: GoalTableViewCell.reuseIdentifier)
+        navigationItem.title = "Edit Goals"
+        navigationItem.leftBarButtonItem = UIBarButtonItem(systemItem: .cancel, primaryAction: didTapCancelButton())
+        let infoButton = UIBarButtonItem(image: UIImage(systemName: "info.circle"), primaryAction: didTapInfoButton())
+        let doneButton = UIBarButtonItem(systemItem: .done, primaryAction: didTapDoneButton())
+        navigationItem.rightBarButtonItems = [doneButton, infoButton]
     }
 
     // MARK: - Table view data source
@@ -55,7 +56,7 @@ class GoalTableViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: NutritionTableViewCell.reuseIdentifier, for: indexPath) as! NutritionTableViewCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: GoalTableViewCell.reuseIdentifier, for: indexPath) as! GoalTableViewCell
         let section = Section.allCases[indexPath.section]
         let nutrientID: NutrientID
         switch section {
@@ -67,8 +68,9 @@ class GoalTableViewController: UITableViewController {
             nutrientID = minerals[indexPath.row]
         }
         
-        cell.update(nutrientID: nutrientID, nutrientAmount: mealPlan.getTotalNutrients(nutrientID), nutrientGoal: nutrientGoals[nutrientID] ?? 0)
-//        cell.accessoryType = .disclosureIndicator
+        let nutrientGoal = Int(nutrientGoals[nutrientID] ?? 0)
+        cell.update(nutrientID: nutrientID, goal: nutrientGoal)
+        cell.delegate = self
         cell.selectionStyle = .none
         return cell
     }
@@ -84,12 +86,38 @@ class GoalTableViewController: UITableViewController {
             return "Minerals"
         }
     }
-
-    func didTapEditButton() -> UIAction {
-        return UIAction { [self] _ in
-            let vc = UINavigationController(rootViewController: EditGoalTableViewController(nutrientGoals: nutrientGoals))
-            present(vc, animated: true)
+    
+    func didTapCancelButton() -> UIAction {
+        return UIAction { _ in
+            self.dismiss(animated: true)
         }
     }
+    
+    func didTapDoneButton() -> UIAction {
+        return UIAction { _ in
+            self.dismiss(animated: true)
+        }
+    }
+    
+    func didTapInfoButton() -> UIAction {
+        return UIAction { _ in
+            let url = URL(string: "https://www.nal.usda.gov/human-nutrition-and-food-safety/dri-calculator")!
+            UIApplication.shared.open(url)
+        }
+    }
+}
 
+extension EditGoalTableViewController: GoalTableViewCellDelegate {
+    func goalTableViewCell(_ cell: GoalTableViewCell, amountValueChanged: String) {
+        print(#function)
+        guard let nutrientID = cell.nutrientID else { return }
+        
+        if amountValueChanged == "" {
+            navigationItem.rightBarButtonItem?.isEnabled = false
+        } else {
+            nutrientGoals[nutrientID] = Float(amountValueChanged) ?? 0
+            navigationItem.rightBarButtonItem?.isEnabled = true
+        }
+        
+    }
 }
