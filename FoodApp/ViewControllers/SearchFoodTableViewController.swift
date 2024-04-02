@@ -99,6 +99,8 @@ class SearchFoodTableViewController: UITableViewController {
     func didTapBarcodeButton() -> UIAction {
         return UIAction { [self] _ in
             guard scannerAvailable else { return }
+            // works: ean13
+            //fails: ean8 (doesn
             let viewController = DataScannerViewController(
                 recognizedDataTypes: [.barcode()],
                 qualityLevel: .accurate,
@@ -121,7 +123,8 @@ class SearchFoodTableViewController: UITableViewController {
 extension SearchFoodTableViewController: UISearchBarDelegate {
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        Task {
+        searchTask?.cancel()
+        searchTask = Task {
             do {
                 let foods: [Food] = try await foodService.getFoods(query: searchBar.text!)
                 resultsTableController.foods = foods
@@ -169,16 +172,23 @@ extension SearchFoodTableViewController: DataScannerViewControllerDelegate {
     
     func dataScanner(_ dataScanner: DataScannerViewController, didAdd addedItems: [RecognizedItem], allItems: [RecognizedItem]) {
         guard let item = addedItems.first else { return }
+        dataScanner.stopScanning()
         
         if case .barcode(let barcode) = item {
-            Task {
-                guard let barcodeID = barcode.payloadStringValue,
-                      let food = try? await foodService.getFoods(query: barcodeID).first
+            searchTask?.cancel()
+            searchTask = Task {
+                guard var barcodeID = barcode.payloadStringValue else { return }
+                // Convert from EDA-13 (13 digits) to UPC (12 digits)
+                if barcodeID.first == "0" {
+                    barcodeID.removeFirst()
+                }
+                print("barcode", barcodeID)
+                guard let food = try? await foodService.getFoods(query: barcodeID).first
                 else {
                     let generator = UIImpactFeedbackGenerator(style: .medium)
                     generator.impactOccurred()
                     dismiss(animated: true)
-                    showFoodNotFoundAlert()
+                    showFoodNotFoundAlert(id: barcodeID)
                     return
                 }
                 
@@ -195,8 +205,9 @@ extension SearchFoodTableViewController: DataScannerViewControllerDelegate {
         }
     }
     
-    func showFoodNotFoundAlert() {
-        let alert = UIAlertController(title: "Item not found", message: "This item is not in the database.", preferredStyle: .alert)
+    func showFoodNotFoundAlert(id: String) {
+//        "This item is not in the database.\n\(id)"
+        let alert = UIAlertController(title: "Item not found", message: "This item is not in the database. Please try using the search bar.\n\(id)", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "Got it!", style: .cancel, handler: nil))
         self.present(alert, animated: true, completion: nil)
     }
