@@ -17,7 +17,7 @@ struct Food: Codable {
     let dataType: DataType
     
     let servingSize: Float?
-    let servingSizeUnit: String?
+    var servingSizeUnit: String?
     
     enum CodingKeys: String, CodingKey {
         case fdcId
@@ -67,6 +67,13 @@ struct Food: Codable {
         
         // Filter out nutritents with 0 value
         self.foodNutrients = foodNutrients.filter { ($0.amount ?? 0.0) != 0 }
+        
+        // Fix weird unit names
+        if servingSizeUnit == "GRM" {
+            servingSizeUnit = "g"
+        } else if servingSizeUnit == "MLT" {
+            servingSizeUnit = "ml"
+        }
     }
     
     func getNutrient(_ id: NutrientID) -> FoodNutrient? {
@@ -101,6 +108,10 @@ extension Food {
     }
     
     func getServingSizeFormatted(foodPortion: FoodPortion, numberOfServings: Int = 1) -> String {
+        if foodPortion.modifier == "Quick Add" {
+            return "1 serving"
+        }
+        
         if let amount = foodPortion.amount {
             let servings = Int(amount * Float(numberOfServings))
             let gramWeight = Int(foodPortion.gramWeight * Float(numberOfServings))

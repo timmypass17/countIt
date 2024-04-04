@@ -132,7 +132,6 @@ class FoodDetailTableViewController: UITableViewController {
                 cell.update(
                     primaryText: "Serving Size",
                     secondaryText: food.getServingSizeFormatted(foodPortion: selectedFoodPortion),
-//                    secondaryText: selectedFoodPortion.getServingSizeFormatted(),
                     image: UIImage(systemName: "square.and.pencil"),
                     bgColor: UIColor.systemBlue)
                 return cell
@@ -161,25 +160,28 @@ class FoodDetailTableViewController: UITableViewController {
                     fats: MacroData(amount: fats, goal: Settings.shared.userDailyValues[.totalFat, default: 0.0])
                 )
             }
-            
+            cell.selectionStyle = .none
             return cell
         case .nutrients:
             let cell = tableView.dequeueReusableCell(withIdentifier: NutritionTableViewCell.reuseIdentifier, for: indexPath) as! NutritionTableViewCell
             let nutrient = mainNutrients[indexPath.row]
             cell.update(with: nutrient, foodPortion: selectedFoodPortion, quantity: numberOfServings)
             cell.progressView.tintColor = .systemBlue
+            cell.selectionStyle = .none
             return cell
         case .vitamins:
             let cell = tableView.dequeueReusableCell(withIdentifier: NutritionTableViewCell.reuseIdentifier, for: indexPath) as! NutritionTableViewCell
             let vitamin = vitamins[indexPath.row]
             cell.update(with: vitamin, foodPortion: selectedFoodPortion, quantity: numberOfServings)
             cell.progressView.tintColor = .systemOrange
+            cell.selectionStyle = .none
             return cell
         case .minerals:
             let cell = tableView.dequeueReusableCell(withIdentifier: NutritionTableViewCell.reuseIdentifier, for: indexPath) as! NutritionTableViewCell
             let mineral = minerals[indexPath.row]
             cell.update(with: mineral, foodPortion: selectedFoodPortion, quantity: numberOfServings)
             cell.progressView.tintColor = .white
+            cell.selectionStyle = .none
             return cell
         }
     }
@@ -227,6 +229,7 @@ class FoodDetailTableViewController: UITableViewController {
                 delegate?.foodDetailTableViewController(self, didAddFoodEntry: foodEntry)
                 
                 if let food = foodEntry.food {
+                    print(food)
                     food.updatedAt = .now
                     historyDelegate?.foodDetailTableViewController(self, didUpdateHistoryWithFood: food)
                 }

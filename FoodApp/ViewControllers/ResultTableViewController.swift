@@ -12,6 +12,13 @@ class ResultsTableViewController: UITableViewController {
     var foods: [Food] = []
     let meal: Meal?
     let foodService: FoodService
+    
+    var spinner: UIActivityIndicatorView = {
+        let spinner = UIActivityIndicatorView(style: .medium)
+        spinner.hidesWhenStopped = true
+        spinner.translatesAutoresizingMaskIntoConstraints = false
+        return spinner
+    }()
         
     init(meal: Meal?, foodService: FoodService) {
         self.meal = meal
@@ -29,6 +36,13 @@ class ResultsTableViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.register(ResultTableViewCell.self, forCellReuseIdentifier: ResultTableViewCell.reuseIdentifier)
+        
+        view.addSubview(spinner)
+    
+        NSLayoutConstraint.activate([
+            spinner.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            spinner.topAnchor.constraint(equalTo: view.topAnchor, constant: 10)
+        ])
     }
     
     // MARK: - UITableViewDataSource

@@ -31,6 +31,7 @@ class MealPlanDateView: UIView {
         let button = UIButton()
         button.setImage(UIImage(systemName: "chevron.left"), for: .normal)
         button.tintColor = .white
+        button.widthAnchor.constraint(equalToConstant: 50).isActive = true
         return button
     }()
     
@@ -38,13 +39,13 @@ class MealPlanDateView: UIView {
         let button = UIButton()
         button.setImage(UIImage(systemName: "chevron.right"), for: .normal)
         button.tintColor = .white
+        button.widthAnchor.constraint(equalToConstant: 50).isActive = true
         return button
     }()
     
     var container: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .horizontal
-        stackView.spacing = 16
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
     }()
@@ -65,7 +66,6 @@ class MealPlanDateView: UIView {
             container.bottomAnchor.constraint(equalTo: self.bottomAnchor),
             container.leadingAnchor.constraint(equalTo: self.leadingAnchor),
             container.trailingAnchor.constraint(equalTo: self.trailingAnchor),
-
         ])
     }
     

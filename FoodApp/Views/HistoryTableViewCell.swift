@@ -16,7 +16,7 @@ class HistoryTableViewCell: UITableViewCell {
 
     var cdFood: CDFood!
     weak var delegate: HistoryTableViewCellDelegate?
-    
+
     let titleLabel: UILabel = {
         let label = UILabel()
         label.numberOfLines = 1
@@ -88,7 +88,7 @@ class HistoryTableViewCell: UITableViewCell {
     func update(with cdFood: CDFood) {
         self.cdFood = cdFood
         let food = cdFood.convertToFDCFood()
-        titleLabel.text = food.description
+        titleLabel.text = "\(food.description) \(food.fdcId)"
 //        descriptionLabel.text = food.getDescriptionFormatted(foodPortion: food.foodPortions[(food.foodPortions.count - 1) / 2])
         descriptionLabel.text = food.getFoodEntryDescriptionFormatted(foodPortion: food.foodPortions[(food.foodPortions.count - 1) / 2])
     }

@@ -31,7 +31,7 @@ class NutritionTableViewCell: UITableViewCell {
         let label = UILabel()
         label.numberOfLines = 1
         label.lineBreakMode = .byTruncatingTail
-        label.textColor = .secondaryLabel
+//        label.textColor = .secondaryLabel
         return label
     }()
 
@@ -54,6 +54,8 @@ class NutritionTableViewCell: UITableViewCell {
         vstack.translatesAutoresizingMaskIntoConstraints = false
         return vstack
     }()
+    
+    var leadingConstraint: NSLayoutConstraint!
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -67,10 +69,12 @@ class NutritionTableViewCell: UITableViewCell {
         
         contentView.addSubview(vstack)
         
+        leadingConstraint = vstack.leadingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.leadingAnchor)
+        
         NSLayoutConstraint.activate([
             vstack.topAnchor.constraint(equalTo: contentView.layoutMarginsGuide.topAnchor),
             vstack.bottomAnchor.constraint(equalTo: contentView.layoutMarginsGuide.bottomAnchor),
-            vstack.leadingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.leadingAnchor),
+            leadingConstraint,
             vstack.trailingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.trailingAnchor),
         ])
     }
@@ -81,7 +85,6 @@ class NutritionTableViewCell: UITableViewCell {
     
     func update(with foodNutrient: FoodNutrient, foodPortion: FoodPortion, quantity: Int) {
         nameLabel.text = foodNutrient.description
-//        descriptionLabel.text = "Essential for building and repairing tissues in the body."
         let nutrientAmount = (calculateNutrientPerServing(nutrientPer100g: foodNutrient.amount ?? 0, servingSizeGramWeight: foodPortion.gramWeight) * Float(quantity))
         if let nutrientID = foodNutrient.nutrient?.id,
            let nutrientGoal = Settings.shared.userDailyValues[nutrientID] {
@@ -91,14 +94,29 @@ class NutritionTableViewCell: UITableViewCell {
             } else {
                 amountLabel.text = "\(Int(nutrientAmount)) \(foodNutrient.nutrient?.unitName ?? "Unspecified")"
             }
-            percentLabel.text = "\(Int((progress * 100).rounded()))%"
+            let dailyValuePercent = Int((progress * 100).rounded())
+            percentLabel.text = dailyValuePercent > 0 ? "\(Int((progress * 100).rounded()))%" : "-"
             progressView.progress = progress
         } else {
             amountLabel.text = "Missing nutrient goal"
         }
+        
+        if let isSecondary = foodNutrient.nutrient?.id.isSecondary, isSecondary == true {
+            nameLabel.textColor = .secondaryLabel
+            leadingConstraint.constant = 25
+        }  else if let isTertiary = foodNutrient.nutrient?.id.isTertiary, isTertiary == true {
+            nameLabel.textColor = .secondaryLabel
+            leadingConstraint.constant = 50
+        } else {
+            nameLabel.textColor = .label
+            leadingConstraint.constant = 0
+        }
+        
+        progressView.isHidden = true
     }
     
     func update(nutrientID: NutrientID, nutrientAmount: Float, nutrientGoal: Float) {
+        print(#function)
         nameLabel.text = nutrientID.description
         if let nutrientGoal = Settings.shared.userDailyValues[nutrientID] {
             let progress = nutrientAmount / nutrientGoal

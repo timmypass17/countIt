@@ -68,6 +68,7 @@ class GoalTableViewController: UITableViewController {
         }
         
         cell.update(nutrientID: nutrientID, nutrientAmount: mealPlan.getTotalNutrients(nutrientID), nutrientGoal: nutrientGoals[nutrientID] ?? 0)
+        
 //        cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .none
         return cell

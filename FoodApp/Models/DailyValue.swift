@@ -68,6 +68,7 @@ extension UserDailyValues {
         .sodium: 2300,
         .fiber: 28,
         .totalSugar: 50,
+        .addedSugar: 24,
         .vitaminA: 900,
         .vitaminC: 90,
         .vitaminD: 20,

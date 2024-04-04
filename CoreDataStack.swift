@@ -66,7 +66,15 @@ extension CoreDataStack {
         foodEntry.servingSizeUnit = servingSizeUnit
 
         // Relationship
-        foodEntry.food = getCDFood(id: food.fdcId) ?? food.convertToCDFood(context: context)
+        if let existingFood = getCDFood(id: food.fdcId) {
+            print("Existing Food:")
+            foodEntry.food = existingFood
+        } else {
+            print("Create Food:")
+            print("Before: \(food)")
+            foodEntry.food = food.convertToCDFood(context: context)
+            print("After: \(foodEntry.food)")
+        }
         foodEntry.food?.updatedAt = .now
         foodEntry.meal = meal   // equivalent: meal.addToFoodEntries_(foodEntry)
 

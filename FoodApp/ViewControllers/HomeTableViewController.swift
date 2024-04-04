@@ -152,6 +152,7 @@ class HomeTableViewController: UITableViewController {
             let meal = mealPlan.meals[indexPath.section - 1]
             let searchFoodTableViewController = SearchFoodTableViewController(foodService: foodService, meal: meal)
             searchFoodTableViewController.delegate = self
+            searchFoodTableViewController.quickAddDelegate = self
             navigationController?.pushViewController(searchFoodTableViewController, animated: true)
             return
         }
@@ -356,6 +357,12 @@ extension HomeTableViewController: CalendarViewControllerDelegate {
 
 extension HomeTableViewController: ReorderMealTableViewControllerDelegate {
     func reorderMealTableViewController(_ viewController: ReorderMealTableViewController, didReorderMeals: Bool) {
+        updateUI()
+    }
+}
+
+extension HomeTableViewController: QuickAddTableViewControllerDelegate {
+    func quickAddTableViewController(_ viewController: QuickAddTableViewController, didAddFoodEntry: FoodEntry) {
         updateUI()
     }
 }

@@ -62,3 +62,4 @@ extension FoodEntry: Comparable {
         return lhs.index < rhs.index
     }
 }
+

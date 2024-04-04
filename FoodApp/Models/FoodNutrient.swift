@@ -9,7 +9,7 @@ import Foundation
 
 struct FoodNutrient: Codable {
     let nutrient: Nutrient?
-    let amount: Float?   // 590
+    var amount: Float?   // 590
     
     init(nutrient: Nutrient, amount: Float?) {
         self.nutrient = nutrient
@@ -60,7 +60,7 @@ enum NutrientID: Int, Codable, CaseIterable {
     case sodium = 1093
     case fiber = 1079
     case totalSugar = 2000
-    //    case addedSugar = 1235
+    case addedSugar = 1235
     case protein = 1003
     case other = -1
     
@@ -108,7 +108,7 @@ enum NutrientID: Int, Codable, CaseIterable {
         case 1093: self = .sodium
         case 1079: self = .fiber
         case 2000: self = .totalSugar
-            //        case 1235: self = .addedSugar
+        case 1235: self = .addedSugar
         case 1003: self = .protein
             // Vitamins
         case 1106: self = .vitaminA
@@ -144,7 +144,7 @@ enum NutrientID: Int, Codable, CaseIterable {
         }
     }
     
-    static let mainNutrients: [Self] = [.calories, .totalFat, .saturatedFat, .transFat, .cholesterol, .sodium, .carbs, .fiber, .totalSugar, .protein]
+    static let mainNutrients: [Self] = [.calories, .totalFat, .saturatedFat, .transFat, .cholesterol, .sodium, .carbs, .fiber, .totalSugar, .addedSugar, .protein]
     
     static let vitamins: [Self] = [.vitaminA, .vitaminC, .vitaminD, .vitaminB6, .vitaminE, .vitaminK, .thiamin, .vitaminB12, .riboflavin, .folate , .niacin, .choline, .pantothenicAcid, .biotin]
     
@@ -228,6 +228,8 @@ enum NutrientID: Int, Codable, CaseIterable {
             return "Selenium"
         case .zinc:
             return "Zinc"
+        case .addedSugar:
+            return "Added Sugar"
         }
         
     }
@@ -310,6 +312,26 @@ enum NutrientID: Int, Codable, CaseIterable {
             return "mcg"
         case .zinc:
             return "mg"
+        case .addedSugar:
+            return "g"
+        }
+    }
+    
+    var isSecondary: Bool {
+        switch self {
+        case .saturatedFat, .transFat, .carbs, .fiber, .totalSugar:
+            return true
+        default:
+            return false
+        }
+    }
+    
+    var isTertiary: Bool {
+        switch self {
+        case .addedSugar:
+            return true
+        default:
+            return false
         }
     }
 }

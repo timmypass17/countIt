@@ -21,7 +21,8 @@ class SearchFoodTableViewController: UITableViewController {
     var debounceTimer: Timer?
     
     weak var delegate: FoodDetailTableViewControllerDelegate?
-    
+    weak var quickAddDelegate: QuickAddTableViewControllerDelegate?
+
     var scannerAvailable: Bool {
         DataScannerViewController.isSupported &&
         DataScannerViewController.isAvailable
@@ -63,7 +64,11 @@ class SearchFoodTableViewController: UITableViewController {
         
         definesPresentationContext = true
         
-        navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "barcode.viewfinder"), primaryAction: didTapBarcodeButton())
+        // TODO: use pallete colors
+        let barcodeButton = UIBarButtonItem(image: UIImage(systemName: "barcode.viewfinder"), primaryAction: didTapBarcodeButton())
+        let quickAddButton = UIBarButtonItem(image: UIImage(systemName: "flame"), primaryAction: didTapQuickAddButton())
+        navigationItem.rightBarButtonItems = [barcodeButton, quickAddButton]
+
     }
 
     // MARK: - Table view data source
@@ -115,6 +120,17 @@ class SearchFoodTableViewController: UITableViewController {
 
         }
     }
+    
+    func didTapQuickAddButton() -> UIAction {
+        return UIAction { [self] _ in
+            guard let meal else { return }
+            let quickAddTableViewController = QuickAddTableViewController(meal: meal)
+            quickAddTableViewController.delegate = quickAddDelegate
+            quickAddTableViewController.historyDelegate = self
+            present(UINavigationController(rootViewController: quickAddTableViewController), animated: true)
+        }
+    }
+    
 }
 
 
@@ -126,12 +142,14 @@ extension SearchFoodTableViewController: UISearchBarDelegate {
         searchTask?.cancel()
         searchTask = Task {
             do {
+                resultsTableController.spinner.startAnimating()
                 let foods: [Food] = try await foodService.getFoods(query: searchBar.text!)
                 resultsTableController.foods = foods
                 resultsTableController.tableView.reloadData()
             } catch {
                 print("\(#function) \(error)")
             }
+            resultsTableController.spinner.stopAnimating()
         }
         searchBar.resignFirstResponder()
     }
@@ -146,6 +164,18 @@ extension SearchFoodTableViewController: SearchTitleViewDelegate {
 
 extension SearchFoodTableViewController: FoodDetailTableViewControllerHistoryDelegate {
     func foodDetailTableViewController(_ tableViewController: FoodDetailTableViewController, didUpdateHistoryWithFood food: CDFood) {
+        print(#function)
+        if !history.contains(food) {
+            history.append(food)
+        }
+        history = history.sorted { $0.updatedAt > $1.updatedAt }
+        tableView.reloadData()
+    }
+}
+
+extension SearchFoodTableViewController: QuickAddTableViewControllerHistoryDelegate {
+    func quickAddTableViewController(_ viewController: QuickAddTableViewController, didUpdateHistoryWithFood food: CDFood) {
+        print(#function)
         if !history.contains(food) {
             history.append(food)
         }
@@ -158,8 +188,7 @@ extension SearchFoodTableViewController: HistoryTableViewCellDelegate {
     func historyTableViewCell(_ cell: HistoryTableViewCell, didDeleteFood food: CDFood) {
         guard let row = history.firstIndex(where: { $0 == food }) else { return }
         history.remove(at: row)
-        let indexPath = IndexPath(row: row, section: 0)
-        tableView.deleteRows(at: [indexPath], with: .automatic)
+        tableView.deleteRows(at: [IndexPath(row: row, section: 0)], with: .automatic)
     }
 }
 
@@ -207,7 +236,7 @@ extension SearchFoodTableViewController: DataScannerViewControllerDelegate {
     
     func showFoodNotFoundAlert(id: String) {
 //        "This item is not in the database.\n\(id)"
-        let alert = UIAlertController(title: "Item not found", message: "This item is not in the database. Please try using the search bar.\n\(id)", preferredStyle: .alert)
+        let alert = UIAlertController(title: "Item not found", message: "This item is not in the database. Please try using the search bar to find a similar product.\n\(id)", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "Got it!", style: .cancel, handler: nil))
         self.present(alert, animated: true, completion: nil)
     }
