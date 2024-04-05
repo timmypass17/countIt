@@ -68,7 +68,7 @@ class SearchFoodTableViewController: UITableViewController {
         let barcodeButton = UIBarButtonItem(image: UIImage(systemName: "barcode.viewfinder"), primaryAction: didTapBarcodeButton())
         let quickAddButton = UIBarButtonItem(image: UIImage(systemName: "flame"), primaryAction: didTapQuickAddButton())
         navigationItem.rightBarButtonItems = [barcodeButton, quickAddButton]
-
+        navigationItem.rightBarButtonItem?.isEnabled = scannerAvailable
     }
 
     // MARK: - Table view data source
@@ -112,7 +112,6 @@ class SearchFoodTableViewController: UITableViewController {
                 recognizesMultipleItems: false,
                 isHighFrameRateTrackingEnabled: false,
                 isHighlightingEnabled: true)
-            
             
             viewController.delegate = self
             try? viewController.startScanning()
@@ -226,6 +225,7 @@ extension SearchFoodTableViewController: DataScannerViewControllerDelegate {
                 
                 let foodDetailViewController = FoodDetailTableViewController(food: food, meal: meal, foodService: foodService)
                 foodDetailViewController.delegate = delegate
+                foodDetailViewController.historyDelegate = self
                 
                 // Only 1 view controlelr can be presented at once. Dismiss the barcode scanning view
                 dismiss(animated: true)

@@ -7,10 +7,15 @@
 
 import UIKit
 
+protocol GoalTableViewControllerDelegate: AnyObject {
+    // Note: Dictionarys in Swift are passed by value (i.e. creates a copy)
+    func goalTableViewController(_ viewController: GoalTableViewController, didUpdateNutrientGoals nutrientGoals: [NutrientID: Float])
+}
+
 class GoalTableViewController: UITableViewController {
     
     let mealPlan: MealPlan
-    var nutrientGoals: [NutrientID: Float]
+    weak var delegate: GoalTableViewControllerDelegate?
     
     enum Section: CaseIterable {
         static var allCases: [Section] =
@@ -19,9 +24,8 @@ class GoalTableViewController: UITableViewController {
         case nutrients([NutrientID]), vitamins([NutrientID]), minerals([NutrientID])
     }
     
-    init(mealPlan: MealPlan, nutrientGoals: [NutrientID : Float]) {
+    init(mealPlan: MealPlan) {
         self.mealPlan = mealPlan
-        self.nutrientGoals = nutrientGoals
         super.init(style: .insetGrouped)
     }
     
@@ -67,7 +71,7 @@ class GoalTableViewController: UITableViewController {
             nutrientID = minerals[indexPath.row]
         }
         
-        cell.update(nutrientID: nutrientID, nutrientAmount: mealPlan.getTotalNutrients(nutrientID), nutrientGoal: nutrientGoals[nutrientID] ?? 0)
+        cell.update(nutrientID: nutrientID, nutrientAmount: mealPlan.getTotalNutrients(nutrientID), nutrientGoal: mealPlan.nutrientGoals[nutrientID] ?? 0)
         
 //        cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .none
@@ -88,9 +92,17 @@ class GoalTableViewController: UITableViewController {
 
     func didTapEditButton() -> UIAction {
         return UIAction { [self] _ in
-            let vc = UINavigationController(rootViewController: EditGoalTableViewController(nutrientGoals: nutrientGoals))
-            present(vc, animated: true)
+            let editGoalTableViewController = EditGoalTableViewController(nutrientGoals: mealPlan.nutrientGoals)
+            editGoalTableViewController.delegate = self
+            present(UINavigationController(rootViewController: editGoalTableViewController), animated: true)
         }
     }
+}
 
+extension GoalTableViewController: EditGoalTableViewControllerDelegate {
+    func editGoalTableViewController(_ viewController: EditGoalTableViewController, didUpdateNutrientGoals nutrientGoals: [NutrientID : Float]) {
+        mealPlan.nutrientGoals = nutrientGoals
+        tableView.reloadData()
+        delegate?.goalTableViewController(self, didUpdateNutrientGoals: nutrientGoals) // propagate changes to hometableview
+    }
 }

@@ -7,9 +7,15 @@
 
 import UIKit
 
+protocol EditGoalTableViewControllerDelegate: AnyObject {
+    // Note: Dictionarys in Swift are passed by value (i.e. creates a copy)
+    func editGoalTableViewController(_ viewController: EditGoalTableViewController, didUpdateNutrientGoals nutrientGoals: [NutrientID: Float])
+}
+
 class EditGoalTableViewController: UITableViewController {
     
     var nutrientGoals: [NutrientID: Float]
+    weak var delegate: EditGoalTableViewControllerDelegate?
     
     enum Section: CaseIterable {
         static var allCases: [EditGoalTableViewController.Section] =
@@ -33,7 +39,7 @@ class EditGoalTableViewController: UITableViewController {
         navigationItem.title = "Edit Goals"
         navigationItem.leftBarButtonItem = UIBarButtonItem(systemItem: .cancel, primaryAction: didTapCancelButton())
         let infoButton = UIBarButtonItem(image: UIImage(systemName: "info.circle"), primaryAction: didTapInfoButton())
-        let doneButton = UIBarButtonItem(systemItem: .done, primaryAction: didTapDoneButton())
+        let doneButton = UIBarButtonItem(systemItem: .save, primaryAction: didTapSaveButton())
         navigationItem.rightBarButtonItems = [doneButton, infoButton]
     }
 
@@ -93,9 +99,10 @@ class EditGoalTableViewController: UITableViewController {
         }
     }
     
-    func didTapDoneButton() -> UIAction {
-        return UIAction { _ in
-            self.dismiss(animated: true)
+    func didTapSaveButton() -> UIAction {
+        return UIAction { [self] _ in
+            delegate?.editGoalTableViewController(self, didUpdateNutrientGoals: nutrientGoals)
+            dismiss(animated: true)
         }
     }
     
@@ -109,15 +116,15 @@ class EditGoalTableViewController: UITableViewController {
 
 extension EditGoalTableViewController: GoalTableViewCellDelegate {
     func goalTableViewCell(_ cell: GoalTableViewCell, amountValueChanged: String) {
-        print(#function)
         guard let nutrientID = cell.nutrientID else { return }
         
         if amountValueChanged == "" {
             navigationItem.rightBarButtonItem?.isEnabled = false
-        } else {
-            nutrientGoals[nutrientID] = Float(amountValueChanged) ?? 0
-            navigationItem.rightBarButtonItem?.isEnabled = true
+            return
         }
+        
+        nutrientGoals[nutrientID] = Float(amountValueChanged) ?? 0
+        navigationItem.rightBarButtonItem?.isEnabled = true
         
     }
 }

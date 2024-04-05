@@ -88,7 +88,7 @@ class HistoryTableViewCell: UITableViewCell {
     func update(with cdFood: CDFood) {
         self.cdFood = cdFood
         let food = cdFood.convertToFDCFood()
-        titleLabel.text = "\(food.description) \(food.fdcId)"
+        titleLabel.text = "\(food.description)"
 //        descriptionLabel.text = food.getDescriptionFormatted(foodPortion: food.foodPortions[(food.foodPortions.count - 1) / 2])
         descriptionLabel.text = food.getFoodEntryDescriptionFormatted(foodPortion: food.foodPortions[(food.foodPortions.count - 1) / 2])
     }

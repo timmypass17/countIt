@@ -116,19 +116,14 @@ class NutritionTableViewCell: UITableViewCell {
     }
     
     func update(nutrientID: NutrientID, nutrientAmount: Float, nutrientGoal: Float) {
-        print(#function)
         nameLabel.text = nutrientID.description
-        if let nutrientGoal = Settings.shared.userDailyValues[nutrientID] {
-            let progress = nutrientAmount / nutrientGoal
-            if nutrientAmount < 1 {
-                amountLabel.text = "\(nutrientAmount.formattedString(decimalPlaces: 1)) \(nutrientID.unit)"
-            } else {
-                amountLabel.text = "\(Int(nutrientAmount)) \(nutrientID.unit)"
-            }
-            percentLabel.text = "\(Int((progress * 100).rounded()))%"
-            progressView.progress = progress
+        let progress = nutrientAmount / nutrientGoal
+        if nutrientAmount < 1 {
+            amountLabel.text = "\(nutrientAmount.formattedString(decimalPlaces: 1)) \(nutrientID.unit)"
         } else {
-            amountLabel.text = "Missing nutrient goal"
+            amountLabel.text = "\(Int(nutrientAmount)) \(nutrientID.unit)"
         }
+        percentLabel.text = "\(Int((progress * 100).rounded()))%"
+        progressView.progress = progress
     }
 }

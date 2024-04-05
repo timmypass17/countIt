@@ -99,10 +99,10 @@ class HomeTableViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if indexPath.section == 0 {
             let cell = tableView.dequeueReusableCell(withIdentifier: MacrosView.reuseIdentifier, for: indexPath)
-            let calories = MacroData(amount: mealPlan.getTotalNutrients(.calories), goal: Settings.shared.userDailyValues[.calories, default: 0.0])
-            let carbs = MacroData(amount: mealPlan.getTotalNutrients(.carbs), goal: Settings.shared.userDailyValues[.carbs, default: 0.0])
-            let protein = MacroData(amount: mealPlan.getTotalNutrients(.protein), goal: Settings.shared.userDailyValues[.protein, default: 0.0])
-            let fats = MacroData(amount: mealPlan.getTotalNutrients(.totalFat), goal: Settings.shared.userDailyValues[.totalFat, default: 0.0])
+            let calories = MacroData(amount: mealPlan.getTotalNutrients(.calories), goal: mealPlan.nutrientGoals[.calories, default: 0.0])
+            let carbs = MacroData(amount: mealPlan.getTotalNutrients(.carbs), goal: mealPlan.nutrientGoals[.carbs, default: 0.0])
+            let protein = MacroData(amount: mealPlan.getTotalNutrients(.protein), goal: mealPlan.nutrientGoals[.protein, default: 0.0])
+            let fats = MacroData(amount: mealPlan.getTotalNutrients(.totalFat), goal: mealPlan.nutrientGoals[.totalFat, default: 0.0])
 
             cell.contentConfiguration = UIHostingConfiguration { // affected by reloadData(), can't get it to update automatically
                 MacrosView(calories: calories, carbs: carbs, protein: protein, fats: fats)
@@ -141,7 +141,8 @@ class HomeTableViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if indexPath.section == 0 {
-            let goalTableViewController = GoalTableViewController(mealPlan: mealPlan, nutrientGoals: mealPlan.nutrientGoals)
+            let goalTableViewController = GoalTableViewController(mealPlan: mealPlan)
+            goalTableViewController.delegate = self
             navigationController?.pushViewController(goalTableViewController, animated: true)
             return
         }
@@ -363,6 +364,12 @@ extension HomeTableViewController: ReorderMealTableViewControllerDelegate {
 
 extension HomeTableViewController: QuickAddTableViewControllerDelegate {
     func quickAddTableViewController(_ viewController: QuickAddTableViewController, didAddFoodEntry: FoodEntry) {
+        updateUI()
+    }
+}
+
+extension HomeTableViewController: GoalTableViewControllerDelegate {
+    func goalTableViewController(_ viewController: GoalTableViewController, didUpdateNutrientGoals nutrientGoals: [NutrientID : Float]) {
         updateUI()
     }
 }
