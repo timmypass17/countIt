@@ -95,7 +95,7 @@ extension CoreDataStack {
     }
     
     func copy(mealPlanAt date: Date, into mealPlan: MealPlan) -> MealPlan {
-        let copiedMealPlan = getMealPlan(for: date) ?? MealPlan.createEmpty(for: date)
+        let copiedMealPlan = getMealPlan(for: date) ?? createEmpty(for: date)
         
         // 1. Override original meal plan
         context.delete(mealPlan)
@@ -157,9 +157,9 @@ extension CoreDataStack {
         food.updatedAt_ = nil
     }
     
-    func getLatestMealPlan(currentMealPlan: MealPlan) -> MealPlan? {
+    func getLatestMealPlan(currentDate: Date) -> MealPlan? {
         let request: NSFetchRequest<MealPlan> = MealPlan.fetchRequest()
-        request.predicate = NSPredicate(format: "date_ != %@", currentMealPlan.date as NSDate)  // ignore fetch current meal plan
+        request.predicate = NSPredicate(format: "date_ != %@", currentDate as NSDate)  // ignore fetch current meal plan
         request.sortDescriptors = [NSSortDescriptor(key: "date_", ascending: false)]
         request.fetchLimit = 1
         
@@ -175,6 +175,30 @@ extension CoreDataStack {
             print("Error fetching latest meal plan: \(error)")
             return nil
         }
+    }
+    
+    func createEmpty(for date: Date) -> MealPlan {
+        let context = CoreDataStack.shared.context
+        let mealPlan = MealPlan(context: context)
+        let nutrientGoals: [NutrientID: Float]
+        let mealNames: [String]
+        if let previousMealPlan = getLatestMealPlan(currentDate: date) {
+            nutrientGoals = previousMealPlan.nutrientGoals
+            mealNames = previousMealPlan.meals.map { $0.name }
+        } else {
+            nutrientGoals = UserDailyValues.default2000
+            mealNames = ["Breakfast", "Lunch", "Dinner", "Snack"]
+        }
+        mealPlan.nutrientGoals = nutrientGoals
+        mealPlan.date = Calendar.current.startOfDay(for: date)
+        for (i, mealName) in mealNames.enumerated() {
+            let meal = Meal(context: context)
+            meal.name = mealName
+            meal.index = Int16(i)
+            meal.mealPlan = mealPlan
+        }
+        
+        return mealPlan
     }
 }
 

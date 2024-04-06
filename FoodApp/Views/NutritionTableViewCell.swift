@@ -117,7 +117,10 @@ class NutritionTableViewCell: UITableViewCell {
     
     func update(nutrientID: NutrientID, nutrientAmount: Float, nutrientGoal: Float) {
         nameLabel.text = nutrientID.description
-        let progress = nutrientAmount / nutrientGoal
+        var progress: Float = 0
+        if nutrientGoal > 0 {
+            progress = nutrientAmount / nutrientGoal
+        }
         if nutrientAmount < 1 {
             amountLabel.text = "\(nutrientAmount.formattedString(decimalPlaces: 1)) \(nutrientID.unit)"
         } else {

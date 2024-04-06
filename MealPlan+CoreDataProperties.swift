@@ -26,6 +26,11 @@ extension MealPlan {
             nutrientGoals_ = CoreDataStack.encode(value: newValue)
         }
     }
+    
+    enum Key: String, CaseIterable {
+        case nutrientGoal = "nutrientGoals_"
+        case date = "date_"
+    }
 }
 
 // MARK: Generated accessors for meals_
@@ -71,25 +76,6 @@ extension MealPlan : Identifiable {
 }
 
 extension MealPlan {
-    static func createEmpty(for date: Date) -> MealPlan {
-        let context = CoreDataStack.shared.context
-        let mealPlan = MealPlan(context: context)
-        mealPlan.nutrientGoals = UserDailyValues.default2000
-        mealPlan.date = Calendar.current.startOfDay(for: date)
-        
-        let breakfast = Meal(context: context)
-        breakfast.name = "Breakfast"
-        breakfast.index = 0
-        breakfast.mealPlan = mealPlan
-        mealPlan.addToMeals_(breakfast)
-
-        let lunch = Meal(context: context)
-        lunch.name = "Lunch"
-        lunch.index = 1
-        lunch.mealPlan = mealPlan
-        mealPlan.addToMeals_(lunch)
-        return mealPlan
-    }
     
     func printPrettyString() {
 //        print("Meal Plan: \(self.date)")

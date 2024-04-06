@@ -29,7 +29,7 @@ class ReorderMealTableViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: reuseIdentifier)
-        navigationItem.title = "Reorder Meals"
+        navigationItem.title = "Edit Meals"
         tableView.setEditing(true, animated: true)
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Cancel", primaryAction: didTapCancelButton())
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Done", primaryAction: didTapDoneButton())

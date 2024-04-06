@@ -94,7 +94,7 @@ class FoodDetailTableViewController: UITableViewController {
         case .add:
             navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Add", primaryAction: addButtonTapped())
         case .edit:
-            navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Update", primaryAction: updateButtonTapped())
+            navigationItem.rightBarButtonItem = UIBarButtonItem(systemItem: .save, primaryAction: updateButtonTapped())
         }
         tableView.register(SelectTableViewCell.self, forCellReuseIdentifier: SelectTableViewCell.reuseIdentifier)
         tableView.register(NutritionTableViewCell.self, forCellReuseIdentifier: NutritionTableViewCell.reuseIdentifier)
@@ -214,7 +214,7 @@ class FoodDetailTableViewController: UITableViewController {
             selectTableViewController.delegate = self
             present(UINavigationController(rootViewController: selectTableViewController), animated: true)
         } else if indexPath == quantityIndexPath {
-            let quantityTableViewController = QuantityViewController()
+            let quantityTableViewController = QuantityViewController(selectedQuantity: numberOfServings)
             quantityTableViewController.delegate = self
             let vc = UINavigationController(rootViewController: quantityTableViewController)
             vc.sheetPresentationController?.detents = [.medium(), .large()]
@@ -234,6 +234,8 @@ class FoodDetailTableViewController: UITableViewController {
                     historyDelegate?.foodDetailTableViewController(self, didUpdateHistoryWithFood: food)
                 }
             }
+            let generator = UIImpactFeedbackGenerator(style: .medium)
+            generator.impactOccurred()
             dismiss(animated: true)
         }
     }
@@ -253,6 +255,8 @@ class FoodDetailTableViewController: UITableViewController {
                     historyDelegate?.foodDetailTableViewController(self, didUpdateHistoryWithFood: food)
                 }
             }
+            let generator = UIImpactFeedbackGenerator(style: .medium)
+            generator.impactOccurred()
             dismiss(animated: true)
         }
     }

@@ -76,7 +76,7 @@ enum NutrientID: Int, Codable, CaseIterable {
     case riboflavin = 1166
     case folate = 1177
     case niacin = 1167
-    case choline = 1180 // mg
+    case choline = 1180
     case pantothenicAcid = 1170
     case biotin = 1176
     
@@ -281,7 +281,7 @@ enum NutrientID: Int, Codable, CaseIterable {
         case .niacin:
             return "mg"
         case .choline:
-            return "g"
+            return "mg"
         case .pantothenicAcid:
             return "mg"
         case .biotin:
@@ -305,7 +305,7 @@ enum NutrientID: Int, Codable, CaseIterable {
         case .molybdenum:
             return "mcg"
         case .phosphorus:
-            return "g"
+            return "mg"
         case .potassium:
             return "mg"
         case .selenium:

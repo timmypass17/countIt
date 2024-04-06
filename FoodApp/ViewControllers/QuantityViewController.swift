@@ -19,12 +19,24 @@ class QuantityViewController: UIViewController, UIPickerViewDataSource, UIPicker
         return picker
     }()
     
+    var selectedQuantity: Int
     weak var delegate: QuantityTableViewControllerDelegate?
+    
+    init(selectedQuantity: Int) {
+        self.selectedQuantity = selectedQuantity
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         pickerView.delegate = self
         pickerView.dataSource = self
+        pickerView.selectRow(selectedQuantity - 1, inComponent: 0, animated: true)
+        
         title = "Number of Servings"
         navigationItem.rightBarButtonItem = UIBarButtonItem(systemItem: .done, primaryAction: doneButtonTapped())
         navigationItem.leftBarButtonItem = UIBarButtonItem(systemItem: .cancel, primaryAction: cancelButtonTapped())
@@ -56,7 +68,6 @@ class QuantityViewController: UIViewController, UIPickerViewDataSource, UIPicker
     func doneButtonTapped() -> UIAction {
         return UIAction { [self] _ in
             let quantity = pickerView.selectedRow(inComponent: 0) + 1
-            print(quantity)
             delegate?.quantityTableViewController(self, didSelectQuantity: quantity)
             dismiss(animated: true)
         }

@@ -28,7 +28,9 @@ class ResultsTableViewController: UITableViewController {
     
     weak var delegate: FoodDetailTableViewControllerDelegate?
     weak var historyDelegate: FoodDetailTableViewControllerHistoryDelegate?
-    
+    weak var resultDelegate: ResultTableViewCellDelegate?
+    weak var resultHistoryDelegate: ResultTableViewCellHistoryDelegate?
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -57,6 +59,8 @@ class ResultsTableViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: ResultTableViewCell.reuseIdentifier, for: indexPath) as! ResultTableViewCell
+        cell.delegate = resultDelegate
+        cell.historyDelegate =  resultHistoryDelegate
         let food = foods[indexPath.row]
         cell.update(with: food)
         return cell

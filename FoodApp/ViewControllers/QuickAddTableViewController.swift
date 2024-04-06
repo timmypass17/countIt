@@ -122,8 +122,9 @@ class QuickAddTableViewController: UITableViewController {
             if let food = item.food {
                 historyDelegate?.quickAddTableViewController(self, didUpdateHistoryWithFood: food)
             }
+            let generator = UIImpactFeedbackGenerator(style: .medium)
+            generator.impactOccurred()
             dismiss(animated: true)
-            
         }
     }
     

@@ -27,7 +27,7 @@ class GoalTableViewCell: UITableViewCell {
         let textField = UITextField()
         textField.textAlignment = .right
 //        textField.placeholder = "0"
-        textField.keyboardType = .numberPad
+        textField.keyboardType = .decimalPad
         return textField
     }()
     

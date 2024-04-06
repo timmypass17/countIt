@@ -20,7 +20,7 @@ class HomeTableViewController: UITableViewController {
     }
     
     init(foodService: FoodService) {
-        self.mealPlan = CoreDataStack.shared.getMealPlan(for: .now) ?? MealPlan.createEmpty(for: .now)
+        self.mealPlan = CoreDataStack.shared.getMealPlan(for: .now) ?? CoreDataStack.shared.createEmpty(for: .now)
         for meal in mealPlan.meals {
             print(meal.name, meal.index)
         }
@@ -154,6 +154,7 @@ class HomeTableViewController: UITableViewController {
             let searchFoodTableViewController = SearchFoodTableViewController(foodService: foodService, meal: meal)
             searchFoodTableViewController.delegate = self
             searchFoodTableViewController.quickAddDelegate = self
+            searchFoodTableViewController.resultDelegate = self
             navigationController?.pushViewController(searchFoodTableViewController, animated: true)
             return
         }
@@ -251,7 +252,7 @@ class HomeTableViewController: UITableViewController {
     }
     
     private func showMealAlert() {
-        let alert = UIAlertController(title: "Add Meal", message: "Enter meal name below", preferredStyle: .alert)
+        let alert = UIAlertController(title: "Add Meal", message: "Enter name for meal", preferredStyle: .alert)
 
         alert.addTextField { textField in
             textField.placeholder = "Ex. Breakfast"
@@ -273,7 +274,7 @@ class HomeTableViewController: UITableViewController {
     }
     
     func reorderMealAction() -> UIAction {
-        return UIAction(title: NSLocalizedString("Reorder Meal", comment: ""),
+        return UIAction(title: NSLocalizedString("Edit Meals", comment: ""),
                         image: UIImage(systemName: "takeoutbag.and.cup.and.straw")) { [self] action in
             let reorderMealTableViewController = ReorderMealTableViewController(meals: mealPlan.meals)
             reorderMealTableViewController.delegate = self
@@ -289,7 +290,7 @@ class HomeTableViewController: UITableViewController {
     }
         
     func copyLatestAction() -> UIAction {
-        if let previousMealPlan = CoreDataStack.shared.getLatestMealPlan(currentMealPlan: mealPlan), previousMealPlan.date != mealPlan.date {
+        if let previousMealPlan = CoreDataStack.shared.getLatestMealPlan(currentDate: mealPlan.date), previousMealPlan.date != mealPlan.date {
             let copyAction = UIAction(title: "Latest", image: UIImage(systemName: "clock")) { [self] action in
                 let mealPlan = CoreDataStack.shared.copy(mealPlanAt: previousMealPlan.date, into: mealPlan)
                 self.mealPlan = mealPlan
@@ -344,7 +345,7 @@ extension HomeTableViewController: MealPlanDateViewDelegate {
         if self.mealPlan.isEmpty {
             CoreDataStack.shared.context.delete(mealPlan)
         }
-        self.mealPlan = CoreDataStack.shared.getMealPlan(for: date) ?? MealPlan.createEmpty(for: date)
+        self.mealPlan = CoreDataStack.shared.getMealPlan(for: date) ?? CoreDataStack.shared.createEmpty(for: date)
         updateUI()
     }
 }
@@ -370,6 +371,12 @@ extension HomeTableViewController: QuickAddTableViewControllerDelegate {
 
 extension HomeTableViewController: GoalTableViewControllerDelegate {
     func goalTableViewController(_ viewController: GoalTableViewController, didUpdateNutrientGoals nutrientGoals: [NutrientID : Float]) {
+        updateUI()
+    }
+}
+
+extension HomeTableViewController: ResultTableViewCellDelegate {
+    func resultTableViewCell(_ cell: ResultTableViewCell, didAddFoodEntry foodEntry: FoodEntry) {
         updateUI()
     }
 }

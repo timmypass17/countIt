@@ -22,6 +22,7 @@ class SearchFoodTableViewController: UITableViewController {
     
     weak var delegate: FoodDetailTableViewControllerDelegate?
     weak var quickAddDelegate: QuickAddTableViewControllerDelegate?
+    weak var resultDelegate: ResultTableViewCellDelegate?
 
     var scannerAvailable: Bool {
         DataScannerViewController.isSupported &&
@@ -51,6 +52,8 @@ class SearchFoodTableViewController: UITableViewController {
         resultsTableController = ResultsTableViewController(meal: meal, foodService: foodService)
         resultsTableController.delegate = delegate
         resultsTableController.historyDelegate = self
+        resultsTableController.resultDelegate = resultDelegate
+        resultsTableController.resultHistoryDelegate = self
         searchController = UISearchController(searchResultsController: resultsTableController)
 //        searchController.delegate = self
         searchController.searchBar.delegate = self
@@ -163,7 +166,6 @@ extension SearchFoodTableViewController: SearchTitleViewDelegate {
 
 extension SearchFoodTableViewController: FoodDetailTableViewControllerHistoryDelegate {
     func foodDetailTableViewController(_ tableViewController: FoodDetailTableViewController, didUpdateHistoryWithFood food: CDFood) {
-        print(#function)
         if !history.contains(food) {
             history.append(food)
         }
@@ -174,7 +176,6 @@ extension SearchFoodTableViewController: FoodDetailTableViewControllerHistoryDel
 
 extension SearchFoodTableViewController: QuickAddTableViewControllerHistoryDelegate {
     func quickAddTableViewController(_ viewController: QuickAddTableViewController, didUpdateHistoryWithFood food: CDFood) {
-        print(#function)
         if !history.contains(food) {
             history.append(food)
         }
@@ -239,5 +240,15 @@ extension SearchFoodTableViewController: DataScannerViewControllerDelegate {
         let alert = UIAlertController(title: "Item not found", message: "This item is not in the database. Please try using the search bar to find a similar product.\n\(id)", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "Got it!", style: .cancel, handler: nil))
         self.present(alert, animated: true, completion: nil)
+    }
+}
+
+extension SearchFoodTableViewController: ResultTableViewCellHistoryDelegate {
+    func resultTableViewCell(_ cell: ResultTableViewCell, didUpdateHistoryWithFood food: CDFood) {
+        if !history.contains(food) {
+            history.append(food)
+        }
+        history = history.sorted { $0.updatedAt > $1.updatedAt }
+        tableView.reloadData()
     }
 }
