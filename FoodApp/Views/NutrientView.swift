@@ -69,7 +69,7 @@ class NutrientView: UIView {
 
     func update(amount: Float, unit: String, iconImage: UIImage?, tintColor: UIColor) {
         var config = UIImage.SymbolConfiguration(pointSize: 12)
-        let colors: [UIColor] = [.white, tintColor]
+        let colors: [UIColor] = [.label, tintColor]
         config = config.applying(UIImage.SymbolConfiguration(paletteColors: colors))
         iconImageView.image = iconImage?.withConfiguration(config)
         

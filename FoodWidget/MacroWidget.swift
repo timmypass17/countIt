@@ -74,25 +74,6 @@ struct MacroWidget: Widget {
     MealPlanEntry(date: .now, mealPlan: MealPlan.sample)
 }
 
-//struct WaterReminderWidgetEntryView : View {
-//    @Environment(\.widgetFamily) var family: WidgetFamily
-//    // Where does entry come frome?
-//    // - Entries come from a timeline provider. The timeline provider provides snapshots when WidgetKit wants just one entry
-//    var entry: SimpleEntry
-//    
-//    @ViewBuilder
-//    var body: some View {
-//        switch family {
-//        case .systemSmall:
-//            WaterReminderSmallView(plants: entry.plants)
-//        case .systemMedium:
-//            WaterReminderMediumView(plants: entry.plants)
-//        default:
-//            Text("Placeholder")
-//        }
-//    }
-//}
-
 // Note: Add all files that are used within widget to 'FoodWidgetExtension' target
 /**
  - Core data is a sqllite wrapper, sqlite is is just a file stored on users device

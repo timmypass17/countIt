@@ -78,18 +78,18 @@ enum NutrientID: Int, Codable, CaseIterable {
     case niacin = 1167
     case choline = 1180
     case pantothenicAcid = 1170
-    case biotin = 1176
+//    case biotin = 1176
     
     // Minerals
     case calcium = 1087
-    case chlorine = 1088
-    case chromium = 1096
+//    case chlorine = 1088
+//    case chromium = 1096
     case copper = 1098
     case iodine = 1100
     case iron = 1089
     case magnesium = 1090
     case manganese = 1101
-    case molybdenum = 1102
+//    case molybdenum = 1102
     case phosphorus = 1091
     case potassium = 1092
     case selenium = 1103
@@ -124,17 +124,17 @@ enum NutrientID: Int, Codable, CaseIterable {
         case 1167: self = .niacin
         case 1180: self = .choline
         case 1170: self = .pantothenicAcid
-        case 1176: self = .biotin
+//        case 1176: self = .biotin
             // Minerals
         case 1087: self = .calcium
-        case 1088: self = .chlorine
-        case 1096: self = .chromium
+//        case 1088: self = .chlorine
+//        case 1096: self = .chromium
         case 1098: self = .copper
         case 1100: self = .iodine
         case 1089: self = .iron
         case 1090: self = .magnesium
         case 1101: self = .manganese
-        case 1102: self = .molybdenum
+//        case 1102: self = .molybdenum
         case 1091: self = .phosphorus
         case 1092: self = .potassium
         case 1103: self = .selenium
@@ -146,9 +146,9 @@ enum NutrientID: Int, Codable, CaseIterable {
     
     static let mainNutrients: [Self] = [.calories, .totalFat, .saturatedFat, .transFat, .cholesterol, .sodium, .carbs, .fiber, .totalSugar, .addedSugar, .protein]
     
-    static let vitamins: [Self] = [.vitaminA, .vitaminC, .vitaminD, .vitaminB6, .vitaminE, .vitaminK, .thiamin, .vitaminB12, .riboflavin, .folate , .niacin, .choline, .pantothenicAcid, .biotin]
+    static let vitamins: [Self] = [.vitaminA, .vitaminC, .vitaminD, .vitaminB6, .vitaminE, .vitaminK, .thiamin, .vitaminB12, .riboflavin, .folate , .niacin, .choline, .pantothenicAcid]
     
-    static let minerals: [Self] = [.calcium, .chlorine, .chromium, .copper, .iodine, .iron, .magnesium, .manganese, .molybdenum, .phosphorus, .potassium, .selenium, .sodium, .zinc]
+    static let minerals: [Self] = [.calcium/*, .chlorine*/, /*.chromium,*/ .copper, .iodine, .iron, .magnesium, .manganese, /*.molybdenum,*/ .phosphorus, .potassium, .selenium, .sodium, .zinc]
     
     var description: String {
         switch self {
@@ -200,14 +200,14 @@ enum NutrientID: Int, Codable, CaseIterable {
             return "Choline"
         case .pantothenicAcid:
             return "Pantothenic Acid"
-        case .biotin:
-            return "Biotin"
+//        case .biotin:
+//            return "Biotin"
         case .calcium:
             return "Calcium"
-        case .chlorine:
-            return "Chlorine"
-        case .chromium:
-            return "Chromium"
+//        case .chlorine:
+//            return "Chlorine"
+//        case .chromium:
+//            return "Chromium"
         case .copper:
             return "Copper"
         case .iodine:
@@ -218,8 +218,8 @@ enum NutrientID: Int, Codable, CaseIterable {
             return "Magnesium"
         case .manganese:
             return "Manganese"
-        case .molybdenum:
-            return "Molybdenum"
+//        case .molybdenum:
+//            return "Molybdenum"
         case .phosphorus:
             return "Phosphorus"
         case .potassium:
@@ -284,14 +284,14 @@ enum NutrientID: Int, Codable, CaseIterable {
             return "mg"
         case .pantothenicAcid:
             return "mg"
-        case .biotin:
-            return "mcg"
+//        case .biotin:
+//            return "mcg"
         case .calcium:
             return "mg"
-        case .chlorine:
-            return "g"
-        case .chromium:
-            return "mcg"
+//        case .chlorine:
+//            return "g"
+//        case .chromium:
+//            return "mcg"
         case .copper:
             return "mcg"
         case .iodine:
@@ -302,8 +302,8 @@ enum NutrientID: Int, Codable, CaseIterable {
             return "mg"
         case .manganese:
             return "mg"
-        case .molybdenum:
-            return "mcg"
+//        case .molybdenum:
+//            return "mcg"
         case .phosphorus:
             return "mg"
         case .potassium:

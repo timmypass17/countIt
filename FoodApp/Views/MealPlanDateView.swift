@@ -30,7 +30,7 @@ class MealPlanDateView: UIView {
     var previousButton: UIButton = {
         let button = UIButton()
         button.setImage(UIImage(systemName: "chevron.left"), for: .normal)
-        button.tintColor = .white
+        button.tintColor = .label
         button.widthAnchor.constraint(equalToConstant: 50).isActive = true
         return button
     }()
@@ -38,7 +38,7 @@ class MealPlanDateView: UIView {
     var nextButton: UIButton = {
         let button = UIButton()
         button.setImage(UIImage(systemName: "chevron.right"), for: .normal)
-        button.tintColor = .white
+        button.tintColor = .label
         button.widthAnchor.constraint(equalToConstant: 50).isActive = true
         return button
     }()
@@ -83,6 +83,8 @@ class MealPlanDateView: UIView {
         return UIAction { [self] _ in
             datePicker.date = Calendar.current.date(byAdding: .day, value: 1, to: selectedDate)!
             delegate?.mealPlanDateViewDelegate(self, datePickerValueChanged: selectedDate)
+            let generator = UIImpactFeedbackGenerator(style: .medium)
+            generator.impactOccurred()
         }
     }
     
@@ -90,6 +92,8 @@ class MealPlanDateView: UIView {
         return UIAction { [self] _ in
             datePicker.date = Calendar.current.date(byAdding: .day, value: -1, to: selectedDate)!
             delegate?.mealPlanDateViewDelegate(self, datePickerValueChanged: selectedDate)
+            let generator = UIImpactFeedbackGenerator(style: .medium)
+            generator.impactOccurred()
         }
     }
 }
