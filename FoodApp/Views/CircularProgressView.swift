@@ -14,7 +14,7 @@ struct CircularProgressView: View {
     let color: Color
     let unitName: String
     let progressSize: CGFloat = 16
-    let totalSize: CGFloat = 12
+    let totalSize: CGFloat = 10
     let titleSize: CGFloat = 16
     var lineWidth: CGFloat = 5
     

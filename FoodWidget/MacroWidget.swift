@@ -35,7 +35,7 @@ struct Provider: TimelineProvider {
 }
 
 struct MealPlanEntry: TimelineEntry {
-    let date: Date      // date to update widget
+    let date: Date            // date to update widget
     let mealPlan: MealPlan?   // properties of widget
 }
 
@@ -74,7 +74,7 @@ struct MacroWidget: Widget {
     MealPlanEntry(date: .now, mealPlan: MealPlan.sample)
 }
 
-// Note: Add all files that are used within widget to 'FoodWidgetExtension' target
+// Note: Add all files that are used within widget to 'FoodWidgetExtension' target (including .xcdatamodeld)
 /**
  - Core data is a sqllite wrapper, sqlite is is just a file stored on users device
  - To share data between different targets on the same device you add them to an App Group

@@ -237,7 +237,7 @@ enum NutrientID: Int, Codable, CaseIterable {
     var unit: String {
         switch self {
         case .calories:
-            return "kcal"
+            return "cal"
         case .totalFat:
             return "g"
         case .saturatedFat:

@@ -32,7 +32,7 @@ class QuickAddTableViewController: UITableViewController {
         food.servingSizeUnit = "unspecified"
         food.foodPortions = [foodPortion]
         food.foodNutrients = [
-            FoodNutrient(nutrient: Nutrient(id: .calories, name: "Calories", unitName: "kcal"), amount: nil),
+            FoodNutrient(nutrient: Nutrient(id: .calories, name: "Calories", unitName: "cal"), amount: nil),
             FoodNutrient(nutrient: Nutrient(id: .carbs, name: "Carbohydrates", unitName: "g"), amount: nil),
             FoodNutrient(nutrient: Nutrient(id: .protein, name: "Protein", unitName: "g"), amount: nil),
             FoodNutrient(nutrient: Nutrient(id: .totalFat, name: "Fats", unitName: "g"), amount: nil),
