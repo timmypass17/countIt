@@ -25,12 +25,12 @@ struct MacrosView: View {
     @ObservedObject var fats: MacroData
 
     var body: some View {
-        Grid(horizontalSpacing: 24) {
+        Grid(horizontalSpacing: 20) {
             GridRow {
-                CircularProgressView(title: "Calories", current: calories.amount, total: calories.goal, color: .blue)
-                CircularProgressView(title: "Carbs", current: carbs.amount, total: carbs.goal, color: .yellow)
-                CircularProgressView(title: "Protein", current: protein.amount, total: protein.goal, color: .pink)
-                CircularProgressView(title: "Fat", current: fats.amount, total: fats.goal, color: .green)
+                CircularProgressView(title: "Calories", current: calories.amount, total: calories.goal, color: .blue, unitName: "cal")
+                CircularProgressView(title: "Carbs", current: carbs.amount, total: carbs.goal, color: .yellow, unitName: "g")
+                CircularProgressView(title: "Protein", current: protein.amount, total: protein.goal, color: .pink, unitName: "g")
+                CircularProgressView(title: "Fat", current: fats.amount, total: fats.goal, color: .green, unitName: "g")
             }
         }
     }

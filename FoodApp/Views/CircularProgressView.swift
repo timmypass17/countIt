@@ -12,6 +12,11 @@ struct CircularProgressView: View {
     let current: Float
     let total: Float
     let color: Color
+    let unitName: String
+    let progressSize: CGFloat = 16
+    let totalSize: CGFloat = 12
+    let titleSize: CGFloat = 16
+    var lineWidth: CGFloat = 5
     
     var progress: Float {
         return current / total
@@ -23,34 +28,40 @@ struct CircularProgressView: View {
                 Circle()
                     .stroke(
                         color.opacity(0.1),
-                        lineWidth: 5
+                        lineWidth: lineWidth
                     )
                 Circle()
                     .trim(from: 0, to: CGFloat(progress))
                     .stroke(
                         color,
                         style: StrokeStyle(
-                            lineWidth: 5,
+                            lineWidth: lineWidth,
                             lineCap: .round
                         )
                     )
                     .rotationEffect(.degrees(-90))
                     .animation(.easeOut, value: progress)
                 VStack {
-                    if current > 1 {
-                        Text("\(Int(current))")
-                            .fontWeight(.semibold)
-                    } else {
-                        Text("\(current.formattedString(decimalPlaces: 1))")
-                            .fontWeight(.semibold)
+                    Group {
+                        if current > 1 {
+                            Text("\(Int(current))")
+                        } else {
+                            Text("\(current.formattedString(decimalPlaces: 1))")
+                        }
                     }
-                    Text("\(total.formatted(.number)) g")
-                        .font(.caption)
+                    .fontWeight(.semibold)
+                    .font(.system(size: progressSize))
+                    
+                    Text("\(total.formatted(.number)) \(unitName)")
+//                        .font(.caption)
                         .foregroundStyle(.secondary)
+                        .font(.system(size: totalSize))
                 }
             }
             Text(title)
                 .foregroundStyle(.secondary)
+//                .font(.subheadline)
+                .font(.system(size: titleSize))
         }
         
     }
@@ -58,7 +69,7 @@ struct CircularProgressView: View {
 
 #Preview {
     GeometryReader { geometry in
-        CircularProgressView(title: "Calories", current: 105, total: 2000, color: .blue)
+        CircularProgressView(title: "Calories", current: 105, total: 2000, color: .blue, unitName: "cal")
             .frame(width: geometry.size.width * 0.25)
     }
 }

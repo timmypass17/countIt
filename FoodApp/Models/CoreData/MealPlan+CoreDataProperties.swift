@@ -77,6 +77,15 @@ extension MealPlan : Identifiable {
 
 extension MealPlan {
     
+    static let sample: MealPlan = {
+        let mealPlan = MealPlan(entity: MealPlan.entity(), insertInto: nil)
+        mealPlan.nutrientGoals = UserDailyValues.default2000
+        mealPlan.date = .now
+        
+//        mealPlan.meals = []
+        return mealPlan
+    }()
+    
     func printPrettyString() {
 //        print("Meal Plan: \(self.date)")
 //        print("Meals Count \(self.meals.count)")

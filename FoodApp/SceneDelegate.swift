@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import WidgetKit
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
@@ -53,8 +54,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Save changes in the application's managed object context when the application transitions to the background.
         
         CoreDataStack.shared.saveContext()
-        
-//        (UIApplication.shared.delegate as? AppDelegate)?.saveContext()
+        WidgetCenter.shared.reloadAllTimelines()
     }
 
 

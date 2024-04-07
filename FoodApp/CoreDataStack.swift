@@ -16,7 +16,12 @@ class CoreDataStack {
     }
     
     lazy var persistentContainer: NSPersistentContainer = {
+        let appGroup = "group.com.example.TimmyFoodApp"
+        let containerURL = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: appGroup)!
+        let storeURL = containerURL.appendingPathComponent("FoodApp.sqlite") // FoodApp.xcdatamodeld
+        let description = NSPersistentStoreDescription(url: storeURL)
         let container = NSPersistentContainer(name: "FoodApp")
+        container.persistentStoreDescriptions = [description]
         container.loadPersistentStores(completionHandler: { (storeDescription, error) in
             if let error = error as NSError? {
                 fatalError("Unresolved error \(error), \(error.userInfo)")
@@ -67,13 +72,9 @@ extension CoreDataStack {
 
         // Relationship
         if let existingFood = getCDFood(id: food.fdcId) {
-            print("Existing Food:")
             foodEntry.food = existingFood
         } else {
-            print("Create Food:")
-            print("Before: \(food)")
             foodEntry.food = food.convertToCDFood(context: context)
-            print("After: \(foodEntry.food)")
         }
         foodEntry.food?.updatedAt = .now
         foodEntry.meal = meal   // equivalent: meal.addToFoodEntries_(foodEntry)
@@ -158,8 +159,9 @@ extension CoreDataStack {
     }
     
     func getLatestMealPlan(currentDate: Date) -> MealPlan? {
+        let date = Calendar.current.startOfDay(for: currentDate)
         let request: NSFetchRequest<MealPlan> = MealPlan.fetchRequest()
-        request.predicate = NSPredicate(format: "date_ != %@", currentDate as NSDate)  // ignore fetch current meal plan
+        request.predicate = NSPredicate(format: "date_ != %@", date as NSDate)  // ignore fetch current meal plan
         request.sortDescriptors = [NSSortDescriptor(key: "date_", ascending: false)]
         request.fetchLimit = 1
         
@@ -178,8 +180,8 @@ extension CoreDataStack {
     }
     
     func createEmpty(for date: Date) -> MealPlan {
-        let context = CoreDataStack.shared.context
         let mealPlan = MealPlan(context: context)
+        mealPlan.date = Calendar.current.startOfDay(for: date)
         let nutrientGoals: [NutrientID: Float]
         let mealNames: [String]
         if let previousMealPlan = getLatestMealPlan(currentDate: date) {
@@ -190,7 +192,6 @@ extension CoreDataStack {
             mealNames = ["Breakfast", "Lunch", "Dinner", "Snack"]
         }
         mealPlan.nutrientGoals = nutrientGoals
-        mealPlan.date = Calendar.current.startOfDay(for: date)
         for (i, mealName) in mealNames.enumerated() {
             let meal = Meal(context: context)
             meal.name = mealName
