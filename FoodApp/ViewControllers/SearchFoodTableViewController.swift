@@ -54,6 +54,7 @@ class SearchFoodTableViewController: UITableViewController {
         resultsTableController.historyDelegate = self
         resultsTableController.resultDelegate = resultDelegate
         resultsTableController.resultHistoryDelegate = self
+        
         searchController = UISearchController(searchResultsController: resultsTableController)
 //        searchController.delegate = self
         searchController.searchBar.delegate = self
@@ -245,6 +246,7 @@ extension SearchFoodTableViewController: DataScannerViewControllerDelegate {
 
 extension SearchFoodTableViewController: ResultTableViewCellHistoryDelegate {
     func resultTableViewCell(_ cell: ResultTableViewCell, didUpdateHistoryWithFood food: CDFood) {
+        print(#function)
         if !history.contains(food) {
             history.append(food)
         }

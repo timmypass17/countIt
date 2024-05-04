@@ -16,7 +16,7 @@ class CoreDataStack {
     }
     
     lazy var persistentContainer: NSPersistentContainer = {
-        let appGroup = "group.com.example.TimmyFoodApp"
+        let appGroup = "group.com.example.DuduMelon"
         let containerURL = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: appGroup)!
         let storeURL = containerURL.appendingPathComponent("FoodApp.sqlite") // FoodApp.xcdatamodeld
         let description = NSPersistentStoreDescription(url: storeURL)

@@ -104,7 +104,9 @@ class ResultTableViewCell: UITableViewCell {
     
     func didTapPlusButton() -> UIAction {
         return UIAction { [self] _ in
+            print(#function)
             if let meal {
+                print("Has meal")
                 let foodEntry = CoreDataStack.shared.addFoodEntry(food, to: meal, servingSize: selectedFoodPortion, numberOfServings: 1, servingSizeUnit: food.servingSizeUnit ?? "g")
                 delegate?.resultTableViewCell(self, didAddFoodEntry: foodEntry)
                 

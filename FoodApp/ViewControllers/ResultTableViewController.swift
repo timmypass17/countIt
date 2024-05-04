@@ -63,6 +63,7 @@ class ResultsTableViewController: UITableViewController {
         cell.historyDelegate =  resultHistoryDelegate
         let food = foods[indexPath.row]
         cell.update(with: food)
+        cell.meal = meal
         return cell
     }
     

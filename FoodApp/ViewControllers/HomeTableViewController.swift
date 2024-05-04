@@ -377,6 +377,7 @@ extension HomeTableViewController: GoalTableViewControllerDelegate {
 
 extension HomeTableViewController: ResultTableViewCellDelegate {
     func resultTableViewCell(_ cell: ResultTableViewCell, didAddFoodEntry foodEntry: FoodEntry) {
+        print(#function)
         updateUI()
     }
 }
