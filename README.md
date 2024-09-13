@@ -37,7 +37,7 @@ An iOS macronutrient tracking app.
    
 ## Technologies used
 - Swift
-- UIKit
+- UIKit (no storyboard)
 - Core Data
 - WidgetKit
 - [USDA FoodData Central API](https://fdc.nal.usda.gov/api-guide.html)
