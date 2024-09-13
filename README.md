@@ -25,7 +25,7 @@ An iOS macronutrient tracking app.
 ## Installation
 
 ### Prerequisites
-- iOS 16.0+
+- iOS 17.0+
 - Xcode 14.0+
 
 ### Build Steps
