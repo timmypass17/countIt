@@ -1,7 +1,7 @@
 # BananaBite
 An iOS macronutrient tracking app.
 
-<a href="https://apps.apple.com/us/app/kurisu/id6501975040">
+<a href="https://apps.apple.com/us/app/bananabite/id6502222485">
   <img src="https://upload.wikimedia.org/wikipedia/commons/3/3c/Download_on_the_App_Store_Badge.svg" alt="App Store" width="200 style="padding-bottom: 20px;"/>
 </a>
 
