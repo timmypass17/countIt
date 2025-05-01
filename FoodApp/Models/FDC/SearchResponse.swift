@@ -9,7 +9,7 @@ import Foundation
 
 
 struct SearchResponse: Decodable {
-    var foods: [Food]
+    var foods: [FDCFood]
     
     enum CodingKeys: String, CodingKey {
         case foods

@@ -2,7 +2,7 @@
 //  Meal+CoreDataProperties.swift
 //  FoodApp
 //
-//  Created by Timmy Nguyen on 3/17/24.
+//  Created by Timmy Nguyen on 5/1/25.
 //
 //
 
@@ -18,59 +18,24 @@ extension Meal {
 
     @NSManaged public var index: Int16
     @NSManaged public var name_: String?
-    @NSManaged public var foodEntries_: NSSet?
-    @NSManaged public var mealPlan: MealPlan?
+    @NSManaged public var foods: NSSet?
+    @NSManaged public var mealPlan_: MealPlan?
 
-    var name: String {
-        get { name_ ?? "" }
-        set { name_ = newValue }
-    }
-    
-    var foodEntries: [FoodEntry] {
-        get { (foodEntries_?.allObjects as! [FoodEntry]).sorted() }
-        set { foodEntries_ = NSSet(array: newValue) }
-    }
-    
-    func getTotalNutrients(_ nutrientID: NutrientID) -> Float {
-        var nutrientAmount: Float = 0.0
-        for foodEntry in foodEntries {
-            nutrientAmount += foodEntry.getTotalNutrients(nutrientID)
-        }
-        return nutrientAmount
-    }
 }
 
-extension Array where Element == Meal {
-    func updateIndexes() {
-        for (index, meal) in self.enumerated() {
-            meal.index = Int16(index)
-        }
-    }
-}
-
-// MARK: Generated accessors for foodEntries_
+// MARK: Generated accessors for foods
 extension Meal {
 
-    @objc(addFoodEntries_Object:)
-    @NSManaged public func addToFoodEntries_(_ value: FoodEntry)
+    @objc(addFoodsObject:)
+    @NSManaged public func addToFoods(_ value: Food)
 
-    @objc(removeFoodEntries_Object:)
-    @NSManaged public func removeFromFoodEntries_(_ value: FoodEntry)
+    @objc(removeFoodsObject:)
+    @NSManaged public func removeFromFoods(_ value: Food)
 
-    @objc(addFoodEntries_:)
-    @NSManaged public func addToFoodEntries_(_ values: NSSet)
+    @objc(addFoods:)
+    @NSManaged public func addToFoods(_ values: NSSet)
 
-    @objc(removeFoodEntries_:)
-    @NSManaged public func removeFromFoodEntries_(_ values: NSSet)
+    @objc(removeFoods:)
+    @NSManaged public func removeFromFoods(_ values: NSSet)
 
-}
-
-extension Meal : Identifiable {
-
-}
-
-extension Meal: Comparable {
-    public static func < (lhs: Meal, rhs: Meal) -> Bool {
-        return lhs.index < rhs.index
-    }
 }

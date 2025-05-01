@@ -10,7 +10,7 @@ import VisionKit
 
 class SearchFoodTableViewController: UITableViewController {
 
-    var history: [CDFood] = []
+    var history: [Food] = []
     
     var searchController: UISearchController!
     private var resultsTableController: ResultsTableViewController!
@@ -43,11 +43,11 @@ class SearchFoodTableViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.register(HistoryTableViewCell.self, forCellReuseIdentifier: HistoryTableViewCell.reuseIdentifier)
-        if let meal, let meals = meal.mealPlan?.meals {
-            let titleView = SearchTitleView(selectedMeal: meal, meals: meals)
-            titleView.delegate = self
-            navigationItem.titleView = titleView
-        }
+//        if let meal, let meals = meal.mealPlan?.meals {
+//            let titleView = SearchTitleView(selectedMeal: meal, meals: meals)
+//            titleView.delegate = self
+//            navigationItem.titleView = titleView
+//        }
 
         resultsTableController = ResultsTableViewController(meal: meal, foodService: foodService)
         resultsTableController.delegate = delegate
@@ -94,11 +94,11 @@ class SearchFoodTableViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let food = history[indexPath.row]
-        let detailVC = FoodDetailTableViewController(food: food.convertToFDCFood(), meal: meal, foodService: foodService)
-        detailVC.delegate = delegate
-        detailVC.historyDelegate = self
-        present(UINavigationController(rootViewController: detailVC), animated: true)
+//        let food = history[indexPath.row]
+//        let detailVC = FoodDetailTableViewController(food: food.convertToFDCFood(), meal: meal, foodService: foodService)
+//        detailVC.delegate = delegate
+//        detailVC.historyDelegate = self
+//        present(UINavigationController(rootViewController: detailVC), animated: true)
     }
     
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
@@ -166,30 +166,30 @@ extension SearchFoodTableViewController: SearchTitleViewDelegate {
 }
 
 extension SearchFoodTableViewController: FoodDetailTableViewControllerHistoryDelegate {
-    func foodDetailTableViewController(_ tableViewController: FoodDetailTableViewController, didUpdateHistoryWithFood food: CDFood) {
+    func foodDetailTableViewController(_ tableViewController: FoodDetailTableViewController, didUpdateHistoryWithFood food: Food) {
         if !history.contains(food) {
             history.append(food)
         }
-        history = history.sorted { $0.updatedAt > $1.updatedAt }
+//        history = history.sorted { $0.updatedAt > $1.updatedAt }
         tableView.reloadData()
     }
 }
 
 extension SearchFoodTableViewController: QuickAddTableViewControllerHistoryDelegate {
-    func quickAddTableViewController(_ viewController: QuickAddTableViewController, didUpdateHistoryWithFood food: CDFood) {
-        if !history.contains(food) {
-            history.append(food)
-        }
-        history = history.sorted { $0.updatedAt > $1.updatedAt }
-        tableView.reloadData()
+    func quickAddTableViewController(_ viewController: QuickAddTableViewController, didUpdateHistoryWithFood food: Food) {
+//        if !history.contains(food) {
+//            history.append(food)
+//        }
+//        history = history.sorted { $0.updatedAt > $1.updatedAt }
+//        tableView.reloadData()
     }
 }
 
 extension SearchFoodTableViewController: HistoryTableViewCellDelegate {
-    func historyTableViewCell(_ cell: HistoryTableViewCell, didDeleteFood food: CDFood) {
-        guard let row = history.firstIndex(where: { $0 == food }) else { return }
-        history.remove(at: row)
-        tableView.deleteRows(at: [IndexPath(row: row, section: 0)], with: .automatic)
+    func historyTableViewCell(_ cell: HistoryTableViewCell, didDeleteFood food: Food) {
+//        guard let row = history.firstIndex(where: { $0 == food }) else { return }
+//        history.remove(at: row)
+//        tableView.deleteRows(at: [IndexPath(row: row, section: 0)], with: .automatic)
     }
 }
 
@@ -245,12 +245,12 @@ extension SearchFoodTableViewController: DataScannerViewControllerDelegate {
 }
 
 extension SearchFoodTableViewController: ResultTableViewCellHistoryDelegate {
-    func resultTableViewCell(_ cell: ResultTableViewCell, didUpdateHistoryWithFood food: CDFood) {
-        print(#function)
-        if !history.contains(food) {
-            history.append(food)
-        }
-        history = history.sorted { $0.updatedAt > $1.updatedAt }
-        tableView.reloadData()
+    func resultTableViewCell(_ cell: ResultTableViewCell, didUpdateHistoryWithFood food: Food) {
+//        print(#function)
+//        if !history.contains(food) {
+//            history.append(food)
+//        }
+//        history = history.sorted { $0.updatedAt > $1.updatedAt }
+//        tableView.reloadData()
     }
 }

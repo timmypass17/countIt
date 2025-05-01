@@ -49,8 +49,9 @@ struct FoodListAPIRequest: APIRequest {
     }
     
     func decodeResponse(data: Data) throws -> [Food] {
-        let decoder = JSONDecoder()
-        let searchResponse = try decoder.decode([Food].self, from: data)
-        return searchResponse
+        return []
+//        let decoder = JSONDecoder()
+//        let searchResponse = try decoder.decode([Food].self, from: data)
+//        return searchResponse
     }
 }

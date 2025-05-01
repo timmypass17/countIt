@@ -71,8 +71,8 @@ class GoalTableViewController: UITableViewController {
             nutrientID = minerals[indexPath.row]
         }
         
-        cell.update(nutrientID: nutrientID, nutrientAmount: mealPlan.getTotalNutrients(nutrientID), nutrientGoal: mealPlan.nutrientGoals[nutrientID] ?? 0)
-        
+//        cell.update(nutrientID: nutrientID, nutrientAmount: mealPlan.getTotalNutrients(nutrientID), nutrientGoal: mealPlan.nutrientGoals[nutrientID] ?? 0)
+//        
 //        cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .none
         return cell
@@ -92,17 +92,17 @@ class GoalTableViewController: UITableViewController {
 
     func didTapEditButton() -> UIAction {
         return UIAction { [self] _ in
-            let editGoalTableViewController = EditGoalTableViewController(nutrientGoals: mealPlan.nutrientGoals)
-            editGoalTableViewController.delegate = self
-            present(UINavigationController(rootViewController: editGoalTableViewController), animated: true)
+//            let editGoalTableViewController = EditGoalTableViewController(nutrientGoals: mealPlan.nutrientGoals)
+//            editGoalTableViewController.delegate = self
+//            present(UINavigationController(rootViewController: editGoalTableViewController), animated: true)
         }
     }
 }
 
 extension GoalTableViewController: EditGoalTableViewControllerDelegate {
     func editGoalTableViewController(_ viewController: EditGoalTableViewController, didUpdateNutrientGoals nutrientGoals: [NutrientID : Float]) {
-        mealPlan.nutrientGoals = nutrientGoals
-        tableView.reloadData()
-        delegate?.goalTableViewController(self, didUpdateNutrientGoals: nutrientGoals) // propagate changes to hometableview
+//        mealPlan.nutrientGoals = nutrientGoals
+//        tableView.reloadData()
+//        delegate?.goalTableViewController(self, didUpdateNutrientGoals: nutrientGoals) // propagate changes to hometableview
     }
 }

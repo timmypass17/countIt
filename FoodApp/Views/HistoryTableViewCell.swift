@@ -8,13 +8,13 @@
 import UIKit
 
 protocol HistoryTableViewCellDelegate: AnyObject {
-    func historyTableViewCell(_ cell: HistoryTableViewCell, didDeleteFood food: CDFood)
+    func historyTableViewCell(_ cell: HistoryTableViewCell, didDeleteFood food: Food)
 }
 
 class HistoryTableViewCell: UITableViewCell {
     static let reuseIdentifier = "HistoryCell"
 
-    var cdFood: CDFood!
+    var cdFood: Food!
     weak var delegate: HistoryTableViewCellDelegate?
 
     let titleLabel: UILabel = {
@@ -85,12 +85,12 @@ class HistoryTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func update(with cdFood: CDFood) {
+    func update(with cdFood: Food) {
         self.cdFood = cdFood
-        let food = cdFood.convertToFDCFood()
-        titleLabel.text = "\(food.description)"
+//        let food = cdFood.convertToFDCFood()
+//        titleLabel.text = "\(food.description)"
 //        descriptionLabel.text = food.getDescriptionFormatted(foodPortion: food.foodPortions[(food.foodPortions.count - 1) / 2])
-        descriptionLabel.text = food.getFoodEntryDescriptionFormatted(foodPortion: food.foodPortions[(food.foodPortions.count - 1) / 2])
+//        descriptionLabel.text = food.getFoodEntryDescriptionFormatted(foodPortion: food.foodPortions[(food.foodPortions.count - 1) / 2])
     }
     
     func deleteButtonTapped() -> UIAction {

@@ -8,7 +8,7 @@
 import Foundation
 import CoreData
 
-struct Food: Codable {
+struct FDCFood: Codable {
     let fdcId: Int
     var description: String
     var foodNutrients: [FoodNutrient]
@@ -85,7 +85,7 @@ struct Food: Codable {
     }
 }
 
-extension Food {
+extension FDCFood {
     enum FoodEntryOptions: CaseIterable {
         case calories, servingSize, brandName
     }
@@ -122,16 +122,16 @@ extension Food {
         }
     }
     
-    func convertToCDFood(context: NSManagedObjectContext) -> CDFood {
-        let food = CDFood(context: context)
-        food.name = description
-        food.brandName = brandName ?? "SR Legacy"
-        food.dataType = dataType.rawValue
-        food.fdcId = Int64(fdcId)
-        food.foodNutrients = foodNutrients
-        food.foodPortions = foodPortions
-        food.servingSize = servingSize ?? 0.0
-        food.servingSizeUnit = servingSizeUnit ?? "g"
+    func convertToCDFood(context: NSManagedObjectContext) -> Food {
+        let food = Food(context: context)
+//        food.name = description
+//        food.brandName = brandName ?? "SR Legacy"
+//        food.dataType = dataType.rawValue
+//        food.fdcId = Int64(fdcId)
+//        food.foodNutrients = foodNutrients
+//        food.foodPortions = foodPortions
+//        food.servingSize = servingSize ?? 0.0
+//        food.servingSizeUnit = servingSizeUnit ?? "g"
         return food
     }
     

@@ -62,17 +62,19 @@ class SearchTitleView: UIView {
     }
     
     func updateUI() {
-        mealButton.setTitle(selectedMeal.name, for: .normal)
+//        mealButton.setTitle(selectedMeal.name, for: .normal)
     }
     
     func didTapMenuOption(for meal: Meal) -> UIAction {
         let isSelected = meal == selectedMeal
         let state: UIMenuElement.State = isSelected ? .on : .off
-        return UIAction(title: meal.name, state: state,  handler: { [self] _ in
-            selectedMeal = meal
-            delegate?.searchTitleView(self, didSelectMeal: selectedMeal)
-            updateUI()
+        return UIAction(title: "", state: state,  handler: { [self] _ in
         })
+//        return UIAction(title: meal.name, state: state,  handler: { [self] _ in
+//            selectedMeal = meal
+//            delegate?.searchTitleView(self, didSelectMeal: selectedMeal)
+//            updateUI()
+//        })
     }
 
 }

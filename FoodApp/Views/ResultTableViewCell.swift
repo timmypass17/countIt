@@ -8,11 +8,11 @@
 import UIKit
 
 protocol ResultTableViewCellDelegate: AnyObject {
-    func resultTableViewCell(_ cell: ResultTableViewCell, didAddFoodEntry foodEntry: FoodEntry)
+    func resultTableViewCell(_ cell: ResultTableViewCell, didAddFoodEntry foodEntry: Food)
 }
 
 protocol ResultTableViewCellHistoryDelegate: AnyObject {
-    func resultTableViewCell(_ cell: ResultTableViewCell, didUpdateHistoryWithFood food: CDFood)
+    func resultTableViewCell(_ cell: ResultTableViewCell, didUpdateHistoryWithFood food: Food)
 }
 
 class ResultTableViewCell: UITableViewCell {
@@ -70,7 +70,8 @@ class ResultTableViewCell: UITableViewCell {
     weak var historyDelegate: ResultTableViewCellHistoryDelegate?
 
     var selectedFoodPortion: FoodPortion {
-        return food.foodPortions[(food.foodPortions.count - 1) / 2]
+        return FoodPortion(gramWeight: 0, modifier: "")
+//        return food.foodPortions[(food.foodPortions.count - 1) / 2]
     }
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -99,24 +100,24 @@ class ResultTableViewCell: UITableViewCell {
     func update(with food: Food) {
         self.food = food
         titleLabel.text = food.description
-        descriptionLabel.text = food.getFoodEntryDescriptionFormatted(foodPortion: selectedFoodPortion)
+//        descriptionLabel.text = food.getFoodEntryDescriptionFormatted(foodPortion: selectedFoodPortion)
     }
     
     func didTapPlusButton() -> UIAction {
         return UIAction { [self] _ in
-            print(#function)
-            if let meal {
-                print("Has meal")
-                let foodEntry = CoreDataStack.shared.addFoodEntry(food, to: meal, servingSize: selectedFoodPortion, numberOfServings: 1, servingSizeUnit: food.servingSizeUnit ?? "g")
-                delegate?.resultTableViewCell(self, didAddFoodEntry: foodEntry)
-                
-                if let food = foodEntry.food {
-                    food.updatedAt = .now
-                    historyDelegate?.resultTableViewCell(self, didUpdateHistoryWithFood: food)
-                }
-            }
-            let generator = UIImpactFeedbackGenerator(style: .medium)
-            generator.impactOccurred()
+//            print(#function)
+//            if let meal {
+//                print("Has meal")
+//                let foodEntry = CoreDataStack.shared.addFoodEntry(food, to: meal, servingSize: selectedFoodPortion, numberOfServings: 1, servingSizeUnit: food.servingSizeUnit ?? "g")
+//                delegate?.resultTableViewCell(self, didAddFoodEntry: foodEntry)
+//                
+//                if let food = foodEntry.food {
+//                    food.updatedAt = .now
+//                    historyDelegate?.resultTableViewCell(self, didUpdateHistoryWithFood: food)
+//                }
+//            }
+//            let generator = UIImpactFeedbackGenerator(style: .medium)
+//            generator.impactOccurred()
         }
     }
 }

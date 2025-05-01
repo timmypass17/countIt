@@ -55,7 +55,7 @@ class ServingSizeTableViewController: UITableViewController {
         let cell = tableView.dequeueReusableCell(withIdentifier: reuseIdentifier, for: indexPath)
         let foodPortion = foodPortions[indexPath.row]
         var config = cell.defaultContentConfiguration()
-        config.text = food.getServingSizeFormatted(foodPortion: foodPortion)
+//        config.text = food.getServingSizeFormatted(foodPortion: foodPortion)
         cell.contentConfiguration = config
         cell.accessoryType = foodPortion == selectedFoodPortion ? .checkmark : .none
 
@@ -100,16 +100,17 @@ class ServingSizeTableViewController: UITableViewController {
     }
     
     func showAlert() {
-        let servingSizeUnit = food.servingSizeUnit ?? "g"
+//        let servingSizeUnit = food.servingSizeUnit ?? "g"
+        let servingSizeUnit = "g"
         let alert = UIAlertController(title: "Custom Serving Size", message: "Enter your own serving size (\(servingSizeUnit)) below", preferredStyle: .alert)
 
         alert.addTextField { textField in
-            textField.placeholder = "Ex. 100"
-            textField.keyboardType = .decimalPad
-            let textChangedAction = UIAction { _ in
-                alert.actions[1].isEnabled = textField.text!.count > 0 && textField.text!.isNumeric
-            }
-            textField.addAction(textChangedAction, for: .allEditingEvents)
+//            textField.placeholder = "Ex. 100"
+//            textField.keyboardType = .decimalPad
+//            let textChangedAction = UIAction { _ in
+//                alert.actions[1].isEnabled = textField.text!.count > 0 && textField.text!.isNumeric
+//            }
+//            textField.addAction(textChangedAction, for: .allEditingEvents)
         }
         
         // add the actions (buttons)

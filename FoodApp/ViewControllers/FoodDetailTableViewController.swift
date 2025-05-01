@@ -13,18 +13,18 @@ protocol FoodDetailTableViewControllerDismissDelegate: AnyObject {
 }
 
 protocol FoodDetailTableViewControllerDelegate: AnyObject {
-    func foodDetailTableViewController(_ tableViewController: FoodDetailTableViewController, didAddFoodEntry foodEntry: FoodEntry)
-    func foodDetailTableViewController(_ tableViewController: FoodDetailTableViewController, didUpdateFoodEntry foodEntry: FoodEntry)
+    func foodDetailTableViewController(_ tableViewController: FoodDetailTableViewController, didAddFoodEntry foodEntry: Food)
+    func foodDetailTableViewController(_ tableViewController: FoodDetailTableViewController, didUpdateFoodEntry foodEntry: Food)
 }
 
 protocol FoodDetailTableViewControllerHistoryDelegate: AnyObject {
-    func foodDetailTableViewController(_ tableViewController: FoodDetailTableViewController, didUpdateHistoryWithFood food: CDFood)
+    func foodDetailTableViewController(_ tableViewController: FoodDetailTableViewController, didUpdateHistoryWithFood food: Food)
 }
 
 class FoodDetailTableViewController: UITableViewController {
 
     var food: Food
-    var foodEntry: FoodEntry?
+    var foodEntry: Food?
     let meal: Meal?
     var selectedFoodPortion: FoodPortion
     var numberOfServings: Int
@@ -61,24 +61,25 @@ class FoodDetailTableViewController: UITableViewController {
         if let selectedFoodPortion {
             self.selectedFoodPortion = selectedFoodPortion
         } else {
-            self.selectedFoodPortion = food.foodPortions[(food.foodPortions.count - 1) / 2]
+            self.selectedFoodPortion = FoodPortion(gramWeight: 0, modifier: "")
+//            self.selectedFoodPortion = food.foodPortions[(food.foodPortions.count - 1) / 2]
         }
         
-        for nutrientID in NutrientID.mainNutrients {
-            let emptyNutrient = FoodNutrient(nutrient: Nutrient(id: nutrientID, name: nutrientID.description, unitName: nutrientID.unit), amount: 0)
-            let foodNutrient = food.getNutrient(nutrientID) ?? emptyNutrient
-            mainNutrients.append(foodNutrient)
-        }
-        for nutrientID in NutrientID.vitamins {
-            let emptyNutrient = FoodNutrient(nutrient: Nutrient(id: nutrientID, name: nutrientID.description, unitName: nutrientID.unit), amount: 0)
-            let foodNutrient = food.getNutrient(nutrientID) ?? emptyNutrient
-            vitamins.append(foodNutrient)
-        }
-        for nutrientID in NutrientID.minerals {
-            let emptyNutrient = FoodNutrient(nutrient: Nutrient(id: nutrientID, name: nutrientID.description, unitName: nutrientID.unit), amount: 0)
-            let foodNutrient = food.getNutrient(nutrientID) ?? emptyNutrient
-            minerals.append(foodNutrient)
-        }
+//        for nutrientID in NutrientID.mainNutrients {
+//            let emptyNutrient = FoodNutrient(nutrient: Nutrient(id: nutrientID, name: nutrientID.description, unitName: nutrientID.unit), amount: 0)
+//            let foodNutrient = food.getNutrient(nutrientID) ?? emptyNutrient
+//            mainNutrients.append(foodNutrient)
+//        }
+//        for nutrientID in NutrientID.vitamins {
+//            let emptyNutrient = FoodNutrient(nutrient: Nutrient(id: nutrientID, name: nutrientID.description, unitName: nutrientID.unit), amount: 0)
+//            let foodNutrient = food.getNutrient(nutrientID) ?? emptyNutrient
+//            vitamins.append(foodNutrient)
+//        }
+//        for nutrientID in NutrientID.minerals {
+//            let emptyNutrient = FoodNutrient(nutrient: Nutrient(id: nutrientID, name: nutrientID.description, unitName: nutrientID.unit), amount: 0)
+//            let foodNutrient = food.getNutrient(nutrientID) ?? emptyNutrient
+//            minerals.append(foodNutrient)
+//        }
         super.init(style: .insetGrouped)
     }
     
@@ -131,7 +132,8 @@ class FoodDetailTableViewController: UITableViewController {
                 let cell = tableView.dequeueReusableCell(withIdentifier: SelectTableViewCell.reuseIdentifier, for: indexPath) as! SelectTableViewCell
                 cell.update(
                     primaryText: "Serving Size",
-                    secondaryText: food.getServingSizeFormatted(foodPortion: selectedFoodPortion),
+                    secondaryText: "",
+//                    secondaryText: food.getServingSizeFormatted(foodPortion: selectedFoodPortion),
                     image: UIImage(systemName: "square.and.pencil"),
                     bgColor: UIColor.systemBlue)
                 return cell
@@ -148,10 +150,14 @@ class FoodDetailTableViewController: UITableViewController {
             return UITableViewCell()
         case .macros:
             let cell = tableView.dequeueReusableCell(withIdentifier: MacrosView.reuseIdentifier, for: indexPath)
-            let calories = food.getNutrientPerServing(.calories, foodPortion: selectedFoodPortion) * Float(numberOfServings)
-            let carbs = food.getNutrientPerServing(.carbs, foodPortion: selectedFoodPortion) * Float(numberOfServings)
-            let protein = food.getNutrientPerServing(.protein, foodPortion: selectedFoodPortion) * Float(numberOfServings)
-            let fats = food.getNutrientPerServing(.totalFat, foodPortion: selectedFoodPortion) * Float(numberOfServings)
+            let calories: Float = 0
+            let carbs: Float = 0
+            let protein: Float = 0
+            let fats: Float = 0
+//            let calories = food.getNutrientPerServing(.calories, foodPortion: selectedFoodPortion) * Float(numberOfServings)
+//            let carbs = food.getNutrientPerServing(.carbs, foodPortion: selectedFoodPortion) * Float(numberOfServings)
+//            let protein = food.getNutrientPerServing(.protein, foodPortion: selectedFoodPortion) * Float(numberOfServings)
+//            let fats = food.getNutrientPerServing(.totalFat, foodPortion: selectedFoodPortion) * Float(numberOfServings)
             cell.contentConfiguration = UIHostingConfiguration {
                 MacrosView(
                     calories: MacroData(amount: calories, goal: Settings.shared.userDailyValues[.calories, default: 0.0]),
@@ -210,9 +216,9 @@ class FoodDetailTableViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if indexPath == servingSizeIndexPath {
-            let selectTableViewController = ServingSizeTableViewController(food: food, foodPortions: food.foodPortions, selectedFoodPortion: selectedFoodPortion)
-            selectTableViewController.delegate = self
-            present(UINavigationController(rootViewController: selectTableViewController), animated: true)
+//            let selectTableViewController = ServingSizeTableViewController(food: food, foodPortions: food.foodPortions, selectedFoodPortion: selectedFoodPortion)
+//            selectTableViewController.delegate = self
+//            present(UINavigationController(rootViewController: selectTableViewController), animated: true)
         } else if indexPath == quantityIndexPath {
             let quantityTableViewController = QuantityViewController(selectedQuantity: numberOfServings)
             quantityTableViewController.delegate = self
@@ -225,14 +231,14 @@ class FoodDetailTableViewController: UITableViewController {
     func addButtonTapped() -> UIAction {
         return UIAction { [self] _ in
             if let meal {
-                let foodEntry = CoreDataStack.shared.addFoodEntry(food, to: meal, servingSize: selectedFoodPortion, numberOfServings: numberOfServings, servingSizeUnit: food.servingSizeUnit ?? "g")
-                delegate?.foodDetailTableViewController(self, didAddFoodEntry: foodEntry)
-                
-                if let food = foodEntry.food {
-                    print(food)
-                    food.updatedAt = .now
-                    historyDelegate?.foodDetailTableViewController(self, didUpdateHistoryWithFood: food)
-                }
+//                let foodEntry = CoreDataStack.shared.addFoodEntry(food, to: meal, servingSize: selectedFoodPortion, numberOfServings: numberOfServings, servingSizeUnit: food.servingSizeUnit ?? "g")
+//                delegate?.foodDetailTableViewController(self, didAddFoodEntry: foodEntry)
+//                
+//                if let food = foodEntry.food {
+//                    print(food)
+//                    food.updatedAt = .now
+//                    historyDelegate?.foodDetailTableViewController(self, didUpdateHistoryWithFood: food)
+//                }
             }
             let generator = UIImpactFeedbackGenerator(style: .medium)
             generator.impactOccurred()
@@ -242,22 +248,22 @@ class FoodDetailTableViewController: UITableViewController {
     
     func updateButtonTapped() -> UIAction {
         return UIAction { [self] _ in
-            if let foodEntry {
-                let updatedFoodEntry = CoreDataStack.shared.updateFoodEntry(
-                    foodEntry: foodEntry,
-                    servingSize: selectedFoodPortion,
-                    numberOfServings: numberOfServings
-                )
-                delegate?.foodDetailTableViewController(self, didUpdateFoodEntry: updatedFoodEntry)
-                
-                if let food = foodEntry.food {
-                    food.updatedAt = .now
-                    historyDelegate?.foodDetailTableViewController(self, didUpdateHistoryWithFood: food)
-                }
-            }
-            let generator = UIImpactFeedbackGenerator(style: .medium)
-            generator.impactOccurred()
-            dismiss(animated: true)
+//            if let foodEntry {
+//                let updatedFoodEntry = CoreDataStack.shared.updateFoodEntry(
+//                    foodEntry: foodEntry,
+//                    servingSize: selectedFoodPortion,
+//                    numberOfServings: numberOfServings
+//                )
+//                delegate?.foodDetailTableViewController(self, didUpdateFoodEntry: updatedFoodEntry)
+//                
+//                if let food = foodEntry.food {
+//                    food.updatedAt = .now
+//                    historyDelegate?.foodDetailTableViewController(self, didUpdateHistoryWithFood: food)
+//                }
+//            }
+//            let generator = UIImpactFeedbackGenerator(style: .medium)
+//            generator.impactOccurred()
+//            dismiss(animated: true)
         }
     }
     

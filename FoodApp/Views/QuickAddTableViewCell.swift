@@ -52,7 +52,7 @@ class QuickAddTableViewCell: UITableViewCell {
     }()
     
     weak var delegate: QuickAddTableViewCellDelegate?
-    var foodEntry: FoodEntry!
+    var foodEntry: Food!
     var foodNutrient: FoodNutrient?
         
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -103,20 +103,20 @@ class QuickAddTableViewCell: UITableViewCell {
     
     func titleValueChanged() -> UIAction {
         return UIAction { [self] _ in
-            guard let title = textField.text else { return }
-            foodEntry.food?.name = title
-            delegate?.quickAddTableViewCell(self, textFieldValueChanged: title)
+//            guard let title = textField.text else { return }
+//            foodEntry.food?.name = title
+//            delegate?.quickAddTableViewCell(self, textFieldValueChanged: title)
         }
     }
     
     func nutrientAmountValueChanged() -> UIAction {
         return UIAction { [self] _ in
-            guard let nutrient = foodNutrient?.nutrient,
-                  let index = foodEntry.food?.foodNutrients.firstIndex(where: { $0.nutrient?.id ?? .other == nutrient.id }),
-                  let amount = textField.text
-            else { return }
-            foodEntry.food?.foodNutrients[index].amount = Float(amount)
-            delegate?.quickAddTableViewCell(self, textFieldValueChanged: amount)
+//            guard let nutrient = foodNutrient?.nutrient,
+//                  let index = foodEntry.food?.foodNutrients.firstIndex(where: { $0.nutrient?.id ?? .other == nutrient.id }),
+//                  let amount = textField.text
+//            else { return }
+//            foodEntry.food?.foodNutrients[index].amount = Float(amount)
+//            delegate?.quickAddTableViewCell(self, textFieldValueChanged: amount)
         }
     }
     
