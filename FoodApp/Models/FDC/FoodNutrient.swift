@@ -8,10 +8,10 @@
 import Foundation
 
 struct FoodNutrient: Codable {
-    let nutrient: Nutrient2?
+    let nutrient: Nutrient?
     var amount: Float?   // 590
     
-    init(nutrient: Nutrient2, amount: Float?) {
+    init(nutrient: Nutrient, amount: Float?) {
         self.nutrient = nutrient
         self.amount = amount
     }
@@ -41,10 +41,11 @@ extension FoodNutrient: Comparable {
     }
 }
 
-struct Nutrient2: Codable {
+struct Nutrient: Codable {
     let id: NutrientID
     let name: String        // Calories
     let unitName: String    // kcal
+    let rank: Int
 }
 
 // Wrapper for nutrients

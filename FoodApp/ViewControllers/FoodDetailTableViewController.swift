@@ -66,17 +66,17 @@ class FoodDetailTableViewController: UITableViewController {
         }
         
         for nutrientID in NutrientID.mainNutrients {
-            let emptyNutrient = FoodNutrient(nutrient: Nutrient2(id: nutrientID, name: nutrientID.description, unitName: nutrientID.unit), amount: 0)
+            let emptyNutrient = FoodNutrient(nutrient: Nutrient(id: nutrientID, name: nutrientID.description, unitName: nutrientID.unit, rank: 0), amount: 0)
             let foodNutrient = fdcFood.getNutrient(nutrientID) ?? emptyNutrient
             mainNutrients.append(foodNutrient)
         }
         for nutrientID in NutrientID.vitamins {
-            let emptyNutrient = FoodNutrient(nutrient: Nutrient2(id: nutrientID, name: nutrientID.description, unitName: nutrientID.unit), amount: 0)
+            let emptyNutrient = FoodNutrient(nutrient: Nutrient(id: nutrientID, name: nutrientID.description, unitName: nutrientID.unit, rank: 0), amount: 0)
             let foodNutrient = fdcFood.getNutrient(nutrientID) ?? emptyNutrient
             vitamins.append(foodNutrient)
         }
         for nutrientID in NutrientID.minerals {
-            let emptyNutrient = FoodNutrient(nutrient: Nutrient2(id: nutrientID, name: nutrientID.description, unitName: nutrientID.unit), amount: 0)
+            let emptyNutrient = FoodNutrient(nutrient: Nutrient(id: nutrientID, name: nutrientID.description, unitName: nutrientID.unit, rank: 0), amount: 0)
             let foodNutrient = fdcFood.getNutrient(nutrientID) ?? emptyNutrient
             minerals.append(foodNutrient)
         }

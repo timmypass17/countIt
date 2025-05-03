@@ -10,13 +10,25 @@ import Foundation
 struct FoodPortion: Codable {
     var amount: Float?
     var gramWeight: Float
-    var modifier: String    // "tbsp"
+    var modifier: String    // "tbsp" "10205"
+    var sequenceNumber: Int // survey
+    var portionDescription: String // survey "1 cup"
+    var measureUnit: MeasureUnit
     
-    init(amount: Float? = nil, gramWeight: Float, modifier: String) {
+    init(amount: Float? = nil, gramWeight: Float, modifier: String, sequenceNumber: Int, portionDescription: String, measureUnit: MeasureUnit) {
         self.amount = amount
         self.gramWeight = gramWeight
         self.modifier = modifier
+        self.sequenceNumber = sequenceNumber
+        self.portionDescription = portionDescription
+        self.measureUnit = measureUnit
     }
+}
+
+struct MeasureUnit: Codable, Equatable {
+    let id: Int
+    let name: String
+    let abbreviation: String
 }
 
 extension FoodPortion {

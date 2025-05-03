@@ -8,6 +8,7 @@
 import Foundation
 import CoreData
 
+
 // Split FDCFood into different data types
 struct FDCFood: Codable {
     let fdcId: Int
@@ -61,13 +62,13 @@ struct FDCFood: Codable {
         if dataType == .branded {
             self.description = description.capitalized
             if let servingSize {
-                self.foodPortions.append(FoodPortion(gramWeight: servingSize, modifier: ""))
+                self.foodPortions.append(FoodPortion(gramWeight: servingSize, modifier: "", sequenceNumber: 0, portionDescription: "", measureUnit: MeasureUnit(id: 0, name: "", abbreviation: "")))
             }
         } else {
             brandName = "USDA"
         }
         // Implicit portion for all food
-        self.foodPortions.append(FoodPortion(gramWeight: 100, modifier: ""))
+        self.foodPortions.append(FoodPortion(gramWeight: 100, modifier: "", sequenceNumber: 0, portionDescription: "", measureUnit: MeasureUnit(id: 0, name: "", abbreviation: "")))
         self.foodPortions.sort()
         
         // Filter out nutritents with 0 value
@@ -159,5 +160,5 @@ enum DataType: String, Codable, CaseIterable {
     case foundation = "Foundation"
 //    case srLegacy = "SR Legacy"
     case branded = "Branded"
-    case servey = "Survey (FNDDS)"
+    case survey = "Survey (FNDDS)"
 }

@@ -36,12 +36,12 @@ struct AbridgedSearchAPIRequest: APIRequest {
 }
 
 struct FoodListAPIRequest: APIRequest {
-    var foodIDs: [Int]
+    var fdcIds: [Int]
     
     var urlRequest: URLRequest {
         var urlComponents = URLComponents(string: "https://api.nal.usda.gov/fdc/v1/foods")!
         urlComponents.queryItems = [
-            "fdcIds": foodIDs.map { String($0) }.joined(separator: ","),
+            "fdcIds": fdcIds.map { String($0) }.joined(separator: ","),
             "api_key": apiKey
         ].map { URLQueryItem(name: $0.key, value: $0.value) }
 

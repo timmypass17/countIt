@@ -7,6 +7,7 @@
 
 import Testing
 @testable import BananaBite
+import Foundation
 
 struct FoodAppTests {
     
@@ -14,7 +15,7 @@ struct FoodAppTests {
 
     @Test func getFoodsByName() async throws {
         let fdcFoods: [FDCFood] = try await foodService.getFoods(query: "banana", dataTypes: DataType.allCases)
-        
+         
         #expect(fdcFoods.count > 0)
         #expect(fdcFoods.contains { $0.fdcId == 2709224 })
         #expect(fdcFoods.contains { $0.description == "Banana, raw" })
@@ -28,21 +29,31 @@ struct FoodAppTests {
         #expect(fdcFoods.contains { $0.description == "Bananas, overripe, raw" })
     }
     
-
-//    @Test func testRecipeDecoding() throws {
-//        let recipe = try JSONDecoder().decode(Recipe.self, from: recipeJSON)
-//        
-//        #expect(recipe.cuisine == "Malaysian")
-//        #expect(recipe.name == "Apam Balik")
-//        #expect(recipe.photoUrlSmall == "https://example.com/apam.jpg")
-//        #expect(recipe.sourceUrl == "https://example.com/recipe")
-//        #expect(recipe.id == "0c6ca6e7-e32a-4053-b824-1dbf749910d8")
-//    }
-//    
-//    @Test func testRecipeResponseDecoding() throws {
-//        let response = try JSONDecoder().decode(RecipesResponse.self, from: recipeResponseJSON)
-//        
-//        #expect(response.recipes.count > 0)
-//    }
+    @Test func getFoodsByFdcIds() async throws {
+        let srLegacyFdcId = 173944
+        let brandedFdcId = 2643119
+        let foundationFdcId = 2262072
+        
+        let fdcFoods: [FDCFood] = try await foodService.getFoods(fdcIds: [srLegacyFdcId, brandedFdcId, foundationFdcId], dataTypes: DataType.allCases)
+        
+        #expect(fdcFoods.count > 0)
+        #expect(fdcFoods.contains { $0.fdcId == 1105073 })
+        #expect(fdcFoods.contains { $0.description == "Bananas, overripe, raw" })
+    }
+    
+    @Test func decodeSurveyFoodItem() throws {
+        let surveyFood = try JSONDecoder().decode(SurveyFoodItem.self, from: surveyFoodJSON)
+        #expect(surveyFood.description == "Banana, baked")
+    }
+    
+    @Test func decodeBrandedFoodItem() throws {
+        let brandedFood = try JSONDecoder().decode(BrandedFoodItem.self, from: brandedFoodJSON)
+        #expect(brandedFood.description == "PEANUT BUTTER CUPS, PEANUT BUTTER")
+    }
+    
+    @Test func decodeFoundationFoodItem() throws {
+        let foundationFood = try JSONDecoder().decode(FoundationFoodItem.self, from: foundationFoodJSON)
+        #expect(foundationFood.description == "Peanut butter, creamy")
+    }
 }
 

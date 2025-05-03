@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="23507" systemVersion="24B91" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithCloudKit="YES" userDefinedModelVersionIdentifier="">
+    <entity name="CDNutrient" representedClassName="CDNutrient" syncable="YES">
+        <attribute name="nutrientId" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="value" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <relationship name="foodInfo_" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="FoodInfo" inverseName="nutrients_" inverseEntity="FoodInfo"/>
+    </entity>
     <entity name="Food" representedClassName="Food" syncable="YES">
         <attribute name="index" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="modifier_" optional="YES" attributeType="String"/>
@@ -14,7 +19,7 @@
         <attribute name="description_" optional="YES" attributeType="String"/>
         <attribute name="fdcId" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <relationship name="food" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Food" inverseName="foodInfo" inverseEntity="Food"/>
-        <relationship name="nutrients_" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Nutrient" inverseName="foodInfo_" inverseEntity="Nutrient"/>
+        <relationship name="nutrients_" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="CDNutrient" inverseName="foodInfo_" inverseEntity="CDNutrient"/>
         <relationship name="portions_" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Portion" inverseName="foodInfo_" inverseEntity="Portion"/>
     </entity>
     <entity name="Meal" representedClassName="Meal" syncable="YES">
@@ -27,11 +32,6 @@
         <attribute name="date_" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <relationship name="meals_" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Meal" inverseName="mealPlan_" inverseEntity="Meal"/>
         <relationship name="nutrientGoals_" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="NutritientGoal" inverseName="mealPlan_" inverseEntity="NutritientGoal"/>
-    </entity>
-    <entity name="Nutrient" representedClassName="Nutrient" syncable="YES">
-        <attribute name="nutrientId" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
-        <attribute name="value" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
-        <relationship name="foodInfo_" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="FoodInfo" inverseName="nutrients_" inverseEntity="FoodInfo"/>
     </entity>
     <entity name="NutritientGoal" representedClassName="NutritientGoal" syncable="YES">
         <attribute name="nutrientId" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
