@@ -85,21 +85,21 @@ class NutritionTableViewCell: UITableViewCell {
     
     func update(with foodNutrient: FoodNutrient, foodPortion: FoodPortion, quantity: Int) {
         nameLabel.text = foodNutrient.description
-        let nutrientAmount = (calculateNutrientPerServing(nutrientPer100g: foodNutrient.amount ?? 0, servingSizeGramWeight: foodPortion.gramWeight) * Float(quantity))
-        if let nutrientID = foodNutrient.nutrient?.id,
-           let nutrientGoal = Settings.shared.userDailyValues[nutrientID] {
-            let progress = nutrientAmount / nutrientGoal
-            if nutrientAmount < 1 {
-                amountLabel.text = "\(nutrientAmount.formattedString(decimalPlaces: 1)) \(foodNutrient.nutrient?.unitName ?? "Unspecified")"
-            } else {
-                amountLabel.text = "\(Int(nutrientAmount)) \(foodNutrient.nutrient?.unitName ?? "Unspecified")"
-            }
-            let dailyValuePercent = Int((progress * 100).rounded())
-            percentLabel.text = dailyValuePercent > 0 ? "\(Int((progress * 100).rounded()))%" : "-"
-            progressView.progress = progress
-        } else {
-            amountLabel.text = "Missing nutrient goal"
-        }
+//        let nutrientAmount = (calculateNutrientPerServing(nutrientPer100g: foodNutrient.amount ?? 0, servingSizeGramWeight: foodPortion.gramWeight) * Float(quantity))
+//        if let nutrientID = foodNutrient.nutrient?.id,
+//           let nutrientGoal = Settings.shared.userDailyValues[nutrientID] {
+//            let progress = nutrientAmount / nutrientGoal
+//            if nutrientAmount < 1 {
+//                amountLabel.text = "\(nutrientAmount.formattedString(decimalPlaces: 1)) \(foodNutrient.nutrient?.unitName ?? "Unspecified")"
+//            } else {
+//                amountLabel.text = "\(Int(nutrientAmount)) \(foodNutrient.nutrient?.unitName ?? "Unspecified")"
+//            }
+//            let dailyValuePercent = Int((progress * 100).rounded())
+//            percentLabel.text = dailyValuePercent > 0 ? "\(Int((progress * 100).rounded()))%" : "-"
+//            progressView.progress = progress
+//        } else {
+//            amountLabel.text = "Missing nutrient goal"
+//        }
         
         if let isSecondary = foodNutrient.nutrient?.id.isSecondary, isSecondary == true {
             nameLabel.textColor = .secondaryLabel

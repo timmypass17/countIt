@@ -12,14 +12,14 @@ protocol SelectTableViewControllerDelegate: AnyObject {
 }
 
 class ServingSizeTableViewController: UITableViewController {
-    let fdcFood: FDCFood
+    let fdcFood: FoodItem
     let foodPortions: [FoodPortion]
     var selectedFoodPortion: FoodPortion
     
     weak var delegate: SelectTableViewControllerDelegate?
     let reuseIdentifier = "SelectCell"
     
-    init(fdcFood: FDCFood, foodPortions: [FoodPortion], selectedFoodPortion: FoodPortion) {
+    init(fdcFood: FoodItem, foodPortions: [FoodPortion], selectedFoodPortion: FoodPortion) {
         self.fdcFood = fdcFood
         self.foodPortions = foodPortions
         self.selectedFoodPortion =  selectedFoodPortion
@@ -55,7 +55,7 @@ class ServingSizeTableViewController: UITableViewController {
         let cell = tableView.dequeueReusableCell(withIdentifier: reuseIdentifier, for: indexPath)
         let foodPortion = foodPortions[indexPath.row]
         var config = cell.defaultContentConfiguration()
-        config.text = fdcFood.getServingSizeFormatted(foodPortion: foodPortion)
+//        config.text = fdcFood.getServingSizeFormatted(foodPortion: foodPortion)
         cell.contentConfiguration = config
         cell.accessoryType = foodPortion == selectedFoodPortion ? .checkmark : .none
 

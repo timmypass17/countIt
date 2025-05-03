@@ -92,11 +92,11 @@ class ResultTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func update(with fdcFood: FDCFood) {
+    func update(with fdcFood: FoodItem) {
 //        self.food = food
         titleLabel.text = fdcFood.description
         let foodPortion = fdcFood.foodPortions[(fdcFood.foodPortions.count - 1) / 2]
-        descriptionLabel.text = fdcFood.getFoodEntryDescriptionFormatted(foodPortion: foodPortion)
+//        descriptionLabel.text = fdcFood.getFoodEntryDescriptionFormatted(foodPortion: foodPortion)
     }
     
     func didTapPlusButton() -> UIAction {

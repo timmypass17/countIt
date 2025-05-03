@@ -9,7 +9,7 @@ import UIKit
 
 class ResultsTableViewController: UITableViewController {
     
-    var fdcFoods: [FDCFood] = []
+    var fdcFoods: [FoodItem] = []
     let meal: Meal?
     let foodService: FoodService
     
@@ -68,8 +68,8 @@ class ResultsTableViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let fdcFood = fdcFoods[indexPath.row]
-        let foodDetailTableViewController = FoodDetailTableViewController(fdcFood: fdcFood, meal: meal, foodService: foodService)
+        let foodItem = fdcFoods[indexPath.row]
+        let foodDetailTableViewController = FoodDetailTableViewController(fdcFood: foodItem, meal: meal, foodService: foodService)
         foodDetailTableViewController.delegate = delegate
         foodDetailTableViewController.dismissDelegate = self
         foodDetailTableViewController.historyDelegate = historyDelegate

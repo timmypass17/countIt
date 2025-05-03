@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct BrandedFoodItem: Codable {
+struct BrandedFoodItem: FoodItem {
     let fdcId: Int
     let brandOwner: String
     let dataType: DataType

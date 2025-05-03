@@ -15,12 +15,13 @@ import Foundation
 //     Includes recipes/ingredients (e.g. “Spaghetti with tomato sauce”)
 //     Often includes portion sizes and preparation methods
                                             
-struct SurveyFoodItem: Codable {
+struct SurveyFoodItem: FoodItem {
     let fdcId: Int
     let dataType: DataType
     let description: String
     let foodPortions: [FoodPortion]
     let inputFoods: [InputFoodSurvey]
+    let foodNutrients: [FoodNutrient]
 }
 
 struct InputFoodSurvey: Codable {
