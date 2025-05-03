@@ -65,7 +65,11 @@ class MealHeaderView: UITableViewHeaderFooterView {
     
     
     func update(with meal: Meal) {
-//        titleLabel.text = meal.name.uppercased()
+        titleLabel.text = meal.name.uppercased()
+        caloriesView.update(amount: 0, unit: "cal", iconImage: UIImage(systemName: "c.circle"), tintColor: .systemBlue)
+        carbsView.update(amount: 0, unit: "g", iconImage: UIImage(systemName: "c.circle"), tintColor: .systemYellow)
+        proteinView.update(amount: 0, unit: "g", iconImage: UIImage(systemName: "p.circle"), tintColor: .systemPink)
+        fatsView.update(amount: 0, unit: "g", iconImage: UIImage(systemName: "f.circle"), tintColor: .systemGreen)
 //        caloriesView.update(amount: meal.getTotalNutrients(.calories), unit: "cal", iconImage: UIImage(systemName: "c.circle"), tintColor: .systemBlue)
 //        carbsView.update(amount: meal.getTotalNutrients(.carbs), unit: "g", iconImage: UIImage(systemName: "c.circle"), tintColor: .systemYellow)
 //        proteinView.update(amount: meal.getTotalNutrients(.protein), unit: "g", iconImage: UIImage(systemName: "p.circle"), tintColor: .systemPink)

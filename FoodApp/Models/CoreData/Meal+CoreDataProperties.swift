@@ -18,24 +18,33 @@ extension Meal {
 
     @NSManaged public var index: Int16
     @NSManaged public var name_: String?
-    @NSManaged public var foods: NSSet?
+    @NSManaged public var foods_: NSSet?
     @NSManaged public var mealPlan_: MealPlan?
-
+    
+    var name: String {
+        get { name_ ?? "" }
+        set { name_ = newValue }
+    }
+    
+    var foods: [Food] {
+        get { (foods_?.allObjects as! [Food]).sorted { $0.index < $1.index } }
+        set { foods_ = NSSet(array: newValue) }
+    }
 }
 
 // MARK: Generated accessors for foods
 extension Meal {
 
-    @objc(addFoodsObject:)
-    @NSManaged public func addToFoods(_ value: Food)
+    @objc(addFoods_Object:)
+    @NSManaged public func addToFoods_(_ value: Food)
 
-    @objc(removeFoodsObject:)
-    @NSManaged public func removeFromFoods(_ value: Food)
+    @objc(removeFoods_Object:)
+    @NSManaged public func removeFromFoods_(_ value: Food)
 
-    @objc(addFoods:)
-    @NSManaged public func addToFoods(_ values: NSSet)
+    @objc(addFoods_:)
+    @NSManaged public func addToFoods_(_ values: NSSet)
 
-    @objc(removeFoods:)
-    @NSManaged public func removeFromFoods(_ values: NSSet)
+    @objc(removeFoods_:)
+    @NSManaged public func removeFromFoods_(_ values: NSSet)
 
 }

@@ -319,7 +319,7 @@ enum NutrientID: Int, Codable, CaseIterable {
     
     var isSecondary: Bool {
         switch self {
-        case .saturatedFat, .transFat, .carbs, .fiber, .totalSugar:
+        case .saturatedFat, .transFat, .fiber, .totalSugar:
             return true
         default:
             return false

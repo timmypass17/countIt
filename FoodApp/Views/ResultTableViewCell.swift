@@ -69,11 +69,6 @@ class ResultTableViewCell: UITableViewCell {
     weak var delegate: ResultTableViewCellDelegate?
     weak var historyDelegate: ResultTableViewCellHistoryDelegate?
 
-    var selectedFoodPortion: FoodPortion {
-        return FoodPortion(gramWeight: 0, modifier: "")
-//        return food.foodPortions[(food.foodPortions.count - 1) / 2]
-    }
-    
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
@@ -97,10 +92,11 @@ class ResultTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func update(with food: Food) {
-        self.food = food
-        titleLabel.text = food.description
-//        descriptionLabel.text = food.getFoodEntryDescriptionFormatted(foodPortion: selectedFoodPortion)
+    func update(with fdcFood: FDCFood) {
+//        self.food = food
+        titleLabel.text = fdcFood.description
+        let foodPortion = fdcFood.foodPortions[(fdcFood.foodPortions.count - 1) / 2]
+        descriptionLabel.text = fdcFood.getFoodEntryDescriptionFormatted(foodPortion: foodPortion)
     }
     
     func didTapPlusButton() -> UIAction {

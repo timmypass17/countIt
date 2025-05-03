@@ -9,7 +9,7 @@ import UIKit
 
 class ResultsTableViewController: UITableViewController {
     
-    var foods: [Food] = []
+    var fdcFoods: [FDCFood] = []
     let meal: Meal?
     let foodService: FoodService
     
@@ -54,22 +54,22 @@ class ResultsTableViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return foods.count
+        return fdcFoods.count
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: ResultTableViewCell.reuseIdentifier, for: indexPath) as! ResultTableViewCell
         cell.delegate = resultDelegate
         cell.historyDelegate =  resultHistoryDelegate
-        let food = foods[indexPath.row]
-        cell.update(with: food)
+        let fdcFood = fdcFoods[indexPath.row]
+        cell.update(with: fdcFood)
         cell.meal = meal
         return cell
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let food = foods[indexPath.row]
-        let foodDetailTableViewController = FoodDetailTableViewController(food: food, meal: meal, foodService: foodService)
+        let fdcFood = fdcFoods[indexPath.row]
+        let foodDetailTableViewController = FoodDetailTableViewController(fdcFood: fdcFood, meal: meal, foodService: foodService)
         foodDetailTableViewController.delegate = delegate
         foodDetailTableViewController.dismissDelegate = self
         foodDetailTableViewController.historyDelegate = historyDelegate

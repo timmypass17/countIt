@@ -8,6 +8,7 @@
 import Foundation
 import CoreData
 
+// Split FDCFood into different data types
 struct FDCFood: Codable {
     let fdcId: Int
     var description: String
@@ -15,6 +16,7 @@ struct FDCFood: Codable {
     var foodPortions: [FoodPortion] // added
     var brandName: String?
     let dataType: DataType
+    let inputFoods: [FDCFoodInput]
     
     let servingSize: Float?
     var servingSizeUnit: String?
@@ -28,9 +30,10 @@ struct FDCFood: Codable {
         case dataType
         case servingSize
         case servingSizeUnit
+        case inputFoods
     }
     
-    init(fdcId: Int, description: String, foodNutrients: [FoodNutrient], foodPortions: [FoodPortion], brandName: String?, dataType: DataType, servingSize: Float?, servingSizeUnit: String?) {
+    init(fdcId: Int, description: String, foodNutrients: [FoodNutrient], foodPortions: [FoodPortion], brandName: String?, dataType: DataType, servingSize: Float?, servingSizeUnit: String?, inputFoods: [FDCFoodInput]) {
             self.fdcId = fdcId
             self.description = description
             self.foodNutrients = foodNutrients
@@ -39,6 +42,7 @@ struct FDCFood: Codable {
             self.dataType = dataType
             self.servingSize = servingSize
             self.servingSizeUnit = servingSizeUnit
+            self.inputFoods = inputFoods
         }
     
     init(from decoder: Decoder) throws {
@@ -51,6 +55,7 @@ struct FDCFood: Codable {
         self.dataType = try container.decode(DataType.self, forKey: .dataType)
         self.servingSize = try container.decodeIfPresent(Float.self, forKey: .servingSize)
         self.servingSizeUnit = try container.decodeIfPresent(String.self, forKey: .servingSizeUnit)
+        self.inputFoods = try container.decodeIfPresent([FDCFoodInput].self, forKey: .inputFoods) ?? []
 
         // Branded foods have additional info
         if dataType == .branded {
@@ -138,6 +143,9 @@ extension FDCFood {
     func getNutrientPerServing(_ nutrientID: NutrientID, foodPortion: FoodPortion) -> Float {
         guard let nutrient = getNutrient(nutrientID),
               let nutrientPer100g = nutrient.amount else { return 0 }
+        print("nutrientPer100g: \(nutrientPer100g)")
+        print("gramWeight: \(foodPortion.gramWeight)")
+        print("final: \((nutrientPer100g * foodPortion.gramWeight) / 100)")
         return (nutrientPer100g * foodPortion.gramWeight) / 100
     }
 }
@@ -149,6 +157,7 @@ func calculateNutrientPerServing(nutrientPer100g: Float, servingSizeGramWeight: 
 
 enum DataType: String, Codable, CaseIterable {
     case foundation = "Foundation"
-    case srLegacy = "SR Legacy"
+//    case srLegacy = "SR Legacy"
     case branded = "Branded"
+    case servey = "Survey (FNDDS)"
 }

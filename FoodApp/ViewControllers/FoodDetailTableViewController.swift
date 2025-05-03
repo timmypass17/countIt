@@ -23,7 +23,7 @@ protocol FoodDetailTableViewControllerHistoryDelegate: AnyObject {
 
 class FoodDetailTableViewController: UITableViewController {
 
-    var food: Food
+    var fdcFood: FDCFood
     var foodEntry: Food?
     let meal: Meal?
     var selectedFoodPortion: FoodPortion
@@ -43,6 +43,7 @@ class FoodDetailTableViewController: UITableViewController {
     enum Section: Int, CaseIterable {
         case servingSize
         case macros
+        case ingredients
         case nutrients
         case vitamins
         case minerals
@@ -52,8 +53,8 @@ class FoodDetailTableViewController: UITableViewController {
         case add, edit
     }
 
-    init(food: Food, meal: Meal?, foodService: FoodService, selectedFoodPortion: FoodPortion? = nil, numberOfServings: Int = 1, state: State = .add) {
-        self.food = food
+    init(fdcFood: FDCFood, meal: Meal?, foodService: FoodService, selectedFoodPortion: FoodPortion? = nil, numberOfServings: Int = 1, state: State = .add) {
+        self.fdcFood = fdcFood
         self.meal = meal
         self.foodService = foodService
         self.numberOfServings = numberOfServings
@@ -61,26 +62,27 @@ class FoodDetailTableViewController: UITableViewController {
         if let selectedFoodPortion {
             self.selectedFoodPortion = selectedFoodPortion
         } else {
-            self.selectedFoodPortion = FoodPortion(gramWeight: 0, modifier: "")
-//            self.selectedFoodPortion = food.foodPortions[(food.foodPortions.count - 1) / 2]
+            self.selectedFoodPortion = fdcFood.foodPortions[(fdcFood.foodPortions.count - 1) / 2]
         }
         
-//        for nutrientID in NutrientID.mainNutrients {
-//            let emptyNutrient = FoodNutrient(nutrient: Nutrient(id: nutrientID, name: nutrientID.description, unitName: nutrientID.unit), amount: 0)
-//            let foodNutrient = food.getNutrient(nutrientID) ?? emptyNutrient
-//            mainNutrients.append(foodNutrient)
-//        }
-//        for nutrientID in NutrientID.vitamins {
-//            let emptyNutrient = FoodNutrient(nutrient: Nutrient(id: nutrientID, name: nutrientID.description, unitName: nutrientID.unit), amount: 0)
-//            let foodNutrient = food.getNutrient(nutrientID) ?? emptyNutrient
-//            vitamins.append(foodNutrient)
-//        }
-//        for nutrientID in NutrientID.minerals {
-//            let emptyNutrient = FoodNutrient(nutrient: Nutrient(id: nutrientID, name: nutrientID.description, unitName: nutrientID.unit), amount: 0)
-//            let foodNutrient = food.getNutrient(nutrientID) ?? emptyNutrient
-//            minerals.append(foodNutrient)
-//        }
+        for nutrientID in NutrientID.mainNutrients {
+            let emptyNutrient = FoodNutrient(nutrient: Nutrient2(id: nutrientID, name: nutrientID.description, unitName: nutrientID.unit), amount: 0)
+            let foodNutrient = fdcFood.getNutrient(nutrientID) ?? emptyNutrient
+            mainNutrients.append(foodNutrient)
+        }
+        for nutrientID in NutrientID.vitamins {
+            let emptyNutrient = FoodNutrient(nutrient: Nutrient2(id: nutrientID, name: nutrientID.description, unitName: nutrientID.unit), amount: 0)
+            let foodNutrient = fdcFood.getNutrient(nutrientID) ?? emptyNutrient
+            vitamins.append(foodNutrient)
+        }
+        for nutrientID in NutrientID.minerals {
+            let emptyNutrient = FoodNutrient(nutrient: Nutrient2(id: nutrientID, name: nutrientID.description, unitName: nutrientID.unit), amount: 0)
+            let foodNutrient = fdcFood.getNutrient(nutrientID) ?? emptyNutrient
+            minerals.append(foodNutrient)
+        }
         super.init(style: .insetGrouped)
+//        print("Timmy food")
+//        print(fdcFood)
     }
     
     required init?(coder: NSCoder) {
@@ -89,7 +91,7 @@ class FoodDetailTableViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        navigationItem.title = food.description
+        navigationItem.title = "\(fdcFood.description) \(fdcFood.fdcId)"
         navigationItem.leftBarButtonItem = UIBarButtonItem(systemItem: .cancel, primaryAction: cancelButtonTapped())
         switch state {
         case .add:
@@ -100,6 +102,10 @@ class FoodDetailTableViewController: UITableViewController {
         tableView.register(SelectTableViewCell.self, forCellReuseIdentifier: SelectTableViewCell.reuseIdentifier)
         tableView.register(NutritionTableViewCell.self, forCellReuseIdentifier: NutritionTableViewCell.reuseIdentifier)
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: MacrosView.reuseIdentifier)
+        tableView.register(IngredientTableViewCell.self, forCellReuseIdentifier: IngredientTableViewCell.reuseIdentifier)
+        
+        print("Timmy banana")
+        print("ingredients: \(fdcFood.inputFoods.count)")
     }
 
     // MARK: - Table view data source
@@ -113,6 +119,8 @@ class FoodDetailTableViewController: UITableViewController {
         switch section {
         case .servingSize:
             return 2
+        case .ingredients:
+            return fdcFood.inputFoods.count
         case .macros:
             return 1
         case .nutrients:
@@ -132,8 +140,7 @@ class FoodDetailTableViewController: UITableViewController {
                 let cell = tableView.dequeueReusableCell(withIdentifier: SelectTableViewCell.reuseIdentifier, for: indexPath) as! SelectTableViewCell
                 cell.update(
                     primaryText: "Serving Size",
-                    secondaryText: "",
-//                    secondaryText: food.getServingSizeFormatted(foodPortion: selectedFoodPortion),
+                    secondaryText: fdcFood.getServingSizeFormatted(foodPortion: selectedFoodPortion),
                     image: UIImage(systemName: "square.and.pencil"),
                     bgColor: UIColor.systemBlue)
                 return cell
@@ -148,16 +155,17 @@ class FoodDetailTableViewController: UITableViewController {
             }
             
             return UITableViewCell()
+        case .ingredients:
+            let cell = tableView.dequeueReusableCell(withIdentifier: IngredientTableViewCell.reuseIdentifier, for: indexPath) as! IngredientTableViewCell
+            let ingredient = fdcFood.inputFoods[indexPath.row]
+            cell.update(ingredient: ingredient)
+            return cell
         case .macros:
             let cell = tableView.dequeueReusableCell(withIdentifier: MacrosView.reuseIdentifier, for: indexPath)
-            let calories: Float = 0
-            let carbs: Float = 0
-            let protein: Float = 0
-            let fats: Float = 0
-//            let calories = food.getNutrientPerServing(.calories, foodPortion: selectedFoodPortion) * Float(numberOfServings)
-//            let carbs = food.getNutrientPerServing(.carbs, foodPortion: selectedFoodPortion) * Float(numberOfServings)
-//            let protein = food.getNutrientPerServing(.protein, foodPortion: selectedFoodPortion) * Float(numberOfServings)
-//            let fats = food.getNutrientPerServing(.totalFat, foodPortion: selectedFoodPortion) * Float(numberOfServings)
+            let calories = fdcFood.getNutrientPerServing(.calories, foodPortion: selectedFoodPortion) * Float(numberOfServings)
+            let carbs = fdcFood.getNutrientPerServing(.carbs, foodPortion: selectedFoodPortion) * Float(numberOfServings)
+            let protein = fdcFood.getNutrientPerServing(.protein, foodPortion: selectedFoodPortion) * Float(numberOfServings)
+            let fats = fdcFood.getNutrientPerServing(.totalFat, foodPortion: selectedFoodPortion) * Float(numberOfServings)
             cell.contentConfiguration = UIHostingConfiguration {
                 MacrosView(
                     calories: MacroData(amount: calories, goal: Settings.shared.userDailyValues[.calories, default: 0.0]),
@@ -205,6 +213,8 @@ class FoodDetailTableViewController: UITableViewController {
             return "Vitamins"
         case .minerals:
             return "Minerals"
+        case .ingredients:
+            return "Ingredients"
         }
     }
     
@@ -216,9 +226,9 @@ class FoodDetailTableViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if indexPath == servingSizeIndexPath {
-//            let selectTableViewController = ServingSizeTableViewController(food: food, foodPortions: food.foodPortions, selectedFoodPortion: selectedFoodPortion)
-//            selectTableViewController.delegate = self
-//            present(UINavigationController(rootViewController: selectTableViewController), animated: true)
+            let selectTableViewController = ServingSizeTableViewController(fdcFood: fdcFood, foodPortions: fdcFood.foodPortions, selectedFoodPortion: selectedFoodPortion)
+            selectTableViewController.delegate = self
+            present(UINavigationController(rootViewController: selectTableViewController), animated: true)
         } else if indexPath == quantityIndexPath {
             let quantityTableViewController = QuantityViewController(selectedQuantity: numberOfServings)
             quantityTableViewController.delegate = self

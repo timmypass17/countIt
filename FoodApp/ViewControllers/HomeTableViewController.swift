@@ -24,7 +24,9 @@ class HomeTableViewController: UITableViewController {
 //        for meal in mealPlan.meals {
 //            print(meal.name, meal.index)
 //        }
-        self.mealPlan = CoreDataStack.shared.createEmpty(for: .now)
+//        self.mealPlan = CoreDataStack.shared.createEmpty(for: .now)
+        self.mealPlan = foodService.createEmptyMealPlan()
+        
         self.foodService = foodService
         super.init(style: .grouped)
     }
@@ -80,53 +82,55 @@ class HomeTableViewController: UITableViewController {
     
     func reloadTableViewHeader(at section: Int) {
         guard let mealHeaderView = tableView.headerView(forSection: section) as? MealHeaderView else { return }
-//        let meal = mealPlan.meals[section - 1]
-//        mealHeaderView.update(with: meal)
+        let meal = mealPlan.meals[section - 1]
+        mealHeaderView.update(with: meal)
     }
 
     // MARK: - Table view data source
 
     override func numberOfSections(in tableView: UITableView) -> Int {
-        return 0
-//        return 1 + mealPlan.meals.count
+        return 1 + mealPlan.meals.count
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if section == 0 {
             return 1
         }
-        return 0
-//        return self.mealPlan.meals[section - 1].foodEntries.count + 1
+
+        return self.mealPlan.meals[section - 1].foods.count + 1
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        return UITableViewCell()
-//        if indexPath.section == 0 {
-//            let cell = tableView.dequeueReusableCell(withIdentifier: MacrosView.reuseIdentifier, for: indexPath)
+        if indexPath.section == 0 {
+            let cell = tableView.dequeueReusableCell(withIdentifier: MacrosView.reuseIdentifier, for: indexPath)
 //            let calories = MacroData(amount: mealPlan.getTotalNutrients(.calories), goal: mealPlan.nutrientGoals[.calories, default: 0.0])
 //            let carbs = MacroData(amount: mealPlan.getTotalNutrients(.carbs), goal: mealPlan.nutrientGoals[.carbs, default: 0.0])
 //            let protein = MacroData(amount: mealPlan.getTotalNutrients(.protein), goal: mealPlan.nutrientGoals[.protein, default: 0.0])
 //            let fats = MacroData(amount: mealPlan.getTotalNutrients(.totalFat), goal: mealPlan.nutrientGoals[.totalFat, default: 0.0])
-//
-//            cell.contentConfiguration = UIHostingConfiguration { // affected by reloadData(), can't get it to update automatically
-//                MacrosView(calories: calories, carbs: carbs, protein: protein, fats: fats)
-//            }
-//        
-//            return cell
-//        }
-//
-//        let count = mealPlan.meals[indexPath.section - 1].foodEntries.count
-//        if indexPath.row == count {
-//            // Add Button
-//            let cell = tableView.dequeueReusableCell(withIdentifier: AddFoodTableViewCell.reuseIdentifier, for: indexPath) as! AddFoodTableViewCell
-//            return cell
-//        }
-//        
-//        let foodEntry = mealPlan.meals[indexPath.section - 1].foodEntries[indexPath.row]
-//        let cell = tableView.dequeueReusableCell(withIdentifier: FoodEntryTableViewCell.reuseIdentifier, for: indexPath) as! FoodEntryTableViewCell
-//        cell.update(with: foodEntry)
-//        cell.accessoryType = .disclosureIndicator
-//        return cell
+            let calories = MacroData(amount: 0, goal: 0)
+            let carbs = MacroData(amount: 0, goal: 0)
+            let protein = MacroData(amount: 0, goal: 0)
+            let fats = MacroData(amount: 0, goal: 0)
+
+            cell.contentConfiguration = UIHostingConfiguration { // affected by reloadData(), can't get it to update automatically
+                MacrosView(calories: calories, carbs: carbs, protein: protein, fats: fats)
+            }
+        
+            return cell
+        }
+
+        let count = mealPlan.meals[indexPath.section - 1].foods.count
+        if indexPath.row == count {
+            // Add Button
+            let cell = tableView.dequeueReusableCell(withIdentifier: AddFoodTableViewCell.reuseIdentifier, for: indexPath) as! AddFoodTableViewCell
+            return cell
+        }
+        
+        let food = mealPlan.meals[indexPath.section - 1].foods[indexPath.row]
+        let cell = tableView.dequeueReusableCell(withIdentifier: FoodEntryTableViewCell.reuseIdentifier, for: indexPath) as! FoodEntryTableViewCell
+        cell.update(with: food)
+        cell.accessoryType = .disclosureIndicator
+        return cell
     }
     
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
@@ -138,31 +142,31 @@ class HomeTableViewController: UITableViewController {
         guard section != 0 else { return nil }
         
         let header = tableView.dequeueReusableHeaderFooterView(withIdentifier: MealHeaderView.reuseIdentifier) as! MealHeaderView
-//        let meal = mealPlan.meals[section - 1]
-//        header.update(with: meal)
+        let meal = mealPlan.meals[section - 1]
+        header.update(with: meal)
         return header
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-//        if indexPath.section == 0 {
+        if indexPath.section == 0 {
 //            let goalTableViewController = GoalTableViewController(mealPlan: mealPlan)
 //            goalTableViewController.delegate = self
 //            navigationController?.pushViewController(goalTableViewController, animated: true)
-//            return
-//        }
-//        
-//        let count = mealPlan.meals[indexPath.section - 1].foodEntries.count
-//        if indexPath.row == count {
-//            tableView.deselectRow(at: indexPath, animated: true)
-//            let meal = mealPlan.meals[indexPath.section - 1]
-//            let searchFoodTableViewController = SearchFoodTableViewController(foodService: foodService, meal: meal)
-//            searchFoodTableViewController.delegate = self
-//            searchFoodTableViewController.quickAddDelegate = self
-//            searchFoodTableViewController.resultDelegate = self
-//            navigationController?.pushViewController(searchFoodTableViewController, animated: true)
-//            return
-//        }
-//        
+            return
+        }
+        
+        let count = mealPlan.meals[indexPath.section - 1].foods.count
+        if indexPath.row == count {
+            tableView.deselectRow(at: indexPath, animated: true)
+            let meal = mealPlan.meals[indexPath.section - 1]
+            let searchFoodTableViewController = SearchFoodTableViewController(foodService: foodService, meal: meal)
+            searchFoodTableViewController.delegate = self
+            searchFoodTableViewController.quickAddDelegate = self
+            searchFoodTableViewController.resultDelegate = self
+            navigationController?.pushViewController(searchFoodTableViewController, animated: true)
+            return
+        }
+        
 //        let meal = mealPlan.meals[indexPath.section - 1]
 //        let foodEntry = meal.foodEntries[indexPath.row]
 //        guard let food = foodEntry.food?.convertToFDCFood() else { return }

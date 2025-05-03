@@ -2,35 +2,47 @@
 //  FoodAppTests.swift
 //  FoodAppTests
 //
-//  Created by Timmy Nguyen on 3/1/24.
+//  Created by Timmy Nguyen on 5/2/25.
 //
 
-import XCTest
-@testable import FoodApp
+import Testing
+@testable import BananaBite
 
-final class FoodAppTests: XCTestCase {
+struct FoodAppTests {
+    
+    let foodService: FoodServiceProtocol = FoodService()
 
-    override func setUpWithError() throws {
-        // Put setup code here. This method is called before the invocation of each test method in the class.
+    @Test func getFoodsByName() async throws {
+        let fdcFoods: [FDCFood] = try await foodService.getFoods(query: "banana", dataTypes: DataType.allCases)
+        
+        #expect(fdcFoods.count > 0)
+        #expect(fdcFoods.contains { $0.fdcId == 2709224 })
+        #expect(fdcFoods.contains { $0.description == "Banana, raw" })
     }
-
-    override func tearDownWithError() throws {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
+    
+    @Test func getFoodsByNameFoundation() async throws {
+        let fdcFoods: [FDCFood] = try await foodService.getFoods(query: "banana", dataTypes: [.foundation])
+        
+        #expect(fdcFoods.count > 0)
+        #expect(fdcFoods.contains { $0.fdcId == 1105073 })
+        #expect(fdcFoods.contains { $0.description == "Bananas, overripe, raw" })
     }
+    
 
-    func testExample() throws {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
-        // Any test you write for XCTest can be annotated as throws and async.
-        // Mark your test throws to produce an unexpected failure when your test encounters an uncaught error.
-        // Mark your test async to allow awaiting for asynchronous code to complete. Check the results with assertions afterwards.
-    }
-
-    func testPerformanceExample() throws {
-        // This is an example of a performance test case.
-        self.measure {
-            // Put the code you want to measure the time of here.
-        }
-    }
-
+//    @Test func testRecipeDecoding() throws {
+//        let recipe = try JSONDecoder().decode(Recipe.self, from: recipeJSON)
+//        
+//        #expect(recipe.cuisine == "Malaysian")
+//        #expect(recipe.name == "Apam Balik")
+//        #expect(recipe.photoUrlSmall == "https://example.com/apam.jpg")
+//        #expect(recipe.sourceUrl == "https://example.com/recipe")
+//        #expect(recipe.id == "0c6ca6e7-e32a-4053-b824-1dbf749910d8")
+//    }
+//    
+//    @Test func testRecipeResponseDecoding() throws {
+//        let response = try JSONDecoder().decode(RecipesResponse.self, from: recipeResponseJSON)
+//        
+//        #expect(response.recipes.count > 0)
+//    }
 }
+

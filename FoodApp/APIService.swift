@@ -13,12 +13,13 @@ let apiKey = "tbRKfhWJR3T2FFbwOiEShaXHrTljAGkVa232iZPx"
 
 struct AbridgedSearchAPIRequest: APIRequest {
     let query: String
+    var dataTypes: [DataType] = DataType.allCases
     
     var urlRequest: URLRequest {
         var urlComponents = URLComponents(string: "https://api.nal.usda.gov/fdc/v1/foods/search")!
         urlComponents.queryItems = [
             "query": "\(query)",
-            "dataType": DataType.allCases.map { $0.rawValue }.joined(separator: ","),
+            "dataType": dataTypes.map { $0.rawValue }.joined(separator: ","),
             "pageSize": "10",
             "api_key": apiKey
         ].map { URLQueryItem(name: $0.key, value: $0.value) }
@@ -48,10 +49,9 @@ struct FoodListAPIRequest: APIRequest {
         return request
     }
     
-    func decodeResponse(data: Data) throws -> [Food] {
-        return []
-//        let decoder = JSONDecoder()
-//        let searchResponse = try decoder.decode([Food].self, from: data)
-//        return searchResponse
+    func decodeResponse(data: Data) throws -> [FDCFood] {
+        let decoder = JSONDecoder()
+        let searchResponse = try decoder.decode([FDCFood].self, from: data)
+        return searchResponse
     }
 }

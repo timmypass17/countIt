@@ -43,11 +43,11 @@ class SearchFoodTableViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.register(HistoryTableViewCell.self, forCellReuseIdentifier: HistoryTableViewCell.reuseIdentifier)
-//        if let meal, let meals = meal.mealPlan?.meals {
-//            let titleView = SearchTitleView(selectedMeal: meal, meals: meals)
-//            titleView.delegate = self
-//            navigationItem.titleView = titleView
-//        }
+        if let meal, let meals = meal.mealPlan_?.meals {
+            let titleView = SearchTitleView(selectedMeal: meal, meals: meals)
+            titleView.delegate = self
+            navigationItem.titleView = titleView
+        }
 
         resultsTableController = ResultsTableViewController(meal: meal, foodService: foodService)
         resultsTableController.delegate = delegate
@@ -146,11 +146,12 @@ extension SearchFoodTableViewController: UISearchBarDelegate {
         searchTask = Task {
             do {
                 resultsTableController.spinner.startAnimating()
-                let foods: [Food] = try await foodService.getFoods(query: searchBar.text!)
-                resultsTableController.foods = foods
+                let fdcFoods: [FDCFood] = try await foodService.getFoods(query: searchBar.text!, dataTypes: DataType.allCases)
+                print("Got \(fdcFoods.count) foods")
+                resultsTableController.fdcFoods = fdcFoods
                 resultsTableController.tableView.reloadData()
             } catch {
-                print("\(#function) \(error)")
+                print("Error searching foods: \(error)")
             }
             resultsTableController.spinner.stopAnimating()
         }
@@ -213,7 +214,7 @@ extension SearchFoodTableViewController: DataScannerViewControllerDelegate {
                     barcodeID.removeFirst()
                 }
                 print("barcode", barcodeID)
-                guard let food = try? await foodService.getFoods(query: barcodeID).first
+                guard let food = try? await foodService.getFoods(query: barcodeID, dataTypes: DataType.allCases).first
                 else {
                     let generator = UIImpactFeedbackGenerator(style: .medium)
                     generator.impactOccurred()
@@ -225,13 +226,13 @@ extension SearchFoodTableViewController: DataScannerViewControllerDelegate {
                 let generator = UIImpactFeedbackGenerator(style: .medium)
                 generator.impactOccurred()
                 
-                let foodDetailViewController = FoodDetailTableViewController(food: food, meal: meal, foodService: foodService)
-                foodDetailViewController.delegate = delegate
-                foodDetailViewController.historyDelegate = self
-                
-                // Only 1 view controlelr can be presented at once. Dismiss the barcode scanning view
-                dismiss(animated: true)
-                present(UINavigationController(rootViewController: foodDetailViewController), animated: true)
+//                let foodDetailViewController = FoodDetailTableViewController(food: food, meal: meal, foodService: foodService)
+//                foodDetailViewController.delegate = delegate
+//                foodDetailViewController.historyDelegate = self
+//                
+//                // Only 1 view controlelr can be presented at once. Dismiss the barcode scanning view
+//                dismiss(animated: true)
+//                present(UINavigationController(rootViewController: foodDetailViewController), animated: true)
             }
         }
     }

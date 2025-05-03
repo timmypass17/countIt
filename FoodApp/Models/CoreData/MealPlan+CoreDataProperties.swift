@@ -19,7 +19,16 @@ extension MealPlan {
     @NSManaged public var date_: Date?
     @NSManaged public var meals_: NSSet?
     @NSManaged public var nutrientGoals_: NSSet?
-
+    
+    var date: Date {
+        get { date_ ?? Calendar.current.startOfDay(for: .now) }
+        set { date_ = Calendar.current.startOfDay(for: newValue) }
+    }
+    
+    var meals: [Meal] {
+        get { (meals_?.allObjects as! [Meal]).sorted { $0.index < $1.index } }
+        set { meals_ = NSSet(array: newValue) }
+    }
 }
 
 // MARK: Generated accessors for meals_
