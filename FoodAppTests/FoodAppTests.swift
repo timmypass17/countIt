@@ -13,14 +13,14 @@ struct FoodAppTests {
     
     let foodService: FoodServiceProtocol = FoodService()
 
-//    @Test func getFoodsByName() async throws {
-//        let fdcFoods: [FDCFood] = try await foodService.getFoods(query: "banana", dataTypes: DataType.allCases)
-//         
-//        #expect(fdcFoods.count > 0)
-//        #expect(fdcFoods.contains { $0.fdcId == 2709224 })
-//        #expect(fdcFoods.contains { $0.description == "Banana, raw" })
-//    }
-//    
+    @Test func getFoodsByName() async throws {
+        let foodItems: [FoodItem] = try await foodService.getFoods(query: "banana", dataTypes: DataType.allCases)
+         
+        #expect(foodItems.count > 0)
+        #expect(foodItems.contains { $0.fdcId == 2709224 })
+        #expect(foodItems.contains { $0.description == "Banana, raw" })
+    }
+    
 //    @Test func getFoodsByNameFoundation() async throws {
 //        let fdcFoods: [FDCFood] = try await foodService.getFoods(query: "banana", dataTypes: [.foundation])
 //        
@@ -71,6 +71,11 @@ struct FoodAppTests {
     @Test func decodeFoundationFoodItem() throws {
         let foundationFood = try JSONDecoder().decode(FoundationFoodItem.self, from: foundationFoodJSON)
         #expect(foundationFood.description == "Peanut butter, creamy")
+    }
+    
+    @Test func decodeFoodSearchResponse() throws {
+        let foodSearchResponse = try JSONDecoder().decode(FoodSearchResponse.self, from: foodSearchResponseJSON)
+        #expect(foodSearchResponse.foods.first?.description == "BANANA")
     }
 }
 

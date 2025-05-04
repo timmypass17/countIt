@@ -10,7 +10,7 @@ import UIKit
 import CoreData
 
 protocol FoodServiceProtocol {
-    func getFoods(query: String, dataTypes: [DataType]) async throws -> [FoodItem]
+    func getFoods(query: String, dataTypes: [DataType]) async throws -> [SearchResultFood]
     func getFoods(fdcIds: [Int], dataTypes: [DataType]) async throws -> [FoodItem]
     func createEmptyMealPlan() -> MealPlan
 }
@@ -32,13 +32,19 @@ class FoodService: FoodServiceProtocol {
         return mealPlan
     }
     
-    func getFoods(query: String, dataTypes: [DataType]) async throws -> [FoodItem] {
-        let abridgedRequest = AbridgedSearchAPIRequest(query: query, dataTypes: dataTypes)
-        let abridgedSearchResult = try await sendRequest(abridgedRequest)
-        let fdcIds = abridgedSearchResult.foods.map { $0.fdcId }
-
-        return try await getFoods(fdcIds: fdcIds, dataTypes: dataTypes)
+    func getFoods(query: String, dataTypes: [DataType]) async throws -> [SearchResultFood] {
+        let abridgedRequest = FoodsSearchAPIRequest(query: query, dataTypes: dataTypes)
+        let searchResultResponse = try await sendRequest(abridgedRequest)
+        return searchResultResponse.foods
     }
+    
+//    func getFoods(query: String, dataTypes: [DataType]) async throws -> [FoodItem] {
+//        let abridgedRequest = FoodsSearchAPIRequest(query: query, dataTypes: dataTypes)
+//        let abridgedSearchResult = try await sendRequest(abridgedRequest)
+//        let fdcIds = abridgedSearchResult.foods.map { $0.fdcId }
+//
+//        return try await getFoods(fdcIds: fdcIds, dataTypes: dataTypes)
+//    }
     
     func getFoods(fdcIds: [Int], dataTypes: [DataType]) async throws -> [FoodItem] {
         let request = FoodListAPIRequest(fdcIds: fdcIds)

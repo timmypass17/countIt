@@ -9,9 +9,14 @@ import UIKit
 
 class ResultsTableViewController: UITableViewController {
     
-    var fdcFoods: [FoodItem] = []
+    var bestMatchFoodItems: [SearchResultFood] = []
+    var moreResultsFoodItems: [SearchResultFood] = []
     let meal: Meal?
     let foodService: FoodService
+    
+    enum Section: Int, CaseIterable {
+        case bestMatch, moreResults
+    }
     
     var spinner: UIActivityIndicatorView = {
         let spinner = UIActivityIndicatorView(style: .medium)
@@ -50,35 +55,61 @@ class ResultsTableViewController: UITableViewController {
     // MARK: - UITableViewDataSource
     
     override func numberOfSections(in tableView: UITableView) -> Int {
-        return 1
+        return Section.allCases.count
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return fdcFoods.count
+        guard let section = Section(rawValue: section) else { return 0 }
+        switch section {
+        case .bestMatch:
+            return bestMatchFoodItems.count
+        case .moreResults:
+            return moreResultsFoodItems.count
+        }
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard let section = Section(rawValue: indexPath.section) else { return UITableViewCell() }
         let cell = tableView.dequeueReusableCell(withIdentifier: ResultTableViewCell.reuseIdentifier, for: indexPath) as! ResultTableViewCell
         cell.delegate = resultDelegate
         cell.historyDelegate =  resultHistoryDelegate
-        let fdcFood = fdcFoods[indexPath.row]
-        cell.update(with: fdcFood)
-        cell.meal = meal
+        let foodItem: SearchResultFood
+        switch section {
+        case .bestMatch:
+            foodItem = bestMatchFoodItems[indexPath.row]
+        case .moreResults:
+            foodItem = moreResultsFoodItems[indexPath.row]
+        }
+        cell.update(with: foodItem)
         return cell
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let foodItem = fdcFoods[indexPath.row]
-        let foodDetailTableViewController = FoodDetailTableViewController(fdcFood: foodItem, meal: meal, foodService: foodService)
-        foodDetailTableViewController.delegate = delegate
-        foodDetailTableViewController.dismissDelegate = self
-        foodDetailTableViewController.historyDelegate = historyDelegate
+        guard let section = Section(rawValue: indexPath.section) else { return }
+        let foodItem: SearchResultFood
+        switch section {
+        case .bestMatch:
+            foodItem = bestMatchFoodItems[indexPath.row]
+        case .moreResults:
+            foodItem = moreResultsFoodItems[indexPath.row]
+        }
         
-        present(UINavigationController(rootViewController: foodDetailTableViewController), animated: true)
+//        let foodDetailTableViewController = FoodDetailTableViewController(fdcFood: foodItem, meal: meal, foodService: foodService)
+//        foodDetailTableViewController.delegate = delegate
+//        foodDetailTableViewController.dismissDelegate = self
+//        foodDetailTableViewController.historyDelegate = historyDelegate
+//
+//        present(UINavigationController(rootViewController: foodDetailTableViewController), animated: true)
     }
     
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return "Results"
+        guard let section = Section(rawValue: section) else { return nil }
+        switch section {
+        case .bestMatch:
+            return "Recommended"
+        case .moreResults:
+            return "More Results"
+        }
     }
 }
 

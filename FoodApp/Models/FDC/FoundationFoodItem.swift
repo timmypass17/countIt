@@ -12,7 +12,7 @@ struct FoundationFoodItem: FoodItem {
     let dataType: DataType
     let description: String
     let foodNutrients: [FoodNutrient]
-    let foodPortions: [FoodPortion]
+    let foodPortions: [FoodPortion] // not in foundation
 //    let inputFoods: [InputFoodFoundation]
     
     enum CodingKeys: String, CodingKey {
@@ -28,8 +28,25 @@ struct FoundationFoodItem: FoodItem {
         dataType = try container.decode(DataType.self, forKey: .dataType)
         description = try container.decode(String.self, forKey: .description)
         foodNutrients = try container.decode([FoodNutrient].self, forKey: .foodNutrients)
-        foodPortions = []   // add default 100g
+        foodPortions = [FoodPortion(gramWeight: 100, modifier: "grams", sequenceNumber: 0, portionDescription: "", measureUnit: MeasureUnit(id: 0, name: "", abbreviation: ""))]
     }
+    
+    
+    func getFoodPortionDescription(foodPortion: FoodPortion, numberOfServings: Int = 1, options: [FoodEntryOptions] = FoodEntryOptions.allCases) -> String {
+            var descriptionParts: [String] = []
+
+            if options.contains(.calories) {
+                descriptionParts.append("\(Int(getNutrientAmountPerServing(.calories, foodPortion: foodPortion) * Float(numberOfServings))) cal")
+            }
+            if options.contains(.servingSize) {
+                descriptionParts.append(getServingSizeFormatted(foodPortion: foodPortion, numberOfServings: numberOfServings))
+            }
+            
+            descriptionParts.append("USDA (foundation)")
+            
+            return descriptionParts.joined(separator: ", ")
+    }
+
 }
 
 //struct InputFoodFoundation: Codable {
@@ -42,3 +59,7 @@ struct FoundationFoodItem: FoodItem {
 //    let fdcId: Int
 //    let datatype: DataType
 //}
+
+enum FoodEntryOptions: CaseIterable {
+    case calories, servingSize, brandName
+}

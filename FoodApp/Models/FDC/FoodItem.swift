@@ -8,13 +8,46 @@
 import Foundation
 import CoreData
 
+// Foundation > Survey > Branded > SRLegacy
 protocol FoodItem: Codable {
     var fdcId: Int { get }
     var description: String { get }
     var dataType: DataType { get }
     var foodNutrients: [FoodNutrient] { get }
     var foodPortions: [FoodPortion] { get }
+    func getFoodPortionDescription(foodPortion: FoodPortion, numberOfServings: Int, options: [FoodEntryOptions]) -> String
+    func getServingSizeFormatted(foodPortion: FoodPortion, numberOfServings: Int) -> String
+    func getNutrientAmountPerServing(_ nutrientID: NutrientID, foodPortion: FoodPortion) -> Float
+    func getFoodNutrient(_ id: NutrientID) -> FoodNutrient?
 //    var foodInputs
+}
+
+extension FoodItem {
+    
+    func getFoodNutrient(_ id: NutrientID) -> FoodNutrient? {
+        return foodNutrients.first { $0.nutrient?.id == id }
+    }
+    
+    func getNutrientAmountPerServing(_ nutrientID: NutrientID, foodPortion: FoodPortion) -> Float {
+        guard let nutrient = getFoodNutrient(nutrientID),
+              let nutrientPer100g = nutrient.amount else { return 0 }
+        return (nutrientPer100g * foodPortion.gramWeight) / 100
+    }
+
+    func getServingSizeFormatted(foodPortion: FoodPortion, numberOfServings: Int = 1) -> String {
+        if foodPortion.modifier == "Quick Add" {
+            return "1 serving"
+        }
+        
+        if let amount = foodPortion.amount {
+            let servings = Int(amount * Float(numberOfServings))
+            let gramWeight = Int(foodPortion.gramWeight * Float(numberOfServings))
+            return "\(servings) \(foodPortion.modifier) (\(gramWeight) g))"
+        } else {
+            let gramWeight = Int(foodPortion.gramWeight * Float(numberOfServings))
+            return "\(gramWeight) g)"
+        }
+    }
 }
 
 // For decoding array of different FoodItem
@@ -60,6 +93,17 @@ enum AnyFoodItem: FoodItem {
         case .foundation(let item): return item.foodPortions
         case .branded(let item): return item.foodPortions
         case .survey(let item): return item.foodPortions
+        }
+    }
+    
+    func getFoodPortionDescription(foodPortion: FoodPortion, numberOfServings: Int, options: [FoodEntryOptions]) -> String {
+        switch self {
+        case .foundation(let item):
+            return item.getFoodPortionDescription(foodPortion: foodPortion, numberOfServings: numberOfServings, options: options)
+        case .branded(let item):
+            return item.getFoodPortionDescription(foodPortion: foodPortion, numberOfServings: numberOfServings, options: options)
+        case .survey(let item):
+            return item.getFoodPortionDescription(foodPortion: foodPortion, numberOfServings: numberOfServings, options: options)
         }
     }
 }

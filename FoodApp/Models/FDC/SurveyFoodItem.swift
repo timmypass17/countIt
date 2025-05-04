@@ -22,6 +22,44 @@ struct SurveyFoodItem: FoodItem {
     let foodPortions: [FoodPortion]
     let inputFoods: [InputFoodSurvey]
     let foodNutrients: [FoodNutrient]
+
+    enum CodingKeys: String, CodingKey {
+        case fdcId
+        case dataType
+        case description
+        case foodPortions
+        case inputFoods
+        case foodNutrients
+    }
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        fdcId = try container.decode(Int.self, forKey: .fdcId)
+        dataType = try container.decode(DataType.self, forKey: .dataType)
+        description = try container.decode(String.self, forKey: .description)
+        var foodPortions = try container.decode([FoodPortion].self, forKey: .foodPortions)
+        foodPortions.append(FoodPortion(gramWeight: 100, modifier: "grams", sequenceNumber: 0, portionDescription: "", measureUnit: MeasureUnit(id: 0, name: "", abbreviation: "")))
+        self.foodPortions = foodPortions
+        inputFoods = try container.decode([InputFoodSurvey].self, forKey: .inputFoods)
+        foodNutrients = try container.decode([FoodNutrient].self, forKey: .foodNutrients)
+    }
+    
+    
+    func getFoodPortionDescription(foodPortion: FoodPortion, numberOfServings: Int = 1, options: [FoodEntryOptions] = FoodEntryOptions.allCases) -> String {
+            var descriptionParts: [String] = []
+
+            if options.contains(.calories) {
+                descriptionParts.append("\(Int(getNutrientAmountPerServing(.calories, foodPortion: foodPortion) * Float(numberOfServings))) cal")
+            }
+            if options.contains(.servingSize) {
+                descriptionParts.append(getServingSizeFormatted(foodPortion: foodPortion, numberOfServings: numberOfServings))
+            }
+            
+            descriptionParts.append("USDA (survey)")
+            
+            return descriptionParts.joined(separator: ", ")
+    }
+
 }
 
 struct InputFoodSurvey: Codable {

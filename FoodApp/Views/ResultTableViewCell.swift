@@ -92,11 +92,13 @@ class ResultTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func update(with fdcFood: FoodItem) {
+//    func update<Item: FoodItem>(with foodItem: Item) {
+    func update(with foodItem: SearchResultFood) {
 //        self.food = food
-        titleLabel.text = fdcFood.description
-        let foodPortion = fdcFood.foodPortions[(fdcFood.foodPortions.count - 1) / 2]
-//        descriptionLabel.text = fdcFood.getFoodEntryDescriptionFormatted(foodPortion: foodPortion)
+        titleLabel.text = foodItem.description.firstUppercased
+        descriptionLabel.text = foodItem.getDescription()
+//        let foodPortion = foodItem.foodPortions[(foodItem.foodPortions.count - 1) / 2]
+//        descriptionLabel.text = foodItem.getFoodPortionDescription(foodPortion: foodPortion, numberOfServings: 1, options: FoodEntryOptions.allCases)
     }
     
     func didTapPlusButton() -> UIAction {
@@ -115,5 +117,12 @@ class ResultTableViewCell: UITableViewCell {
 //            let generator = UIImpactFeedbackGenerator(style: .medium)
 //            generator.impactOccurred()
         }
+    }
+}
+
+extension String {
+    var firstUppercased: String {
+        guard let first else { return "" }
+        return first.uppercased() + dropFirst().lowercased()
     }
 }

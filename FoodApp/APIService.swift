@@ -11,14 +11,16 @@ import CoreData
 
 let apiKey = "tbRKfhWJR3T2FFbwOiEShaXHrTljAGkVa232iZPx"
 
-struct AbridgedSearchAPIRequest: APIRequest {
+struct FoodsSearchAPIRequest: APIRequest {
     let query: String
     var dataTypes: [DataType] = DataType.allCases
     
     var urlRequest: URLRequest {
         var urlComponents = URLComponents(string: "https://api.nal.usda.gov/fdc/v1/foods/search")!
+
         urlComponents.queryItems = [
-            "query": "\(query)",
+            "query": query,
+            "requireAllWords": "true",
             "dataType": dataTypes.map { $0.rawValue }.joined(separator: ","),
             "pageSize": "10",
             "api_key": apiKey
@@ -28,9 +30,9 @@ struct AbridgedSearchAPIRequest: APIRequest {
         return request
     }
     
-    func decodeResponse(data: Data) throws -> AbridgedSearchResponse {
+    func decodeResponse(data: Data) throws -> FoodSearchResponse {
         let decoder = JSONDecoder()
-        let searchResponse = try decoder.decode(AbridgedSearchResponse.self, from: data)
+        let searchResponse = try decoder.decode(FoodSearchResponse.self, from: data)
         return searchResponse
     }
 }

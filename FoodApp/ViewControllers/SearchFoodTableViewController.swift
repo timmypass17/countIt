@@ -142,20 +142,21 @@ class SearchFoodTableViewController: UITableViewController {
 extension SearchFoodTableViewController: UISearchBarDelegate {
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-//        searchTask?.cancel()
-//        searchTask = Task {
-//            do {
-//                resultsTableController.spinner.startAnimating()
-//                let fdcFoods: [FDCFood] = try await foodService.getFoods(query: searchBar.text!, dataTypes: DataType.allCases)
-//                print("Got \(fdcFoods.count) foods")
-//                resultsTableController.fdcFoods = fdcFoods
-//                resultsTableController.tableView.reloadData()
-//            } catch {
-//                print("Error searching foods: \(error)")
-//            }
-//            resultsTableController.spinner.stopAnimating()
-//        }
-//        searchBar.resignFirstResponder()
+        searchTask?.cancel()
+        searchTask = Task {
+            do {
+                resultsTableController.spinner.startAnimating()
+                async let bestMatchFoodItems: [SearchResultFood] = try await foodService.getFoods(query: searchBar.text!, dataTypes: [.foundation])
+                async let moreResultsFoodItems: [SearchResultFood] = try await foodService.getFoods(query: searchBar.text!, dataTypes: [.survey, .branded])
+                resultsTableController.bestMatchFoodItems = try await bestMatchFoodItems
+                resultsTableController.moreResultsFoodItems = try await moreResultsFoodItems
+                resultsTableController.tableView.reloadData()
+            } catch {
+                print("Error searching foods: \(error)")
+            }
+            resultsTableController.spinner.stopAnimating()
+        }
+        searchBar.resignFirstResponder()
     }
     
 }
