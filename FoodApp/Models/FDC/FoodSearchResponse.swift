@@ -8,16 +8,23 @@
 import Foundation
 
 struct FoodSearchResponse: Decodable {
+    let totalHits: Int
+    var currentPage: Int
+    var totalPages: Int
     var foods: [SearchResultFood]
     
     enum CodingKeys: String, CodingKey {
+        case totalHits
         case foods
+        case currentPage
+        case totalPages
     }
 }
 
 struct SearchResultFood: Codable {
     var fdcId: Int
     var description: String
+    let dataType: DataType
     let brandName: String
     let foodNutrients: [SearchResultFoodNutrients]
     let servingSizeUnit: String // g
@@ -32,6 +39,7 @@ struct SearchResultFood: Codable {
     enum CodingKeys: String, CodingKey {
         case fdcId
         case description
+        case dataType
         case brandName
         case foodNutrients
         case servingSizeUnit
@@ -44,6 +52,7 @@ struct SearchResultFood: Codable {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.fdcId = try container.decode(Int.self, forKey: .fdcId)
         self.description = try container.decode(String.self, forKey: .description)
+        self.dataType = try container.decode(DataType.self, forKey: .dataType)
         self.brandName = try container.decodeIfPresent(String.self, forKey: .brandName)?.capitalized ?? "USDA"
         self.foodNutrients = try container.decode([SearchResultFoodNutrients].self, forKey: .foodNutrients)
         self.servingSizeUnit = try container.decodeIfPresent(String.self, forKey: .servingSizeUnit) ?? "g"
@@ -55,7 +64,7 @@ struct SearchResultFood: Codable {
         let caloriesText = "\(Int(calories)) cal"
         var servingSizeText: String = "\(Int(servingSize)) \(servingSizeUnit)"  // 100 g
         if let householdServingFullText = householdServingFullText {
-            servingSizeText = "\(householdServingFullText) \(Int(servingSize)) \(servingSizeUnit)" // 2 tbsp (100 g)
+            servingSizeText = "\(householdServingFullText) (\(Int(servingSize)) \(servingSizeUnit))" // 2 tbsp (100 g)
         }
 
         return [caloriesText, servingSizeText, brandName].joined(separator: ", ")

@@ -33,6 +33,8 @@
 		320E6C442DC4336700ABD356 /* FoodInfo+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 320E6C1D2DC4335500ABD356 /* FoodInfo+CoreDataClass.swift */; };
 		3216CF792BB4D6C900D9E17A /* AddFoodTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3216CF782BB4D6C900D9E17A /* AddFoodTableViewCell.swift */; };
 		32216DBE2BA0FF4E0046A178 /* ProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32216DBD2BA0FF4E0046A178 /* ProgressView.swift */; };
+		323FB4862DC84CA600A71C53 /* ResultsHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 323FB4852DC84CA600A71C53 /* ResultsHeaderView.swift */; };
+		323FB6B42DC95E3600A71C53 /* ResultsPaginatedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 323FB6B32DC95E3600A71C53 /* ResultsPaginatedViewController.swift */; };
 		324AB9372BA6B27900CECA72 /* CoreDataStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 324AB9362BA6B27900CECA72 /* CoreDataStack.swift */; };
 		32723CF62BA63BE70074732C /* HomeTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32723CF52BA63BE70074732C /* HomeTableViewController.swift */; };
 		32723CF82BA63CDB0074732C /* MealPlanDateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32723CF72BA63CDB0074732C /* MealPlanDateView.swift */; };
@@ -165,6 +167,8 @@
 		320E6C282DC4335500ABD356 /* Portion+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Portion+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		3216CF782BB4D6C900D9E17A /* AddFoodTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddFoodTableViewCell.swift; sourceTree = "<group>"; };
 		32216DBD2BA0FF4E0046A178 /* ProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressView.swift; sourceTree = "<group>"; };
+		323FB4852DC84CA600A71C53 /* ResultsHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultsHeaderView.swift; sourceTree = "<group>"; };
+		323FB6B32DC95E3600A71C53 /* ResultsPaginatedViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultsPaginatedViewController.swift; sourceTree = "<group>"; };
 		324AB9362BA6B27900CECA72 /* CoreDataStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataStack.swift; sourceTree = "<group>"; };
 		32723CF52BA63BE70074732C /* HomeTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeTableViewController.swift; sourceTree = "<group>"; };
 		32723CF72BA63CDB0074732C /* MealPlanDateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MealPlanDateView.swift; sourceTree = "<group>"; };
@@ -290,6 +294,7 @@
 				3296C9B52BB0F21A00EC7770 /* EditGoalTableViewController.swift */,
 				32CF12C92BB9E97400BE6B82 /* GoalTableViewController.swift */,
 				32B2575F2BBDD739003C7C7C /* QuickAddTableViewController.swift */,
+				323FB6B32DC95E3600A71C53 /* ResultsPaginatedViewController.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -325,6 +330,7 @@
 				328FA9582B97BDB9002A6FB6 /* SelectTableViewCell.swift */,
 				32B257612BBDDDD5003C7C7C /* QuickAddTableViewCell.swift */,
 				32C3864D2DC565700018D282 /* IngredientTableViewCell.swift */,
+				323FB4852DC84CA600A71C53 /* ResultsHeaderView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -669,8 +675,10 @@
 				32783F272BB2320400A698E4 /* MealHeaderView.swift in Sources */,
 				32B257622BBDDDD5003C7C7C /* QuickAddTableViewCell.swift in Sources */,
 				328FA9592B97BDB9002A6FB6 /* SelectTableViewCell.swift in Sources */,
+				323FB4862DC84CA600A71C53 /* ResultsHeaderView.swift in Sources */,
 				328FA9512B93C986002A6FB6 /* ResultTableViewCell.swift in Sources */,
 				328FA9692B9BE560002A6FB6 /* Settings.swift in Sources */,
+				323FB6B42DC95E3600A71C53 /* ResultsPaginatedViewController.swift in Sources */,
 				32B257602BBDD739003C7C7C /* QuickAddTableViewController.swift in Sources */,
 				32F51A4A2B92C1A70080CC09 /* SceneDelegate.swift in Sources */,
 				328FA9462B939C6A002A6FB6 /* SearchResponse.swift in Sources */,

@@ -146,10 +146,11 @@ extension SearchFoodTableViewController: UISearchBarDelegate {
         searchTask = Task {
             do {
                 resultsTableController.spinner.startAnimating()
-                async let bestMatchFoodItems: [SearchResultFood] = try await foodService.getFoods(query: searchBar.text!, dataTypes: [.foundation])
-                async let moreResultsFoodItems: [SearchResultFood] = try await foodService.getFoods(query: searchBar.text!, dataTypes: [.survey, .branded])
-                resultsTableController.bestMatchFoodItems = try await bestMatchFoodItems
-                resultsTableController.moreResultsFoodItems = try await moreResultsFoodItems
+                async let bestMatchFoodItems: FoodSearchResponse = try await foodService.getFoods(query: searchBar.text!, dataTypes: ResultsTableViewController.Section.bestMatch.dataTypes, pageSize: 3, pageNumber: 1)
+                async let moreResultsFoodItems: FoodSearchResponse = try await foodService.getFoods(query: searchBar.text!, dataTypes: ResultsTableViewController.Section.moreResults.dataTypes, pageSize: 8, pageNumber: 1)
+                resultsTableController.bestMatchResponse = try await bestMatchFoodItems
+                resultsTableController.moreResultsResponse = try await moreResultsFoodItems
+                resultsTableController.query = searchBar.text!
                 resultsTableController.tableView.reloadData()
             } catch {
                 print("Error searching foods: \(error)")
@@ -209,23 +210,23 @@ extension SearchFoodTableViewController: DataScannerViewControllerDelegate {
         if case .barcode(let barcode) = item {
             searchTask?.cancel()
             searchTask = Task {
-                guard var barcodeID = barcode.payloadStringValue else { return }
-                // Convert from EDA-13 (13 digits) to UPC (12 digits)
-                if barcodeID.first == "0" {
-                    barcodeID.removeFirst()
-                }
-                print("barcode", barcodeID)
-                guard let food = try? await foodService.getFoods(query: barcodeID, dataTypes: DataType.allCases).first
-                else {
-                    let generator = UIImpactFeedbackGenerator(style: .medium)
-                    generator.impactOccurred()
-                    dismiss(animated: true)
-                    showFoodNotFoundAlert(id: barcodeID)
-                    return
-                }
-                
-                let generator = UIImpactFeedbackGenerator(style: .medium)
-                generator.impactOccurred()
+//                guard var barcodeID = barcode.payloadStringValue else { return }
+//                // Convert from EDA-13 (13 digits) to UPC (12 digits)
+//                if barcodeID.first == "0" {
+//                    barcodeID.removeFirst()
+//                }
+//                print("barcode", barcodeID)
+//                guard let food = try? await foodService.getFoods(query: barcodeID, dataTypes: DataType.allCases).first
+//                else {
+//                    let generator = UIImpactFeedbackGenerator(style: .medium)
+//                    generator.impactOccurred()
+//                    dismiss(animated: true)
+//                    showFoodNotFoundAlert(id: barcodeID)
+//                    return
+//                }
+//                
+//                let generator = UIImpactFeedbackGenerator(style: .medium)
+//                generator.impactOccurred()
                 
 //                let foodDetailViewController = FoodDetailTableViewController(food: food, meal: meal, foodService: foodService)
 //                foodDetailViewController.delegate = delegate

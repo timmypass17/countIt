@@ -23,7 +23,20 @@ class ResultTableViewCell: UITableViewCell {
         label.numberOfLines = 1
         label.lineBreakMode = .byTruncatingTail
         label.font = UIFont.boldSystemFont(ofSize: 16.0)
+        label.setContentHuggingPriority(.required, for: .horizontal)    // hug its content to never stretch
+        label.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)    // should shrink
+//            .required (1000) on hugging means “do not grow beyond intrinsic size.”
+//            .defaultLow (250) on titleLabel’s compression resistance means “if we must squeeze, let me truncate first.”
+//            .required on the image view’s compression resistance means “never shrink the image”
         return label
+    }()
+    
+    let checkmarkImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.image = UIImage(systemName: "checkmark.seal.fill")
+        imageView.setContentHuggingPriority(.required, for: .horizontal)
+        imageView.setContentCompressionResistancePriority(.required, for: .horizontal)
+        return imageView
     }()
     
     let descriptionLabel: UILabel = {
@@ -50,17 +63,23 @@ class ResultTableViewCell: UITableViewCell {
         return button
     }()
     
+    let titleContainer: UIStackView = {
+        let stackView = UIStackView()
+        stackView.axis = .horizontal
+        return stackView
+    }()
+    
     let labelContainer: UIStackView = {
-        let hstack = UIStackView()
-        hstack.axis = .vertical
-        return hstack
+        let stackView = UIStackView()
+        stackView.axis = .vertical
+        return stackView
     }()
     
     let container: UIStackView = {
-        let hstack = UIStackView()
-        hstack.axis = .horizontal
-        hstack.translatesAutoresizingMaskIntoConstraints = false
-        return hstack
+        let stackView = UIStackView()
+        stackView.axis = .horizontal
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        return stackView
     }()
     
     var food: Food!
@@ -72,7 +91,12 @@ class ResultTableViewCell: UITableViewCell {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
-        labelContainer.addArrangedSubview(titleLabel)
+        titleContainer.addArrangedSubview(titleLabel)
+        titleContainer.addArrangedSubview(checkmarkImageView)
+        titleContainer.addArrangedSubview(UIView())
+        titleContainer.setCustomSpacing(8, after: titleLabel)
+        
+        labelContainer.addArrangedSubview(titleContainer)
         labelContainer.addArrangedSubview(descriptionLabel)
         
         container.addArrangedSubview(labelContainer)

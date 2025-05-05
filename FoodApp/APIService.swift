@@ -14,6 +14,8 @@ let apiKey = "tbRKfhWJR3T2FFbwOiEShaXHrTljAGkVa232iZPx"
 struct FoodsSearchAPIRequest: APIRequest {
     let query: String
     var dataTypes: [DataType] = DataType.allCases
+    var pageSize: Int
+    var pageNumber: Int
     
     var urlRequest: URLRequest {
         var urlComponents = URLComponents(string: "https://api.nal.usda.gov/fdc/v1/foods/search")!
@@ -22,7 +24,8 @@ struct FoodsSearchAPIRequest: APIRequest {
             "query": query,
             "requireAllWords": "true",
             "dataType": dataTypes.map { $0.rawValue }.joined(separator: ","),
-            "pageSize": "10",
+            "pageSize": "\(pageSize)",
+            "pageNumber": "\(pageNumber)",
             "api_key": apiKey
         ].map { URLQueryItem(name: $0.key, value: $0.value) }
         

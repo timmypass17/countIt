@@ -10,7 +10,7 @@ import UIKit
 import CoreData
 
 protocol FoodServiceProtocol {
-    func getFoods(query: String, dataTypes: [DataType]) async throws -> [SearchResultFood]
+    func getFoods(query: String, dataTypes: [DataType], pageSize: Int, pageNumber: Int) async throws -> FoodSearchResponse
     func getFoods(fdcIds: [Int], dataTypes: [DataType]) async throws -> [FoodItem]
     func createEmptyMealPlan() -> MealPlan
 }
@@ -32,10 +32,10 @@ class FoodService: FoodServiceProtocol {
         return mealPlan
     }
     
-    func getFoods(query: String, dataTypes: [DataType]) async throws -> [SearchResultFood] {
-        let abridgedRequest = FoodsSearchAPIRequest(query: query, dataTypes: dataTypes)
+    func getFoods(query: String, dataTypes: [DataType], pageSize: Int, pageNumber: Int) async throws -> FoodSearchResponse {
+        let abridgedRequest = FoodsSearchAPIRequest(query: query, dataTypes: dataTypes, pageSize: pageSize, pageNumber: pageNumber)
         let searchResultResponse = try await sendRequest(abridgedRequest)
-        return searchResultResponse.foods
+        return searchResultResponse
     }
     
 //    func getFoods(query: String, dataTypes: [DataType]) async throws -> [FoodItem] {

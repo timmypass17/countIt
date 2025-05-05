@@ -9,13 +9,32 @@ import UIKit
 
 class ResultsTableViewController: UITableViewController {
     
-    var bestMatchFoodItems: [SearchResultFood] = []
-    var moreResultsFoodItems: [SearchResultFood] = []
+    var bestMatchResponse: FoodSearchResponse = FoodSearchResponse(totalHits: 0, currentPage: 1, totalPages: 0, foods: [])
+    var moreResultsResponse: FoodSearchResponse = FoodSearchResponse(totalHits: 0, currentPage: 1, totalPages: 0, foods: [])
     let meal: Meal?
     let foodService: FoodService
+    var query: String?
     
     enum Section: Int, CaseIterable {
         case bestMatch, moreResults
+        
+        var description: String {
+            switch self {
+            case .bestMatch:
+                return "Best Match"
+            case .moreResults:
+                return "More Results"
+            }
+        }
+        
+        var dataTypes: [DataType] {
+            switch self {
+            case .bestMatch:
+                return [.foundation]
+            case .moreResults:
+                return [.survey, .branded]
+            }
+        }
     }
     
     var spinner: UIActivityIndicatorView = {
@@ -24,7 +43,7 @@ class ResultsTableViewController: UITableViewController {
         spinner.translatesAutoresizingMaskIntoConstraints = false
         return spinner
     }()
-        
+    
     init(meal: Meal?, foodService: FoodService) {
         self.meal = meal
         self.foodService = foodService
@@ -35,7 +54,7 @@ class ResultsTableViewController: UITableViewController {
     weak var historyDelegate: FoodDetailTableViewControllerHistoryDelegate?
     weak var resultDelegate: ResultTableViewCellDelegate?
     weak var resultHistoryDelegate: ResultTableViewCellHistoryDelegate?
-
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -43,9 +62,9 @@ class ResultsTableViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.register(ResultTableViewCell.self, forCellReuseIdentifier: ResultTableViewCell.reuseIdentifier)
-        
+        tableView.register(ResultsHeaderView.self, forHeaderFooterViewReuseIdentifier: ResultsHeaderView.reuseIdentifier)
         view.addSubview(spinner)
-    
+        
         NSLayoutConstraint.activate([
             spinner.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             spinner.topAnchor.constraint(equalTo: view.topAnchor, constant: 10)
@@ -62,9 +81,9 @@ class ResultsTableViewController: UITableViewController {
         guard let section = Section(rawValue: section) else { return 0 }
         switch section {
         case .bestMatch:
-            return bestMatchFoodItems.count
+            return bestMatchResponse.foods.count
         case .moreResults:
-            return moreResultsFoodItems.count
+            return moreResultsResponse.foods.count
         }
     }
     
@@ -76,9 +95,9 @@ class ResultsTableViewController: UITableViewController {
         let foodItem: SearchResultFood
         switch section {
         case .bestMatch:
-            foodItem = bestMatchFoodItems[indexPath.row]
+            foodItem = bestMatchResponse.foods[indexPath.row]
         case .moreResults:
-            foodItem = moreResultsFoodItems[indexPath.row]
+            foodItem = moreResultsResponse.foods[indexPath.row]
         }
         cell.update(with: foodItem)
         return cell
@@ -89,27 +108,35 @@ class ResultsTableViewController: UITableViewController {
         let foodItem: SearchResultFood
         switch section {
         case .bestMatch:
-            foodItem = bestMatchFoodItems[indexPath.row]
+            foodItem = bestMatchResponse.foods[indexPath.row]
         case .moreResults:
-            foodItem = moreResultsFoodItems[indexPath.row]
+            foodItem = moreResultsResponse.foods[indexPath.row]
         }
         
-//        let foodDetailTableViewController = FoodDetailTableViewController(fdcFood: foodItem, meal: meal, foodService: foodService)
-//        foodDetailTableViewController.delegate = delegate
-//        foodDetailTableViewController.dismissDelegate = self
-//        foodDetailTableViewController.historyDelegate = historyDelegate
-//
-//        present(UINavigationController(rootViewController: foodDetailTableViewController), animated: true)
+        //        let foodDetailTableViewController = FoodDetailTableViewController(fdcFood: foodItem, meal: meal, foodService: foodService)
+        //        foodDetailTableViewController.delegate = delegate
+        //        foodDetailTableViewController.dismissDelegate = self
+        //        foodDetailTableViewController.historyDelegate = historyDelegate
+        //
+        //        present(UINavigationController(rootViewController: foodDetailTableViewController), animated: true)
     }
     
-    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+    override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         guard let section = Section(rawValue: section) else { return nil }
+        let headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: ResultsHeaderView.reuseIdentifier) as! ResultsHeaderView
+        headerView.delegate = self
+        headerView.section = section
         switch section {
         case .bestMatch:
-            return "Recommended"
+            headerView.update(title: "Best Match (\(bestMatchResponse.totalHits))")
         case .moreResults:
-            return "More Results"
+            headerView.update(title: "More Results (\(moreResultsResponse.totalHits))")
         }
+        return headerView
+    }
+    
+    override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return 42
     }
 }
 
@@ -119,4 +146,15 @@ extension ResultsTableViewController: FoodDetailTableViewControllerDismissDelega
             tableView.deselectRow(at: indexPath, animated: true)
         }
     }
+}
+
+extension ResultsTableViewController: ResultsHeaderViewDelegate {
+
+    func resultsHeaderView(_ sender: ResultsHeaderView, didTapInSection section: Section) {
+        guard let query else { return }
+        let resultsPaginatedViewController = ResultsPaginatedViewController(query: query, section: section)
+        resultsPaginatedViewController.foodService = foodService
+        present(UINavigationController(rootViewController: resultsPaginatedViewController), animated: true)
+    }
+    
 }
