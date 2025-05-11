@@ -17,18 +17,18 @@ protocol FoodItem: Codable {
     var foodPortions: [FoodPortion] { get }
     func getFoodPortionDescription(foodPortion: FoodPortion, numberOfServings: Int, options: [FoodEntryOptions]) -> String
     func getServingSizeFormatted(foodPortion: FoodPortion, numberOfServings: Int) -> String
-    func getNutrientAmountPerServing(_ nutrientID: NutrientID, foodPortion: FoodPortion) -> Float
-    func getFoodNutrient(_ id: NutrientID) -> FoodNutrient?
+    func getNutrientAmountPerServing(_ nutrientID: NutrientId, foodPortion: FoodPortion) -> Float
+    func getFoodNutrient(_ id: NutrientId) -> FoodNutrient?
 //    var foodInputs
 }
 
 extension FoodItem {
     
-    func getFoodNutrient(_ id: NutrientID) -> FoodNutrient? {
+    func getFoodNutrient(_ id: NutrientId) -> FoodNutrient? {
         return foodNutrients.first { $0.nutrient?.id == id }
     }
     
-    func getNutrientAmountPerServing(_ nutrientID: NutrientID, foodPortion: FoodPortion) -> Float {
+    func getNutrientAmountPerServing(_ nutrientID: NutrientId, foodPortion: FoodPortion) -> Float {
         guard let nutrient = getFoodNutrient(nutrientID),
               let nutrientPer100g = nutrient.amount else { return 0 }
         return (nutrientPer100g * foodPortion.gramWeight) / 100

@@ -21,13 +21,24 @@ struct FoodSearchResponse: Decodable {
     }
 }
 
+/// Calculates the amount of a nutrient based on serving size.
+/// - Parameters:
+///   - amountPer100g: Nutrient amount per 100g (as provided by USDA).
+///   - actualServingSize: The actual serving size in grams or milliliters.
+/// - Returns: The scaled nutrient amount for the given serving.
+func scaledNutrientAmount(amountPer100g: Float, actualServingSize: Float) -> Float {
+    guard actualServingSize > 0 else { return 0 }
+    return (amountPer100g / 100) * Float(actualServingSize)
+}
+
 struct SearchResultFood: Codable {
     var fdcId: Int
     var description: String
     let dataType: DataType
     let brandName: String
-    let foodNutrients: [SearchResultFoodNutrients]
-    let servingSizeUnit: String // g
+    let foodNutrients: [SearchResultFoodNutrient]
+    let foodMeasures: [SearchResultFoodMeasurement]
+    let servingSizeUnit: String // g    // TODO: Make be ml?
     let servingSize: Float // 32.0
     let householdServingFullText: String? // "2 Tbsp"
     
@@ -42,10 +53,33 @@ struct SearchResultFood: Codable {
         case dataType
         case brandName
         case foodNutrients
+        case foodMeasures
         case servingSizeUnit
         case servingSize
         case householdServingFullText
 
+    }
+    
+    init(
+        fdcId: Int,
+        description: String,
+        dataType: DataType,
+        brandName: String,
+        foodNutrients: [SearchResultFoodNutrient],
+        foodMeasures: [SearchResultFoodMeasurement],
+        servingSizeUnit: String,
+        servingSize: Float,
+        householdServingFullText: String? = nil
+    ) {
+        self.fdcId = fdcId
+        self.description = description
+        self.dataType = dataType
+        self.brandName = brandName
+        self.foodNutrients = foodNutrients
+        self.foodMeasures = foodMeasures
+        self.servingSizeUnit = servingSizeUnit
+        self.servingSize = servingSize
+        self.householdServingFullText = householdServingFullText
     }
     
     init(from decoder: any Decoder) throws {
@@ -54,47 +88,126 @@ struct SearchResultFood: Codable {
         self.description = try container.decode(String.self, forKey: .description)
         self.dataType = try container.decode(DataType.self, forKey: .dataType)
         self.brandName = try container.decodeIfPresent(String.self, forKey: .brandName)?.capitalized ?? "USDA"
-        self.foodNutrients = try container.decode([SearchResultFoodNutrients].self, forKey: .foodNutrients)
+        self.householdServingFullText = try container.decodeIfPresent(String.self, forKey: .householdServingFullText)
         self.servingSizeUnit = try container.decodeIfPresent(String.self, forKey: .servingSizeUnit) ?? "g"
         self.servingSize = try container.decodeIfPresent(Float.self, forKey: .servingSize) ?? 100
-        self.householdServingFullText = try container.decodeIfPresent(String.self, forKey: .householdServingFullText)
+        let rawNutrients = try container.decode([RawSearchResultFoodNutrients].self, forKey: .foodNutrients)
+        self.foodNutrients = rawNutrients.compactMap { raw in
+            guard let nutrientId = NutrientId(rawValue: raw.nutrientId) else { return nil }
+            return SearchResultFoodNutrient(nutrientId: nutrientId, nutrientName: raw.nutrientName, unitName: raw.unitName.lowercased(), value: raw.value, indentLevel: raw.indentLevel)
+        }
+        
+        var foodMeasures = try container.decode([SearchResultFoodMeasurement].self, forKey: .foodMeasures)
+        if let householdServingFullText {
+            foodMeasures.append(SearchResultFoodMeasurement(id: Int(Date().timeIntervalSince1970 * 1000), disseminationText: householdServingFullText, gramWeight: servingSize, rank: 0))
+        }
+        foodMeasures.append(SearchResultFoodMeasurement(id: 0, disseminationText: "Quantity not specified", gramWeight: 100, rank: 0))
+        foodMeasures.sort { $0.gramWeight > $1.gramWeight }
+        
+        
+        for (index, _) in foodMeasures.enumerated() {
+            foodMeasures[index].rank = index
+        }
+        
+        
+        self.foodMeasures = foodMeasures
     }
     
-    func getDescription() -> String {
-        let caloriesText = "\(Int(calories)) cal"
-        var servingSizeText: String = "\(Int(servingSize)) \(servingSizeUnit)"  // 100 g
-        if let householdServingFullText = householdServingFullText {
+    enum DescriptionOptions: CaseIterable {
+        case calories, servingSize, brand
+    }
+    
+    private func getDescription(options: [DescriptionOptions] = DescriptionOptions.allCases) -> String {
+        if let householdServingFullText {
+            let caloriesText = "\(Int(calories)) cal"
+            var servingSizeText: String = "\(Int(servingSize)) \(servingSizeUnit)"  // 100 g
             servingSizeText = "\(householdServingFullText) (\(Int(servingSize)) \(servingSizeUnit))" // 2 tbsp (100 g)
+            return [caloriesText, servingSizeText, brandName].joined(separator: ", ")
         }
-
+        
+        let foodMeasurement = foodMeasures[(foodMeasures.count - 1) / 2]
+        let calories = getNutrients(.calories, foodMeasurement: foodMeasurement)
+        let caloriesText = "\(Int(calories)) cal"
+        let servingSizeText = "\(foodMeasurement.gramWeight) g"
         return [caloriesText, servingSizeText, brandName].joined(separator: ", ")
+    }
+    
+    var searchResultDescription: String {
+        return getDescription(options: [.calories, .servingSize, .brand])
+    }
+    
+    func getNutrients(_ nutrientID: NutrientId, foodMeasurement: SearchResultFoodMeasurement) -> Float {
+        guard let caloriesPer100g = foodNutrients[.calories]?.value else { return 0 }
+        let amount = (caloriesPer100g * Float(foodMeasurement.gramWeight)) / 100
+        return amount
     }
 }
 
-struct SearchResultFoodNutrients: Codable {
-    let nutrientId: NutrientID  // 1008
+struct SearchResultFoodNutrient: Codable {
+    let nutrientId: NutrientId  // 1008
     let nutrientName: String    // Energy
     let unitName: String    // KCAL
     let value: Float
+    let indentLevel: Int
     
     enum CodingKeys: String, CodingKey {
         case nutrientId
         case nutrientName
         case unitName
         case value
+        case indentLevel
+    }
+    
+    init(nutrientId: NutrientId, nutrientName: String, unitName: String, value: Float, indentLevel: Int) {
+        self.nutrientId = nutrientId
+        self.nutrientName = nutrientName
+        self.unitName = unitName
+        self.value = value
+        self.indentLevel = indentLevel
     }
     
     init(from decoder: any Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        self.nutrientId = try container.decode(NutrientID.self, forKey: .nutrientId)
+        self.nutrientId = try container.decode(NutrientId.self, forKey: .nutrientId)
         self.nutrientName = try container.decode(String.self, forKey: .nutrientName)
-        self.unitName = try container.decode(String.self, forKey: .unitName)
+        self.unitName = try container.decode(String.self, forKey: .unitName).lowercased()
         self.value = try container.decode(Float.self, forKey: .value)
+        self.indentLevel = try container.decode(Int.self, forKey: .indentLevel)
     }
 }
 
-extension Array where Element == SearchResultFoodNutrients {
-    subscript(nutrientID: NutrientID) -> SearchResultFoodNutrients? {
+extension SearchResultFoodNutrient {
+    static func empty(_ nutrientId: NutrientId) -> SearchResultFoodNutrient {
+        return SearchResultFoodNutrient(nutrientId: nutrientId, nutrientName: nutrientId.description, unitName: nutrientId.unitName, value: 0, indentLevel: -1)
+
+    }
+}
+
+struct RawSearchResultFoodNutrients: Codable {
+    let nutrientId: Int
+    let nutrientName: String
+    let unitName: String
+    let value: Float
+    let indentLevel: Int
+}
+
+struct SearchResultFoodMeasurement: Codable {
+    let id: Int
+    let disseminationText: String
+    let gramWeight: Float
+    var rank: Int
+    
+    var servingSizeDescription: String {
+        if disseminationText == "Quantity not specified" {
+            return "\(Int(gramWeight)) g"
+        }
+        
+        return "\(disseminationText) (\(Int(gramWeight)) g)"
+    }
+}
+
+extension Array where Element == SearchResultFoodNutrient {
+    subscript(nutrientID: NutrientId) -> SearchResultFoodNutrient? {
         return self.first(where: { $0.nutrientId == nutrientID })
     }
 }

@@ -10,6 +10,7 @@ import UIKit
 import CoreData
 
 protocol FoodServiceProtocol {
+//    func getMealPlan(date: Date) -> MealPlan
     func getFoods(query: String, dataTypes: [DataType], pageSize: Int, pageNumber: Int) async throws -> FoodSearchResponse
     func getFoods(fdcIds: [Int], dataTypes: [DataType]) async throws -> [FoodItem]
     func createEmptyMealPlan() -> MealPlan
@@ -19,16 +20,39 @@ class FoodService: FoodServiceProtocol {
     
     let context = CoreDataStack.shared.context
     
+//    func getMealPlan(date: Date) -> MealPlan {
+//        let date = Calendar.current.startOfDay(for: date)
+//        let request: NSFetchRequest<MealPlan> = MealPlan.fetchRequest()
+//        request.predicate = NSPredicate(format: "date_ == %@", date as NSDate)
+//        request.fetchLimit = 1
+//
+//        do {
+//            let mealPlans = try context.fetch(request)
+//            if let mealPlan = mealPlans.first {
+//                return mealPlan
+//            }
+//            
+//            return
+//        } catch {
+//            print("Error fetching meal plan: \(error)")
+//            return
+//        }
+//    }
+    
     func createEmptyMealPlan() -> MealPlan {
         let mealPlan = MealPlan(context: context)
         mealPlan.date = .now
-        
-        let meal = Meal(context: context)
-        meal.index = 0
-        meal.name = "Breakfast"
-        meal.mealPlan_ = mealPlan
-        mealPlan.addToMeals_(meal)
-        
+
+        let mealNames = ["Breakfast", "Lunch", "Dinner", "Snack"]
+
+        for (index, name) in mealNames.enumerated() {
+            let meal = Meal(context: context)
+            meal.index = Int16(index)
+            meal.name = name
+            meal.mealPlan_ = mealPlan
+            mealPlan.addToMeals_(meal)
+        }
+
         return mealPlan
     }
     

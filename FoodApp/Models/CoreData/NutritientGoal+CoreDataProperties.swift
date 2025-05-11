@@ -18,6 +18,6 @@ extension NutritientGoal {
 
     @NSManaged public var nutrientId: Int32
     @NSManaged public var value: Double
-    @NSManaged public var mealPlan_: MealPlan?
+    @NSManaged public var mealPlan: MealPlan?
 
 }

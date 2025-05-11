@@ -83,8 +83,11 @@ class NutritionTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func update(with foodNutrient: FoodNutrient, foodPortion: FoodPortion, quantity: Int) {
-        nameLabel.text = foodNutrient.description
+    func update(with foodNutrient: SearchResultFoodNutrient, foodPortion: SearchResultFoodMeasurement, quantity: Int) {
+        nameLabel.text = foodNutrient.nutrientName
+        let amount = scaledNutrientAmount(amountPer100g: foodNutrient.value, actualServingSize: foodPortion.gramWeight)
+        amountLabel.text = "\(Int(amount)) \(foodNutrient.unitName)"
+        percentLabel.text = "-"
 //        let nutrientAmount = (calculateNutrientPerServing(nutrientPer100g: foodNutrient.amount ?? 0, servingSizeGramWeight: foodPortion.gramWeight) * Float(quantity))
 //        if let nutrientID = foodNutrient.nutrient?.id,
 //           let nutrientGoal = Settings.shared.userDailyValues[nutrientID] {
@@ -101,31 +104,31 @@ class NutritionTableViewCell: UITableViewCell {
 //            amountLabel.text = "Missing nutrient goal"
 //        }
         
-        if let isSecondary = foodNutrient.nutrient?.id.isSecondary, isSecondary == true {
-            nameLabel.textColor = .secondaryLabel
-            leadingConstraint.constant = 25
-        }  else if let isTertiary = foodNutrient.nutrient?.id.isTertiary, isTertiary == true {
-            nameLabel.textColor = .secondaryLabel
-            leadingConstraint.constant = 50
-        } else {
-            nameLabel.textColor = .label
-            leadingConstraint.constant = 0
-        }
+//        if let isSecondary = foodNutrient.nutrient?.id.isSecondary, isSecondary == true {
+//            nameLabel.textColor = .secondaryLabel
+//            leadingConstraint.constant = 25
+//        }  else if let isTertiary = foodNutrient.nutrient?.id.isTertiary, isTertiary == true {
+//            nameLabel.textColor = .secondaryLabel
+//            leadingConstraint.constant = 50
+//        } else {
+//            nameLabel.textColor = .label
+//            leadingConstraint.constant = 0
+//        }
         
         progressView.isHidden = true
     }
     
-    func update(nutrientID: NutrientID, nutrientAmount: Float, nutrientGoal: Float) {
+    func update(nutrientID: NutrientId, nutrientAmount: Float, nutrientGoal: Float) {
         nameLabel.text = nutrientID.description
         var progress: Float = 0
         if nutrientGoal > 0 {
             progress = nutrientAmount / nutrientGoal
         }
-        if nutrientAmount < 1 {
-            amountLabel.text = "\(nutrientAmount.formattedString(decimalPlaces: 1)) \(nutrientID.unit)"
-        } else {
-            amountLabel.text = "\(Int(nutrientAmount)) \(nutrientID.unit)"
-        }
+//        if nutrientAmount < 1 {
+//            amountLabel.text = "\(nutrientAmount.formattedString(decimalPlaces: 1)) \(nutrientID.unit)"
+//        } else {
+//            amountLabel.text = "\(Int(nutrientAmount)) \(nutrientID.unit)"
+//        }
         percentLabel.text = "\(Int((progress * 100).rounded()))%"
         progressView.progress = progress
     }

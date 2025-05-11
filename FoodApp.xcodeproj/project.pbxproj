@@ -31,12 +31,34 @@
 		320E6C422DC4336700ABD356 /* NutritientGoal+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 320E6C262DC4335500ABD356 /* NutritientGoal+CoreDataProperties.swift */; };
 		320E6C432DC4336700ABD356 /* FoodInfo+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 320E6C1E2DC4335500ABD356 /* FoodInfo+CoreDataProperties.swift */; };
 		320E6C442DC4336700ABD356 /* FoodInfo+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 320E6C1D2DC4335500ABD356 /* FoodInfo+CoreDataClass.swift */; };
+		320EE1CB2DCDB44100D6B07D /* OnboardingUserViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 320EE1CA2DCDB44100D6B07D /* OnboardingUserViewController.swift */; };
+		320EE1CD2DCDB5E300D6B07D /* OnboardingSegmentedTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 320EE1CC2DCDB5E300D6B07D /* OnboardingSegmentedTableViewCell.swift */; };
+		320EE1CF2DCDB7F700D6B07D /* HeightTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 320EE1CE2DCDB7F700D6B07D /* HeightTableViewCell.swift */; };
+		320EE1D12DCDBAC500D6B07D /* HeightFeetPickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 320EE1D02DCDBAC500D6B07D /* HeightFeetPickerViewController.swift */; };
+		320EE1D32DCE9F5500D6B07D /* DateOfBirthTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 320EE1D22DCE9F5500D6B07D /* DateOfBirthTableViewCell.swift */; };
+		320EE1D52DCEA45B00D6B07D /* OnboardingCalculationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 320EE1D42DCEA45B00D6B07D /* OnboardingCalculationViewController.swift */; };
+		320EE1D72DCEA5DF00D6B07D /* DailyCaloriesTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 320EE1D62DCEA5DF00D6B07D /* DailyCaloriesTableViewCell.swift */; };
+		320EE1D92DCEA89300D6B07D /* MacrosSplitTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 320EE1D82DCEA89300D6B07D /* MacrosSplitTableViewCell.swift */; };
+		320EE1DB2DCEAE6400D6B07D /* MacrosSplitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 320EE1DA2DCEAE6400D6B07D /* MacrosSplitViewController.swift */; };
+		320EE4092DCED7DD00D6B07D /* UnitPreferenceFooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 320EE4082DCED7DD00D6B07D /* UnitPreferenceFooterView.swift */; };
+		320EE40B2DCEF09200D6B07D /* HeightPreferenceFooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 320EE40A2DCEF09200D6B07D /* HeightPreferenceFooterView.swift */; };
 		3216CF792BB4D6C900D9E17A /* AddFoodTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3216CF782BB4D6C900D9E17A /* AddFoodTableViewCell.swift */; };
 		32216DBE2BA0FF4E0046A178 /* ProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32216DBD2BA0FF4E0046A178 /* ProgressView.swift */; };
 		323FB4862DC84CA600A71C53 /* ResultsHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 323FB4852DC84CA600A71C53 /* ResultsHeaderView.swift */; };
 		323FB6B42DC95E3600A71C53 /* ResultsPaginatedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 323FB6B32DC95E3600A71C53 /* ResultsPaginatedViewController.swift */; };
+		323FB7662DCADDD000A71C53 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 323FB7652DCADDD000A71C53 /* SettingsViewController.swift */; };
+		323FB76A2DCADFB800A71C53 /* SettingsSelectableTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 323FB7692DCADFB800A71C53 /* SettingsSelectableTableViewCell.swift */; };
+		323FB76E2DCAE64400A71C53 /* DashboardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 323FB76D2DCAE64400A71C53 /* DashboardViewController.swift */; };
+		323FB7712DCAE65B00A71C53 /* ProgressViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 323FB7702DCAE65B00A71C53 /* ProgressViewController.swift */; };
+		323FB7742DCAE66E00A71C53 /* EntryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 323FB7732DCAE66E00A71C53 /* EntryViewController.swift */; };
+		323FB9A32DCAF4C600A71C53 /* OnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 323FB9A22DCAF4C600A71C53 /* OnboardingViewController.swift */; };
+		323FB9A52DCC045200A71C53 /* OnboardingGoalViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 323FB9A42DCC045200A71C53 /* OnboardingGoalViewController.swift */; };
+		323FB9A72DCC04A800A71C53 /* SelectableTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 323FB9A62DCC04A800A71C53 /* SelectableTableViewCell.swift */; };
+		323FB9AA2DCC0AFA00A71C53 /* WeightInputTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 323FB9A92DCC0AFA00A71C53 /* WeightInputTableViewCell.swift */; };
+		323FB9AC2DCC13D800A71C53 /* MenuPickerTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 323FB9AB2DCC13D800A71C53 /* MenuPickerTableViewCell.swift */; };
 		324AB9372BA6B27900CECA72 /* CoreDataStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 324AB9362BA6B27900CECA72 /* CoreDataStack.swift */; };
-		32723CF62BA63BE70074732C /* HomeTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32723CF52BA63BE70074732C /* HomeTableViewController.swift */; };
+		325463BE2DD0114100BEDCE0 /* HeightCmPickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 325463BD2DD0114100BEDCE0 /* HeightCmPickerViewController.swift */; };
+		32723CF62BA63BE70074732C /* DiaryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32723CF52BA63BE70074732C /* DiaryViewController.swift */; };
 		32723CF82BA63CDB0074732C /* MealPlanDateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32723CF72BA63CDB0074732C /* MealPlanDateView.swift */; };
 		32783F272BB2320400A698E4 /* MealHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32783F262BB2320400A698E4 /* MealHeaderView.swift */; };
 		32783F292BB2370800A698E4 /* NutrientView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32783F282BB2370800A698E4 /* NutrientView.swift */; };
@@ -165,12 +187,34 @@
 		320E6C262DC4335500ABD356 /* NutritientGoal+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NutritientGoal+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		320E6C272DC4335500ABD356 /* Portion+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Portion+CoreDataClass.swift"; sourceTree = "<group>"; };
 		320E6C282DC4335500ABD356 /* Portion+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Portion+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		320EE1CA2DCDB44100D6B07D /* OnboardingUserViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingUserViewController.swift; sourceTree = "<group>"; };
+		320EE1CC2DCDB5E300D6B07D /* OnboardingSegmentedTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingSegmentedTableViewCell.swift; sourceTree = "<group>"; };
+		320EE1CE2DCDB7F700D6B07D /* HeightTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeightTableViewCell.swift; sourceTree = "<group>"; };
+		320EE1D02DCDBAC500D6B07D /* HeightFeetPickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeightFeetPickerViewController.swift; sourceTree = "<group>"; };
+		320EE1D22DCE9F5500D6B07D /* DateOfBirthTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateOfBirthTableViewCell.swift; sourceTree = "<group>"; };
+		320EE1D42DCEA45B00D6B07D /* OnboardingCalculationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingCalculationViewController.swift; sourceTree = "<group>"; };
+		320EE1D62DCEA5DF00D6B07D /* DailyCaloriesTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyCaloriesTableViewCell.swift; sourceTree = "<group>"; };
+		320EE1D82DCEA89300D6B07D /* MacrosSplitTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacrosSplitTableViewCell.swift; sourceTree = "<group>"; };
+		320EE1DA2DCEAE6400D6B07D /* MacrosSplitViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacrosSplitViewController.swift; sourceTree = "<group>"; };
+		320EE4082DCED7DD00D6B07D /* UnitPreferenceFooterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnitPreferenceFooterView.swift; sourceTree = "<group>"; };
+		320EE40A2DCEF09200D6B07D /* HeightPreferenceFooterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeightPreferenceFooterView.swift; sourceTree = "<group>"; };
 		3216CF782BB4D6C900D9E17A /* AddFoodTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddFoodTableViewCell.swift; sourceTree = "<group>"; };
 		32216DBD2BA0FF4E0046A178 /* ProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressView.swift; sourceTree = "<group>"; };
 		323FB4852DC84CA600A71C53 /* ResultsHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultsHeaderView.swift; sourceTree = "<group>"; };
 		323FB6B32DC95E3600A71C53 /* ResultsPaginatedViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultsPaginatedViewController.swift; sourceTree = "<group>"; };
+		323FB7652DCADDD000A71C53 /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
+		323FB7692DCADFB800A71C53 /* SettingsSelectableTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsSelectableTableViewCell.swift; sourceTree = "<group>"; };
+		323FB76D2DCAE64400A71C53 /* DashboardViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardViewController.swift; sourceTree = "<group>"; };
+		323FB7702DCAE65B00A71C53 /* ProgressViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressViewController.swift; sourceTree = "<group>"; };
+		323FB7732DCAE66E00A71C53 /* EntryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntryViewController.swift; sourceTree = "<group>"; };
+		323FB9A22DCAF4C600A71C53 /* OnboardingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingViewController.swift; sourceTree = "<group>"; };
+		323FB9A42DCC045200A71C53 /* OnboardingGoalViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingGoalViewController.swift; sourceTree = "<group>"; };
+		323FB9A62DCC04A800A71C53 /* SelectableTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectableTableViewCell.swift; sourceTree = "<group>"; };
+		323FB9A92DCC0AFA00A71C53 /* WeightInputTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeightInputTableViewCell.swift; sourceTree = "<group>"; };
+		323FB9AB2DCC13D800A71C53 /* MenuPickerTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuPickerTableViewCell.swift; sourceTree = "<group>"; };
 		324AB9362BA6B27900CECA72 /* CoreDataStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataStack.swift; sourceTree = "<group>"; };
-		32723CF52BA63BE70074732C /* HomeTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeTableViewController.swift; sourceTree = "<group>"; };
+		325463BD2DD0114100BEDCE0 /* HeightCmPickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeightCmPickerViewController.swift; sourceTree = "<group>"; };
+		32723CF52BA63BE70074732C /* DiaryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiaryViewController.swift; sourceTree = "<group>"; };
 		32723CF72BA63CDB0074732C /* MealPlanDateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MealPlanDateView.swift; sourceTree = "<group>"; };
 		32783F262BB2320400A698E4 /* MealHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MealHeaderView.swift; sourceTree = "<group>"; };
 		32783F282BB2370800A698E4 /* NutrientView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NutrientView.swift; sourceTree = "<group>"; };
@@ -280,15 +324,99 @@
 			path = Database;
 			sourceTree = "<group>";
 		};
+		323FB6B52DCAD92500A71C53 /* Journal */ = {
+			isa = PBXGroup;
+			children = (
+				32723CF52BA63BE70074732C /* DiaryViewController.swift */,
+			);
+			path = Journal;
+			sourceTree = "<group>";
+		};
+		323FB7642DCADDBD00A71C53 /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				323FB7652DCADDD000A71C53 /* SettingsViewController.swift */,
+			);
+			path = Settings;
+			sourceTree = "<group>";
+		};
+		323FB7672DCADF8F00A71C53 /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				323FB7692DCADFB800A71C53 /* SettingsSelectableTableViewCell.swift */,
+			);
+			path = Settings;
+			sourceTree = "<group>";
+		};
+		323FB76C2DCAE23E00A71C53 /* Dashboard */ = {
+			isa = PBXGroup;
+			children = (
+				323FB76D2DCAE64400A71C53 /* DashboardViewController.swift */,
+			);
+			path = Dashboard;
+			sourceTree = "<group>";
+		};
+		323FB76F2DCAE64D00A71C53 /* Progress */ = {
+			isa = PBXGroup;
+			children = (
+				323FB7702DCAE65B00A71C53 /* ProgressViewController.swift */,
+			);
+			path = Progress;
+			sourceTree = "<group>";
+		};
+		323FB7722DCAE66200A71C53 /* Entry */ = {
+			isa = PBXGroup;
+			children = (
+				323FB7732DCAE66E00A71C53 /* EntryViewController.swift */,
+			);
+			path = Entry;
+			sourceTree = "<group>";
+		};
+		323FB9A12DCAF27400A71C53 /* Onboarding */ = {
+			isa = PBXGroup;
+			children = (
+				320EE1DA2DCEAE6400D6B07D /* MacrosSplitViewController.swift */,
+				323FB9A22DCAF4C600A71C53 /* OnboardingViewController.swift */,
+				323FB9A42DCC045200A71C53 /* OnboardingGoalViewController.swift */,
+				320EE1CA2DCDB44100D6B07D /* OnboardingUserViewController.swift */,
+				320EE1D02DCDBAC500D6B07D /* HeightFeetPickerViewController.swift */,
+				320EE1D42DCEA45B00D6B07D /* OnboardingCalculationViewController.swift */,
+				325463BD2DD0114100BEDCE0 /* HeightCmPickerViewController.swift */,
+			);
+			path = Onboarding;
+			sourceTree = "<group>";
+		};
+		323FB9A82DCC0AD700A71C53 /* Onboarding */ = {
+			isa = PBXGroup;
+			children = (
+				323FB9A62DCC04A800A71C53 /* SelectableTableViewCell.swift */,
+				323FB9A92DCC0AFA00A71C53 /* WeightInputTableViewCell.swift */,
+				323FB9AB2DCC13D800A71C53 /* MenuPickerTableViewCell.swift */,
+				320EE1CC2DCDB5E300D6B07D /* OnboardingSegmentedTableViewCell.swift */,
+				320EE1CE2DCDB7F700D6B07D /* HeightTableViewCell.swift */,
+				320EE1D22DCE9F5500D6B07D /* DateOfBirthTableViewCell.swift */,
+				320EE1D62DCEA5DF00D6B07D /* DailyCaloriesTableViewCell.swift */,
+				320EE1D82DCEA89300D6B07D /* MacrosSplitTableViewCell.swift */,
+				320EE4082DCED7DD00D6B07D /* UnitPreferenceFooterView.swift */,
+				320EE40A2DCEF09200D6B07D /* HeightPreferenceFooterView.swift */,
+			);
+			path = Onboarding;
+			sourceTree = "<group>";
+		};
 		328FA9422B939B36002A6FB6 /* ViewControllers */ = {
 			isa = PBXGroup;
 			children = (
+				323FB9A12DCAF27400A71C53 /* Onboarding */,
+				323FB7722DCAE66200A71C53 /* Entry */,
+				323FB76F2DCAE64D00A71C53 /* Progress */,
+				323FB76C2DCAE23E00A71C53 /* Dashboard */,
+				323FB7642DCADDBD00A71C53 /* Settings */,
+				323FB6B52DCAD92500A71C53 /* Journal */,
 				32F51A7A2B92C3150080CC09 /* SearchFoodTableViewController.swift */,
 				32F51A7C2B92D5280080CC09 /* ResultTableViewController.swift */,
 				328FA9522B954664002A6FB6 /* FoodDetailTableViewController.swift */,
 				328FA95A2B97C924002A6FB6 /* ServingSizeTableViewController.swift */,
 				32B0933C2B9C02F50047E6E2 /* QuantityViewController.swift */,
-				32723CF52BA63BE70074732C /* HomeTableViewController.swift */,
 				32CB60B52BABCE78002DA0C2 /* CalendarViewController.swift */,
 				32C9F3362BAC91D100703540 /* ReorderMealTableViewController.swift */,
 				3296C9B52BB0F21A00EC7770 /* EditGoalTableViewController.swift */,
@@ -311,6 +439,8 @@
 		328FA94F2B93C957002A6FB6 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				323FB9A82DCC0AD700A71C53 /* Onboarding */,
+				323FB7672DCADF8F00A71C53 /* Settings */,
 				32B351F32BA7512600FF2752 /* AddFoodButton.swift */,
 				3216CF782BB4D6C900D9E17A /* AddFoodTableViewCell.swift */,
 				32B351F52BA7556A00FF2752 /* AddMealButton.swift */,
@@ -655,6 +785,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				323FB7712DCAE65B00A71C53 /* ProgressViewController.swift in Sources */,
 				32A8CBE52B9E888800AAA264 /* CircularProgressView.swift in Sources */,
 				32783F292BB2370800A698E4 /* NutrientView.swift in Sources */,
 				328FA96B2B9BEEFD002A6FB6 /* QuantityTableViewCell.swift in Sources */,
@@ -678,48 +809,69 @@
 				323FB4862DC84CA600A71C53 /* ResultsHeaderView.swift in Sources */,
 				328FA9512B93C986002A6FB6 /* ResultTableViewCell.swift in Sources */,
 				328FA9692B9BE560002A6FB6 /* Settings.swift in Sources */,
+				320EE1D32DCE9F5500D6B07D /* DateOfBirthTableViewCell.swift in Sources */,
+				320EE4092DCED7DD00D6B07D /* UnitPreferenceFooterView.swift in Sources */,
+				320EE40B2DCEF09200D6B07D /* HeightPreferenceFooterView.swift in Sources */,
+				323FB9AC2DCC13D800A71C53 /* MenuPickerTableViewCell.swift in Sources */,
 				323FB6B42DC95E3600A71C53 /* ResultsPaginatedViewController.swift in Sources */,
 				32B257602BBDD739003C7C7C /* QuickAddTableViewController.swift in Sources */,
 				32F51A4A2B92C1A70080CC09 /* SceneDelegate.swift in Sources */,
+				323FB76A2DCADFB800A71C53 /* SettingsSelectableTableViewCell.swift in Sources */,
 				328FA9462B939C6A002A6FB6 /* SearchResponse.swift in Sources */,
+				320EE1D92DCEA89300D6B07D /* MacrosSplitTableViewCell.swift in Sources */,
 				320E6C292DC4336700ABD356 /* MealPlan+CoreDataClass.swift in Sources */,
 				320E6C2A2DC4336700ABD356 /* Portion+CoreDataClass.swift in Sources */,
+				323FB7742DCAE66E00A71C53 /* EntryViewController.swift in Sources */,
 				320E6C2C2DC4336700ABD356 /* Food+CoreDataClass.swift in Sources */,
 				320E6C2D2DC4336700ABD356 /* NutritientGoal+CoreDataClass.swift in Sources */,
 				320E6C2E2DC4336700ABD356 /* Food+CoreDataProperties.swift in Sources */,
 				32C386512DC5AF7E0018D282 /* SurveyFoodItem.swift in Sources */,
 				320E6C2F2DC4336700ABD356 /* FoodInfo+CoreDataClass.swift in Sources */,
 				320E6C302DC4336700ABD356 /* FoodInfo+CoreDataProperties.swift in Sources */,
+				323FB7662DCADDD000A71C53 /* SettingsViewController.swift in Sources */,
 				320E6C312DC4336700ABD356 /* Meal+CoreDataClass.swift in Sources */,
 				320E6C332DC4336700ABD356 /* NutritientGoal+CoreDataProperties.swift in Sources */,
 				320E6C342DC4336700ABD356 /* Meal+CoreDataProperties.swift in Sources */,
+				323FB9AA2DCC0AFA00A71C53 /* WeightInputTableViewCell.swift in Sources */,
+				320EE1CF2DCDB7F700D6B07D /* HeightTableViewCell.swift in Sources */,
 				320E6C352DC4336700ABD356 /* MealPlan+CoreDataProperties.swift in Sources */,
 				320E6C362DC4336700ABD356 /* Portion+CoreDataProperties.swift in Sources */,
+				320EE1CB2DCDB44100D6B07D /* OnboardingUserViewController.swift in Sources */,
 				32723CF82BA63CDB0074732C /* MealPlanDateView.swift in Sources */,
+				323FB9A72DCC04A800A71C53 /* SelectableTableViewCell.swift in Sources */,
 				328FA9632B9948A8002A6FB6 /* FoodNutrient.swift in Sources */,
 				328FA94A2B93B704002A6FB6 /* APIRequest.swift in Sources */,
 				328FA9552B954714002A6FB6 /* FoodItem.swift in Sources */,
 				328FA9612B994271002A6FB6 /* FoodPortion.swift in Sources */,
+				323FB9A32DCAF4C600A71C53 /* OnboardingViewController.swift in Sources */,
 				32DFCAF22BC1CC97001BDA8E /* MacroWidget.swift in Sources */,
 				32A8CBE72B9E8C9F00AAA264 /* MacrosView.swift in Sources */,
-				32723CF62BA63BE70074732C /* HomeTableViewController.swift in Sources */,
+				32723CF62BA63BE70074732C /* DiaryViewController.swift in Sources */,
 				32B351F82BA758F200FF2752 /* FoodEntryTableViewCell.swift in Sources */,
 				32C3864B2DC55E150018D282 /* FDCFoodInput.swift in Sources */,
 				32C388762DC6B1B30018D282 /* FoundationFoodItem.swift in Sources */,
 				328FA94C2B93B7AA002A6FB6 /* APIService.swift in Sources */,
 				32C9F33D2BACDBEA00703540 /* HistoryTableViewCell.swift in Sources */,
+				320EE1D72DCEA5DF00D6B07D /* DailyCaloriesTableViewCell.swift in Sources */,
+				320EE1CD2DCDB5E300D6B07D /* OnboardingSegmentedTableViewCell.swift in Sources */,
+				323FB9A52DCC045200A71C53 /* OnboardingGoalViewController.swift in Sources */,
 				324AB9372BA6B27900CECA72 /* CoreDataStack.swift in Sources */,
 				32F51A7B2B92C3150080CC09 /* SearchFoodTableViewController.swift in Sources */,
+				325463BE2DD0114100BEDCE0 /* HeightCmPickerViewController.swift in Sources */,
 				32CB60B62BABCE78002DA0C2 /* CalendarViewController.swift in Sources */,
 				32C386562DC5B82B0018D282 /* BrandedFoodItem.swift in Sources */,
+				320EE1D12DCDBAC500D6B07D /* HeightFeetPickerViewController.swift in Sources */,
+				320EE1D52DCEA45B00D6B07D /* OnboardingCalculationViewController.swift in Sources */,
 				32B351F42BA7512600FF2752 /* AddFoodButton.swift in Sources */,
 				328FA9572B969FEF002A6FB6 /* NutritionTableViewCell.swift in Sources */,
 				32B351F62BA7556A00FF2752 /* AddMealButton.swift in Sources */,
 				328FA94E2B93B9D9002A6FB6 /* FoodService.swift in Sources */,
+				320EE1DB2DCEAE6400D6B07D /* MacrosSplitViewController.swift in Sources */,
 				32DFCB0B2BC1F108001BDA8E /* WidgetView.swift in Sources */,
 				32216DBE2BA0FF4E0046A178 /* ProgressView.swift in Sources */,
 				328FA9652B9A2154002A6FB6 /* FoodSearchResponse.swift in Sources */,
 				328FA9672B9ABAE3002A6FB6 /* DailyValue.swift in Sources */,
+				323FB76E2DCAE64400A71C53 /* DashboardViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

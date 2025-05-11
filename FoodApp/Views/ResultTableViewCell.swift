@@ -120,7 +120,9 @@ class ResultTableViewCell: UITableViewCell {
     func update(with foodItem: SearchResultFood) {
 //        self.food = food
         titleLabel.text = foodItem.description.firstUppercased
-        descriptionLabel.text = foodItem.getDescription()
+        let foodMeasurement = foodItem.foodMeasures[(foodItem.foodMeasures.count - 1) / 2]
+
+        descriptionLabel.text = foodItem.searchResultDescription
 //        let foodPortion = foodItem.foodPortions[(foodItem.foodPortions.count - 1) / 2]
 //        descriptionLabel.text = foodItem.getFoodPortionDescription(foodPortion: foodPortion, numberOfServings: 1, options: FoodEntryOptions.allCases)
     }

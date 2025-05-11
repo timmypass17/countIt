@@ -31,12 +31,12 @@
     <entity name="MealPlan" representedClassName="MealPlan" syncable="YES">
         <attribute name="date_" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <relationship name="meals_" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Meal" inverseName="mealPlan_" inverseEntity="Meal"/>
-        <relationship name="nutrientGoals_" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="NutritientGoal" inverseName="mealPlan_" inverseEntity="NutritientGoal"/>
+        <relationship name="nutrientGoals_" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="NutritientGoal" inverseName="mealPlan" inverseEntity="NutritientGoal"/>
     </entity>
     <entity name="NutritientGoal" representedClassName="NutritientGoal" syncable="YES">
         <attribute name="nutrientId" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="value" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
-        <relationship name="mealPlan_" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="MealPlan" inverseName="nutrientGoals_" inverseEntity="MealPlan"/>
+        <relationship name="mealPlan" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="MealPlan" inverseName="nutrientGoals_" inverseEntity="MealPlan"/>
     </entity>
     <entity name="Portion" representedClassName="Portion" syncable="YES">
         <attribute name="grams" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>

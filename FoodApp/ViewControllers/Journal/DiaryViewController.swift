@@ -8,7 +8,7 @@
 import UIKit
 import SwiftUI
 
-class HomeTableViewController: UITableViewController {
+class DiaryViewController: UITableViewController {
         
     var mealPlan: MealPlan
     let foodService: FoodService
@@ -20,6 +20,7 @@ class HomeTableViewController: UITableViewController {
     }
     
     init(foodService: FoodService) {
+//        self.mealPlan = foodService.getMealPlan(date: .now)
 //        self.mealPlan = CoreDataStack.shared.getMealPlan(for: .now) ?? CoreDataStack.shared.createEmpty(for: .now)
 //        for meal in mealPlan.meals {
 //            print(meal.name, meal.index)
@@ -331,7 +332,7 @@ class HomeTableViewController: UITableViewController {
     }
 }
 
-extension HomeTableViewController: FoodDetailTableViewControllerDelegate {
+extension DiaryViewController: FoodDetailTableViewControllerDelegate {
     func foodDetailTableViewController(_ tableViewController: FoodDetailTableViewController, didAddFoodEntry foodEntry: Food) {
         updateUI()
     }
@@ -341,7 +342,7 @@ extension HomeTableViewController: FoodDetailTableViewControllerDelegate {
     }
 }
 
-extension HomeTableViewController: FoodDetailTableViewControllerDismissDelegate {
+extension DiaryViewController: FoodDetailTableViewControllerDismissDelegate {
     func foodDetailTableViewController(_ tableViewController: FoodDetailTableViewController, didDismiss: Bool) {
         if let indexPath = tableView.indexPathForSelectedRow {
             tableView.deselectRow(at: indexPath, animated: true)
@@ -350,7 +351,7 @@ extension HomeTableViewController: FoodDetailTableViewControllerDismissDelegate 
     }
 }
 
-extension HomeTableViewController: MealPlanDateViewDelegate {
+extension DiaryViewController: MealPlanDateViewDelegate {
     func mealPlanDateViewDelegate(_ sender: MealPlanDateView, datePickerValueChanged date: Date) {
         // When moving between dates, clean up empty meals
 //        if self.mealPlan.isEmpty {
@@ -361,32 +362,32 @@ extension HomeTableViewController: MealPlanDateViewDelegate {
     }
 }
 
-extension HomeTableViewController: CalendarViewControllerDelegate {
+extension DiaryViewController: CalendarViewControllerDelegate {
     func calendarViewController(_ sender: CalendarViewController, didSelectDate date: Date) {
         self.mealPlan = CoreDataStack.shared.copy(mealPlanAt: date, into: self.mealPlan)
         updateUI()
     }
 }
 
-extension HomeTableViewController: ReorderMealTableViewControllerDelegate {
+extension DiaryViewController: ReorderMealTableViewControllerDelegate {
     func reorderMealTableViewController(_ viewController: ReorderMealTableViewController, didReorderMeals: Bool) {
         updateUI()
     }
 }
 
-extension HomeTableViewController: QuickAddTableViewControllerDelegate {
+extension DiaryViewController: QuickAddTableViewControllerDelegate {
     func quickAddTableViewController(_ viewController: QuickAddTableViewController, didAddFoodEntry: Food) {
         updateUI()
     }
 }
 
-extension HomeTableViewController: GoalTableViewControllerDelegate {
-    func goalTableViewController(_ viewController: GoalTableViewController, didUpdateNutrientGoals nutrientGoals: [NutrientID : Float]) {
+extension DiaryViewController: GoalTableViewControllerDelegate {
+    func goalTableViewController(_ viewController: GoalTableViewController, didUpdateNutrientGoals nutrientGoals: [NutrientId : Float]) {
         updateUI()
     }
 }
 
-extension HomeTableViewController: ResultTableViewCellDelegate {
+extension DiaryViewController: ResultTableViewCellDelegate {
     func resultTableViewCell(_ cell: ResultTableViewCell, didAddFoodEntry foodEntry: Food) {
         print(#function)
         updateUI()

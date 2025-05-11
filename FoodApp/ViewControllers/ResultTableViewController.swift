@@ -113,12 +113,12 @@ class ResultsTableViewController: UITableViewController {
             foodItem = moreResultsResponse.foods[indexPath.row]
         }
         
-        //        let foodDetailTableViewController = FoodDetailTableViewController(fdcFood: foodItem, meal: meal, foodService: foodService)
-        //        foodDetailTableViewController.delegate = delegate
-        //        foodDetailTableViewController.dismissDelegate = self
-        //        foodDetailTableViewController.historyDelegate = historyDelegate
-        //
-        //        present(UINavigationController(rootViewController: foodDetailTableViewController), animated: true)
+        let foodDetailTableViewController = FoodDetailTableViewController(fdcFood: foodItem, meal: meal, foodService: foodService)
+        foodDetailTableViewController.delegate = delegate
+        foodDetailTableViewController.dismissDelegate = self
+        foodDetailTableViewController.historyDelegate = historyDelegate
+
+        present(UINavigationController(rootViewController: foodDetailTableViewController), animated: true)
     }
     
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {

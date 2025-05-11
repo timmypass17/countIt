@@ -12,7 +12,7 @@ import UIKit
 class ResultsPaginatedViewController: UIViewController {
     
     let tableView: UITableView = {
-        let tableView = UITableView(frame: .zero, style: .grouped)
+        let tableView = UITableView(frame: .zero, style: .plain)
         tableView.translatesAutoresizingMaskIntoConstraints = false
         return tableView
     }()
@@ -71,7 +71,8 @@ class ResultsPaginatedViewController: UIViewController {
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
         ])
-        
+
+        navigationItem.leftBarButtonItem = UIBarButtonItem(systemItem: .cancel, primaryAction: didTapCancelButton())
         Task {
             await loadFood()
         }
@@ -113,6 +114,12 @@ class ResultsPaginatedViewController: UIViewController {
             }
         } catch {
             print("Error loading food:", error)
+        }
+    }
+    
+    func didTapCancelButton() -> UIAction {
+        return UIAction { _ in
+            self.dismiss(animated: true, completion: nil)
         }
     }
 }

@@ -27,9 +27,9 @@ struct Settings {
         return try! JSONDecoder().decode(T.self, from: data)
     }
     
-    var userDailyValues: [NutrientID: Float] {
+    var userDailyValues: [NutrientId: Float] {
         get {
-            return unarchiveJSON(key: "UserDailyValues") ?? UserDailyValues.default2000
+            return unarchiveJSON(key: "UserDailyValues") ?? [:]// UserDailyValues.default2000
         }
         set {
             archiveJSON(value: newValue, key: "UserDailyValues")
