@@ -7,6 +7,10 @@
 
 import UIKit
 
+protocol DateOfBirthTableViewCellDelegate: AnyObject {
+    func dateOfBirthTableViewCell(_ cell: DateOfBirthTableViewCell, didUpdateDateOfBirth date: Date)
+}
+
 class DateOfBirthTableViewCell: UITableViewCell {
     static let reuseIdentifier = "DateOfBirthTableViewCell"
     
@@ -17,11 +21,12 @@ class DateOfBirthTableViewCell: UITableViewCell {
         return label
     }()
     
-    let datePicker: UIDatePicker = {
+    lazy var datePicker: UIDatePicker = {
         let picker = UIDatePicker()
         picker.datePickerMode = .date
         picker.maximumDate = .now
         picker.preferredDatePickerStyle = .compact
+        picker.addAction(datePickerValueChanged(), for: .valueChanged)
         return picker
     }()
     
@@ -32,6 +37,8 @@ class DateOfBirthTableViewCell: UITableViewCell {
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
     }()
+    
+    weak var delegate: DateOfBirthTableViewCellDelegate?
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -55,5 +62,11 @@ class DateOfBirthTableViewCell: UITableViewCell {
     func update(title: String, date: Date) {
         titleLabel.text = title
         datePicker.date = date
+    }
+    
+    func datePickerValueChanged() -> UIAction {
+        return UIAction { _ in
+            self.delegate?.dateOfBirthTableViewCell(self, didUpdateDateOfBirth: self.datePicker.date)
+        }
     }
 }

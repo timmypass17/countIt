@@ -45,10 +45,10 @@ class OnboardingCalculationViewController: UIViewController {
     }()
     
     let weightGoals = WeightGoal.allCases
-    let userInfo: UserInfo
+    let userProfile: UserProfile
     
-    init(userInfo: UserInfo) {
-        self.userInfo = userInfo
+    init(userProfile: UserProfile) {
+        self.userProfile = userProfile
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -62,7 +62,8 @@ class OnboardingCalculationViewController: UIViewController {
         tableView.delegate = self
         tableView.register(DailyCaloriesTableViewCell.self, forCellReuseIdentifier: DailyCaloriesTableViewCell.reuseIdentifier)
         tableView.register(MacroSplitTableViewCell.self, forCellReuseIdentifier: MacroSplitTableViewCell.reuseIdentifier)
-
+        tableView.register(MacroInputTableViewCell.self, forCellReuseIdentifier: MacroInputTableViewCell.reuseIdentifier)
+        
         navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "chevron.left"), primaryAction: didTapBackButton())
         
         view.backgroundColor = .charcoal
@@ -98,35 +99,67 @@ extension OnboardingCalculationViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-       return 2
+       return 5
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if indexPath.row == 0 {
             let cell = tableView.dequeueReusableCell(withIdentifier: DailyCaloriesTableViewCell.reuseIdentifier, for: indexPath) as! DailyCaloriesTableViewCell
-            cell.update(caloriesText: String(userInfo.dailyCalories)) { caloriesText in
+            cell.update(calories: userProfile.dailyCalories) { caloriesText in
                 guard let calories = Int(caloriesText) else { return }
-                self.userInfo.dailyCalories = calories
+                self.userProfile.dailyCalories = calories
             }
             return cell
         } else if indexPath.row == 1 {
             let cell = tableView.dequeueReusableCell(withIdentifier: MacroSplitTableViewCell.reuseIdentifier, for: indexPath) as! MacroSplitTableViewCell
-            cell.update(carbs: userInfo.macroSplit.carbs, proteins: userInfo.macroSplit.protein, fats: userInfo.macroSplit.fats)
+            cell.update(carbs: userProfile.macroSplit.carbsPercentage, proteins: userProfile.macroSplit.proteinPercentage, fats: userProfile.macroSplit.fatsPercentage)
+            return cell
+        } else {
+            let cell = tableView.dequeueReusableCell(withIdentifier: MacroInputTableViewCell.reuseIdentifier, for: indexPath) as! MacroInputTableViewCell
+            if indexPath.row == 2 {
+                cell.update(title: "Carbs", grams: userProfile.macroSplit.carbsGrams) { carbsGramText in
+                    guard let carbsGram = Int(carbsGramText) else {
+                        self.userProfile.macroSplit.carbsGrams = nil
+                        NotificationCenter.default.post(name: .userInfoUpdated, object: nil)
+                        return
+                    }
+                    self.userProfile.macroSplit.carbsGrams = carbsGram
+                    NotificationCenter.default.post(name: .userInfoUpdated, object: nil)
+                }
+            } else if indexPath.row == 3 {
+                cell.update(title: "Protein", grams: userProfile.macroSplit.proteinGrams) { protienGramText in
+                    guard let proteinGram = Int(protienGramText) else {
+                        self.userProfile.macroSplit.proteinGrams = nil
+                        NotificationCenter.default.post(name: .userInfoUpdated, object: nil)
+                        return
+                    }
+                    self.userProfile.macroSplit.proteinGrams = proteinGram
+                    NotificationCenter.default.post(name: .userInfoUpdated, object: nil)
+                }
+            } else if indexPath.row == 4 {
+                cell.update(title: "Fats", grams: userProfile.macroSplit.fatsGrams) { fatsGramText in
+                    guard let fatsGram = Int(fatsGramText) else {
+                        self.userProfile.macroSplit.fatsGrams = nil
+                        NotificationCenter.default.post(name: .userInfoUpdated, object: nil)
+                        return
+                    }
+                    self.userProfile.macroSplit.fatsGrams = fatsGram
+                    NotificationCenter.default.post(name: .userInfoUpdated, object: nil)
+                }
+            }
             return cell
         }
-        
-        return UITableViewCell()
     }
 }
 
 extension OnboardingCalculationViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-
+        tableView.deselectRow(at: indexPath, animated: true)
         if indexPath.row == 1 {
             
-            let macrosSplitViewController = MacrosSplitViewController()
-
+            let macrosSplitViewController = MacrosSplitViewController(selectedCarbs: userProfile.macroSplit.carbsPercentage, selectedProtein: userProfile.macroSplit.proteinPercentage, selectedFat: userProfile.macroSplit.fatsPercentage)
+            macrosSplitViewController.delegate = self
             let navigationController = UINavigationController(rootViewController: macrosSplitViewController)
             
             if let sheet = navigationController.sheetPresentationController {
@@ -136,11 +169,25 @@ extension OnboardingCalculationViewController: UITableViewDelegate {
             self.present(navigationController, animated: true)
         }
     }
+//    
+//    func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
+//        if indexPath.row == 0 {
+//            return nil
+//        }
+//        return indexPath
+//    }
+}
+
+extension OnboardingCalculationViewController: MacrosSplitViewControllerDelegate {
     
-    func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
-        if indexPath.row == 0 {
-            return nil
-        }
-        return indexPath
+    func macrosSplitViewController(_ viewController: MacrosSplitViewController, didUpdateSplit split: (carbsPercent: Int, proteinPercent: Int, fatPercent: Int)) {
+        userProfile.macroSplit.carbsPercentage = split.carbsPercent
+        userProfile.macroSplit.proteinPercentage = split.proteinPercent
+        userProfile.macroSplit.fatsPercentage = split.fatPercent
+        
+        // Update grams after setting new split percentages
+        userProfile.recalculateMacroSplitGrams()
+
+        tableView.reloadData()
     }
 }

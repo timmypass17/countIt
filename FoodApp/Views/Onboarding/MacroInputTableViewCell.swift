@@ -1,38 +1,38 @@
 //
-//  DailyCaloriesTableViewCell.swift
+//  MacroInputTableViewCell.swift
 //  FoodApp
 //
-//  Created by Timmy Nguyen on 5/9/25.
+//  Created by Timmy Nguyen on 5/11/25.
 //
 
 import UIKit
 
-class DailyCaloriesTableViewCell: UITableViewCell {
+class MacroInputTableViewCell: UITableViewCell {
 
-    static let reuseIdentifier = "DailyCaloriesTableViewCell"
+    static let reuseIdentifier = "MacroInputTableViewCell"
 
     let titleLabel: UILabel = {
         let label = UILabel()
-        label.text = "Daily Calories"
         label.numberOfLines = 0
         label.lineBreakMode = .byWordWrapping
         label.setContentHuggingPriority(.required, for: .horizontal)
+        label.textColor = .secondaryLabel
         return label
     }()
 
-    lazy var caloriesTextField: UITextField = {
+    lazy var macroTextField: UITextField = {
         let textField = UITextField()
-        textField.placeholder = "2000"
+        textField.placeholder = "0"
         textField.textAlignment = .right
         textField.keyboardType = .numberPad
-        textField.addAction(caloriesTextFieldDidChange(), for: .editingChanged)
+        textField.addAction(weightTextFieldDidChange(), for: .editingChanged)
         return textField
     }()
 
     let unitLabel: UILabel = {
         let label = UILabel()
         label.textColor = .secondaryLabel
-        label.text = "cal"
+        label.text = "g"
         label.setContentHuggingPriority(.required, for: .horizontal)
         return label
     }()
@@ -52,14 +52,14 @@ class DailyCaloriesTableViewCell: UITableViewCell {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
 
         container.addArrangedSubview(titleLabel)
-        container.addArrangedSubview(caloriesTextField)
+        container.addArrangedSubview(macroTextField)
         container.addArrangedSubview(unitLabel)
         contentView.addSubview(container)
 
         NSLayoutConstraint.activate([
             container.topAnchor.constraint(equalTo: contentView.layoutMarginsGuide.topAnchor),
             container.bottomAnchor.constraint(equalTo: contentView.layoutMarginsGuide.bottomAnchor),
-            container.leadingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.leadingAnchor),
+            container.leadingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.leadingAnchor, constant: 32),
             container.trailingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.trailingAnchor)
         ])
     }
@@ -68,18 +68,17 @@ class DailyCaloriesTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
 
-    func update(calories: Int?, editingChangedAction: @escaping (String) -> Void) {
-        if let calories {
-            caloriesTextField.text = "\(calories)"
-        } else {
-            caloriesTextField.text = nil
+    func update(title: String, grams: Int?, editingChangedAction: @escaping (String) -> Void) {
+        titleLabel.text = title
+        if let grams {
+            macroTextField.text = "\(grams)"
         }
         self.editingChangedAction = editingChangedAction
     }
 
-    func caloriesTextFieldDidChange() -> UIAction {
+    func weightTextFieldDidChange() -> UIAction {
         return UIAction { _ in
-            self.editingChangedAction?(self.caloriesTextField.text ?? "")
+            self.editingChangedAction?(self.macroTextField.text ?? "")
         }
     }
 }

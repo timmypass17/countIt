@@ -8,7 +8,7 @@
 import UIKit
 
 protocol MacrosSplitViewControllerDelegate: AnyObject {
-    func macrosSplitViewController(_ viewController: MacrosSplitViewController, didUpdateSplit carbs: Int, protein: Int, fat: Int)
+    func macrosSplitViewController(_ viewController: MacrosSplitViewController, didUpdateSplit split: (carbsPercent: Int, proteinPercent: Int, fatPercent: Int))
 }
 
 class MacrosSplitViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDelegate {
@@ -44,9 +44,20 @@ class MacrosSplitViewController: UIViewController, UIPickerViewDataSource, UIPic
     
     let percentageData = Array(0...100)
 
-    var selectedCarbs = 50
-    var selectedProtein = 20
-    var selectedFat = 30
+    var selectedCarbs: Int
+    var selectedProtein: Int
+    var selectedFat: Int
+    
+    init(selectedCarbs: Int, selectedProtein: Int, selectedFat: Int) {
+        self.selectedCarbs = selectedCarbs
+        self.selectedProtein = selectedProtein
+        self.selectedFat = selectedFat
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     weak var delegate: MacrosSplitViewControllerDelegate?
     
@@ -90,7 +101,7 @@ class MacrosSplitViewController: UIViewController, UIPickerViewDataSource, UIPic
                 return
             }
 
-            self.delegate?.macrosSplitViewController(self, didUpdateSplit: carbs, protein: protein, fat: fat)
+            self.delegate?.macrosSplitViewController(self, didUpdateSplit: (carbs, protein, fat))
             self.dismiss(animated: true)
         }
     }

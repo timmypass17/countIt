@@ -78,17 +78,3 @@ class OnboardingSegmentedTableViewCell: UITableViewCell {
         }
     }
 }
-
-
-enum Gender: CaseIterable {
-    case female, male
-    
-    var description: String {
-        switch self {
-        case .female:
-            return "Female"
-        case .male:
-            return "Male"
-        }
-    }
-}

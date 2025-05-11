@@ -58,6 +58,9 @@
 		323FB9AC2DCC13D800A71C53 /* MenuPickerTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 323FB9AB2DCC13D800A71C53 /* MenuPickerTableViewCell.swift */; };
 		324AB9372BA6B27900CECA72 /* CoreDataStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 324AB9362BA6B27900CECA72 /* CoreDataStack.swift */; };
 		325463BE2DD0114100BEDCE0 /* HeightCmPickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 325463BD2DD0114100BEDCE0 /* HeightCmPickerViewController.swift */; };
+		325463C02DD03FF400BEDCE0 /* OnboardingPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 325463BF2DD03FF400BEDCE0 /* OnboardingPageViewController.swift */; };
+		325463C42DD0409600BEDCE0 /* UserProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 325463C32DD0409600BEDCE0 /* UserProfile.swift */; };
+		325463C52DD0409600BEDCE0 /* UserProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 325463C32DD0409600BEDCE0 /* UserProfile.swift */; };
 		32723CF62BA63BE70074732C /* DiaryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32723CF52BA63BE70074732C /* DiaryViewController.swift */; };
 		32723CF82BA63CDB0074732C /* MealPlanDateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32723CF72BA63CDB0074732C /* MealPlanDateView.swift */; };
 		32783F272BB2320400A698E4 /* MealHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32783F262BB2320400A698E4 /* MealHeaderView.swift */; };
@@ -88,6 +91,7 @@
 		32B351F42BA7512600FF2752 /* AddFoodButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32B351F32BA7512600FF2752 /* AddFoodButton.swift */; };
 		32B351F62BA7556A00FF2752 /* AddMealButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32B351F52BA7556A00FF2752 /* AddMealButton.swift */; };
 		32B351F82BA758F200FF2752 /* FoodEntryTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32B351F72BA758F200FF2752 /* FoodEntryTableViewCell.swift */; };
+		32BD0C672DD149D80098253F /* MacroInputTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32BD0C662DD149D80098253F /* MacroInputTableViewCell.swift */; };
 		32C386472DC54F650018D282 /* FoodAppTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32C386462DC54F650018D282 /* FoodAppTests.swift */; };
 		32C3864B2DC55E150018D282 /* FDCFoodInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32C3864A2DC55E150018D282 /* FDCFoodInput.swift */; };
 		32C3864C2DC55E150018D282 /* FDCFoodInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32C3864A2DC55E150018D282 /* FDCFoodInput.swift */; };
@@ -214,6 +218,8 @@
 		323FB9AB2DCC13D800A71C53 /* MenuPickerTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuPickerTableViewCell.swift; sourceTree = "<group>"; };
 		324AB9362BA6B27900CECA72 /* CoreDataStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataStack.swift; sourceTree = "<group>"; };
 		325463BD2DD0114100BEDCE0 /* HeightCmPickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeightCmPickerViewController.swift; sourceTree = "<group>"; };
+		325463BF2DD03FF400BEDCE0 /* OnboardingPageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingPageViewController.swift; sourceTree = "<group>"; };
+		325463C32DD0409600BEDCE0 /* UserProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfile.swift; sourceTree = "<group>"; };
 		32723CF52BA63BE70074732C /* DiaryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiaryViewController.swift; sourceTree = "<group>"; };
 		32723CF72BA63CDB0074732C /* MealPlanDateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MealPlanDateView.swift; sourceTree = "<group>"; };
 		32783F262BB2320400A698E4 /* MealHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MealHeaderView.swift; sourceTree = "<group>"; };
@@ -244,6 +250,7 @@
 		32B351F32BA7512600FF2752 /* AddFoodButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddFoodButton.swift; sourceTree = "<group>"; };
 		32B351F52BA7556A00FF2752 /* AddMealButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddMealButton.swift; sourceTree = "<group>"; };
 		32B351F72BA758F200FF2752 /* FoodEntryTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodEntryTableViewCell.swift; sourceTree = "<group>"; };
+		32BD0C662DD149D80098253F /* MacroInputTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacroInputTableViewCell.swift; sourceTree = "<group>"; };
 		32C386462DC54F650018D282 /* FoodAppTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodAppTests.swift; sourceTree = "<group>"; };
 		32C3864A2DC55E150018D282 /* FDCFoodInput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FDCFoodInput.swift; sourceTree = "<group>"; };
 		32C3864D2DC565700018D282 /* IngredientTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IngredientTableViewCell.swift; sourceTree = "<group>"; };
@@ -375,13 +382,10 @@
 		323FB9A12DCAF27400A71C53 /* Onboarding */ = {
 			isa = PBXGroup;
 			children = (
-				320EE1DA2DCEAE6400D6B07D /* MacrosSplitViewController.swift */,
+				325463C22DD0403A00BEDCE0 /* Parts */,
+				325463C12DD0402700BEDCE0 /* Page */,
 				323FB9A22DCAF4C600A71C53 /* OnboardingViewController.swift */,
-				323FB9A42DCC045200A71C53 /* OnboardingGoalViewController.swift */,
-				320EE1CA2DCDB44100D6B07D /* OnboardingUserViewController.swift */,
-				320EE1D02DCDBAC500D6B07D /* HeightFeetPickerViewController.swift */,
-				320EE1D42DCEA45B00D6B07D /* OnboardingCalculationViewController.swift */,
-				325463BD2DD0114100BEDCE0 /* HeightCmPickerViewController.swift */,
+				325463BF2DD03FF400BEDCE0 /* OnboardingPageViewController.swift */,
 			);
 			path = Onboarding;
 			sourceTree = "<group>";
@@ -399,8 +403,29 @@
 				320EE1D82DCEA89300D6B07D /* MacrosSplitTableViewCell.swift */,
 				320EE4082DCED7DD00D6B07D /* UnitPreferenceFooterView.swift */,
 				320EE40A2DCEF09200D6B07D /* HeightPreferenceFooterView.swift */,
+				32BD0C662DD149D80098253F /* MacroInputTableViewCell.swift */,
 			);
 			path = Onboarding;
+			sourceTree = "<group>";
+		};
+		325463C12DD0402700BEDCE0 /* Page */ = {
+			isa = PBXGroup;
+			children = (
+				323FB9A42DCC045200A71C53 /* OnboardingGoalViewController.swift */,
+				320EE1CA2DCDB44100D6B07D /* OnboardingUserViewController.swift */,
+				320EE1D42DCEA45B00D6B07D /* OnboardingCalculationViewController.swift */,
+			);
+			path = Page;
+			sourceTree = "<group>";
+		};
+		325463C22DD0403A00BEDCE0 /* Parts */ = {
+			isa = PBXGroup;
+			children = (
+				320EE1DA2DCEAE6400D6B07D /* MacrosSplitViewController.swift */,
+				320EE1D02DCDBAC500D6B07D /* HeightFeetPickerViewController.swift */,
+				325463BD2DD0114100BEDCE0 /* HeightCmPickerViewController.swift */,
+			);
+			path = Parts;
 			sourceTree = "<group>";
 		};
 		328FA9422B939B36002A6FB6 /* ViewControllers */ = {
@@ -432,6 +457,7 @@
 			children = (
 				32DFCAD72BC1C136001BDA8E /* FDC */,
 				32DFCAD62BC1C127001BDA8E /* CoreData */,
+				325463C32DD0409600BEDCE0 /* UserProfile.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -763,6 +789,7 @@
 				320E6C392DC4336700ABD356 /* Portion+CoreDataProperties.swift in Sources */,
 				320E6C3A2DC4336700ABD356 /* MealPlan+CoreDataClass.swift in Sources */,
 				320E6C3B2DC4336700ABD356 /* NutritientGoal+CoreDataClass.swift in Sources */,
+				325463C42DD0409600BEDCE0 /* UserProfile.swift in Sources */,
 				320E6C3D2DC4336700ABD356 /* Portion+CoreDataClass.swift in Sources */,
 				320E6C3E2DC4336700ABD356 /* Food+CoreDataClass.swift in Sources */,
 				320E6C3F2DC4336700ABD356 /* MealPlan+CoreDataProperties.swift in Sources */,
@@ -800,6 +827,7 @@
 				32CF12CA2BB9E97400BE6B82 /* GoalTableViewController.swift in Sources */,
 				32C3864E2DC565700018D282 /* IngredientTableViewCell.swift in Sources */,
 				328FA95B2B97C925002A6FB6 /* ServingSizeTableViewController.swift in Sources */,
+				32BD0C672DD149D80098253F /* MacroInputTableViewCell.swift in Sources */,
 				32F51A522B92C1A70080CC09 /* FoodApp.xcdatamodeld in Sources */,
 				32F51A482B92C1A70080CC09 /* AppDelegate.swift in Sources */,
 				32F51A7D2B92D5280080CC09 /* ResultTableViewController.swift in Sources */,
@@ -807,6 +835,7 @@
 				32B257622BBDDDD5003C7C7C /* QuickAddTableViewCell.swift in Sources */,
 				328FA9592B97BDB9002A6FB6 /* SelectTableViewCell.swift in Sources */,
 				323FB4862DC84CA600A71C53 /* ResultsHeaderView.swift in Sources */,
+				325463C52DD0409600BEDCE0 /* UserProfile.swift in Sources */,
 				328FA9512B93C986002A6FB6 /* ResultTableViewCell.swift in Sources */,
 				328FA9692B9BE560002A6FB6 /* Settings.swift in Sources */,
 				320EE1D32DCE9F5500D6B07D /* DateOfBirthTableViewCell.swift in Sources */,
@@ -861,6 +890,7 @@
 				32CB60B62BABCE78002DA0C2 /* CalendarViewController.swift in Sources */,
 				32C386562DC5B82B0018D282 /* BrandedFoodItem.swift in Sources */,
 				320EE1D12DCDBAC500D6B07D /* HeightFeetPickerViewController.swift in Sources */,
+				325463C02DD03FF400BEDCE0 /* OnboardingPageViewController.swift in Sources */,
 				320EE1D52DCEA45B00D6B07D /* OnboardingCalculationViewController.swift in Sources */,
 				32B351F42BA7512600FF2752 /* AddFoodButton.swift in Sources */,
 				328FA9572B969FEF002A6FB6 /* NutritionTableViewCell.swift in Sources */,
