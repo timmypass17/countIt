@@ -34,7 +34,7 @@
         <relationship name="nutrientGoals_" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="NutritientGoal" inverseName="mealPlan" inverseEntity="NutritientGoal"/>
     </entity>
     <entity name="NutritientGoal" representedClassName="NutritientGoal" syncable="YES">
-        <attribute name="nutrientId" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="id" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="value" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <relationship name="mealPlan" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="MealPlan" inverseName="nutrientGoals_" inverseEntity="MealPlan"/>
     </entity>
@@ -43,5 +43,30 @@
         <attribute name="modifier_" optional="YES" attributeType="String"/>
         <attribute name="value" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <relationship name="foodInfo_" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="FoodInfo" inverseName="portions_" inverseEntity="FoodInfo"/>
+    </entity>
+    <entity name="UserNutrientGoal" representedClassName="UserNutrientGoal" syncable="YES">
+        <attribute name="goalValue" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="id" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <relationship name="userProfile" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="UserProfile" inverseName="userNutrientGoals_" inverseEntity="UserProfile"/>
+    </entity>
+    <entity name="UserProfile" representedClassName="UserProfile" syncable="YES">
+        <attribute name="activityLevel_" optional="YES" attributeType="String"/>
+        <attribute name="carbsGrams_" optional="YES" attributeType="Integer 16" usesScalarValueType="YES"/>
+        <attribute name="carbsPercentage" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="currentWeightKg_" optional="YES" attributeType="Double" usesScalarValueType="NO"/>
+        <attribute name="dailyCalories_" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="dateOfBirth_" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="fatsGrams_" optional="YES" attributeType="Integer 16" usesScalarValueType="YES"/>
+        <attribute name="fatsPercentage" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="goalWeightKg_" optional="YES" attributeType="Double" usesScalarValueType="NO"/>
+        <attribute name="heightCm_" optional="YES" attributeType="Integer 16" usesScalarValueType="NO"/>
+        <attribute name="heightUnit_" optional="YES" attributeType="String"/>
+        <attribute name="proteinGrams_" optional="YES" attributeType="Integer 16" usesScalarValueType="YES"/>
+        <attribute name="proteinPercentage" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="sex_" optional="YES" attributeType="String"/>
+        <attribute name="weeklyGoal_" optional="YES" attributeType="String"/>
+        <attribute name="weightGoal_" optional="YES" attributeType="String"/>
+        <attribute name="weightUnit_" optional="YES" attributeType="String"/>
+        <relationship name="userNutrientGoals_" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="UserNutrientGoal" inverseName="userProfile" inverseEntity="UserNutrientGoal"/>
     </entity>
 </model>

@@ -55,7 +55,7 @@ class MacroSplitTableViewCell: UITableViewCell {
     }
 
     
-    func update(carbs: Int, proteins: Int, fats: Int) {
+    func update(carbs: Int16, proteins: Int16, fats: Int16) {
         macroSplitLabel.text = "\(carbs)/\(proteins)/\(fats)"
     }
     

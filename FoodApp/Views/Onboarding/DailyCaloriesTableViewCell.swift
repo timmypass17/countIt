@@ -68,7 +68,7 @@ class DailyCaloriesTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
 
-    func update(calories: Int?, editingChangedAction: @escaping (String) -> Void) {
+    func update(calories: Int32?, editingChangedAction: @escaping (String) -> Void) {
         if let calories {
             caloriesTextField.text = "\(calories)"
         } else {

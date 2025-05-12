@@ -118,7 +118,7 @@ extension OnboardingGoalViewController: UITableViewDataSource {
         case .weightInput:
             if indexPath.row == 0 {
                 let cell = tableView.dequeueReusableCell(withIdentifier: WeightInputTableViewCell.reuseIdentifier, for: indexPath) as! WeightInputTableViewCell
-                cell.update(title: "Current Weight", unit: userProfile.unitPreference.weightUnit, weightKg: userProfile.currentWeightKg) { weightText in
+                cell.update(title: "Current Weight", unit: userProfile.weightUnit, weightKg: userProfile.currentWeightKg) { weightText in
                     guard let weight = Double(weightText) else {
                         self.userProfile.currentWeightKg = nil
                         NotificationCenter.default.post(name: .userInfoUpdated, object: nil)
@@ -148,15 +148,16 @@ extension OnboardingGoalViewController: UITableViewDataSource {
                             tableView.reloadSections(IndexSet(integer: 0), with: .none)
                             tableView.reloadRows(at: [IndexPath(row: 2, section: 1)], with: .automatic)
                         }
+                        
                     }
                     NotificationCenter.default.post(name: .userInfoUpdated, object: nil)
                 }
                 return cell
             } else if indexPath.row == 1 {
                 let cell = tableView.dequeueReusableCell(withIdentifier: WeightInputTableViewCell.reuseIdentifier, for: indexPath) as! WeightInputTableViewCell
-                cell.update(title: "Goal Weight", unit: userProfile.unitPreference.weightUnit, weightKg: userProfile.goalWeightKg) { weightText in
+                cell.update(title: "Goal Weight", unit: userProfile.weightUnit, weightKg: userProfile.goalWeightKg) { weightText in
                     guard let weight = Double(weightText) else {
-                        self.userProfile.goalWeightKg = nil
+                        self.userProfile.goalWeightKg = 0
                         NotificationCenter.default.post(name: .userInfoUpdated, object: nil)
                         return
                     }
@@ -201,9 +202,9 @@ extension OnboardingGoalViewController: UITableViewDataSource {
                 }
 
                 cell.update(title: "Weekly Goal", options: options, selected: userProfile.weeklyGoal) { weeklyGoal in
-                    return weeklyGoal.displayName(unit: self.userProfile.unitPreference.weightUnit)
+                    return weeklyGoal.displayName(unit: self.userProfile.weightUnit)
                 } descriptionProvider: { weeklyGoal in
-                    return weeklyGoal.description(unit: self.userProfile.unitPreference.weightUnit)
+                    return weeklyGoal.description(unit: self.userProfile.weightUnit)
                 } onSelect: { selectedWeeklyGoal in
                     self.userProfile.weeklyGoal = selectedWeeklyGoal
                 }
@@ -256,7 +257,7 @@ extension OnboardingGoalViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
         guard Section(rawValue: section) == .weightInput else { return nil }
         let footer = tableView.dequeueReusableHeaderFooterView(withIdentifier: UnitPreferenceFooterView.reuseIdentifier) as! UnitPreferenceFooterView
-        footer.update(currentUnit: userProfile.unitPreference.weightUnit)
+        footer.update(currentUnit: userProfile.weightUnit)
         footer.delegate = self
         return footer
     }
@@ -268,7 +269,7 @@ extension OnboardingGoalViewController: UITableViewDelegate {
 
 extension OnboardingGoalViewController: UnitPreferenceFooterViewDelegate {
     func unitPreferenceFooterView(_ footerView: UnitPreferenceFooterView, didUpdateUnitPreference weightUnit: WeightUnit) {
-        userProfile.unitPreference.weightUnit = weightUnit
+        userProfile.weightUnit = weightUnit
         tableView.reloadSections(IndexSet(integer: 1), with: .automatic)
     }
 }

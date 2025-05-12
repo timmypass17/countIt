@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import CoreData
 
 class OnboardingPageViewController: UIPageViewController {
 
@@ -36,8 +37,8 @@ class OnboardingPageViewController: UIPageViewController {
     }()
     
     let initialPage = 0
-    var userProfile: UserProfile = UserProfile(weightGoal: .loseWeight, currentWeight: nil, goalWeight: nil, weeklyGoal: .lose1_0, unitPreference: UnitPreference(weightUnit: .pounds, heightUnit: .feet), activityLevel: .lightlyActive, heightCm: nil, dateOfBirth: .now, dailyCalories: 2000, macroSplit: MacroSplit(carbsPercentage: 40, proteinPercentage: 30, fatsPercentage: 30, carbsGrams: nil, proteinGrams: nil, fatsGrams: nil), sex: nil)
-
+    var userProfile = UserProfile(context: CoreDataStack.shared.context)
+    
     lazy var onboardingGoalViewController: OnboardingGoalViewController = {
         return OnboardingGoalViewController(userProfile: userProfile)
     }()
@@ -52,6 +53,10 @@ class OnboardingPageViewController: UIPageViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+//        userProfile.activityLevel = .lightlyActive
+//        userProfile.carbsPercentage = 40
+//        userProfile.proteinPercentage = 30
+//        userProfile.fatsPercentage = 30
 
         pages = [onboardingGoalViewController, onboardingUserViewController, onboardingCalculationViewController].map { UINavigationController(rootViewController: $0) }
         
@@ -80,6 +85,8 @@ class OnboardingPageViewController: UIPageViewController {
             if self.pageControl.currentPage < self.pages.count - 1{
                 self.moveNext()
             } else {
+                CoreDataStack.shared
+                print("timmy user")
                 print(self.userProfile)
             }
 
@@ -96,9 +103,10 @@ class OnboardingPageViewController: UIPageViewController {
 
         if nextPage == 2 {
             userProfile.recalculateDailyCalories()
-            if userProfile.macroSplit.carbsGrams == nil &&
-                userProfile.macroSplit.proteinGrams == nil &&
-                userProfile.macroSplit.fatsGrams == nil {
+            
+            if userProfile.carbsGrams == nil &&
+                userProfile.proteinGrams == nil &&
+                userProfile.fatsGrams == nil {
                 userProfile.recalculateMacroSplitGrams()
             }
             onboardingCalculationViewController.tableView.reloadSections(IndexSet(integer: 0), with: .automatic)
@@ -133,17 +141,17 @@ class OnboardingPageViewController: UIPageViewController {
             valid = userProfile.currentWeightKg != nil && userProfile.goalWeightKg != nil
             title = "Continue"
         case 1:
-            valid = userProfile.sex != nil && userProfile.heightCm != nil
+            valid = userProfile.sex_ != nil && userProfile.heightCm != nil
             title = "Continue"
         case 2:
             valid = userProfile.currentWeightKg != nil &&
                     userProfile.goalWeightKg != nil &&
-                    userProfile.sex != nil &&
+                    userProfile.sex_ != nil &&
                     userProfile.heightCm != nil &&
                     userProfile.dailyCalories != nil &&
-                    userProfile.macroSplit.carbsGrams != nil &&
-                    userProfile.macroSplit.proteinGrams != nil &&
-                    userProfile.macroSplit.fatsGrams != nil
+                    userProfile.carbsGrams != nil &&
+                    userProfile.proteinGrams != nil &&
+                    userProfile.fatsGrams != nil
             title = "Finish"
         default:
             valid = false

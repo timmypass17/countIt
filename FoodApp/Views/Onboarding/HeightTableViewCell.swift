@@ -54,12 +54,12 @@ class HeightTableViewCell: UITableViewCell {
     }
 
     
-    func update(title: String, heightCm: Int?, heightUnit: HeightUnit) {
+    func update(title: String, heightCm: Int16?, heightUnit: HeightUnit) {
         titleLabel.text = title
         if let heightCm {
             switch heightUnit {
             case .feet:
-                let (feet, inches) = convertToFeetAndInches(cm: heightCm)
+                let (feet, inches) = convertToFeetAndInches(cm: Int(heightCm))
                 heightLabel.text = "\(feet) feet, \(inches) inches"
             case .cm:
                 heightLabel.text = "\(heightCm) cm"

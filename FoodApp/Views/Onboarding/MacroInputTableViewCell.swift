@@ -68,10 +68,12 @@ class MacroInputTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
 
-    func update(title: String, grams: Int?, editingChangedAction: @escaping (String) -> Void) {
+    func update(title: String, grams: Int16?, editingChangedAction: @escaping (String) -> Void) {
         titleLabel.text = title
         if let grams {
             macroTextField.text = "\(grams)"
+        } else {
+            macroTextField.text = nil
         }
         self.editingChangedAction = editingChangedAction
     }

@@ -50,17 +50,17 @@ extension MealPlan {
 
 // MARK: Generated accessors for nutrientGoals_
 extension MealPlan {
-
-    @objc(addNutrientGoals_Object:)
-    @NSManaged public func addToNutrientGoals_(_ value: NutritientGoal)
-
-    @objc(removeNutrientGoals_Object:)
-    @NSManaged public func removeFromNutrientGoals_(_ value: NutritientGoal)
-
-    @objc(addNutrientGoals_:)
-    @NSManaged public func addToNutrientGoals_(_ values: NSSet)
-
-    @objc(removeNutrientGoals_:)
-    @NSManaged public func removeFromNutrientGoals_(_ values: NSSet)
+//
+//    @objc(addNutrientGoals_Object:)
+//    @NSManaged public func addToNutrientGoals_(_ value: NutritientGoal)
+//
+//    @objc(removeNutrientGoals_Object:)
+//    @NSManaged public func removeFromNutrientGoals_(_ value: NutritientGoal)
+//
+//    @objc(addNutrientGoals_:)
+//    @NSManaged public func addToNutrientGoals_(_ values: NSSet)
+//
+//    @objc(removeNutrientGoals_:)
+//    @NSManaged public func removeFromNutrientGoals_(_ values: NSSet)
 
 }

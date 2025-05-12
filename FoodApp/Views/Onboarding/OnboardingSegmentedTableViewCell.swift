@@ -8,7 +8,7 @@
 import UIKit
 
 protocol OnboardingSegmentedTableViewCellDelegate: AnyObject {
-    func onboardingSegmentedTableViewCell(_ cell: OnboardingSegmentedTableViewCell, didSelectSex sex: Gender)
+    func onboardingSegmentedTableViewCell(_ cell: OnboardingSegmentedTableViewCell, didSelectSex sex: Sex)
 }
 
 class OnboardingSegmentedTableViewCell: UITableViewCell {
@@ -22,7 +22,7 @@ class OnboardingSegmentedTableViewCell: UITableViewCell {
     }()
     
     lazy var genderSegmentedControl: UISegmentedControl = {
-        let control = UISegmentedControl(items: Gender.allCases.map { $0.description })
+        let control = UISegmentedControl(items: Sex.allCases.map { $0.description })
         control.selectedSegmentIndex = UISegmentedControl.noSegment
         control.setContentHuggingPriority(.required, for: .horizontal)
         control.setContentCompressionResistancePriority(.required, for: .horizontal)
@@ -62,10 +62,10 @@ class OnboardingSegmentedTableViewCell: UITableViewCell {
     }
 
     
-    func update(title: String, sex: Gender?) {
+    func update(title: String, sex: Sex?) {
         titleLabel.text = title
         
-        if let sex, let index = Gender.allCases.firstIndex(of: sex) {
+        if let sex, let index = Sex.allCases.firstIndex(of: sex) {
             genderSegmentedControl.selectedSegmentIndex = index
         }
     }
@@ -73,7 +73,7 @@ class OnboardingSegmentedTableViewCell: UITableViewCell {
     func didSelectSex() -> UIAction {
         return UIAction { _ in
             let index = self.genderSegmentedControl.selectedSegmentIndex
-            let selectedGender = Gender.allCases[index]
+            let selectedGender = Sex.allCases[index]
             self.delegate?.onboardingSegmentedTableViewCell(self, didSelectSex: selectedGender)
         }
     }

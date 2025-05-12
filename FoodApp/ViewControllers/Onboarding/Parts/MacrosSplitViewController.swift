@@ -48,10 +48,10 @@ class MacrosSplitViewController: UIViewController, UIPickerViewDataSource, UIPic
     var selectedProtein: Int
     var selectedFat: Int
     
-    init(selectedCarbs: Int, selectedProtein: Int, selectedFat: Int) {
-        self.selectedCarbs = selectedCarbs
-        self.selectedProtein = selectedProtein
-        self.selectedFat = selectedFat
+    init(selectedCarbs: Int16, selectedProtein: Int16, selectedFat: Int16) {
+        self.selectedCarbs = Int(selectedCarbs)
+        self.selectedProtein = Int(selectedProtein)
+        self.selectedFat = Int(selectedFat)
         super.init(nibName: nil, bundle: nil)
     }
     

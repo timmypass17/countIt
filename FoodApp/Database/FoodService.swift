@@ -19,6 +19,10 @@ protocol FoodServiceProtocol {
 class FoodService: FoodServiceProtocol {
     
     let context = CoreDataStack.shared.context
+//    
+//    func getUserProfile() -> UserProfile {
+//        
+//    }
     
 //    func getMealPlan(date: Date) -> MealPlan {
 //        let date = Calendar.current.startOfDay(for: date)

@@ -123,7 +123,7 @@ extension OnboardingUserViewController: UITableViewDataSource {
                 return cell
             } else if indexPath.row == 1 {
                 let cell = tableView.dequeueReusableCell(withIdentifier: HeightTableViewCell.reuseIdentifier) as! HeightTableViewCell
-                cell.update(title: "Height", heightCm: userProfile.heightCm, heightUnit: userProfile.unitPreference.heightUnit)
+                cell.update(title: "Height", heightCm: userProfile.heightCm, heightUnit: userProfile.heightUnit)
                 return cell
             } else if indexPath.row == 2 {
                 let cell = tableView.dequeueReusableCell(withIdentifier: DateOfBirthTableViewCell.reuseIdentifier) as! DateOfBirthTableViewCell
@@ -160,9 +160,9 @@ extension OnboardingUserViewController: UITableViewDelegate {
         else { return nil }
         
         if indexPath.row == 1 {
-            switch userProfile.unitPreference.heightUnit {
+            switch userProfile.heightUnit {
             case .feet:
-                let heightFeetPickerViewController = HeightFeetPickerViewController(heightCm: userProfile.heightCm ?? 167)
+                let heightFeetPickerViewController = HeightFeetPickerViewController(heightCm: Int(userProfile.heightCm ?? 167))
                 heightFeetPickerViewController.delegate = self
 
                 let navigationController = UINavigationController(rootViewController: heightFeetPickerViewController)
@@ -173,7 +173,7 @@ extension OnboardingUserViewController: UITableViewDelegate {
 
                 self.present(navigationController, animated: true)
             case .cm:
-                let heightCmPickerViewController = HeightCmPickerViewController(heightCm: userProfile.heightCm ?? 167)
+                let heightCmPickerViewController = HeightCmPickerViewController(heightCm: Int(userProfile.heightCm ?? 167))
                 heightCmPickerViewController.delegate = self
 
                 let navigationController = UINavigationController(rootViewController: heightCmPickerViewController)
@@ -192,7 +192,7 @@ extension OnboardingUserViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
         let footer = tableView.dequeueReusableHeaderFooterView(withIdentifier: HeightPreferenceFooterView.reuseIdentifier) as! HeightPreferenceFooterView
-        footer.update(heightUnit: userProfile.unitPreference.heightUnit)
+        footer.update(heightUnit: userProfile.heightUnit)
         footer.delegate = self
         return footer
     }
@@ -204,7 +204,7 @@ extension OnboardingUserViewController: UITableViewDelegate {
 
 extension OnboardingUserViewController: HeightFeetPickerViewControllerDelegate {
     func heightFeetPickerViewController(_ viewController: HeightFeetPickerViewController, didUpdateHeight height: (feet: Int, inches: Int)) {
-        self.userProfile.heightCm = convertToCentimeters(feet: height.feet, inches: height.inches)
+        self.userProfile.heightCm = Int16(convertToCentimeters(feet: height.feet, inches: height.inches))
         tableView.reloadRows(at: [IndexPath(row: 1, section: 0)], with: .automatic)
         NotificationCenter.default.post(name: .userInfoUpdated, object: nil)
     }
@@ -212,7 +212,7 @@ extension OnboardingUserViewController: HeightFeetPickerViewControllerDelegate {
 
 extension OnboardingUserViewController: HeightCmPickerViewControllerDelegate {
     func heightCmPickerViewController(_ viewController: HeightCmPickerViewController, didUpdateHeight heightCm: Int) {
-        self.userProfile.heightCm = heightCm
+        self.userProfile.heightCm = Int16(heightCm)
         tableView.reloadRows(at: [IndexPath(row: 1, section: 0)], with: .automatic)
         NotificationCenter.default.post(name: .userInfoUpdated, object: nil)
     }
@@ -220,13 +220,13 @@ extension OnboardingUserViewController: HeightCmPickerViewControllerDelegate {
 
 extension OnboardingUserViewController: HeightPreferenceFooterViewDelegate {
     func heightPreferenceFooterView(_ footerView: HeightPreferenceFooterView, didUpdateHeightPreference heightUnit: HeightUnit) {
-        userProfile.unitPreference.heightUnit = heightUnit
+        userProfile.heightUnit = heightUnit
         tableView.reloadRows(at: [IndexPath(row: 1, section: 0)], with: .automatic)
     }
 }
 
 extension OnboardingUserViewController: OnboardingSegmentedTableViewCellDelegate {
-    func onboardingSegmentedTableViewCell(_ cell: OnboardingSegmentedTableViewCell, didSelectSex sex: Gender) {
+    func onboardingSegmentedTableViewCell(_ cell: OnboardingSegmentedTableViewCell, didSelectSex sex: Sex) {
         userProfile.sex = sex
         NotificationCenter.default.post(name: .userInfoUpdated, object: nil)
     }
