@@ -16,6 +16,7 @@ extension UserProfile {
         return NSFetchRequest<UserProfile>(entityName: "UserProfile")
     }
     
+    @NSManaged public var id: String?
     @NSManaged public var weightGoal_: String?
     @NSManaged public var currentWeightKg_: NSNumber?   // all
     @NSManaged public var goalWeightKg_: NSNumber?
@@ -37,6 +38,7 @@ extension UserProfile {
     
     public override func awakeFromInsert() {
         super.awakeFromInsert()
+        
         activityLevel = .lightlyActive
         carbsPercentage = 40
         proteinPercentage = 30

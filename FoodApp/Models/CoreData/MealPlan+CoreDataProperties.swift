@@ -21,8 +21,12 @@ extension MealPlan {
     @NSManaged public var nutrientGoals_: NSSet?
     
     var date: Date {
-        get { date_ ?? Calendar.current.startOfDay(for: .now) }
-        set { date_ = Calendar.current.startOfDay(for: newValue) }
+        get {
+            date_ ?? Calendar.current.startOfDay(for: .now)
+        }
+        set {
+            date_ = Calendar.current.startOfDay(for: newValue)
+        }
     }
     
     var meals: [Meal] {

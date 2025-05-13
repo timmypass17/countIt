@@ -8,13 +8,17 @@
 import Foundation
 import CoreData
 
+// Core data not syncing? https://developer.apple.com/forums/thread/664966 see step 5, just refresh
 class CoreDataStack {
     static let shared = CoreDataStack()
     
     var context: NSManagedObjectContext {
-        return persistentContainer.viewContext
+        let context = persistentContainer.viewContext
+        context.automaticallyMergesChangesFromParent = true // important for watchos and app sync
+//        context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
+        return context
     }
-    
+
     lazy var persistentContainer: NSPersistentCloudKitContainer = {
         let appGroup = "group.com.example.DuduMelon"
         let containerURL = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: appGroup)!
@@ -22,7 +26,7 @@ class CoreDataStack {
         let description = NSPersistentStoreDescription(url: storeURL)
         // Maybe remove?
         description.cloudKitContainerOptions = NSPersistentCloudKitContainerOptions(containerIdentifier: "iCloud.com.example.DuduMelon")
-        let container = NSPersistentCloudKitContainer(name: "FoodApp")
+        let container = NSPersistentCloudKitContainer(name: "FoodApp")  // FoodApp.xcdatamodeld
         container.persistentStoreDescriptions = [description]
         container.loadPersistentStores(completionHandler: { (storeDescription, error) in
             if let error = error as NSError? {
@@ -31,7 +35,6 @@ class CoreDataStack {
         })
         return container
     }()
-    
 }
 
 extension CoreDataStack {
@@ -47,11 +50,10 @@ extension CoreDataStack {
         }
     }
     
-    func getMealPlan(for date: Date) -> MealPlan? {
-        return nil
-//        let date = Calendar.current.startOfDay(for: date)
+//    func getMealPlan(date: Date) -> MealPlan? {
+//        let startOfDay = Calendar.current.startOfDay(for: date)
 //        let request: NSFetchRequest<MealPlan> = MealPlan.fetchRequest()
-//        request.predicate = NSPredicate(format: "date_ == %@", date as NSDate)
+//        request.predicate = NSPredicate(format: "date_ == %@", startOfDay as NSDate)
 //        request.fetchLimit = 1
 //        
 //        do {
@@ -64,7 +66,7 @@ extension CoreDataStack {
 //            print("Error fetching meal plan: \(error)")
 //            return nil
 //        }
-    }
+//    }
     
     func addFoodEntry(_ food: FoodItem, to meal: Meal, servingSize: FoodPortion, numberOfServings: Int, servingSizeUnit: String) -> Food {
         let foodEntry = Food(context: context)
@@ -99,7 +101,7 @@ extension CoreDataStack {
     }
     
     func copy(mealPlanAt date: Date, into mealPlan: MealPlan) -> MealPlan {
-        let copiedMealPlan = getMealPlan(for: date) ?? createEmpty(for: date)
+//        let copiedMealPlan = getMealPlan(for: date) ?? createEmpty(for: date)
         
         // 1. Override original meal plan
         context.delete(mealPlan)

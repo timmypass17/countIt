@@ -7,14 +7,67 @@
 
 import UIKit
 import WidgetKit
+import AuthenticationServices
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
-        guard let windowScene = (scene as? UIWindowScene) else { return }
+//        guard let windowScene = (scene as? UIWindowScene) else { return }
+//        
+//        let foodService = FoodService()
+//        let dashboardViewController = DashboardViewController()
+//        let diaryViewController = DiaryViewController(foodService: foodService)
+//        let entryViewController = EntryViewController()
+//        let progressViewController = ProgressViewController()
+//        let settingsViewController = SettingsViewController()
+//
+//        let tabBarController = UITabBarController()
+//        dashboardViewController.tabBarItem = UITabBarItem(title: "Home", image: UIImage(systemName: "house"), tag: 0)
+//        diaryViewController.tabBarItem = UITabBarItem(title: "Diary", image: UIImage(systemName: "fork.knife"), tag: 0)
+//        entryViewController.tabBarItem = UITabBarItem(title: "", image: UIImage(systemName: "plus.circle.fill"), tag: 0)
+//        progressViewController.tabBarItem = UITabBarItem(title: "Progress", image: UIImage(systemName: "chart.bar.fill"), tag: 0)
+//        settingsViewController.tabBarItem = UITabBarItem(title: "Profile", image: UIImage(systemName: "person.fill"), tag: 0)
+//
+//        tabBarController.viewControllers = [dashboardViewController, diaryViewController, entryViewController, progressViewController, settingsViewController]
+//            .map { UINavigationController(rootViewController: $0) }
+//        window = UIWindow(frame: windowScene.coordinateSpace.bounds)
+//        window?.windowScene = windowScene
+//        window?.rootViewController = tabBarController
+////        window?.rootViewController = OnboardingViewController()
+////        window?.rootViewController = LoginViewController()
+//        window?.makeKeyAndVisible()
         
+        guard let windowScene = (scene as? UIWindowScene) else { return }
+        let foodService = FoodService()
+        window = UIWindow(windowScene: windowScene)
+
+        let appleIDProvider = ASAuthorizationAppleIDProvider()
+        appleIDProvider.getCredentialState(forUserID: KeychainItem.currentUserIdentifier) { (credentialState, error) in
+            DispatchQueue.main.async {
+                switch credentialState {
+                case .authorized:
+                    if let userProfile = foodService.getUserProfile(id: KeychainItem.currentUserIdentifier) {
+                        // Show main tab bar controller
+                        print("timmy has signed in and created account")
+                        self.showMainApp()
+                    } else {
+                        print("timmy has signed in but has not set up profile")
+                        // User may not have finished setting up profile
+                        self.showOnboarding(userId: KeychainItem.currentUserIdentifier)
+                    }
+                case .revoked, .notFound:
+                    print("timmy has not signed in")
+                    self.showSignInWithApple()
+                default:
+                    break
+                }
+            }
+        }
+    }
+    
+    func showMainApp() {
         let foodService = FoodService()
         let dashboardViewController = DashboardViewController()
         let diaryViewController = DiaryViewController(foodService: foodService)
@@ -24,20 +77,30 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
         let tabBarController = UITabBarController()
         dashboardViewController.tabBarItem = UITabBarItem(title: "Home", image: UIImage(systemName: "house"), tag: 0)
-        diaryViewController.tabBarItem = UITabBarItem(title: "Diary", image: UIImage(systemName: "fork.knife"), tag: 0)
-        entryViewController.tabBarItem = UITabBarItem(title: "", image: UIImage(systemName: "plus.circle.fill"), tag: 0)
-        progressViewController.tabBarItem = UITabBarItem(title: "Progress", image: UIImage(systemName: "chart.bar.fill"), tag: 0)
-        settingsViewController.tabBarItem = UITabBarItem(title: "Profile", image: UIImage(systemName: "person.fill"), tag: 0)
+        diaryViewController.tabBarItem = UITabBarItem(title: "Diary", image: UIImage(systemName: "fork.knife"), tag: 1)
+        entryViewController.tabBarItem = UITabBarItem(title: "", image: UIImage(systemName: "plus.circle.fill"), tag: 2)
+        progressViewController.tabBarItem = UITabBarItem(title: "Progress", image: UIImage(systemName: "chart.bar.fill"), tag: 3)
+        settingsViewController.tabBarItem = UITabBarItem(title: "Profile", image: UIImage(systemName: "person.fill"), tag: 4)
 
         tabBarController.viewControllers = [dashboardViewController, diaryViewController, entryViewController, progressViewController, settingsViewController]
             .map { UINavigationController(rootViewController: $0) }
-        window = UIWindow(frame: windowScene.coordinateSpace.bounds)
-        window?.windowScene = windowScene
-//        window?.rootViewController = tabBarController
-        window?.rootViewController = OnboardingViewController()
+
+        
+        self.window?.rootViewController = tabBarController
+        self.window?.makeKeyAndVisible()
+    }
+    
+    func showSignInWithApple() {
+        self.window?.rootViewController = UIViewController()
+        self.window?.makeKeyAndVisible()
+        self.window?.rootViewController?.showLoginViewController()
+    }
+    
+    func showOnboarding(userId: String) {
+        window?.rootViewController = OnboardingViewController(userId: userId)
         window?.makeKeyAndVisible()
     }
-
+    
     func sceneDidDisconnect(_ scene: UIScene) {
         // Called as the scene is being released by the system.
         // This occurs shortly after the scene enters the background, or when its session is discarded.

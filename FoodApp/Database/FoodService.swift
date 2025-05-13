@@ -13,39 +13,86 @@ protocol FoodServiceProtocol {
 //    func getMealPlan(date: Date) -> MealPlan
     func getFoods(query: String, dataTypes: [DataType], pageSize: Int, pageNumber: Int) async throws -> FoodSearchResponse
     func getFoods(fdcIds: [Int], dataTypes: [DataType]) async throws -> [FoodItem]
-    func createEmptyMealPlan() -> MealPlan
+    func createEmptyMealPlan(date: Date) -> MealPlan
 }
 
 class FoodService: FoodServiceProtocol {
     
     let context = CoreDataStack.shared.context
-//    
-//    func getUserProfile() -> UserProfile {
-//        
-//    }
     
-//    func getMealPlan(date: Date) -> MealPlan {
-//        let date = Calendar.current.startOfDay(for: date)
-//        let request: NSFetchRequest<MealPlan> = MealPlan.fetchRequest()
-//        request.predicate = NSPredicate(format: "date_ == %@", date as NSDate)
-//        request.fetchLimit = 1
-//
-//        do {
-//            let mealPlans = try context.fetch(request)
-//            if let mealPlan = mealPlans.first {
-//                return mealPlan
-//            }
-//            
-//            return
-//        } catch {
-//            print("Error fetching meal plan: \(error)")
-//            return
-//        }
-//    }
+    func createUserProfile(_ userProfile: UserProfile) {
+        do {
+            try userProfile.managedObjectContext?.save()
+            print("✅ User profile saved")
+        } catch {
+            print("❌ Failed to save user profile: \(error.localizedDescription)")
+        }
+    }
     
-    func createEmptyMealPlan() -> MealPlan {
+    func signOut()  {
+        KeychainItem.deleteUserIdentifierFromKeychain()
+    }
+    
+    func deleteAccount() {
+        deleteUserProfile(userId: KeychainItem.currentUserIdentifier)
+        KeychainItem.deleteUserIdentifierFromKeychain()
+    }
+    
+    func deleteUserProfile(userId: String) {
+        if let userProfile = getUserProfile(id: userId) {
+            context.delete(userProfile)
+            do {
+                try context.save()
+                print("✅ Successfully deleted UserProfile with id \(userId)")
+            } catch {
+                print("❌ Failed to delete UserProfile with id \(userId): \(error)")
+            }
+        } else {
+            print("❌ UserProfile with id \(userId) not found.")
+        }
+    }
+
+    func getUserProfile(id: String) -> UserProfile? {
+        let fetchRequest: NSFetchRequest<UserProfile> = UserProfile.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "id == %@", id)
+        fetchRequest.fetchLimit = 1
+        
+        do {
+            let results = try context.fetch(fetchRequest)
+            if let userProfile = results.first {
+                print("✅ Successfully got UserProfile\n\(userProfile)")
+                return userProfile
+            }
+            return nil
+        } catch {
+            print("❌ Failed to fetch UserProfile with id \(id): \(error)")
+            return nil
+        }
+    }
+    
+    func getMealPlan(date: Date) -> MealPlan? {
+        let date = Calendar.current.startOfDay(for: date)
+        let request: NSFetchRequest<MealPlan> = MealPlan.fetchRequest()
+        request.predicate = NSPredicate(format: "date_ == %@", date as NSDate)
+        request.fetchLimit = 1
+
+        do {
+            let mealPlans = try context.fetch(request)
+            if let mealPlan = mealPlans.first {
+                print("✅ Fetched meal plan for (\(Date.now.formatted()))")
+                return mealPlan
+            }
+            print("❌ Failed to get meal plan for (\(Date.now.formatted()))")
+            return nil
+        } catch {
+            print("❌ Failed to get meal plan for (\(Date.now.formatted())): \(error)")
+            return nil
+        }
+    }
+    
+    func createEmptyMealPlan(date: Date) -> MealPlan {
         let mealPlan = MealPlan(context: context)
-        mealPlan.date = .now
+        mealPlan.date = date
 
         let mealNames = ["Breakfast", "Lunch", "Dinner", "Snack"]
 
@@ -56,7 +103,7 @@ class FoodService: FoodServiceProtocol {
             meal.mealPlan_ = mealPlan
             mealPlan.addToMeals_(meal)
         }
-
+        print("✅ Created empty meal plan for today (\(Date.now.formatted()))")
         return mealPlan
     }
     

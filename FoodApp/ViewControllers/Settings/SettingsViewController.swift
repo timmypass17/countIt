@@ -82,6 +82,18 @@ class SettingsViewController: UIViewController {
                     secondary: "",
                     backgroundColor: .charcoal
                 ),
+                Model(
+                    image: UIImage(systemName: "person.fill")!,
+                    text: "Sign Out",
+                    secondary: "",
+                    backgroundColor: .charcoal
+                ),
+                Model(
+                    image: UIImage(systemName: "person.fill")!,
+                    text: "Delete Account",
+                    secondary: "",
+                    backgroundColor: .charcoal
+                )
             ]
         )
     ]
@@ -90,6 +102,8 @@ class SettingsViewController: UIViewController {
     static let showTimerIndexPath = IndexPath(row: 1, section: 0)
     static let hapticIndexPath = IndexPath(row: 2, section: 0)
 
+    let foodService = FoodService()
+    
     private let email = "timmysappstuff@gmail.com"
     
     override func viewDidLoad() {
@@ -143,6 +157,15 @@ extension SettingsViewController: UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        if indexPath.row == sections[0].data.count - 2 {
+            print("sign out")
+            foodService.signOut()
+            self.showLoginViewController()
+        } else if indexPath.row == sections[0].data.count - 1 {
+            print("delete account")
+            foodService.deleteAccount()
+            self.showLoginViewController()
+        }
 //        if indexPath == SettingsTableViewController.weightIndexPath {
 //            let weightTableViewController = WeightTableViewController(style: .grouped)
 //            weightTableViewController.delegate = self

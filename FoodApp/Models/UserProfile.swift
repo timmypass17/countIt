@@ -106,7 +106,7 @@ import Foundation
 //    }
 //}
 
-extension UserProfile: ReflectedStringConvertible { }
+//extension UserProfile: ReflectedStringConvertible { }
 
 // https://medium.com/swift-programming/struct-style-printing-of-classes-in-swift-7ee34f1c975a
 public protocol ReflectedStringConvertible : CustomStringConvertible { }

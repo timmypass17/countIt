@@ -61,6 +61,7 @@
         <attribute name="goalWeightKg_" optional="YES" attributeType="Double" usesScalarValueType="NO"/>
         <attribute name="heightCm_" optional="YES" attributeType="Integer 16" usesScalarValueType="NO"/>
         <attribute name="heightUnit_" optional="YES" attributeType="String"/>
+        <attribute name="id" optional="YES" attributeType="String"/>
         <attribute name="proteinGrams_" optional="YES" attributeType="Integer 16" usesScalarValueType="YES"/>
         <attribute name="proteinPercentage" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="sex_" optional="YES" attributeType="String"/>

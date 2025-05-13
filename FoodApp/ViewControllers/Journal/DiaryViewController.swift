@@ -20,13 +20,11 @@ class DiaryViewController: UITableViewController {
     }
     
     init(foodService: FoodService) {
-//        self.mealPlan = foodService.getMealPlan(date: .now)
-//        self.mealPlan = CoreDataStack.shared.getMealPlan(for: .now) ?? CoreDataStack.shared.createEmpty(for: .now)
-//        for meal in mealPlan.meals {
-//            print(meal.name, meal.index)
-//        }
-//        self.mealPlan = CoreDataStack.shared.createEmpty(for: .now)
-        self.mealPlan = foodService.createEmptyMealPlan()
+        if let existingMealPlan = foodService.getMealPlan(date: .now) {
+            self.mealPlan = existingMealPlan
+        } else {
+            self.mealPlan = foodService.createEmptyMealPlan(date: .now)
+        }
         
         self.foodService = foodService
         super.init(style: .grouped)
@@ -357,7 +355,7 @@ extension DiaryViewController: MealPlanDateViewDelegate {
 //        if self.mealPlan.isEmpty {
 //            CoreDataStack.shared.context.delete(mealPlan)
 //        }
-        self.mealPlan = CoreDataStack.shared.getMealPlan(for: date) ?? CoreDataStack.shared.createEmpty(for: date)
+//        self.mealPlan = CoreDataStack.shared.getMealPlan(for: date) ?? CoreDataStack.shared.createEmpty(for: date)
         updateUI()
     }
 }

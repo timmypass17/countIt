@@ -77,6 +77,8 @@
 		328FA9672B9ABAE3002A6FB6 /* DailyValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 328FA9662B9ABAE2002A6FB6 /* DailyValue.swift */; };
 		328FA9692B9BE560002A6FB6 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 328FA9682B9BE560002A6FB6 /* Settings.swift */; };
 		328FA96B2B9BEEFD002A6FB6 /* QuantityTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 328FA96A2B9BEEFD002A6FB6 /* QuantityTableViewCell.swift */; };
+		3290A2A42DD286D3008A4320 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3290A2A32DD286D3008A4320 /* LoginViewController.swift */; };
+		3290A2A62DD290BF008A4320 /* KeychainItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3290A2A52DD290BF008A4320 /* KeychainItem.swift */; };
 		3296C9B62BB0F21A00EC7770 /* EditGoalTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3296C9B52BB0F21A00EC7770 /* EditGoalTableViewController.swift */; };
 		3296C9B82BB1219700EC7770 /* GoalTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3296C9B72BB1219700EC7770 /* GoalTableViewCell.swift */; };
 		32A8CBE52B9E888800AAA264 /* CircularProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32A8CBE42B9E888800AAA264 /* CircularProgressView.swift */; };
@@ -242,6 +244,8 @@
 		328FA9662B9ABAE2002A6FB6 /* DailyValue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyValue.swift; sourceTree = "<group>"; };
 		328FA9682B9BE560002A6FB6 /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
 		328FA96A2B9BEEFD002A6FB6 /* QuantityTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuantityTableViewCell.swift; sourceTree = "<group>"; };
+		3290A2A32DD286D3008A4320 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
+		3290A2A52DD290BF008A4320 /* KeychainItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainItem.swift; sourceTree = "<group>"; };
 		3296C9B52BB0F21A00EC7770 /* EditGoalTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditGoalTableViewController.swift; sourceTree = "<group>"; };
 		3296C9B72BB1219700EC7770 /* GoalTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoalTableViewCell.swift; sourceTree = "<group>"; };
 		32A8CBE42B9E888800AAA264 /* CircularProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircularProgressView.swift; sourceTree = "<group>"; };
@@ -392,6 +396,8 @@
 				325463C12DD0402700BEDCE0 /* Page */,
 				323FB9A22DCAF4C600A71C53 /* OnboardingViewController.swift */,
 				325463BF2DD03FF400BEDCE0 /* OnboardingPageViewController.swift */,
+				3290A2A32DD286D3008A4320 /* LoginViewController.swift */,
+				3290A2A52DD290BF008A4320 /* KeychainItem.swift */,
 			);
 			path = Onboarding;
 			sourceTree = "<group>";
@@ -890,6 +896,7 @@
 				323FB9A72DCC04A800A71C53 /* SelectableTableViewCell.swift in Sources */,
 				328FA9632B9948A8002A6FB6 /* FoodNutrient.swift in Sources */,
 				328FA94A2B93B704002A6FB6 /* APIRequest.swift in Sources */,
+				3290A2A62DD290BF008A4320 /* KeychainItem.swift in Sources */,
 				328FA9552B954714002A6FB6 /* FoodItem.swift in Sources */,
 				328FA9612B994271002A6FB6 /* FoodPortion.swift in Sources */,
 				323FB9A32DCAF4C600A71C53 /* OnboardingViewController.swift in Sources */,
@@ -905,6 +912,7 @@
 				320EE1CD2DCDB5E300D6B07D /* OnboardingSegmentedTableViewCell.swift in Sources */,
 				323FB9A52DCC045200A71C53 /* OnboardingGoalViewController.swift in Sources */,
 				324AB9372BA6B27900CECA72 /* CoreDataStack.swift in Sources */,
+				3290A2A42DD286D3008A4320 /* LoginViewController.swift in Sources */,
 				32F51A7B2B92C3150080CC09 /* SearchFoodTableViewController.swift in Sources */,
 				325463BE2DD0114100BEDCE0 /* HeightCmPickerViewController.swift in Sources */,
 				32CB60B62BABCE78002DA0C2 /* CalendarViewController.swift in Sources */,
@@ -1156,6 +1164,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = FoodApp/FoodApp.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 8KHAQ7W8KV;
@@ -1176,6 +1185,7 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.example.DuduMelon;
 				PRODUCT_NAME = BananaBite;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
@@ -1191,6 +1201,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = FoodApp/FoodApp.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 8KHAQ7W8KV;
@@ -1211,6 +1222,7 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.example.DuduMelon;
 				PRODUCT_NAME = BananaBite;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
