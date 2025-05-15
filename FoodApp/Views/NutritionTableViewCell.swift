@@ -85,9 +85,10 @@ class NutritionTableViewCell: UITableViewCell {
     
     func update(with foodNutrient: SearchResultFoodNutrient, foodPortion: SearchResultFoodMeasurement, quantity: Int) {
         nameLabel.text = foodNutrient.nutrientName
-        let amount = scaledNutrientAmount(amountPer100g: foodNutrient.value, actualServingSize: foodPortion.gramWeight)
-        amountLabel.text = "\(Int(amount)) \(foodNutrient.unitName)"
+        let amount = Int(scaledNutrientAmount(amountPer100g: foodNutrient.value, actualServingSize: foodPortion.gramWeight)) * quantity
+        amountLabel.text = "\(amount) \(foodNutrient.unitName)"
         percentLabel.text = "-"
+        
 //        let nutrientAmount = (calculateNutrientPerServing(nutrientPer100g: foodNutrient.amount ?? 0, servingSizeGramWeight: foodPortion.gramWeight) * Float(quantity))
 //        if let nutrientID = foodNutrient.nutrient?.id,
 //           let nutrientGoal = Settings.shared.userDailyValues[nutrientID] {

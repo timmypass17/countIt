@@ -15,11 +15,11 @@ protocol FoodItem: Codable {
     var dataType: DataType { get }
     var foodNutrients: [FoodNutrient] { get }
     var foodPortions: [FoodPortion] { get }
+//    var foodInputs: [FDCFoodInput]    - not really possible with fdcapi
     func getFoodPortionDescription(foodPortion: FoodPortion, numberOfServings: Int, options: [FoodEntryOptions]) -> String
     func getServingSizeFormatted(foodPortion: FoodPortion, numberOfServings: Int) -> String
     func getNutrientAmountPerServing(_ nutrientID: NutrientId, foodPortion: FoodPortion) -> Float
     func getFoodNutrient(_ id: NutrientId) -> FoodNutrient?
-//    var foodInputs
 }
 
 extension FoodItem {

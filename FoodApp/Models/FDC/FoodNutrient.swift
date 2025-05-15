@@ -29,6 +29,32 @@ extension FoodNutrient {
     }
 }
 
+struct RawFoodNutrient: Codable {
+    let amount: Float
+    let unitName: String
+    let nutrient: RawNutrient
+    
+    enum CodingKeys: CodingKey {
+        case amount
+        case unitName
+        case nutrient
+    }
+    
+    init(from decoder: any Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.amount = try container.decodeIfPresent(Float.self, forKey: .amount) ?? 0
+        self.unitName = try container.decodeIfPresent(String.self, forKey: .unitName) ?? ""
+        self.nutrient = try container.decode(RawNutrient.self, forKey: .nutrient)
+    }
+}
+
+struct RawNutrient: Codable {
+    let id: Int
+    let name: String
+//    let rank: String
+    let unitName: String
+}
+
 //extension FoodNutrient: Equatable {
 //    static func == (lhs: FoodNutrient, rhs: FoodNutrient) -> Bool {
 //        return lhs.nutrient.id == rhs.nutrient.id

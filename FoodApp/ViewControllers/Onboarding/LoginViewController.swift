@@ -71,7 +71,7 @@ extension LoginViewController: ASAuthorizationControllerDelegate {
                 print("timmy user exists, show main app")
                 if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
                    let window = windowScene.windows.first {
-                    window.rootViewController = createTabBarController()
+                    window.rootViewController = createTabBarController(userProfile: userProfile)
                     window.makeKeyAndVisible()
                 }
                 dismiss(animated: true)
@@ -90,10 +90,10 @@ extension LoginViewController: ASAuthorizationControllerDelegate {
         }
     }
     
-    func createTabBarController() -> UITabBarController {
+    func createTabBarController(userProfile: UserProfile) -> UITabBarController {
         let foodService = FoodService()
         let dashboardViewController = DashboardViewController()
-        let diaryViewController = DiaryViewController(foodService: foodService)
+        let diaryViewController = DiaryViewController(userProfile: userProfile, foodService: foodService)
         let entryViewController = EntryViewController()
         let progressViewController = ProgressViewController()
         let settingsViewController = SettingsViewController()

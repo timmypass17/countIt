@@ -163,8 +163,12 @@ extension SettingsViewController: UITableViewDelegate {
             self.showLoginViewController()
         } else if indexPath.row == sections[0].data.count - 1 {
             print("delete account")
-            foodService.deleteAccount()
-            self.showLoginViewController()
+            do {
+                try foodService.deleteAccount()
+                self.showLoginViewController()
+            } catch {
+                print("Error deleting account")
+            }
         }
 //        if indexPath == SettingsTableViewController.weightIndexPath {
 //            let weightTableViewController = WeightTableViewController(style: .grouped)

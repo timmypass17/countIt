@@ -13,12 +13,17 @@ protocol FoodServiceProtocol {
 //    func getMealPlan(date: Date) -> MealPlan
     func getFoods(query: String, dataTypes: [DataType], pageSize: Int, pageNumber: Int) async throws -> FoodSearchResponse
     func getFoods(fdcIds: [Int], dataTypes: [DataType]) async throws -> [FoodItem]
-    func createEmptyMealPlan(date: Date) -> MealPlan
+    func getFood(fdcId: Int) async throws -> FoodItem
+    func createEmptyMealPlan(date: Date) throws -> MealPlan
 }
 
 class FoodService: FoodServiceProtocol {
     
     let context = CoreDataStack.shared.context
+    
+    enum FoodError: Error {
+        case missingUserId
+    }
     
     func createUserProfile(_ userProfile: UserProfile) {
         do {
@@ -33,8 +38,9 @@ class FoodService: FoodServiceProtocol {
         KeychainItem.deleteUserIdentifierFromKeychain()
     }
     
-    func deleteAccount() {
-        deleteUserProfile(userId: KeychainItem.currentUserIdentifier)
+    func deleteAccount() throws {
+        guard let userId = KeychainItem.currentUserIdentifier else { throw FoodError.missingUserId }
+        deleteUserProfile(userId: userId)
         KeychainItem.deleteUserIdentifierFromKeychain()
     }
     
@@ -79,7 +85,7 @@ class FoodService: FoodServiceProtocol {
         do {
             let mealPlans = try context.fetch(request)
             if let mealPlan = mealPlans.first {
-                print("✅ Fetched meal plan for (\(Date.now.formatted()))")
+                print("✅ Fetched existing meal plan for (\(Date.now.formatted()))")
                 return mealPlan
             }
             print("❌ Failed to get meal plan for (\(Date.now.formatted()))")
@@ -90,7 +96,11 @@ class FoodService: FoodServiceProtocol {
         }
     }
     
-    func createEmptyMealPlan(date: Date) -> MealPlan {
+    func createEmptyMealPlan(date: Date) throws -> MealPlan {
+        guard let userId = KeychainItem.currentUserIdentifier,
+              let userProfile = getUserProfile(id: userId)
+        else { throw FoodError.missingUserId }
+        
         let mealPlan = MealPlan(context: context)
         mealPlan.date = date
 
@@ -103,6 +113,32 @@ class FoodService: FoodServiceProtocol {
             meal.mealPlan_ = mealPlan
             mealPlan.addToMeals_(meal)
         }
+        
+        // Take a snapshot of current users goal and apply it to this meal plan
+        let calorieGoal = NutrientGoal(context: context)
+        calorieGoal.nutrientId = .calories
+        calorieGoal.value = Double(userProfile.dailyCalories ?? 0)
+        calorieGoal.mealPlan = mealPlan
+        mealPlan.addToNutrientGoals_(calorieGoal)
+        
+        let carbsGoal = NutrientGoal(context: context)
+        carbsGoal.nutrientId = .carbs
+        carbsGoal.value = Double(userProfile.carbsGrams ?? 0)
+        carbsGoal.mealPlan = mealPlan
+        mealPlan.addToNutrientGoals_(carbsGoal)
+        
+        let proteinGoal = NutrientGoal(context: context)
+        proteinGoal.nutrientId = .protein
+        proteinGoal.value = Double(userProfile.proteinGrams ?? 0)
+        proteinGoal.mealPlan = mealPlan
+        mealPlan.addToNutrientGoals_(proteinGoal)
+        
+        let fatsGoal = NutrientGoal(context: context)
+        fatsGoal.nutrientId = .fatTotal
+        fatsGoal.value = Double(userProfile.fatsGrams ?? 0)
+        fatsGoal.mealPlan = mealPlan
+        mealPlan.addToNutrientGoals_(fatsGoal)
+
         print("✅ Created empty meal plan for today (\(Date.now.formatted()))")
         return mealPlan
     }
@@ -127,4 +163,9 @@ class FoodService: FoodServiceProtocol {
         return searchResult
     }
     
+    func getFood(fdcId: Int) async throws -> any FoodItem {
+        let request = FoodAPIRequest(fdcId: fdcId)
+        let searchResult = try await sendRequest(request)
+        return searchResult
+    }
 }

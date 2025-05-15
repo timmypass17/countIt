@@ -33,7 +33,29 @@ extension MealPlan {
         get { (meals_?.allObjects as! [Meal]).sorted { $0.index < $1.index } }
         set { meals_ = NSSet(array: newValue) }
     }
+    
+    var nutrientGoals: [NutrientGoal] {
+        get {
+            nutrientGoals_?.allObjects as! [NutrientGoal]
+        }
+        set {
+            nutrientGoals_ = NSSet(array: newValue)
+        }
+    }
+    
+    
 }
+
+protocol NutrientIdentifiable {
+    var nutrientId: NutrientId { get }
+}
+
+extension Array where Element: NutrientIdentifiable {
+    subscript(nutrientID: NutrientId) -> Element? {
+        self.first { $0.nutrientId == nutrientID }
+    }
+}
+
 
 // MARK: Generated accessors for meals_
 extension MealPlan {
@@ -54,17 +76,17 @@ extension MealPlan {
 
 // MARK: Generated accessors for nutrientGoals_
 extension MealPlan {
-//
-//    @objc(addNutrientGoals_Object:)
-//    @NSManaged public func addToNutrientGoals_(_ value: NutritientGoal)
-//
-//    @objc(removeNutrientGoals_Object:)
-//    @NSManaged public func removeFromNutrientGoals_(_ value: NutritientGoal)
-//
-//    @objc(addNutrientGoals_:)
-//    @NSManaged public func addToNutrientGoals_(_ values: NSSet)
-//
-//    @objc(removeNutrientGoals_:)
-//    @NSManaged public func removeFromNutrientGoals_(_ values: NSSet)
+
+    @objc(addNutrientGoals_Object:)
+    @NSManaged public func addToNutrientGoals_(_ value: NutrientGoal)
+
+    @objc(removeNutrientGoals_Object:)
+    @NSManaged public func removeFromNutrientGoals_(_ value: NutrientGoal)
+
+    @objc(addNutrientGoals_:)
+    @NSManaged public func addToNutrientGoals_(_ values: NSSet)
+
+    @objc(removeNutrientGoals_:)
+    @NSManaged public func removeFromNutrientGoals_(_ values: NSSet)
 
 }

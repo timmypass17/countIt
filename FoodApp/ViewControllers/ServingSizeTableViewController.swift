@@ -8,7 +8,7 @@
 import UIKit
 
 protocol SelectTableViewControllerDelegate: AnyObject {
-    func selectTableViewController(_ sender: ServingSizeTableViewController, didSelectPortion foodPortion: FoodPortion)
+    func selectTableViewController(_ sender: ServingSizeTableViewController, didSelectMeasurement foodMeasurement: SearchResultFoodMeasurement)
 }
 
 class ServingSizeTableViewController: UITableViewController {
@@ -36,7 +36,7 @@ class ServingSizeTableViewController: UITableViewController {
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: reuseIdentifier)
         let cancelButton = UIBarButtonItem(systemItem: .cancel, primaryAction: cancelButtonTapped())
         let createButton = UIBarButtonItem(image: UIImage(systemName: "square.and.pencil"), primaryAction: createButtonTapped())
-        let doneButton = UIBarButtonItem(systemItem: .done, primaryAction: doneButtonTapped())
+        let doneButton = UIBarButtonItem(systemItem: .done, primaryAction: didTapDoneButton())
         navigationItem.leftBarButtonItem = cancelButton
         navigationItem.rightBarButtonItems = [doneButton, createButton]
     }
@@ -81,10 +81,10 @@ class ServingSizeTableViewController: UITableViewController {
     }
     
     
-    func doneButtonTapped() -> UIAction {
+    func didTapDoneButton() -> UIAction {
         return UIAction { [self] _ in
-//            delegate?.selectTableViewController(self, didSelectPortion: selectedFoodPortion)
-//            dismiss(animated: true)
+            delegate?.selectTableViewController(self, didSelectMeasurement: self.selectedFoodMeasurement)
+            dismiss(animated: true)
         }
     }
     
@@ -121,8 +121,9 @@ class ServingSizeTableViewController: UITableViewController {
                   let gramWeight = Float(gramString)
             else { return }
             let customServingSize = FoodPortion(gramWeight: gramWeight, modifier: "", sequenceNumber: 0, portionDescription: "", measureUnit: MeasureUnit(id: 0, name: "", abbreviation: ""))
-            self.delegate?.selectTableViewController(self, didSelectPortion: customServingSize)
-            self.navigationController?.dismiss(animated: true)
+            // TODO: Fix custom measurement
+//            self.delegate?.selectTableViewController(self, didSelectMeasurement: customServingSize)
+//            self.navigationController?.dismiss(animated: true)
         }))
 
         // show the alert

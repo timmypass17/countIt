@@ -130,12 +130,12 @@ struct KeychainItem {
      For the purpose of this demo app, the user identifier will be stored in the device keychain.
      You should store the user identifier in your account management system.
      */
-    static var currentUserIdentifier: String {
+    static var currentUserIdentifier: String? {
         do {
             let storedIdentifier = try KeychainItem(service: "com.example.apple-samplecode.juice", account: "userIdentifier").readItem()
             return storedIdentifier
         } catch {
-            return ""
+            return nil
         }
     }
     

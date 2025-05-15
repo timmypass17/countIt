@@ -7,6 +7,7 @@
 
 import Foundation
 
+// Branded foods do not have inputFood, only ingredients
 struct BrandedFoodItem: FoodItem {
     let fdcId: Int
     let brandOwner: String
@@ -49,10 +50,15 @@ struct BrandedFoodItem: FoodItem {
         self.servingSize = try container.decodeIfPresent(Int.self, forKey: .servingSize) ?? 1
         self.servingSizeUnit = try container.decode(String.self, forKey: .servingSizeUnit)
         self.brandedFoodCategory = try container.decode(String.self, forKey: .brandedFoodCategory)
-        self.foodNutrients = try container.decode([FoodNutrient].self, forKey: .foodNutrients)
         var foodPortions = try container.decode([FoodPortion].self, forKey: .foodPortions)
         foodPortions.append(FoodPortion(gramWeight: 100, modifier: "grams", sequenceNumber: 0, portionDescription: "", measureUnit: MeasureUnit(id: 0, name: "", abbreviation: "")))
         self.foodPortions = foodPortions
+        
+        let rawNutrients = try container.decode([RawFoodNutrient].self, forKey: .foodNutrients)
+        self.foodNutrients = rawNutrients.compactMap { raw in
+            guard let nutrientId = NutrientId(rawValue: raw.nutrient.id) else { return nil }
+            return FoodNutrient(nutrient: Nutrient(id: nutrientId, name: raw.nutrient.name, unitName: raw.nutrient.unitName, rank: 0), amount: raw.amount)
+        }
     }
     
     func getFoodPortionDescription(foodPortion: FoodPortion, numberOfServings: Int = 1, options: [FoodEntryOptions] = FoodEntryOptions.allCases) -> String {
@@ -70,4 +76,9 @@ struct BrandedFoodItem: FoodItem {
         return descriptionParts.joined(separator: ", ")
     }
 
+}
+
+struct InputFoodBranded: Codable {
+    var ingredientCode: Int // 1145
+    var unit: String
 }

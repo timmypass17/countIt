@@ -14,11 +14,11 @@ struct FoodAppTests {
     let foodService: FoodServiceProtocol = FoodService()
 
     @Test func getFoodsByName() async throws {
-        let foodItems: [FoodItem] = try await foodService.getFoods(query: "banana", dataTypes: DataType.allCases)
-         
-        #expect(foodItems.count > 0)
-        #expect(foodItems.contains { $0.fdcId == 2709224 })
-        #expect(foodItems.contains { $0.description == "Banana, raw" })
+        let response: FoodSearchResponse = try await foodService.getFoods(query: "banana", dataTypes: DataType.allCases, pageSize: 5, pageNumber: 1)
+        let foods: [SearchResultFood] = response.foods
+        #expect(foods.count > 0)
+        #expect(foods.contains { $0.fdcId == 2709224 })
+        #expect(foods.contains { $0.description == "Banana, raw" })
     }
     
 //    @Test func getFoodsByNameFoundation() async throws {
@@ -56,6 +56,13 @@ struct FoodAppTests {
         #expect(brandedCount == 1)
         #expect(foundationCount == 1)
 
+    }
+    
+    @Test func getFoodByFdcId() async throws {
+        let foundationFdcId = 2262072
+        let foodItem = try await foodService.getFood(fdcId: foundationFdcId)
+        
+        #expect(foodItem.description == "Peanut butter, creamy")
     }
     
     @Test func decodeSurveyFoodItem() throws {

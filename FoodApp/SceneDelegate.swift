@@ -44,18 +44,23 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window = UIWindow(windowScene: windowScene)
 
         let appleIDProvider = ASAuthorizationAppleIDProvider()
-        appleIDProvider.getCredentialState(forUserID: KeychainItem.currentUserIdentifier) { (credentialState, error) in
+        guard let userId = KeychainItem.currentUserIdentifier else {
+            self.showSignInWithApple()
+            return
+        }
+        
+        appleIDProvider.getCredentialState(forUserID: userId) { (credentialState, error) in
             DispatchQueue.main.async {
                 switch credentialState {
                 case .authorized:
-                    if let userProfile = foodService.getUserProfile(id: KeychainItem.currentUserIdentifier) {
+                    if let userProfile = foodService.getUserProfile(id: userId) {
                         // Show main tab bar controller
                         print("timmy has signed in and created account")
-                        self.showMainApp()
+                        self.showMainApp(userProfile: userProfile)
                     } else {
                         print("timmy has signed in but has not set up profile")
                         // User may not have finished setting up profile
-                        self.showOnboarding(userId: KeychainItem.currentUserIdentifier)
+                        self.showOnboarding(userId: userId)
                     }
                 case .revoked, .notFound:
                     print("timmy has not signed in")
@@ -67,10 +72,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         }
     }
     
-    func showMainApp() {
+    func showMainApp(userProfile: UserProfile) {
         let foodService = FoodService()
         let dashboardViewController = DashboardViewController()
-        let diaryViewController = DiaryViewController(foodService: foodService)
+        let diaryViewController = DiaryViewController(userProfile: userProfile, foodService: foodService)
         let entryViewController = EntryViewController()
         let progressViewController = ProgressViewController()
         let settingsViewController = SettingsViewController()

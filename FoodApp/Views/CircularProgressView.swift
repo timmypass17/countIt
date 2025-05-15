@@ -27,7 +27,9 @@ struct CircularProgressView: View {
             ZStack {
                 Circle()
                     .stroke(
-                        color.opacity(0.1),
+//                        .quinary,
+                        Color.gray.opacity(0.2),
+//                        color.opacity(0.1),
                         lineWidth: lineWidth
                     )
                 Circle()
@@ -53,14 +55,12 @@ struct CircularProgressView: View {
                     .font(.system(size: progressSize))
                     
                     Text("\(total.formatted(.number)) \(unitName)")
-//                        .font(.caption)
                         .foregroundStyle(.secondary)
                         .font(.system(size: totalSize))
                 }
             }
             Text(title)
                 .foregroundStyle(.secondary)
-//                .font(.subheadline)
                 .font(.system(size: titleSize))
         }
         

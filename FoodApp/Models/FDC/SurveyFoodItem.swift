@@ -41,7 +41,12 @@ struct SurveyFoodItem: FoodItem {
         foodPortions.append(FoodPortion(gramWeight: 100, modifier: "grams", sequenceNumber: 0, portionDescription: "", measureUnit: MeasureUnit(id: 0, name: "", abbreviation: "")))
         self.foodPortions = foodPortions
         inputFoods = try container.decode([InputFoodSurvey].self, forKey: .inputFoods)
-        foodNutrients = try container.decode([FoodNutrient].self, forKey: .foodNutrients)
+        
+        let rawNutrients = try container.decode([RawFoodNutrient].self, forKey: .foodNutrients)
+        self.foodNutrients = rawNutrients.compactMap { raw in
+            guard let nutrientId = NutrientId(rawValue: raw.nutrient.id) else { return nil }
+            return FoodNutrient(nutrient: Nutrient(id: nutrientId, name: raw.nutrient.name, unitName: raw.nutrient.unitName, rank: 0), amount: raw.amount)
+        }
     }
     
     
@@ -71,7 +76,7 @@ struct InputFoodSurvey: Codable {
     let portionDescription: String
     let sequenceNumber: Int
     let unit: String         // e.g. "TB"
-    let inputFood: [InputFoodSurvey]  // may not exist, recusive?
+    let inputFood: SurveyFoodItem?
 
     enum CodingKeys: String, CodingKey {
         case id
@@ -95,6 +100,6 @@ struct InputFoodSurvey: Codable {
         portionDescription = try container.decode(String.self, forKey: .portionDescription)
         sequenceNumber = try container.decode(Int.self, forKey: .sequenceNumber)
         unit = try container.decode(String.self, forKey: .unit)
-        inputFood = try container.decodeIfPresent([InputFoodSurvey].self, forKey: .inputFood) ?? []
+        inputFood = try container.decodeIfPresent(SurveyFoodItem.self, forKey: .inputFood)
     }
 }

@@ -10,7 +10,8 @@ import SwiftUI
 
 class DiaryViewController: UITableViewController {
         
-    var mealPlan: MealPlan
+    var userProfile: UserProfile
+    var mealPlan: MealPlan?
     let foodService: FoodService
     let goalIndexPath = IndexPath(row: 0, section: 0)
     
@@ -19,13 +20,17 @@ class DiaryViewController: UITableViewController {
         case meals
     }
     
-    init(foodService: FoodService) {
+    init(userProfile: UserProfile, foodService: FoodService) {
         if let existingMealPlan = foodService.getMealPlan(date: .now) {
             self.mealPlan = existingMealPlan
         } else {
-            self.mealPlan = foodService.createEmptyMealPlan(date: .now)
+            do {
+                self.mealPlan = try foodService.createEmptyMealPlan(date: .now)
+            } catch {
+                print("Error creating empty meal plan")
+            }
         }
-        
+        self.userProfile = userProfile
         self.foodService = foodService
         super.init(style: .grouped)
     }
@@ -42,6 +47,7 @@ class DiaryViewController: UITableViewController {
         navigationItem.titleView = mealPlanDateView
         
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: MacrosView.reuseIdentifier)
+        tableView.register(UITableViewCell.self, forCellReuseIdentifier: CaloriesRemainingView.reuseIdentifier)
         tableView.register(FoodEntryTableViewCell.self, forCellReuseIdentifier: FoodEntryTableViewCell.reuseIdentifier)
         tableView.register(MealHeaderView.self, forHeaderFooterViewReuseIdentifier: MealHeaderView.reuseIdentifier)
         tableView.register(AddFoodTableViewCell.self, forCellReuseIdentifier: AddFoodTableViewCell.reuseIdentifier)
@@ -80,36 +86,50 @@ class DiaryViewController: UITableViewController {
     }
     
     func reloadTableViewHeader(at section: Int) {
-        guard let mealHeaderView = tableView.headerView(forSection: section) as? MealHeaderView else { return }
-        let meal = mealPlan.meals[section - 1]
+        guard let mealHeaderView = tableView.headerView(forSection: section) as? MealHeaderView,
+              let mealPlan
+        else { return }
+        let meal = mealPlan.meals[section - 2]
         mealHeaderView.update(with: meal)
     }
 
     // MARK: - Table view data source
 
     override func numberOfSections(in tableView: UITableView) -> Int {
-        return 1 + mealPlan.meals.count
+        return 2 + (mealPlan?.meals.count ?? 0)
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if section == 0 {
+        if section == 0 || section == 1 {
             return 1
         }
 
-        return self.mealPlan.meals[section - 1].foods.count + 1
+        return (mealPlan?.meals[section - 2].foods.count ?? 0) + 1
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard let mealPlan else { return UITableViewCell() }
         if indexPath.section == 0 {
+            let cell = tableView.dequeueReusableCell(withIdentifier: CaloriesRemainingView.reuseIdentifier, for: indexPath)
+            
+            let calories = MacroData(amount: 200, goal: Float(mealPlan.nutrientGoals[.calories]?.value ?? 0), name: "Breakfast")
+
+            cell.contentConfiguration = UIHostingConfiguration { // affected by reloadData(), can't get it to update automatically
+                CaloriesRemainingView(
+                    caloriesGoal: Int(mealPlan.nutrientGoals[.calories]?.value ?? 0),
+                    data: [CaloriesRemainingItem(amount: 100, name: "Breakfast"), CaloriesRemainingItem(amount: 200, name: "Lunch"), CaloriesRemainingItem(amount: 400, name: "Dinner"), CaloriesRemainingItem(amount: 50, name: "Snack")])
+            }
+        
+            return cell
+        }
+        
+        if indexPath.section == 1 {
             let cell = tableView.dequeueReusableCell(withIdentifier: MacrosView.reuseIdentifier, for: indexPath)
-//            let calories = MacroData(amount: mealPlan.getTotalNutrients(.calories), goal: mealPlan.nutrientGoals[.calories, default: 0.0])
-//            let carbs = MacroData(amount: mealPlan.getTotalNutrients(.carbs), goal: mealPlan.nutrientGoals[.carbs, default: 0.0])
-//            let protein = MacroData(amount: mealPlan.getTotalNutrients(.protein), goal: mealPlan.nutrientGoals[.protein, default: 0.0])
-//            let fats = MacroData(amount: mealPlan.getTotalNutrients(.totalFat), goal: mealPlan.nutrientGoals[.totalFat, default: 0.0])
-            let calories = MacroData(amount: 0, goal: 0)
-            let carbs = MacroData(amount: 0, goal: 0)
-            let protein = MacroData(amount: 0, goal: 0)
-            let fats = MacroData(amount: 0, goal: 0)
+            
+            let calories = MacroData(amount: 0, goal: Float(mealPlan.nutrientGoals[.calories]?.value ?? 0), name: "Calories")
+            let carbs = MacroData(amount: 0, goal: Float(mealPlan.nutrientGoals[.carbs]?.value ?? 0), name: "Carbs")
+            let protein = MacroData(amount: 0, goal: Float(mealPlan.nutrientGoals[.protein]?.value ?? 0), name: "Protein")
+            let fats = MacroData(amount: 0, goal: Float(mealPlan.nutrientGoals[.fatTotal]?.value ?? 0), name: "Fats")
 
             cell.contentConfiguration = UIHostingConfiguration { // affected by reloadData(), can't get it to update automatically
                 MacrosView(calories: calories, carbs: carbs, protein: protein, fats: fats)
@@ -118,35 +138,38 @@ class DiaryViewController: UITableViewController {
             return cell
         }
 
-        let count = mealPlan.meals[indexPath.section - 1].foods.count
+        let count = mealPlan.meals[indexPath.section - 2].foods.count
         if indexPath.row == count {
             // Add Button
             let cell = tableView.dequeueReusableCell(withIdentifier: AddFoodTableViewCell.reuseIdentifier, for: indexPath) as! AddFoodTableViewCell
             return cell
         }
         
-        let food = mealPlan.meals[indexPath.section - 1].foods[indexPath.row]
+        let food = mealPlan.meals[indexPath.section - 2].foods[indexPath.row]
         let cell = tableView.dequeueReusableCell(withIdentifier: FoodEntryTableViewCell.reuseIdentifier, for: indexPath) as! FoodEntryTableViewCell
         cell.update(with: food)
         cell.accessoryType = .disclosureIndicator
         return cell
     }
     
-    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        guard section == 0 else { return nil }
-        return "Goals"
-    }
+//    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+//        guard section == 1 else { return nil }
+//        return "Goals"
+//    }
     
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        guard section != 0 else { return nil }
+        guard section != 0, section != 1,
+              let mealPlan
+        else { return nil }
         
         let header = tableView.dequeueReusableHeaderFooterView(withIdentifier: MealHeaderView.reuseIdentifier) as! MealHeaderView
-        let meal = mealPlan.meals[section - 1]
+        let meal = mealPlan.meals[section - 2]
         header.update(with: meal)
         return header
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        guard let mealPlan else { return }
         if indexPath.section == 0 {
 //            let goalTableViewController = GoalTableViewController(mealPlan: mealPlan)
 //            goalTableViewController.delegate = self
@@ -154,10 +177,15 @@ class DiaryViewController: UITableViewController {
             return
         }
         
-        let count = mealPlan.meals[indexPath.section - 1].foods.count
-        if indexPath.row == count {
+        if indexPath.section == 1 {
+            return
+        }
+        
+        let count = mealPlan.meals[indexPath.section - 2].foods.count
+        let selectedAddFoodButton = indexPath.row == count
+        if selectedAddFoodButton {
             tableView.deselectRow(at: indexPath, animated: true)
-            let meal = mealPlan.meals[indexPath.section - 1]
+            let meal = mealPlan.meals[indexPath.section - 2]
             let searchFoodTableViewController = SearchFoodTableViewController(foodService: foodService, meal: meal)
             searchFoodTableViewController.delegate = self
             searchFoodTableViewController.quickAddDelegate = self
@@ -362,8 +390,8 @@ extension DiaryViewController: MealPlanDateViewDelegate {
 
 extension DiaryViewController: CalendarViewControllerDelegate {
     func calendarViewController(_ sender: CalendarViewController, didSelectDate date: Date) {
-        self.mealPlan = CoreDataStack.shared.copy(mealPlanAt: date, into: self.mealPlan)
-        updateUI()
+//        self.mealPlan = CoreDataStack.shared.copy(mealPlanAt: date, into: self.mealPlan)
+//        updateUI()
     }
 }
 

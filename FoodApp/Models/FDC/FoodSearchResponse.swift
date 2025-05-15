@@ -57,7 +57,6 @@ struct SearchResultFood: Codable {
         case servingSizeUnit
         case servingSize
         case householdServingFullText
-
     }
     
     init(
@@ -69,7 +68,8 @@ struct SearchResultFood: Codable {
         foodMeasures: [SearchResultFoodMeasurement],
         servingSizeUnit: String,
         servingSize: Float,
-        householdServingFullText: String? = nil
+        householdServingFullText: String? = nil,
+        ingredients: String
     ) {
         self.fdcId = fdcId
         self.description = description
@@ -109,7 +109,6 @@ struct SearchResultFood: Codable {
             foodMeasures[index].rank = index
         }
         
-        
         self.foodMeasures = foodMeasures
     }
     
@@ -136,10 +135,10 @@ struct SearchResultFood: Codable {
         return getDescription(options: [.calories, .servingSize, .brand])
     }
     
-    func getNutrients(_ nutrientID: NutrientId, foodMeasurement: SearchResultFoodMeasurement) -> Float {
-        guard let caloriesPer100g = foodNutrients[.calories]?.value else { return 0 }
+    func getNutrients(_ nutrientID: NutrientId, foodMeasurement: SearchResultFoodMeasurement, quantity: Int = 1) -> Float {
+        guard let caloriesPer100g = foodNutrients[nutrientID]?.value else { return 0 }
         let amount = (caloriesPer100g * Float(foodMeasurement.gramWeight)) / 100
-        return amount
+        return amount * Float(quantity)
     }
 }
 
@@ -176,10 +175,15 @@ struct SearchResultFoodNutrient: Codable {
     }
 }
 
+extension SearchResultFoodNutrient: NutrientIdentifiable {
+    var nutrientIdentifier: Int {
+        return nutrientId.rawValue
+    }
+}
+
 extension SearchResultFoodNutrient {
     static func empty(_ nutrientId: NutrientId) -> SearchResultFoodNutrient {
         return SearchResultFoodNutrient(nutrientId: nutrientId, nutrientName: nutrientId.description, unitName: nutrientId.unitName, value: 0, indentLevel: -1)
-
     }
 }
 
@@ -206,8 +210,3 @@ struct SearchResultFoodMeasurement: Codable {
     }
 }
 
-extension Array where Element == SearchResultFoodNutrient {
-    subscript(nutrientID: NutrientId) -> SearchResultFoodNutrient? {
-        return self.first(where: { $0.nutrientId == nutrientID })
-    }
-}

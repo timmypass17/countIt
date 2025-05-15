@@ -13,7 +13,6 @@ struct FoundationFoodItem: FoodItem {
     let description: String
     let foodNutrients: [FoodNutrient]
     let foodPortions: [FoodPortion] // not in foundation
-//    let inputFoods: [InputFoodFoundation]
     
     enum CodingKeys: String, CodingKey {
         case fdcId
@@ -27,7 +26,13 @@ struct FoundationFoodItem: FoodItem {
         fdcId = try container.decode(Int.self, forKey: .fdcId)
         dataType = try container.decode(DataType.self, forKey: .dataType)
         description = try container.decode(String.self, forKey: .description)
-        foodNutrients = try container.decode([FoodNutrient].self, forKey: .foodNutrients)
+        
+        let rawNutrients = try container.decode([RawFoodNutrient].self, forKey: .foodNutrients)
+        self.foodNutrients = rawNutrients.compactMap { raw in
+            guard let nutrientId = NutrientId(rawValue: raw.nutrient.id) else { return nil }
+            return FoodNutrient(nutrient: Nutrient(id: nutrientId, name: raw.nutrient.name, unitName: raw.nutrient.unitName, rank: 0), amount: raw.amount)
+        }
+        
         foodPortions = [FoodPortion(gramWeight: 100, modifier: "grams", sequenceNumber: 0, portionDescription: "", measureUnit: MeasureUnit(id: 0, name: "", abbreviation: ""))]
     }
     
@@ -49,16 +54,16 @@ struct FoundationFoodItem: FoodItem {
 
 }
 
-//struct InputFoodFoundation: Codable {
+struct InputFoodFoundation: Codable {
 //    let id: Int
-//    let foodDescription: String
-//    let inputFood: SampleFoodItem
-//}
-//
-//struct SampleFoodItem: Codable {
-//    let fdcId: Int
+    let foodDescription: String
+    let inputFood: SampleFoodItem
+}
+
+struct SampleFoodItem: Codable {
+    let fdcId: Int
 //    let datatype: DataType
-//}
+}
 
 enum FoodEntryOptions: CaseIterable {
     case calories, servingSize, brandName

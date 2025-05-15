@@ -94,16 +94,16 @@ class OnboardingPageViewController: UIPageViewController {
             } else {
                 print("timmy profile: \(self.userProfile)")
                 self.foodService.createUserProfile(self.userProfile)
-                self.showMainApp()
+                self.showMainApp(userProfile: self.userProfile)
             }
 
         }
     }
     
-    func showMainApp() {
+    func showMainApp(userProfile: UserProfile) {
         let foodService = FoodService()
         let dashboardViewController = DashboardViewController()
-        let diaryViewController = DiaryViewController(foodService: foodService)
+        let diaryViewController = DiaryViewController(userProfile: userProfile, foodService: foodService)
         let entryViewController = EntryViewController()
         let progressViewController = ProgressViewController()
         let settingsViewController = SettingsViewController()
