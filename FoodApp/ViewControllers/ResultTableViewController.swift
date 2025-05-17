@@ -50,7 +50,7 @@ class ResultsTableViewController: UITableViewController {
         super.init(style: .grouped)
     }
     
-    weak var delegate: FoodDetailTableViewControllerDelegate?
+    weak var foodDetailDelegate: FoodDetailTableViewControllerDelegate?
     weak var historyDelegate: FoodDetailTableViewControllerHistoryDelegate?
     weak var resultDelegate: ResultTableViewCellDelegate?
     weak var resultHistoryDelegate: ResultTableViewCellHistoryDelegate?
@@ -114,7 +114,7 @@ class ResultsTableViewController: UITableViewController {
         }
         
         let foodDetailTableViewController = FoodDetailTableViewController(fdcFood: foodItem, meal: meal, foodService: foodService)
-        foodDetailTableViewController.delegate = delegate
+        foodDetailTableViewController.delegate = foodDetailDelegate
         foodDetailTableViewController.dismissDelegate = self
         foodDetailTableViewController.historyDelegate = historyDelegate
 

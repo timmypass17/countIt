@@ -268,6 +268,7 @@ func convertKilogramsToPounds(_ kilograms: Double) -> Double {
 //}
 
 extension Double {
+    // e.g. 100.0 -> "100", 100.456 - > "100.45"
     var trimmed: String {
         let formatted = String(format: "%.2f", self)
         return formatted.replacingOccurrences(of: #"(\.0+|(?<=\.\d)0)$"#, with: "", options: .regularExpression)

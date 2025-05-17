@@ -9,20 +9,19 @@
 import Foundation
 import CoreData
 
-
 extension MealPlan {
 
     @nonobjc public class func fetchRequest() -> NSFetchRequest<MealPlan> {
         return NSFetchRequest<MealPlan>(entityName: "MealPlan")
     }
 
-    @NSManaged public var date_: Date?
+    @NSManaged public var date_: Date?  // always stored as utc midnight (12:00AM)
     @NSManaged public var meals_: NSSet?
     @NSManaged public var nutrientGoals_: NSSet?
     
     var date: Date {
         get {
-            date_ ?? Calendar.current.startOfDay(for: .now)
+            return date_ ?? Calendar.current.startOfDay(for: Date())
         }
         set {
             date_ = Calendar.current.startOfDay(for: newValue)
@@ -43,6 +42,19 @@ extension MealPlan {
         }
     }
     
+    static func fetchRequest(for date: Date) -> NSFetchRequest<MealPlan> {
+        let request = NSFetchRequest<MealPlan>(entityName: "MealPlan")
+
+        var utcCalendar = Calendar(identifier: .gregorian)
+        utcCalendar.timeZone = TimeZone(secondsFromGMT: 0)!
+
+        let startOfUTCDay = utcCalendar.startOfDay(for: date)   // 00:00
+        let predicate = NSPredicate(format: "dateUTC == %@", startOfUTCDay as NSDate)
+
+        request.predicate = predicate
+        request.fetchLimit = 1
+        return request
+    }
     
 }
 

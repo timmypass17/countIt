@@ -16,10 +16,8 @@ class OnboardingViewController: UIViewController {
     
     let pageViewController: OnboardingPageViewController
     
-    init(userId: String) {
-        let userProfile = UserProfile(context: CoreDataStack.shared.context)
-        userProfile.id = userId
-        self.pageViewController = OnboardingPageViewController(userProfile: userProfile)
+    init() {
+        self.pageViewController = OnboardingPageViewController()
         super.init(nibName: nil, bundle: nil)
     }
     

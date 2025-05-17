@@ -65,7 +65,7 @@ class MealHeaderView: UITableViewHeaderFooterView {
     
     
     func update(with meal: Meal) {
-        titleLabel.text = meal.name.uppercased()
+        titleLabel.text = "\(meal.name.uppercased()) \(meal.index)"
         caloriesView.update(amount: 0, unit: "cal", iconImage: UIImage(systemName: "c.circle"), tintColor: .systemBlue)
         carbsView.update(amount: 0, unit: "g", iconImage: UIImage(systemName: "c.circle"), tintColor: .systemYellow)
         proteinView.update(amount: 0, unit: "g", iconImage: UIImage(systemName: "p.circle"), tintColor: .systemPink)

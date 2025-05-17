@@ -14,61 +14,18 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     var window: UIWindow?
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
-//        guard let windowScene = (scene as? UIWindowScene) else { return }
-//        
-//        let foodService = FoodService()
-//        let dashboardViewController = DashboardViewController()
-//        let diaryViewController = DiaryViewController(foodService: foodService)
-//        let entryViewController = EntryViewController()
-//        let progressViewController = ProgressViewController()
-//        let settingsViewController = SettingsViewController()
-//
-//        let tabBarController = UITabBarController()
-//        dashboardViewController.tabBarItem = UITabBarItem(title: "Home", image: UIImage(systemName: "house"), tag: 0)
-//        diaryViewController.tabBarItem = UITabBarItem(title: "Diary", image: UIImage(systemName: "fork.knife"), tag: 0)
-//        entryViewController.tabBarItem = UITabBarItem(title: "", image: UIImage(systemName: "plus.circle.fill"), tag: 0)
-//        progressViewController.tabBarItem = UITabBarItem(title: "Progress", image: UIImage(systemName: "chart.bar.fill"), tag: 0)
-//        settingsViewController.tabBarItem = UITabBarItem(title: "Profile", image: UIImage(systemName: "person.fill"), tag: 0)
-//
-//        tabBarController.viewControllers = [dashboardViewController, diaryViewController, entryViewController, progressViewController, settingsViewController]
-//            .map { UINavigationController(rootViewController: $0) }
-//        window = UIWindow(frame: windowScene.coordinateSpace.bounds)
-//        window?.windowScene = windowScene
-//        window?.rootViewController = tabBarController
-////        window?.rootViewController = OnboardingViewController()
-////        window?.rootViewController = LoginViewController()
-//        window?.makeKeyAndVisible()
-        
         guard let windowScene = (scene as? UIWindowScene) else { return }
         let foodService = FoodService()
         window = UIWindow(windowScene: windowScene)
 
-        let appleIDProvider = ASAuthorizationAppleIDProvider()
-        guard let userId = KeychainItem.currentUserIdentifier else {
-            self.showSignInWithApple()
-            return
-        }
-        
-        appleIDProvider.getCredentialState(forUserID: userId) { (credentialState, error) in
-            DispatchQueue.main.async {
-                switch credentialState {
-                case .authorized:
-                    if let userProfile = foodService.getUserProfile(id: userId) {
-                        // Show main tab bar controller
-                        print("timmy has signed in and created account")
-                        self.showMainApp(userProfile: userProfile)
-                    } else {
-                        print("timmy has signed in but has not set up profile")
-                        // User may not have finished setting up profile
-                        self.showOnboarding(userId: userId)
-                    }
-                case .revoked, .notFound:
-                    print("timmy has not signed in")
-                    self.showSignInWithApple()
-                default:
-                    break
-                }
-            }
+        if let userProfile = foodService.getUserProfile() {
+            // Show main tab bar controller
+            print("timmy has signed in and created account")
+            self.showMainApp(userProfile: userProfile)
+        } else {
+            print("timmy has signed in but has not set up profile")
+            // User may not have finished setting up profile
+            self.showOnboarding()
         }
     }
     
@@ -101,8 +58,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         self.window?.rootViewController?.showLoginViewController()
     }
     
-    func showOnboarding(userId: String) {
-        window?.rootViewController = OnboardingViewController(userId: userId)
+    func showOnboarding() {
+        window?.rootViewController = OnboardingViewController()
         window?.makeKeyAndVisible()
     }
     

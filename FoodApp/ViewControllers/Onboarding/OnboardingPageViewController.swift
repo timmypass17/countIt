@@ -37,24 +37,16 @@ class OnboardingPageViewController: UIPageViewController {
     }()
     
     let initialPage = 0
-    var userProfile: UserProfile
+    let userProfile: UserProfile
     
-    lazy var onboardingGoalViewController: OnboardingGoalViewController = {
-        return OnboardingGoalViewController(userProfile: userProfile)
-    }()
-    
-    lazy var onboardingUserViewController: OnboardingUserViewController = {
-        return OnboardingUserViewController(userProfile: userProfile)
-    }()
-    
-    lazy var onboardingCalculationViewController: OnboardingCalculationViewController = {
-        return OnboardingCalculationViewController(userProfile: userProfile)
-    }()
+    var onboardingGoalViewController: OnboardingGoalViewController?
+    var onboardingUserViewController: OnboardingUserViewController?
+    var onboardingCalculationViewController: OnboardingCalculationViewController?
     
     let foodService = FoodService()
     
-    init(userProfile: UserProfile) {
-        self.userProfile = userProfile
+    init() {
+        userProfile = UserProfile(context: CoreDataStack.shared.context)
         super.init(transitionStyle: .scroll, navigationOrientation: .horizontal)
     }
     
@@ -65,7 +57,12 @@ class OnboardingPageViewController: UIPageViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        pages = [onboardingGoalViewController, onboardingUserViewController, onboardingCalculationViewController].map { UINavigationController(rootViewController: $0) }
+        onboardingGoalViewController = OnboardingGoalViewController(userProfile: userProfile)
+        onboardingUserViewController = OnboardingUserViewController(userProfile: userProfile)
+        onboardingCalculationViewController = OnboardingCalculationViewController(userProfile: userProfile)
+        pages = [onboardingGoalViewController, onboardingUserViewController, onboardingCalculationViewController]
+            .compactMap { $0}
+            .map { UINavigationController(rootViewController: $0) }
         
         view.addSubview(pageControl)
         view.addSubview(continueButton)
@@ -92,7 +89,6 @@ class OnboardingPageViewController: UIPageViewController {
             if self.pageControl.currentPage < self.pages.count - 1{
                 self.moveNext()
             } else {
-                print("timmy profile: \(self.userProfile)")
                 self.foodService.createUserProfile(self.userProfile)
                 self.showMainApp(userProfile: self.userProfile)
             }
@@ -142,7 +138,7 @@ class OnboardingPageViewController: UIPageViewController {
                 userProfile.fatsGrams == nil {
                 userProfile.recalculateMacroSplitGrams()
             }
-            onboardingCalculationViewController.tableView.reloadSections(IndexSet(integer: 0), with: .automatic)
+            onboardingCalculationViewController?.tableView.reloadSections(IndexSet(integer: 0), with: .automatic)
         }
 
         setViewControllers([pages[nextPage]], direction: .forward, animated: true) { _ in

@@ -22,7 +22,7 @@ class FoodService: FoodServiceProtocol {
     let context = CoreDataStack.shared.context
     
     enum FoodError: Error {
-        case missingUserId
+        case missingUserProfile
     }
     
     func createUserProfile(_ userProfile: UserProfile) {
@@ -39,28 +39,26 @@ class FoodService: FoodServiceProtocol {
     }
     
     func deleteAccount() throws {
-        guard let userId = KeychainItem.currentUserIdentifier else { throw FoodError.missingUserId }
-        deleteUserProfile(userId: userId)
-        KeychainItem.deleteUserIdentifierFromKeychain()
+        deleteUserProfile()
+        // Delete rest of user stuff? Maybe cascade deletion rule is enough
     }
     
-    func deleteUserProfile(userId: String) {
-        if let userProfile = getUserProfile(id: userId) {
+    func deleteUserProfile() {
+        if let userProfile = getUserProfile() {
             context.delete(userProfile)
             do {
                 try context.save()
-                print("✅ Successfully deleted UserProfile with id \(userId)")
+                print("✅ Successfully deleted UserProfile")
             } catch {
-                print("❌ Failed to delete UserProfile with id \(userId): \(error)")
+                print("❌ Failed to delete UserProfile: \(error)")
             }
         } else {
-            print("❌ UserProfile with id \(userId) not found.")
+            print("❌ UserProfile with  not found.")
         }
     }
 
-    func getUserProfile(id: String) -> UserProfile? {
+    func getUserProfile() -> UserProfile? {
         let fetchRequest: NSFetchRequest<UserProfile> = UserProfile.fetchRequest()
-        fetchRequest.predicate = NSPredicate(format: "id == %@", id)
         fetchRequest.fetchLimit = 1
         
         do {
@@ -69,17 +67,18 @@ class FoodService: FoodServiceProtocol {
                 print("✅ Successfully got UserProfile\n\(userProfile)")
                 return userProfile
             }
+            print("❌ Failed to find any UserProfile")
             return nil
         } catch {
-            print("❌ Failed to fetch UserProfile with id \(id): \(error)")
+            print("❌ Failed to fetch UserProfile: \(error)")
             return nil
         }
     }
     
     func getMealPlan(date: Date) -> MealPlan? {
-        let date = Calendar.current.startOfDay(for: date)
+        let startOfDay = Calendar.current.startOfDay(for: date)
         let request: NSFetchRequest<MealPlan> = MealPlan.fetchRequest()
-        request.predicate = NSPredicate(format: "date_ == %@", date as NSDate)
+        request.predicate = NSPredicate(format: "date_ == %@", startOfDay as NSDate)
         request.fetchLimit = 1
 
         do {
@@ -97,9 +96,7 @@ class FoodService: FoodServiceProtocol {
     }
     
     func createEmptyMealPlan(date: Date) throws -> MealPlan {
-        guard let userId = KeychainItem.currentUserIdentifier,
-              let userProfile = getUserProfile(id: userId)
-        else { throw FoodError.missingUserId }
+        guard let userProfile = getUserProfile() else { throw FoodError.missingUserProfile }
         
         let mealPlan = MealPlan(context: context)
         mealPlan.date = date
@@ -110,7 +107,7 @@ class FoodService: FoodServiceProtocol {
             let meal = Meal(context: context)
             meal.index = Int16(index)
             meal.name = name
-            meal.mealPlan_ = mealPlan
+            meal.mealPlan = mealPlan
             mealPlan.addToMeals_(meal)
         }
         
@@ -139,13 +136,78 @@ class FoodService: FoodServiceProtocol {
         fatsGoal.mealPlan = mealPlan
         mealPlan.addToNutrientGoals_(fatsGoal)
 
+        try context.save()
         print("✅ Created empty meal plan for today (\(Date.now.formatted()))")
         return mealPlan
+    }
+    
+    func addFood(_ fdcFood: SearchResultFood, with measurement: SearchResultFoodMeasurement, servings: Int, to meal: Meal) throws -> Food {
+        let food = Food(context: context)
+        food.index = Int16(meal.foods.count)
+        food.gramWeight = Double(measurement.gramWeight)
+        food.numberOfServings = Int16(servings)
+        food.modifier_ = measurement.disseminationText
+        food.servingSizeUnit_ = "g" // TODO: Maybe not needed since its all in grams?
+        meal.addToFoods_(food)
+        
+        if let foodInfo = getFoodInfo(fdcId: fdcFood.fdcId) {
+            food.foodInfo = foodInfo
+        } else {
+            let foodInfo = createFoodInfo(fdcFood)
+            food.foodInfo = foodInfo
+            
+            // Add nutrients relationship to foodInfo
+            for nutrientId in NutrientId.allCases {
+                let foodInfoNutrient = createFoodInfoNutrients(fdcFood, nutrientId: nutrientId)
+                foodInfo.addToNutrients_(foodInfoNutrient)
+            }
+        }
+        
+        try context.save()
+        
+        return food
+    }
+    
+    func deleteFood(_ food: Food) throws {
+        context.delete(food)
+
+        try context.save()
+    }
+    
+    func createFoodInfo(_ fdcFood: SearchResultFood) -> FoodInfo {
+        let foodInfo = FoodInfo(context: context)
+        foodInfo.fdcId = Int64(fdcFood.fdcId)
+        foodInfo.name = fdcFood.description
+        foodInfo.brandName_ = fdcFood.brandName
+        return foodInfo
+    }
+    
+    func createFoodInfoNutrients(_ fdcFood: SearchResultFood, nutrientId: NutrientId) -> FoodInfoNutrient {
+        let foodInfoNutrient = FoodInfoNutrient(context: context)
+        foodInfoNutrient.nutrientId = nutrientId
+        foodInfoNutrient.value = Double(fdcFood.foodNutrients[nutrientId]?.value ?? 0)
+        return foodInfoNutrient
+    }
+    
+    func getFoodInfo(fdcId: Int) -> FoodInfo? {
+        let fetchRequest: NSFetchRequest<FoodInfo> = FoodInfo.fetchRequest()
+        fetchRequest.fetchLimit = 1
+        fetchRequest.predicate = NSPredicate(format: "fdcId == %d", fdcId)
+
+        do {
+            return try context.fetch(fetchRequest).first
+        } catch {
+            print("Failed to fetch FoodInfo with fdcId \(fdcId):", error)
+            return nil
+        }
     }
     
     func getFoods(query: String, dataTypes: [DataType], pageSize: Int, pageNumber: Int) async throws -> FoodSearchResponse {
         let abridgedRequest = FoodsSearchAPIRequest(query: query, dataTypes: dataTypes, pageSize: pageSize, pageNumber: pageNumber)
         let searchResultResponse = try await sendRequest(abridgedRequest)
+        
+        let fdcIds = searchResultResponse.foods.map { $0.fdcId }
+        let foodDetail = try await getFoods(fdcIds: fdcIds, dataTypes: DataType.allCases)
         return searchResultResponse
     }
     

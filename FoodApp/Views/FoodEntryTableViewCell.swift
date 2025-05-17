@@ -72,14 +72,11 @@ class FoodEntryTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func update(with foodEntry: Food) {
-//        guard let food = foodEntry.food?.convertToFDCFood() else { return }
-//        titleLabel.text = food.description
-//        if foodEntry.food?.brandName == "Quick Add" {
-//            descriptionLabel.text = "Quick Add"
-//        } else {
-//            descriptionLabel.text = food.getFoodEntryDescriptionFormatted(foodPortion: foodEntry.servingSize, numberOfServings: Int(foodEntry.numberOfServings), options: [.servingSize, .brandName])
-//        }
+    func update(_ food: Food) {
+        titleLabel.text = food.foodInfo?.name
+        descriptionLabel.text = "\(food.modifier_ ?? "") (\(food.gramWeight.trimmed) g), \(food.foodInfo?.brandName_ ?? "NA")"
+        caloriesLabel.text = "0"
+//        food.
 //        caloriesLabel.text = "\(Int(food.getNutrientPerServing(.calories, foodPortion: foodEntry.servingSize) * Float(foodEntry.numberOfServings)))"
     }
 }

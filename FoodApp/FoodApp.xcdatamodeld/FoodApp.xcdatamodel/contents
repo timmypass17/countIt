@@ -1,48 +1,41 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="23507" systemVersion="24B91" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithCloudKit="YES" userDefinedModelVersionIdentifier="">
-    <entity name="CDNutrient" representedClassName="CDNutrient" syncable="YES">
-        <attribute name="nutrientId" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
-        <attribute name="value" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
-        <relationship name="foodInfo_" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="FoodInfo" inverseName="nutrients_" inverseEntity="FoodInfo"/>
-    </entity>
     <entity name="Food" representedClassName="Food" syncable="YES">
+        <attribute name="gramWeight" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="index" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="modifier_" optional="YES" attributeType="String"/>
         <attribute name="numberOfServings" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
-        <attribute name="servingSize" optional="YES" attributeType="Double" valueTransformerName="FoodPortionToDataTransformer" defaultValueString="0.0" usesScalarValueType="YES" customClassName="FoodPortion"/>
-        <relationship name="foodInfo" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="FoodInfo" inverseName="food" inverseEntity="FoodInfo"/>
+        <attribute name="servingSizeUnit_" optional="YES" attributeType="String"/>
+        <relationship name="foodInfo" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="FoodInfo" inverseName="foods_" inverseEntity="FoodInfo"/>
         <relationship name="meal" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Meal" inverseName="foods_" inverseEntity="Meal"/>
     </entity>
     <entity name="FoodInfo" representedClassName="FoodInfo" syncable="YES">
         <attribute name="brandName_" optional="YES" attributeType="String"/>
-        <attribute name="dataType_" optional="YES" attributeType="String"/>
-        <attribute name="description_" optional="YES" attributeType="String"/>
         <attribute name="fdcId" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
-        <relationship name="food" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Food" inverseName="foodInfo" inverseEntity="Food"/>
-        <relationship name="nutrients_" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="CDNutrient" inverseName="foodInfo_" inverseEntity="CDNutrient"/>
-        <relationship name="portions_" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Portion" inverseName="foodInfo_" inverseEntity="Portion"/>
+        <attribute name="name_" optional="YES" attributeType="String"/>
+        <relationship name="foods_" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Food" inverseName="foodInfo" inverseEntity="Food"/>
+        <relationship name="nutrients_" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="FoodInfoNutrient" inverseName="foodInfo" inverseEntity="FoodInfoNutrient"/>
+    </entity>
+    <entity name="FoodInfoNutrient" representedClassName="FoodInfoNutrient" syncable="YES">
+        <attribute name="nutrientId_" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="value" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <relationship name="foodInfo" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="FoodInfo" inverseName="nutrients_" inverseEntity="FoodInfo"/>
     </entity>
     <entity name="Meal" representedClassName="Meal" syncable="YES">
         <attribute name="index" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="name_" optional="YES" attributeType="String"/>
         <relationship name="foods_" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Food" inverseName="meal" inverseEntity="Food"/>
-        <relationship name="mealPlan_" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="MealPlan" inverseName="meals_" inverseEntity="MealPlan"/>
+        <relationship name="mealPlan" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="MealPlan" inverseName="meals_" inverseEntity="MealPlan"/>
     </entity>
     <entity name="MealPlan" representedClassName="MealPlan" syncable="YES">
         <attribute name="date_" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
-        <relationship name="meals_" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Meal" inverseName="mealPlan_" inverseEntity="Meal"/>
-        <relationship name="nutrientGoals_" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="NutrientGoal" inverseName="mealPlan" inverseEntity="NutrientGoal"/>
+        <relationship name="meals_" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Meal" inverseName="mealPlan" inverseEntity="Meal"/>
+        <relationship name="nutrientGoals_" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="NutrientGoal" inverseName="mealPlan" inverseEntity="NutrientGoal"/>
     </entity>
     <entity name="NutrientGoal" representedClassName="NutrientGoal" syncable="YES">
         <attribute name="nutrientId_" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="value" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <relationship name="mealPlan" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="MealPlan" inverseName="nutrientGoals_" inverseEntity="MealPlan"/>
-    </entity>
-    <entity name="Portion" representedClassName="Portion" syncable="YES">
-        <attribute name="grams" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
-        <attribute name="modifier_" optional="YES" attributeType="String"/>
-        <attribute name="value" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
-        <relationship name="foodInfo_" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="FoodInfo" inverseName="portions_" inverseEntity="FoodInfo"/>
     </entity>
     <entity name="UserNutrientGoal" representedClassName="UserNutrientGoal" syncable="YES">
         <attribute name="goalValue" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
@@ -61,7 +54,6 @@
         <attribute name="goalWeightKg_" optional="YES" attributeType="Double" usesScalarValueType="NO"/>
         <attribute name="heightCm_" optional="YES" attributeType="Integer 16" usesScalarValueType="NO"/>
         <attribute name="heightUnit_" optional="YES" attributeType="String"/>
-        <attribute name="id" optional="YES" attributeType="String"/>
         <attribute name="proteinGrams_" optional="YES" attributeType="Integer 16" usesScalarValueType="YES"/>
         <attribute name="proteinPercentage" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="sex_" optional="YES" attributeType="String"/>

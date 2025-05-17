@@ -20,7 +20,7 @@ class SearchFoodTableViewController: UITableViewController {
     var searchTask: Task<Void, Never>? = nil
     var debounceTimer: Timer?
     
-    weak var delegate: FoodDetailTableViewControllerDelegate?
+    weak var foodDetailDelegate: FoodDetailTableViewControllerDelegate?
     weak var quickAddDelegate: QuickAddTableViewControllerDelegate?
     weak var resultDelegate: ResultTableViewCellDelegate?
 
@@ -43,14 +43,14 @@ class SearchFoodTableViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.register(HistoryTableViewCell.self, forCellReuseIdentifier: HistoryTableViewCell.reuseIdentifier)
-        if let meal, let meals = meal.mealPlan_?.meals {
+        if let meal, let meals = meal.mealPlan?.meals {
             let titleView = SearchTitleView(selectedMeal: meal, meals: meals)
             titleView.delegate = self
             navigationItem.titleView = titleView
         }
 
         resultsTableController = ResultsTableViewController(meal: meal, foodService: foodService)
-        resultsTableController.delegate = delegate
+        resultsTableController.foodDetailDelegate = foodDetailDelegate
         resultsTableController.historyDelegate = self
         resultsTableController.resultDelegate = resultDelegate
         resultsTableController.resultHistoryDelegate = self

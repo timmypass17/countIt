@@ -13,7 +13,7 @@ protocol FoodDetailTableViewControllerDismissDelegate: AnyObject {
 }
 
 protocol FoodDetailTableViewControllerDelegate: AnyObject {
-    func foodDetailTableViewController(_ tableViewController: FoodDetailTableViewController, didAddFoodEntry foodEntry: Food)
+    func foodDetailTableViewController(_ tableViewController: FoodDetailTableViewController, didAddFood food: Food)
     func foodDetailTableViewController(_ tableViewController: FoodDetailTableViewController, didUpdateFoodEntry foodEntry: Food)
 }
 
@@ -105,7 +105,7 @@ class FoodDetailTableViewController: UITableViewController {
         navigationItem.leftBarButtonItem = UIBarButtonItem(systemItem: .cancel, primaryAction: cancelButtonTapped())
         switch state {
         case .add:
-            navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Add", primaryAction: addButtonTapped())
+            navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Add", primaryAction: didTapAddButton())
         case .edit:
             navigationItem.rightBarButtonItem = UIBarButtonItem(systemItem: .save, primaryAction: updateButtonTapped())
         }
@@ -237,18 +237,16 @@ class FoodDetailTableViewController: UITableViewController {
         }
     }
     
-    func addButtonTapped() -> UIAction {
+    func didTapAddButton() -> UIAction {
         return UIAction { [self] _ in
-            if let meal {
-//                let foodEntry = CoreDataStack.shared.addFoodEntry(food, to: meal, servingSize: selectedFoodPortion, numberOfServings: numberOfServings, servingSizeUnit: food.servingSizeUnit ?? "g")
-//                delegate?.foodDetailTableViewController(self, didAddFoodEntry: foodEntry)
-//                
-//                if let food = foodEntry.food {
-//                    print(food)
-//                    food.updatedAt = .now
-//                    historyDelegate?.foodDetailTableViewController(self, didUpdateHistoryWithFood: food)
-//                }
+            guard let meal else { return }
+            do {
+                let food = try foodService.addFood(fdcFood, with: selectedFoodPortion, servings: numberOfServings, to: meal)
+                self.delegate?.foodDetailTableViewController(self, didAddFood: food)
+            } catch {
+                print("Error adding food: \(error)")
             }
+            
             let generator = UIImpactFeedbackGenerator(style: .medium)
             generator.impactOccurred()
             dismiss(animated: true)

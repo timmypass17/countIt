@@ -67,7 +67,7 @@ extension LoginViewController: ASAuthorizationControllerDelegate {
             
             // Fetch user
             // 1. User exists, show tab
-            if let userProfile = foodService.getUserProfile(id: userIdentifier) {
+            if let userProfile = foodService.getUserProfile() {
                 print("timmy user exists, show main app")
                 if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
                    let window = windowScene.windows.first {
@@ -80,7 +80,7 @@ extension LoginViewController: ASAuthorizationControllerDelegate {
                 print("timmy user does not exist, show onboarding")
                 if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
                    let window = windowScene.windows.first {
-                    window.rootViewController = OnboardingViewController(userId: userIdentifier)
+                    window.rootViewController = OnboardingViewController()
                     window.makeKeyAndVisible()
                 }
                 dismiss(animated: true)

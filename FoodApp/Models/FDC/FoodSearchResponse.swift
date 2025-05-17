@@ -101,7 +101,7 @@ struct SearchResultFood: Codable {
         if let householdServingFullText {
             foodMeasures.append(SearchResultFoodMeasurement(id: Int(Date().timeIntervalSince1970 * 1000), disseminationText: householdServingFullText, gramWeight: servingSize, rank: 0))
         }
-        foodMeasures.append(SearchResultFoodMeasurement(id: 0, disseminationText: "Quantity not specified", gramWeight: 100, rank: 0))
+        foodMeasures.append(SearchResultFoodMeasurement(id: 0, disseminationText: nil, gramWeight: 100, rank: 0))
         foodMeasures.sort { $0.gramWeight > $1.gramWeight }
         
         
@@ -197,16 +197,41 @@ struct RawSearchResultFoodNutrients: Codable {
 
 struct SearchResultFoodMeasurement: Codable {
     let id: Int
-    let disseminationText: String
+    var disseminationText: String?
     let gramWeight: Float
     var rank: Int
     
     var servingSizeDescription: String {
-        if disseminationText == "Quantity not specified" {
-            return "\(Int(gramWeight)) g"
+        if let disseminationText {
+            return "\(disseminationText) (\(Int(gramWeight)) g)"
         }
         
-        return "\(disseminationText) (\(Int(gramWeight)) g)"
+        return "\(Int(gramWeight)) g"
+    }
+    
+    enum CodingKeys: CodingKey {
+        case id
+        case disseminationText
+        case gramWeight
+        case rank
+    }
+    
+    init(id: Int, disseminationText: String?, gramWeight: Float, rank: Int) {
+        self.id = id
+        self.disseminationText = disseminationText
+        self.gramWeight = gramWeight
+        self.rank = rank
+    }
+    
+    init(from decoder: any Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.id = try container.decode(Int.self, forKey: .id)
+        let disseminationText = try container.decode(String.self, forKey: .disseminationText)
+        if disseminationText != "Quantity not specified" {
+            self.disseminationText = disseminationText
+        }
+        self.gramWeight = try container.decode(Float.self, forKey: .gramWeight)
+        self.rank = try container.decode(Int.self, forKey: .rank)
     }
 }
 

@@ -162,12 +162,11 @@ extension SettingsViewController: UITableViewDelegate {
             foodService.signOut()
             self.showLoginViewController()
         } else if indexPath.row == sections[0].data.count - 1 {
-            print("delete account")
             do {
                 try foodService.deleteAccount()
                 self.showLoginViewController()
             } catch {
-                print("Error deleting account")
+                print("Error deleting account: \(error)")
             }
         }
 //        if indexPath == SettingsTableViewController.weightIndexPath {

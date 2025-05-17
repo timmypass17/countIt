@@ -15,11 +15,18 @@ extension Meal {
     @nonobjc public class func fetchRequest() -> NSFetchRequest<Meal> {
         return NSFetchRequest<Meal>(entityName: "Meal")
     }
+    
+    static func fetchMeals(for mealPlan: MealPlan) -> NSFetchRequest<Meal> {
+        let request = NSFetchRequest<Meal>(entityName: "Meal")
+        request.predicate = NSPredicate(format: "mealPlan_ == %@", mealPlan)
+        request.sortDescriptors = [NSSortDescriptor(key: "index", ascending: true)] // keypath
+        return request
+    }
 
     @NSManaged public var index: Int16
     @NSManaged public var name_: String?
     @NSManaged public var foods_: NSSet?
-    @NSManaged public var mealPlan_: MealPlan?
+    @NSManaged public var mealPlan: MealPlan?
     
     var name: String {
         get { name_ ?? "" }
