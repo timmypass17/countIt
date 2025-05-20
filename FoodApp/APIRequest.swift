@@ -25,7 +25,11 @@ enum APIRequestError: Error {
 
 // Generic utility func for sending network requests
 func sendRequest<Request: APIRequest>(_ request: Request) async throws -> Request.Response {
-    let (data, response) = try await URLSession.shared.data(for: request.urlRequest)
+    let config = URLSessionConfiguration.default
+    config.requestCachePolicy = .returnCacheDataElseLoad
+
+    let session = URLSession(configuration: config)
+    let (data, response) = try await session.data(for: request.urlRequest)
     
     data.prettyPrintedJSONString()
     

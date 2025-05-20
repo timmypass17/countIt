@@ -226,7 +226,7 @@ enum NutrientId: Int, Codable, CaseIterable {
     
     var shortDescription: String {
         switch self {
-        case .calories: return "Cal"
+        case .calories: return "Calories"
         case .carbs: return "Carbs"
         case .fiber: return "Fiber"
         case .sugarTotal: return "Sugars"
