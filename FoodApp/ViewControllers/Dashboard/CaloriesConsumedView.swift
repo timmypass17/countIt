@@ -13,6 +13,7 @@ struct CaloriesConsumedView: View {
     
     @FetchRequest
     var meals: FetchedResults<Meal>
+    
     var mealPlan: MealPlan
 
     init(mealPlan: MealPlan) {
@@ -44,7 +45,7 @@ struct CaloriesConsumedView: View {
                 VStack(alignment: .leading) {
                     Text("cal")
                         .bold()
-                    Text("/ 2000")
+                    Text("/ \(caloriesGoal)")
                         .bold()
                         .foregroundStyle(.secondary)
                 }

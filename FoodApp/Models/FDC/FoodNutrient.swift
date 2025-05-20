@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftUICore
 
 struct FoodNutrient: Codable {
     var nutrient: Nutrient?
@@ -97,7 +98,7 @@ struct Nutrient: Codable {
     var rank: Int
 }
 
-enum NutrientId: Int, Codable, CaseIterable {
+enum NutrientId: Int, Codable, CaseIterable {    
     case calories = 1008
     case carbs = 1005
     case fiber = 1079
@@ -168,7 +169,6 @@ enum NutrientId: Int, Codable, CaseIterable {
             return "Cholesterol"
         case .protein:
             return "Protein"
-            
         case .vitaminA:
             return "Vitamin A"
         case .vitaminB1:
@@ -193,7 +193,6 @@ enum NutrientId: Int, Codable, CaseIterable {
             return "Vitamin K"
         case .folate:
             return "Folate"
-            
         case .calcium:
             return "Calcium"
         case .iron:
@@ -214,7 +213,6 @@ enum NutrientId: Int, Codable, CaseIterable {
             
         case .caffeine:
             return "Caffeine"
-            
         case .copper:
             return "Copper"
         case .iodine:
@@ -226,45 +224,105 @@ enum NutrientId: Int, Codable, CaseIterable {
         }
     }
     
+    var shortDescription: String {
+        switch self {
+        case .calories: return "Cal"
+        case .carbs: return "Carbs"
+        case .fiber: return "Fiber"
+        case .sugarTotal: return "Sugars"
+        case .sugarAdded: return "Added Sugars"
+        case .fatTotal: return "Fat"
+        case .fatMono: return "Mono Fat"
+        case .fatPoly: return "Poly Fat"
+        case .fatSaturated: return "Sat Fat"
+        case .cholesterol: return "Chol"
+        case .protein: return "Protein"
+
+        case .vitaminA: return "Vit A"
+        case .vitaminB1: return "B1"
+        case .vitaminB2: return "B2"
+        case .vitaminB3: return "B3"
+        case .vitaminB6: return "B6"
+        case .vitaminB7: return "B7"
+        case .vitaminB12: return "B12"
+        case .vitaminC: return "Vit C"
+        case .vitaminD: return "Vit D"
+        case .vitaminE: return "Vit E"
+        case .vitaminK: return "Vit K"
+        case .folate: return "Folate"
+
+        case .calcium: return "Ca"
+        case .iron: return "Fe"
+        case .magnesium: return "Mg"
+        case .phosphorus: return "P"
+        case .potassium: return "K"
+        case .sodium: return "Na"
+        case .zinc: return "Zn"
+
+        case .water: return "Water"
+        case .caffeine: return "Caffeine"
+
+        case .copper: return "Cu"
+        case .iodine: return "Iodine"
+        case .manganese: return "Mn"
+        case .selenium: return "Se"
+        }
+    }
+    
     var unitName: String {
         switch self {
         // Energy
         case .calories:
-            return "KCAL"
+            return "cal"
         
         // Macronutrients (mass)
         case .carbs, .fiber,
              .sugarTotal, .sugarAdded,
              .fatTotal, .fatMono, .fatPoly, .fatSaturated,
              .protein, .water:
-            return "G"
+            return "g"
             
         // Cholesterol (mass)
         case .cholesterol:
-            return "MG"
+            return "mg"
             
         // Vitamins (varied)
         case .vitaminA:
-            return "IU"
+            return "iu"
         case .vitaminD, .vitaminK:
             return "µg"
         case .vitaminB1, .vitaminB2, .vitaminB3,
              .vitaminB6, .vitaminC, .vitaminE,
              .folate:
-            return "MG"
+            return "mg"
         case .vitaminB7, .vitaminB12:
             return "µg"
         
         // Minerals (mass)
         case .calcium, .iron, .magnesium, .phosphorus,
              .potassium, .sodium, .zinc, .copper, .manganese:
-            return "MG"
+            return "mg"
         case .iodine, .selenium:
             return "µg"
         
         // Other
         case .caffeine:
-            return "MG"
+            return "mg"
+        }
+    }
+    
+    var color: Color {
+        switch self {
+        case .calories:
+            return .blue
+        case .carbs:
+            return .yellow
+        case .protein:
+            return .pink
+        case .fatTotal:
+            return .green
+        default:
+            return .purple
         }
     }
     

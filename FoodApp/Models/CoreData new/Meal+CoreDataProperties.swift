@@ -22,6 +22,12 @@ extension Meal {
         request.sortDescriptors = [NSSortDescriptor(keyPath: \Meal.index, ascending: true)]
         return request
     }
+    
+    static func emptyFetchRequest() -> NSFetchRequest<Meal> {
+        let request = Meal.fetchRequest()
+        request.predicate = NSPredicate(value: false)
+        return request
+    }
 
     @NSManaged public var index: Int16
     @NSManaged public var name_: String?
@@ -39,7 +45,7 @@ extension Meal {
     }
     
     func nutrientAmount(_ nutrientId: NutrientId) -> Double {
-        return foods.map { $0.getNutrientAmount(.calories) }.reduce(0, +)
+        return foods.map { $0.getNutrientAmount(nutrientId) }.reduce(0, +)
     }
 }
 

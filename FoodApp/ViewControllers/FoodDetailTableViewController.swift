@@ -169,14 +169,15 @@ class FoodDetailTableViewController: UITableViewController {
             let carbs = fdcFood.getNutrientAmount(.carbs, using: selectedFoodPortion, quantity: numberOfServings)
             let protein = fdcFood.getNutrientAmount(.protein, using: selectedFoodPortion, quantity: numberOfServings)
             let fats = fdcFood.getNutrientAmount(.fatTotal, using: selectedFoodPortion, quantity: numberOfServings)
+            let nutrients: [NutrientId: Float] = [
+                .calories: calories,
+                .carbs: carbs,
+                .protein: protein,
+                .fatTotal: fats
+            ]
 
             cell.contentConfiguration = UIHostingConfiguration {    // tableView.reloadData() or use swiftui state mangement
-                MacrosView(
-                    calories: MacroData(amount: calories, goal: 200, name: "Calories"),
-                    carbs: MacroData(amount: carbs, goal: 100, name: "Carbs"),
-                    protein: MacroData(amount: protein, goal: 100, name: "Protein"),
-                    fats: MacroData(amount: fats, goal: 100, name: "Fats")
-                )
+                MacrosView(mealPlan: meal?.mealPlan, nutrients: nutrients)
             }
             cell.selectionStyle = .none
             return cell

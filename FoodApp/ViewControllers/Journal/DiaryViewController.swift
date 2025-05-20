@@ -66,8 +66,8 @@ class DiaryViewController: UIViewController {
         mealPlanDateView.delegate = self
         navigationItem.titleView = mealPlanDateView
         
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: MacrosView.reuseIdentifier)
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: CaloriesConsumedView.reuseIdentifier)
+        tableView.register(UITableViewCell.self, forCellReuseIdentifier: MacrosView.reuseIdentifier)
         tableView.register(FoodEntryTableViewCell.self, forCellReuseIdentifier: FoodEntryTableViewCell.reuseIdentifier)
         tableView.register(MealHeaderView.self, forHeaderFooterViewReuseIdentifier: MealHeaderView.reuseIdentifier)
         tableView.register(AddFoodTableViewCell.self, forCellReuseIdentifier: AddFoodTableViewCell.reuseIdentifier)
@@ -223,10 +223,8 @@ extension DiaryViewController: UITableViewDataSource {
         guard let mealPlan else { return UITableViewCell() }
         if indexPath.section == 0 {
             let cell = tableView.dequeueReusableCell(withIdentifier: CaloriesConsumedView.reuseIdentifier, for: indexPath)
-            
-            let calories = MacroData(amount: 200, goal: Float(mealPlan.nutrientGoals[.calories]?.value ?? 0), name: "Breakfast")
-            
-            cell.contentConfiguration = UIHostingConfiguration { // affected by reloadData(), can't get it to update automatically
+                        
+            cell.contentConfiguration = UIHostingConfiguration {
                 CaloriesConsumedView(mealPlan: mealPlan)
                     .environment(\.managedObjectContext, CoreDataStack.shared.context)
             }
@@ -236,14 +234,9 @@ extension DiaryViewController: UITableViewDataSource {
         
         if indexPath.section == 1 {
             let cell = tableView.dequeueReusableCell(withIdentifier: MacrosView.reuseIdentifier, for: indexPath)
-            
-            let calories = MacroData(amount: 0, goal: Float(mealPlan.nutrientGoals[.calories]?.value ?? 0), name: "Calories")
-            let carbs = MacroData(amount: 0, goal: Float(mealPlan.nutrientGoals[.carbs]?.value ?? 0), name: "Carbs")
-            let protein = MacroData(amount: 0, goal: Float(mealPlan.nutrientGoals[.protein]?.value ?? 0), name: "Protein")
-            let fats = MacroData(amount: 0, goal: Float(mealPlan.nutrientGoals[.fatTotal]?.value ?? 0), name: "Fats")
-            
-            cell.contentConfiguration = UIHostingConfiguration { // affected by reloadData(), can't get it to update automatically
-                MacrosView(calories: calories, carbs: carbs, protein: protein, fats: fats)
+            cell.contentConfiguration = UIHostingConfiguration {
+                MacrosView(mealPlan: mealPlan)  // uses coredata fetch, updated automatically when core data changes
+                    .environment(\.managedObjectContext, CoreDataStack.shared.context)
             }
             
             return cell
