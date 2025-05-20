@@ -67,7 +67,7 @@ class DiaryViewController: UIViewController {
         navigationItem.titleView = mealPlanDateView
         
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: MacrosView.reuseIdentifier)
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: CaloriesRemainingView.reuseIdentifier)
+        tableView.register(UITableViewCell.self, forCellReuseIdentifier: CaloriesConsumedView.reuseIdentifier)
         tableView.register(FoodEntryTableViewCell.self, forCellReuseIdentifier: FoodEntryTableViewCell.reuseIdentifier)
         tableView.register(MealHeaderView.self, forHeaderFooterViewReuseIdentifier: MealHeaderView.reuseIdentifier)
         tableView.register(AddFoodTableViewCell.self, forCellReuseIdentifier: AddFoodTableViewCell.reuseIdentifier)
@@ -222,14 +222,13 @@ extension DiaryViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let mealPlan else { return UITableViewCell() }
         if indexPath.section == 0 {
-            let cell = tableView.dequeueReusableCell(withIdentifier: CaloriesRemainingView.reuseIdentifier, for: indexPath)
+            let cell = tableView.dequeueReusableCell(withIdentifier: CaloriesConsumedView.reuseIdentifier, for: indexPath)
             
             let calories = MacroData(amount: 200, goal: Float(mealPlan.nutrientGoals[.calories]?.value ?? 0), name: "Breakfast")
             
             cell.contentConfiguration = UIHostingConfiguration { // affected by reloadData(), can't get it to update automatically
-                CaloriesRemainingView(
-                    caloriesGoal: Int(mealPlan.nutrientGoals[.calories]?.value ?? 0),
-                    data: [CaloriesRemainingItem(amount: 100, name: "Breakfast"), CaloriesRemainingItem(amount: 200, name: "Lunch"), CaloriesRemainingItem(amount: 400, name: "Dinner"), CaloriesRemainingItem(amount: 50, name: "Snack")])
+                CaloriesConsumedView(mealPlan: mealPlan)
+                    .environment(\.managedObjectContext, CoreDataStack.shared.context)
             }
             
             return cell

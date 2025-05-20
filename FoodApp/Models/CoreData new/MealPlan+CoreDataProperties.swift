@@ -42,6 +42,11 @@ extension MealPlan {
         }
     }
     
+    func nutrientAmount
+    (_ nutrientId: NutrientId) -> Double {
+        return meals.map { $0.nutrientAmount(nutrientId) }.reduce(0, +)
+    }
+    
     static func fetchRequest(for date: Date) -> NSFetchRequest<MealPlan> {
         let request = NSFetchRequest<MealPlan>(entityName: "MealPlan")
 

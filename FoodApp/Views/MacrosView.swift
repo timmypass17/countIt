@@ -47,81 +47,88 @@ struct MacrosView: View {
     }
 }
 
-struct CaloriesRemainingView: View {
-    static let reuseIdentifier = "CaloriesRemainingView"
-    
-    // TODO: Change this to calories, and breakfast...
-    var caloriesGoal: Int
-    
-    var caloriesRemaining: Int {
-        return caloriesGoal - caloriesConsumed
-    }
-    
-    var caloriesConsumed: Int {
-        return data.map { $0.amount }.reduce(0, +)
-    }
-    
-    var data: [CaloriesRemainingItem]
-    
-    var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
-            Text("Calories Consumed")
-                .foregroundStyle(.secondary)
-                .padding(.bottom, 12)
-            
-            HStack(alignment: .lastTextBaseline) {
-                Text("\(caloriesConsumed)")
-                    .font(.system(size: 50, weight: .semibold))
-                //                Text("cal")
-                //                    .bold()
-                VStack(alignment: .leading) {
-                    Text("cal")
-                        .bold()
-                    Text("/ 2000")
-                        .bold()
-                        .foregroundStyle(.secondary)
-                }
-//                Text("cal")
-//                    .bold()
-            }
-            .padding(.bottom, 12)
-            
-            Chart {
-                ForEach(data, id: \.name) { item in
-                    BarMark(
-                        x: .value("Amount", item.amount),
-                        y: .value("Type", "Calories")
-                    )
-                    .foregroundStyle(by: .value("Name", item.name))
-                    .cornerRadius(4)
-                }
-                
-                BarMark(
-                    x: .value("Goal", caloriesRemaining),
-                    y: .value("Type", "Calories")
-                )
-                .foregroundStyle(Color.gray.opacity(0.2))
-                .cornerRadius(4)
-
-            }
-            .frame(height: 65)
-            .chartXScale(domain: 0...caloriesGoal)
-            .chartYAxis(.hidden)
-            
-//            HStack {
-//                Image(systemName: "trophy")
-//                    .foregroundStyle(.yellow)
-//                Text("Great! You're on track to losing weight.")
-//                Spacer()
+//struct CaloriesRemainingView: View {
+//    
+//    static let reuseIdentifier = "CaloriesRemainingView"
+//    
+//    @FetchRequest(
+//        fetchRequest: Meal.fetchMeals(for: mealPlan),
+//        animation: .default
+//    ) var meals: FetchedResults<Meal>
+//    
+//    // TODO: Change this to calories, and breakfast...
+//    var caloriesGoal: Int
+//    
+//    var caloriesRemaining: Int {
+//        return caloriesGoal - caloriesConsumed
+//    }
+//    
+//    var caloriesConsumed: Int {
+//        return data.map { $0.amount }.reduce(0, +)
+//    }
+//    
+////    var data: [CaloriesRemainingItem]
+//    var meals: [Meal]
+//    
+//    var body: some View {
+//        VStack(alignment: .leading, spacing: 0) {
+//            Text("Calories Consumed")
+//                .foregroundStyle(.secondary)
+//                .padding(.bottom, 12)
+//            
+//            HStack(alignment: .lastTextBaseline) {
+//                Text("\(caloriesConsumed)")
+//                    .font(.system(size: 50, weight: .semibold))
+//                //                Text("cal")
+//                //                    .bold()
+//                VStack(alignment: .leading) {
+//                    Text("cal")
+//                        .bold()
+//                    Text("/ 2000")
+//                        .bold()
+//                        .foregroundStyle(.secondary)
+//                }
+////                Text("cal")
+////                    .bold()
 //            }
-//            .background {
-//                RoundedRectangle(cornerRadius: 4, style: .continuous)
-//                    .fill(Color.yellow.opacity(0.5))
+//            .padding(.bottom, 12)
+//            
+//            Chart {
+//                ForEach(meals, id: \.index) { item in
+//                    BarMark(
+//                        x: .value("Amount", item.amount),
+//                        y: .value("Type", "Calories")
+//                    )
+//                    .foregroundStyle(by: .value("Name", item.name))
+//                    .cornerRadius(4)
+//                }
+//                
+//                BarMark(
+//                    x: .value("Goal", caloriesRemaining),
+//                    y: .value("Type", "Calories")
+//                )
+//                .foregroundStyle(Color.gray.opacity(0.2))
+//                .cornerRadius(4)
+//
 //            }
-        }
-        .padding(.vertical, 8)
-    }
-}
+//            .frame(height: 65)
+//            .chartXScale(domain: 0...caloriesGoal)
+//            .chartYAxis(.hidden)
+//            
+////            HStack {
+////                Image(systemName: "trophy")
+////                    .foregroundStyle(.yellow)
+////                Text("Great! You're on track to losing weight.")
+////                Spacer()
+////            }
+////            .background {
+////                RoundedRectangle(cornerRadius: 4, style: .continuous)
+////                    .fill(Color.yellow.opacity(0.5))
+////            }
+//        }
+//        .padding(.vertical, 8)
+//    }
+//}
 
 struct CaloriesRemainingItem {
     var amount: Int

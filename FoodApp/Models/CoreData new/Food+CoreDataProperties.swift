@@ -33,7 +33,5 @@ extension Food {
         let totalNutrientAmount = nutrientPerGram * totalGrams
         
         return totalNutrientAmount
-//        let nutrientAmount = (amountPer100g * Float(foodMeasurement.gramWeight)) / 100
-//        return nutrientAmount * Float(quantity)
     }
 }

@@ -186,6 +186,7 @@ class FoodService: FoodServiceProtocol {
         let foodInfoNutrient = FoodInfoNutrient(context: context)
         foodInfoNutrient.nutrientId = nutrientId
         foodInfoNutrient.value = Double(fdcFood.foodNutrients[nutrientId]?.amount ?? 0)
+        
         return foodInfoNutrient
     }
     

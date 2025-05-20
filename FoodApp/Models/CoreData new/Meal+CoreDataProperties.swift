@@ -18,8 +18,8 @@ extension Meal {
     
     static func fetchMeals(for mealPlan: MealPlan) -> NSFetchRequest<Meal> {
         let request = NSFetchRequest<Meal>(entityName: "Meal")
-        request.predicate = NSPredicate(format: "mealPlan_ == %@", mealPlan)
-        request.sortDescriptors = [NSSortDescriptor(key: "index", ascending: true)] // keypath
+        request.predicate = NSPredicate(format: "mealPlan == %@", mealPlan)
+        request.sortDescriptors = [NSSortDescriptor(keyPath: \Meal.index, ascending: true)]
         return request
     }
 
@@ -36,6 +36,10 @@ extension Meal {
     var foods: [Food] {
         get { (foods_?.allObjects as! [Food]).sorted { $0.index < $1.index } }
         set { foods_ = NSSet(array: newValue) }
+    }
+    
+    func nutrientAmount(_ nutrientId: NutrientId) -> Double {
+        return foods.map { $0.getNutrientAmount(.calories) }.reduce(0, +)
     }
 }
 
@@ -55,3 +59,5 @@ extension Meal {
     @NSManaged public func removeFromFoods_(_ values: NSSet)
 
 }
+
+extension Meal: Identifiable {}
