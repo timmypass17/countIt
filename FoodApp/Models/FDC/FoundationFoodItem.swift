@@ -13,19 +13,21 @@ struct FoundationFoodItem: FoodItem {
     let description: String
     let foodNutrients: [FoodNutrient]
     let foodPortions: [FoodPortion] // not in foundation
+    let brandName: String = "USDA"
     
     enum CodingKeys: String, CodingKey {
         case fdcId
         case dataType
         case description
         case foodNutrients
+        case foodPortions
     }
 
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         fdcId = try container.decode(Int.self, forKey: .fdcId)
         dataType = try container.decode(DataType.self, forKey: .dataType)
-        description = try container.decode(String.self, forKey: .description)
+        description = try container.decode(String.self, forKey: .description).firstUppercased
         
         let rawNutrients = try container.decode([RawFoodNutrient].self, forKey: .foodNutrients)
         self.foodNutrients = rawNutrients.compactMap { raw in
@@ -33,7 +35,9 @@ struct FoundationFoodItem: FoodItem {
             return FoodNutrient(nutrient: Nutrient(id: nutrientId, name: raw.nutrient.name, unitName: raw.nutrient.unitName, rank: 0), amount: raw.amount)
         }
         
-        foodPortions = [FoodPortion(gramWeight: 100, modifier: "grams", sequenceNumber: 0, portionDescription: "", measureUnit: MeasureUnit(id: 0, name: "", abbreviation: ""))]
+        var foodPortions = try container.decodeIfPresent([FoodPortion].self, forKey: .foodPortions) ?? []
+        foodPortions.append(FoodPortion.default100g)
+        self.foodPortions = foodPortions
     }
     
     
@@ -47,7 +51,7 @@ struct FoundationFoodItem: FoodItem {
                 descriptionParts.append(getServingSizeFormatted(foodPortion: foodPortion, numberOfServings: numberOfServings))
             }
             
-            descriptionParts.append("USDA (foundation)")
+            descriptionParts.append("USDA")
             
             return descriptionParts.joined(separator: ", ")
     }

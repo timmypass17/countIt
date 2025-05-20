@@ -15,10 +15,12 @@ protocol FoodItem: Codable {
     var dataType: DataType { get }
     var foodNutrients: [FoodNutrient] { get }
     var foodPortions: [FoodPortion] { get }
+    var brandName: String { get }
 //    var foodInputs: [FDCFoodInput]    - not really possible with fdcapi
     func getFoodPortionDescription(foodPortion: FoodPortion, numberOfServings: Int, options: [FoodEntryOptions]) -> String
     func getServingSizeFormatted(foodPortion: FoodPortion, numberOfServings: Int) -> String
     func getNutrientAmountPerServing(_ nutrientID: NutrientId, foodPortion: FoodPortion) -> Float
+    func getNutrientAmount(_ nutrientID: NutrientId, using foodPortion: FoodPortion, quantity: Int) -> Float
     func getFoodNutrient(_ id: NutrientId) -> FoodNutrient?
 }
 
@@ -33,19 +35,33 @@ extension FoodItem {
               let nutrientPer100g = nutrient.amount else { return 0 }
         return (nutrientPer100g * foodPortion.gramWeight) / 100
     }
+    
+    func getNutrientAmount(_ nutrientID: NutrientId, using foodPortion: FoodPortion, quantity: Int = 1) -> Float {
+        guard let amountPer100g = foodNutrients[nutrientID]?.amount else { return 0 }
+        let totalGrams = Float(foodPortion.gramWeight) * Float(quantity)
+        let nutrientPerGram = amountPer100g / 100
+        let totalNutrientAmount = nutrientPerGram * totalGrams
+        
+        return totalNutrientAmount
+//        let nutrientAmount = (amountPer100g * Float(foodMeasurement.gramWeight)) / 100
+//        return nutrientAmount * Float(quantity)
+    }
 
     func getServingSizeFormatted(foodPortion: FoodPortion, numberOfServings: Int = 1) -> String {
+        print(foodPortion)
         if foodPortion.modifier == "Quick Add" {
             return "1 serving"
         }
         
-        if let amount = foodPortion.amount {
+        let gramWeight = Int(foodPortion.gramWeight * Float(numberOfServings))
+        if let amount = foodPortion.amount,
+           let modifier = foodPortion.modifier {
             let servings = Int(amount * Float(numberOfServings))
-            let gramWeight = Int(foodPortion.gramWeight * Float(numberOfServings))
-            return "\(servings) \(foodPortion.modifier) (\(gramWeight) g))"
+            return "\(servings) \(modifier) (\(gramWeight) g)"
+        } else if let portionDescription = foodPortion.portionDescription {
+            return "\(portionDescription) (\(gramWeight) g)"
         } else {
-            let gramWeight = Int(foodPortion.gramWeight * Float(numberOfServings))
-            return "\(gramWeight) g)"
+            return "\(gramWeight) g"
         }
     }
 }
@@ -69,6 +85,17 @@ enum AnyFoodItem: FoodItem {
         case .foundation(let item): return item.description
         case .branded(let item): return item.description
         case .survey(let item): return item.description
+        }
+    }
+    
+    var brandName: String {
+        switch self {
+        case .foundation(let foundationFoodItem):
+            return foundationFoodItem.brandName
+        case .branded(let brandedFoodItem):
+            return brandedFoodItem.brandName
+        case .survey(let surveyFoodItem):
+            return surveyFoodItem.brandName
         }
     }
 

@@ -9,8 +9,8 @@ import UIKit
 
 class ResultsTableViewController: UITableViewController {
     
-    var bestMatchResponse: FoodSearchResponse = FoodSearchResponse(totalHits: 0, currentPage: 1, totalPages: 0, foods: [])
-    var moreResultsResponse: FoodSearchResponse = FoodSearchResponse(totalHits: 0, currentPage: 1, totalPages: 0, foods: [])
+    var bestMatchResponse: FoodSearchResponse = FoodSearchResponse(totalHits: 0, currentPage: 1, totalPages: 0, foodParts: [])
+    var moreResultsResponse: FoodSearchResponse = FoodSearchResponse(totalHits: 0, currentPage: 1, totalPages: 0, foodParts: [])
     let meal: Meal?
     let foodService: FoodService
     var query: String?
@@ -92,7 +92,7 @@ class ResultsTableViewController: UITableViewController {
         let cell = tableView.dequeueReusableCell(withIdentifier: ResultTableViewCell.reuseIdentifier, for: indexPath) as! ResultTableViewCell
         cell.delegate = resultDelegate
         cell.historyDelegate =  resultHistoryDelegate
-        let foodItem: SearchResultFood
+        let foodItem: FoodItem
         switch section {
         case .bestMatch:
             foodItem = bestMatchResponse.foods[indexPath.row]
@@ -105,7 +105,7 @@ class ResultsTableViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard let section = Section(rawValue: indexPath.section) else { return }
-        let foodItem: SearchResultFood
+        let foodItem: FoodItem
         switch section {
         case .bestMatch:
             foodItem = bestMatchResponse.foods[indexPath.row]

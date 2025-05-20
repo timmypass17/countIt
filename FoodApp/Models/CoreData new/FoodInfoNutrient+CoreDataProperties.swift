@@ -30,3 +30,7 @@ extension FoodInfoNutrient {
         }
     }
 }
+
+extension FoodInfoNutrient: NutrientIdentifiable {
+
+}

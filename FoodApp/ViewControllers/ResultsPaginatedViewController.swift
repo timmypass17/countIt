@@ -28,7 +28,7 @@ class ResultsPaginatedViewController: UIViewController {
         totalHits: 0,
         currentPage: 1,
         totalPages: 0,
-        foods: []
+        foodParts: []
     )
     
     var isLoading = false {
@@ -97,11 +97,11 @@ class ResultsPaginatedViewController: UIViewController {
                 pageNumber: foodResponse.currentPage
             )
             
-            let start = foodResponse.foods.count
-            let newItems = response.foods
+            let start = foodResponse.foodParts.count
+            let newItems = response.foodParts
             let end = start + newItems.count
             
-            foodResponse.foods.append(contentsOf: newItems)
+            foodResponse.foodParts.append(contentsOf: newItems)
             foodResponse.currentPage += 1
             foodResponse.totalPages  = response.totalPages
             

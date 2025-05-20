@@ -8,21 +8,21 @@
 import UIKit
 
 protocol SelectTableViewControllerDelegate: AnyObject {
-    func selectTableViewController(_ sender: ServingSizeTableViewController, didSelectMeasurement foodMeasurement: SearchResultFoodMeasurement)
+    func selectTableViewController(_ sender: ServingSizeTableViewController, didSelectPortion foodPortion: FoodPortion)
 }
 
 class ServingSizeTableViewController: UITableViewController {
-    let fdcFood: SearchResultFood
-    let foodPortions: [SearchResultFoodMeasurement]
-    var selectedFoodMeasurement: SearchResultFoodMeasurement
+    let fdcFood: FoodItem
+    let foodPortions: [FoodPortion]
+    var selectedFoodPortion: FoodPortion
     
     weak var delegate: SelectTableViewControllerDelegate?
     let reuseIdentifier = "SelectCell"
     
-    init(fdcFood: SearchResultFood, foodPortions: [SearchResultFoodMeasurement], selectedFoodMeasurement: SearchResultFoodMeasurement) {
+    init(fdcFood: FoodItem, foodPortions: [FoodPortion], selectedFoodPortion: FoodPortion) {
         self.fdcFood = fdcFood
         self.foodPortions = foodPortions
-        self.selectedFoodMeasurement =  selectedFoodMeasurement
+        self.selectedFoodPortion =  selectedFoodPortion
         super.init(style: .plain)
     }
     
@@ -48,31 +48,31 @@ class ServingSizeTableViewController: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return fdcFood.foodMeasures.count
+        return fdcFood.foodPortions.count
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: reuseIdentifier, for: indexPath)
-        let foodMeasurement = fdcFood.foodMeasures[indexPath.row]
+        let foodPortion = fdcFood.foodPortions[indexPath.row]
         var config = cell.defaultContentConfiguration()
-        config.text = foodMeasurement.servingSizeDescription
-//        config.text = fdcFood.getServingSizeFormatted(foodPortion: foodPortion)
+//        config.text = foodMeasurement.servingSizeDescription
+        config.text = fdcFood.getServingSizeFormatted(foodPortion: foodPortion)
         cell.contentConfiguration = config
-        cell.accessoryType = foodMeasurement.id == selectedFoodMeasurement.id ? .checkmark : .none
+        cell.accessoryType = foodPortion.id == selectedFoodPortion.id ? .checkmark : .none
 
         return cell
     }
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if let previousRow =  foodPortions.firstIndex(where: { $0.id == selectedFoodMeasurement.id }) {
+        if let previousRow =  foodPortions.firstIndex(where: { $0.id == selectedFoodPortion.id }) {
             let previousIndexPath = IndexPath(row: previousRow, section: 0)
             tableView.reloadRows(at: [previousIndexPath], with: .automatic)
-            selectedFoodMeasurement = foodPortions[indexPath.row]
+            selectedFoodPortion = foodPortions[indexPath.row]
             tableView.reloadRows(at: [previousIndexPath, indexPath], with: .automatic)
             return
         }
         
-        selectedFoodMeasurement = foodPortions[indexPath.row]
+        selectedFoodPortion = foodPortions[indexPath.row]
         tableView.reloadRows(at: [indexPath], with: .automatic)
     }
 
@@ -83,7 +83,7 @@ class ServingSizeTableViewController: UITableViewController {
     
     func didTapDoneButton() -> UIAction {
         return UIAction { [self] _ in
-            delegate?.selectTableViewController(self, didSelectMeasurement: self.selectedFoodMeasurement)
+            delegate?.selectTableViewController(self, didSelectPortion: self.selectedFoodPortion)
             dismiss(animated: true)
         }
     }
@@ -120,7 +120,7 @@ class ServingSizeTableViewController: UITableViewController {
             guard let gramString = alert.textFields?.first?.text,
                   let gramWeight = Float(gramString)
             else { return }
-            let customServingSize = FoodPortion(gramWeight: gramWeight, modifier: "", sequenceNumber: 0, portionDescription: "", measureUnit: MeasureUnit(id: 0, name: "", abbreviation: ""))
+            let customServingSize = FoodPortion(id: -1, gramWeight: gramWeight, modifier: "", sequenceNumber: 0, portionDescription: "", measureUnit: MeasureUnit(id: 0, name: "", abbreviation: ""))
             // TODO: Fix custom measurement
 //            self.delegate?.selectTableViewController(self, didSelectMeasurement: customServingSize)
 //            self.navigationController?.dismiss(animated: true)

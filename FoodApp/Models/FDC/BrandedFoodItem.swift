@@ -10,22 +10,22 @@ import Foundation
 // Branded foods do not have inputFood, only ingredients
 struct BrandedFoodItem: FoodItem {
     let fdcId: Int
-    let brandOwner: String
+    let brandName: String
     let dataType: DataType
     let description: String
     let gtinUpc: String // barcode
-    let householdServingFullText: String // "1 ONZ"
     let ingredients: String
-    let servingSize: Int
+    let householdServingFullText: String // "2 Tbsp"
+    let servingSize: Int    // 32.0
     let servingSizeUnit: String // "g"
     let brandedFoodCategory: String // "Popcorn, Peanuts, Seeds & Related Snacks"
     let foodNutrients: [FoodNutrient]
-    let foodPortions: [FoodPortion]
+    let foodPortions: [FoodPortion] // branded fod has none
 //    let labelNutrients unnecessary
     
     enum CodingKeys: String, CodingKey {
         case fdcId
-        case brandOwner
+        case brandName
         case dataType
         case description
         case gtinUpc
@@ -41,17 +41,19 @@ struct BrandedFoodItem: FoodItem {
     init(from decoder: any Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.fdcId = try container.decode(Int.self, forKey: .fdcId)
-        self.brandOwner = try container.decode(String.self, forKey: .brandOwner)
+        self.brandName = try container.decode(String.self, forKey: .brandName)
         self.dataType = try container.decode(DataType.self, forKey: .dataType)
-        self.description = try container.decode(String.self, forKey: .description)
+        self.description = try container.decode(String.self, forKey: .description).firstUppercased
         self.gtinUpc = try container.decode(String.self, forKey: .gtinUpc)
         self.householdServingFullText = try container.decode(String.self, forKey: .householdServingFullText)
         self.ingredients = try container.decode(String.self, forKey: .ingredients)
         self.servingSize = try container.decodeIfPresent(Int.self, forKey: .servingSize) ?? 1
         self.servingSizeUnit = try container.decode(String.self, forKey: .servingSizeUnit)
         self.brandedFoodCategory = try container.decode(String.self, forKey: .brandedFoodCategory)
-        var foodPortions = try container.decode([FoodPortion].self, forKey: .foodPortions)
-        foodPortions.append(FoodPortion(gramWeight: 100, modifier: "grams", sequenceNumber: 0, portionDescription: "", measureUnit: MeasureUnit(id: 0, name: "", abbreviation: "")))
+//        var foodPortions = try container.decode([FoodPortion].self, forKey: .foodPortions)
+        var foodPortions: [FoodPortion] = []
+        foodPortions.append(FoodPortion.default100g)
+        foodPortions.append(FoodPortion(id: 1, gramWeight: Float(servingSize), sequenceNumber: 0, measureUnit: MeasureUnit(id: 1, name: "", abbreviation: "")))
         self.foodPortions = foodPortions
         
         let rawNutrients = try container.decode([RawFoodNutrient].self, forKey: .foodNutrients)
@@ -71,7 +73,7 @@ struct BrandedFoodItem: FoodItem {
             descriptionParts.append(getServingSizeFormatted(foodPortion: foodPortion, numberOfServings: numberOfServings))
         }
         
-        descriptionParts.append(brandOwner)
+        descriptionParts.append(brandName)
         
         return descriptionParts.joined(separator: ", ")
     }

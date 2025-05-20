@@ -58,17 +58,6 @@ extension MealPlan {
     
 }
 
-protocol NutrientIdentifiable {
-    var nutrientId: NutrientId { get }
-}
-
-extension Array where Element: NutrientIdentifiable {
-    subscript(nutrientID: NutrientId) -> Element? {
-        self.first { $0.nutrientId == nutrientID }
-    }
-}
-
-
 // MARK: Generated accessors for meals_
 extension MealPlan {
 

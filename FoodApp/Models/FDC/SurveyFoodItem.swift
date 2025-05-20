@@ -20,15 +20,16 @@ struct SurveyFoodItem: FoodItem {
     let dataType: DataType
     let description: String
     let foodPortions: [FoodPortion]
-    let inputFoods: [InputFoodSurvey]
+//    let inputFoods: [InputFoodSurvey]
     let foodNutrients: [FoodNutrient]
+    let brandName = "USDA"
 
     enum CodingKeys: String, CodingKey {
         case fdcId
         case dataType
         case description
         case foodPortions
-        case inputFoods
+//        case inputFoods
         case foodNutrients
     }
 
@@ -36,12 +37,10 @@ struct SurveyFoodItem: FoodItem {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         fdcId = try container.decode(Int.self, forKey: .fdcId)
         dataType = try container.decode(DataType.self, forKey: .dataType)
-        description = try container.decode(String.self, forKey: .description)
+        description = try container.decode(String.self, forKey: .description).firstUppercased
         var foodPortions = try container.decode([FoodPortion].self, forKey: .foodPortions)
-        foodPortions.append(FoodPortion(gramWeight: 100, modifier: "grams", sequenceNumber: 0, portionDescription: "", measureUnit: MeasureUnit(id: 0, name: "", abbreviation: "")))
+        foodPortions.append(FoodPortion.default100g)
         self.foodPortions = foodPortions
-        inputFoods = try container.decode([InputFoodSurvey].self, forKey: .inputFoods)
-        
         let rawNutrients = try container.decode([RawFoodNutrient].self, forKey: .foodNutrients)
         self.foodNutrients = rawNutrients.compactMap { raw in
             guard let nutrientId = NutrientId(rawValue: raw.nutrient.id) else { return nil }
@@ -60,7 +59,7 @@ struct SurveyFoodItem: FoodItem {
                 descriptionParts.append(getServingSizeFormatted(foodPortion: foodPortion, numberOfServings: numberOfServings))
             }
             
-            descriptionParts.append("USDA (survey)")
+            descriptionParts.append("USDA")
             
             return descriptionParts.joined(separator: ", ")
     }

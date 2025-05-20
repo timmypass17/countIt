@@ -30,6 +30,15 @@ extension FoodInfo {
             name_ = newValue
         }
     }
+    
+    var nutrients: [FoodInfoNutrient] {
+        get {
+            return (nutrients_?.allObjects as! [FoodInfoNutrient])
+        }
+        set {
+            nutrients_ = NSSet(array: newValue)
+        }
+    }
 }
 
 // MARK: Generated accessors for food

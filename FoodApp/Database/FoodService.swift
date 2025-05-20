@@ -141,12 +141,12 @@ class FoodService: FoodServiceProtocol {
         return mealPlan
     }
     
-    func addFood(_ fdcFood: SearchResultFood, with measurement: SearchResultFoodMeasurement, servings: Int, to meal: Meal) throws -> Food {
+    func addFood(_ fdcFood: FoodItem, with portion: FoodPortion, servings: Int, to meal: Meal) throws -> Food {
         let food = Food(context: context)
         food.index = Int16(meal.foods.count)
-        food.gramWeight = Double(measurement.gramWeight)
+        food.gramWeight = Double(portion.gramWeight)
         food.numberOfServings = Int16(servings)
-        food.modifier_ = measurement.disseminationText
+        food.modifier_ = portion.modifier
         food.servingSizeUnit_ = "g" // TODO: Maybe not needed since its all in grams?
         meal.addToFoods_(food)
         
@@ -174,7 +174,7 @@ class FoodService: FoodServiceProtocol {
         try context.save()
     }
     
-    func createFoodInfo(_ fdcFood: SearchResultFood) -> FoodInfo {
+    func createFoodInfo(_ fdcFood: FoodItem) -> FoodInfo {
         let foodInfo = FoodInfo(context: context)
         foodInfo.fdcId = Int64(fdcFood.fdcId)
         foodInfo.name = fdcFood.description
@@ -182,10 +182,10 @@ class FoodService: FoodServiceProtocol {
         return foodInfo
     }
     
-    func createFoodInfoNutrients(_ fdcFood: SearchResultFood, nutrientId: NutrientId) -> FoodInfoNutrient {
+    func createFoodInfoNutrients(_ fdcFood: FoodItem, nutrientId: NutrientId) -> FoodInfoNutrient {
         let foodInfoNutrient = FoodInfoNutrient(context: context)
         foodInfoNutrient.nutrientId = nutrientId
-        foodInfoNutrient.value = Double(fdcFood.foodNutrients[nutrientId]?.value ?? 0)
+        foodInfoNutrient.value = Double(fdcFood.foodNutrients[nutrientId]?.amount ?? 0)
         return foodInfoNutrient
     }
     
@@ -204,10 +204,12 @@ class FoodService: FoodServiceProtocol {
     
     func getFoods(query: String, dataTypes: [DataType], pageSize: Int, pageNumber: Int) async throws -> FoodSearchResponse {
         let abridgedRequest = FoodsSearchAPIRequest(query: query, dataTypes: dataTypes, pageSize: pageSize, pageNumber: pageNumber)
-        let searchResultResponse = try await sendRequest(abridgedRequest)
-        
-        let fdcIds = searchResultResponse.foods.map { $0.fdcId }
-        let foodDetail = try await getFoods(fdcIds: fdcIds, dataTypes: DataType.allCases)
+        var searchResultResponse = try await sendRequest(abridgedRequest)
+        // TODO: Get fdcids from query, and get food detail (because it contains food portions). Search result doesn't contain all good portions
+        let fdcIds = searchResultResponse.foodParts.map { $0.fdcId }
+        let foods: [FoodItem] = try await getFoods(fdcIds: fdcIds, dataTypes: DataType.allCases)
+        print(foods)
+        searchResultResponse.foods.append(contentsOf: foods)
         return searchResultResponse
     }
     

@@ -11,11 +11,12 @@ struct FoodSearchResponse: Decodable {
     let totalHits: Int
     var currentPage: Int
     var totalPages: Int
-    var foods: [SearchResultFood]
+    var foodParts: [SearchResultFood]
+    var foods: [FoodItem] = []
     
     enum CodingKeys: String, CodingKey {
         case totalHits
-        case foods
+        case foodParts = "foods"
         case currentPage
         case totalPages
     }
@@ -37,14 +38,15 @@ struct SearchResultFood: Codable {
     let dataType: DataType
     let brandName: String
     let foodNutrients: [SearchResultFoodNutrient]
-    let foodMeasures: [SearchResultFoodMeasurement]
+    var foodMeasures: [SearchResultFoodMeasurement] = []
     let servingSizeUnit: String // g    // TODO: Make be ml?
     let servingSize: Float // 32.0
     let householdServingFullText: String? // "2 Tbsp"
     
     var calories: Float {
-        let caloriesPer100g = foodNutrients[.calories]?.value ?? 0
-        return (caloriesPer100g * servingSize) / 100
+        return 0
+//        let caloriesPer100g = foodNutrients[.calories]?.value ?? 0
+//        return (caloriesPer100g * servingSize) / 100
     }
     
     enum CodingKeys: String, CodingKey {
@@ -126,6 +128,7 @@ struct SearchResultFood: Codable {
         
         let foodMeasurement = foodMeasures[(foodMeasures.count - 1) / 2]
         let calories = getNutrients(.calories, foodMeasurement: foodMeasurement)
+//        let calories = 0
         let caloriesText = "\(Int(calories)) cal"
         let servingSizeText = "\(foodMeasurement.gramWeight) g"
         return [caloriesText, servingSizeText, brandName].joined(separator: ", ")
@@ -136,9 +139,10 @@ struct SearchResultFood: Codable {
     }
     
     func getNutrients(_ nutrientID: NutrientId, foodMeasurement: SearchResultFoodMeasurement, quantity: Int = 1) -> Float {
-        guard let caloriesPer100g = foodNutrients[nutrientID]?.value else { return 0 }
-        let amount = (caloriesPer100g * Float(foodMeasurement.gramWeight)) / 100
-        return amount * Float(quantity)
+        return 0
+//        guard let caloriesPer100g = foodNutrients[nutrientID]?.value else { return 0 }
+//        let amount = (caloriesPer100g * Float(foodMeasurement.gramWeight)) / 100
+//        return amount * Float(quantity)
     }
 }
 
@@ -175,11 +179,11 @@ struct SearchResultFoodNutrient: Codable {
     }
 }
 
-extension SearchResultFoodNutrient: NutrientIdentifiable {
-    var nutrientIdentifier: Int {
-        return nutrientId.rawValue
-    }
-}
+//extension SearchResultFoodNutrient: NutrientIdentifiable {
+//    var nutrientIdentifier: Int {
+//        return nutrientId.rawValue
+//    }
+//}
 
 extension SearchResultFoodNutrient {
     static func empty(_ nutrientId: NutrientId) -> SearchResultFoodNutrient {

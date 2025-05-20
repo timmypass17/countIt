@@ -23,20 +23,20 @@ protocol FoodDetailTableViewControllerHistoryDelegate: AnyObject {
 
 class FoodDetailTableViewController: UITableViewController {
 
-    var fdcFood: SearchResultFood
+    var fdcFood: FoodItem
     var foodEntry: Food?
     var fdcFoodAdditional: FoodItem?
     let meal: Meal?
-    var selectedFoodPortion: SearchResultFoodMeasurement
+    var selectedFoodPortion: FoodPortion
     var numberOfServings: Int
     let foodService: FoodService
     let state: State
     weak var delegate: FoodDetailTableViewControllerDelegate?
     weak var dismissDelegate: FoodDetailTableViewControllerDismissDelegate?
     weak var historyDelegate: FoodDetailTableViewControllerHistoryDelegate?
-    var macronutrients: [SearchResultFoodNutrient] = []
-    var vitamins: [SearchResultFoodNutrient] = []
-    var minerals: [SearchResultFoodNutrient] = []
+    var macronutrients: [FoodNutrient] = []
+    var vitamins: [FoodNutrient] = []
+    var minerals: [FoodNutrient] = []
 
     let servingSizeIndexPath = IndexPath(row: 0, section: 0)
     let quantityIndexPath = IndexPath(row: 1, section: 0)
@@ -53,7 +53,7 @@ class FoodDetailTableViewController: UITableViewController {
         case add, edit
     }
 
-    init(fdcFood: SearchResultFood, meal: Meal?, foodService: FoodService, selectedFoodPortion: SearchResultFoodMeasurement? = nil, numberOfServings: Int = 1, state: State = .add) {
+    init(fdcFood: FoodItem, meal: Meal?, foodService: FoodService, selectedFoodPortion: FoodPortion? = nil, numberOfServings: Int = 1, state: State = .add) {
         self.fdcFood = fdcFood
         self.meal = meal
         self.foodService = foodService
@@ -62,29 +62,32 @@ class FoodDetailTableViewController: UITableViewController {
         if let selectedFoodPortion {
             self.selectedFoodPortion = selectedFoodPortion
         } else {
-            if let householdServingFullText = fdcFood.householdServingFullText,
-               let foodMeasure = fdcFood.foodMeasures.first(where: { $0.disseminationText == householdServingFullText }) {
-                self.selectedFoodPortion = foodMeasure
-            } else {
-                self.selectedFoodPortion = fdcFood.foodMeasures[(fdcFood.foodMeasures.count - 1) / 2]
-            }
+//            if let householdServingFullText = fdcFood.householdServingFullText,
+//               let foodMeasure = fdcFood.foodMeasures.first(where: { $0.disseminationText == householdServingFullText }) {
+//                self.selectedFoodPortion = foodMeasure
+//            } else {
+            self.selectedFoodPortion = fdcFood.foodPortions[(fdcFood.foodPortions.count - 1) / 2]
+//            }
         }
         
         for (index, nutrientId) in NutrientId.macronutrients.enumerated() {
-            var foodNutrient = fdcFood.foodNutrients[nutrientId] ?? SearchResultFoodNutrient.empty(nutrientId)
+            var foodNutrient = fdcFood.foodNutrients[nutrientId] ?? FoodNutrient.empty(nutrientId)
             macronutrients.append(foodNutrient)
         }
         
         for (index, nutrientId) in NutrientId.vitamins.enumerated() {
-            var foodNutrient = fdcFood.foodNutrients[nutrientId] ?? SearchResultFoodNutrient.empty(nutrientId)
+            var foodNutrient = fdcFood.foodNutrients[nutrientId] ?? FoodNutrient.empty(nutrientId)
             vitamins.append(foodNutrient)
         }
         
         for (index, nutrientId) in NutrientId.minerals.enumerated() {
-            var foodNutrient = fdcFood.foodNutrients[nutrientId] ?? SearchResultFoodNutrient.empty(nutrientId)
+            var foodNutrient = fdcFood.foodNutrients[nutrientId] ?? FoodNutrient.empty(nutrientId)
             minerals.append(foodNutrient)
         }
         
+        for portion in fdcFood.foodPortions {
+            print("timmy: \(portion.modifier)")
+        }
 //        Task {
 //            self.fdcFoodAdditional = try await foodService.getFood(fdcId: fdcFood.fdcId)
 //            
@@ -145,7 +148,7 @@ class FoodDetailTableViewController: UITableViewController {
                 let cell = tableView.dequeueReusableCell(withIdentifier: SelectTableViewCell.reuseIdentifier, for: indexPath) as! SelectTableViewCell
                 cell.update(
                     primaryText: "Serving Size",
-                    secondaryText: selectedFoodPortion.servingSizeDescription,
+                    secondaryText: fdcFood.getServingSizeFormatted(foodPortion: selectedFoodPortion),
                     image: UIImage(systemName: "square.and.pencil"),
                     bgColor: UIColor.systemBlue)
                 return cell
@@ -162,10 +165,10 @@ class FoodDetailTableViewController: UITableViewController {
             return UITableViewCell()
         case .charts:
             let cell = tableView.dequeueReusableCell(withIdentifier: MacrosView.reuseIdentifier, for: indexPath)
-            let calories = fdcFood.getNutrients(.calories, foodMeasurement: selectedFoodPortion, quantity: numberOfServings)
-            let carbs = fdcFood.getNutrients(.carbs, foodMeasurement: selectedFoodPortion, quantity: numberOfServings)
-            let protein = fdcFood.getNutrients(.protein, foodMeasurement: selectedFoodPortion, quantity: numberOfServings)
-            let fats = fdcFood.getNutrients(.fatTotal, foodMeasurement: selectedFoodPortion, quantity: numberOfServings)
+            let calories = fdcFood.getNutrientAmount(.calories, using: selectedFoodPortion, quantity: numberOfServings)
+            let carbs = fdcFood.getNutrientAmount(.carbs, using: selectedFoodPortion, quantity: numberOfServings)
+            let protein = fdcFood.getNutrientAmount(.protein, using: selectedFoodPortion, quantity: numberOfServings)
+            let fats = fdcFood.getNutrientAmount(.fatTotal, using: selectedFoodPortion, quantity: numberOfServings)
 
             cell.contentConfiguration = UIHostingConfiguration {    // tableView.reloadData() or use swiftui state mangement
                 MacrosView(
@@ -225,7 +228,7 @@ class FoodDetailTableViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if indexPath == servingSizeIndexPath {
-            let selectTableViewController = ServingSizeTableViewController(fdcFood: fdcFood, foodPortions: fdcFood.foodMeasures, selectedFoodMeasurement: selectedFoodPortion)
+            let selectTableViewController = ServingSizeTableViewController(fdcFood: fdcFood, foodPortions: fdcFood.foodPortions, selectedFoodPortion: selectedFoodPortion)
             selectTableViewController.delegate = self
             present(UINavigationController(rootViewController: selectTableViewController), animated: true)
         } else if indexPath == quantityIndexPath {
@@ -282,8 +285,8 @@ class FoodDetailTableViewController: UITableViewController {
 }
 
 extension FoodDetailTableViewController: SelectTableViewControllerDelegate {
-    func selectTableViewController(_ sender: ServingSizeTableViewController, didSelectMeasurement foodMeasurement: SearchResultFoodMeasurement) {
-        selectedFoodPortion = foodMeasurement
+    func selectTableViewController(_ sender: ServingSizeTableViewController, didSelectPortion foodPortion: FoodPortion) {
+        selectedFoodPortion = foodPortion
         tableView.reloadData()
     }
 }

@@ -83,10 +83,10 @@ class NutritionTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func update(with foodNutrient: SearchResultFoodNutrient, foodPortion: SearchResultFoodMeasurement, quantity: Int) {
-        nameLabel.text = foodNutrient.nutrientName
-        let amount = Int(scaledNutrientAmount(amountPer100g: foodNutrient.value, actualServingSize: foodPortion.gramWeight)) * quantity
-        amountLabel.text = "\(amount) \(foodNutrient.unitName)"
+    func update(with foodNutrient: FoodNutrient, foodPortion: FoodPortion, quantity: Int) {
+        nameLabel.text = foodNutrient.nutrient?.name
+        let amount = Int(scaledNutrientAmount(amountPer100g: foodNutrient.amount ?? 0, actualServingSize: foodPortion.gramWeight)) * quantity
+        amountLabel.text = "\(amount) \(foodNutrient.nutrient?.unitName ?? "")"
         percentLabel.text = "-"
         
 //        let nutrientAmount = (calculateNutrientPerServing(nutrientPer100g: foodNutrient.amount ?? 0, servingSizeGramWeight: foodPortion.gramWeight) * Float(quantity))

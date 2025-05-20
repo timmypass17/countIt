@@ -86,6 +86,8 @@
 		3290A3612DD2E139008A4320 /* NutrientGoal+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3290A35D2DD2CCE2008A4320 /* NutrientGoal+CoreDataProperties.swift */; };
 		3296C9B62BB0F21A00EC7770 /* EditGoalTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3296C9B52BB0F21A00EC7770 /* EditGoalTableViewController.swift */; };
 		3296C9B82BB1219700EC7770 /* GoalTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3296C9B72BB1219700EC7770 /* GoalTableViewCell.swift */; };
+		329C1C022DDA76F200087FEF /* Utility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 329C1C012DDA76F200087FEF /* Utility.swift */; };
+		329C1C032DDA76F700087FEF /* Utility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 329C1C012DDA76F200087FEF /* Utility.swift */; };
 		32A8CBE52B9E888800AAA264 /* CircularProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32A8CBE42B9E888800AAA264 /* CircularProgressView.swift */; };
 		32A8CBE72B9E8C9F00AAA264 /* MacrosView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32A8CBE62B9E8C9F00AAA264 /* MacrosView.swift */; };
 		32B0933D2B9C02F50047E6E2 /* QuantityViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32B0933C2B9C02F50047E6E2 /* QuantityViewController.swift */; };
@@ -260,6 +262,7 @@
 		3290A35D2DD2CCE2008A4320 /* NutrientGoal+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NutrientGoal+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		3296C9B52BB0F21A00EC7770 /* EditGoalTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditGoalTableViewController.swift; sourceTree = "<group>"; };
 		3296C9B72BB1219700EC7770 /* GoalTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoalTableViewCell.swift; sourceTree = "<group>"; };
+		329C1C012DDA76F200087FEF /* Utility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utility.swift; sourceTree = "<group>"; };
 		32A8CBE42B9E888800AAA264 /* CircularProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircularProgressView.swift; sourceTree = "<group>"; };
 		32A8CBE62B9E8C9F00AAA264 /* MacrosView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacrosView.swift; sourceTree = "<group>"; };
 		32B0933C2B9C02F50047E6E2 /* QuantityViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuantityViewController.swift; sourceTree = "<group>"; };
@@ -632,6 +635,7 @@
 				328FA94B2B93B7AA002A6FB6 /* APIService.swift */,
 				328FA9682B9BE560002A6FB6 /* Settings.swift */,
 				324AB9362BA6B27900CECA72 /* CoreDataStack.swift */,
+				329C1C012DDA76F200087FEF /* Utility.swift */,
 			);
 			path = FoodApp;
 			sourceTree = "<group>";
@@ -821,6 +825,7 @@
 				32DFCB002BC1D459001BDA8E /* FoodNutrient.swift in Sources */,
 				32DFCAE42BC1CA29001BDA8E /* FoodWidgetBundle.swift in Sources */,
 				32DFCB112BC1FEEA001BDA8E /* SingleMacroWidget.swift in Sources */,
+				329C1C032DDA76F700087FEF /* Utility.swift in Sources */,
 				32C3864C2DC55E150018D282 /* FDCFoodInput.swift in Sources */,
 				32DFCB0C2BC1F1B6001BDA8E /* WidgetView.swift in Sources */,
 				32DFCB032BC1D459001BDA8E /* FoodPortion.swift in Sources */,
@@ -919,6 +924,7 @@
 				328FA9632B9948A8002A6FB6 /* FoodNutrient.swift in Sources */,
 				328FA94A2B93B704002A6FB6 /* APIRequest.swift in Sources */,
 				3290A2A62DD290BF008A4320 /* KeychainItem.swift in Sources */,
+				329C1C022DDA76F200087FEF /* Utility.swift in Sources */,
 				328FA9552B954714002A6FB6 /* FoodItem.swift in Sources */,
 				328FA9612B994271002A6FB6 /* FoodPortion.swift in Sources */,
 				323FB9A32DCAF4C600A71C53 /* OnboardingViewController.swift in Sources */,

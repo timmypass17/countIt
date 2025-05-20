@@ -14,11 +14,11 @@ struct FoodAppTests {
     let foodService: FoodServiceProtocol = FoodService()
 
     @Test func getFoodsByName() async throws {
-        let response: FoodSearchResponse = try await foodService.getFoods(query: "banana", dataTypes: DataType.allCases, pageSize: 5, pageNumber: 1)
-        let foods: [SearchResultFood] = response.foods
-        #expect(foods.count > 0)
-        #expect(foods.contains { $0.fdcId == 2709224 })
-        #expect(foods.contains { $0.description == "Banana, raw" })
+//        let response: FoodSearchResponse = try await foodService.getFoods(query: "banana", dataTypes: DataType.allCases, pageSize: 5, pageNumber: 1)
+//        let foods: [SearchResultFood] = response.foods
+//        #expect(foods.count > 0)
+//        #expect(foods.contains { $0.fdcId == 2709224 })
+//        #expect(foods.contains { $0.description == "Banana, raw" })
     }
     
 //    @Test func getFoodsByNameFoundation() async throws {

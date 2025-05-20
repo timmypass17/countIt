@@ -20,7 +20,7 @@ extension NutrientGoal {
     @NSManaged public var value: Double
     @NSManaged public var mealPlan: MealPlan?
 
-    var nutrientId: NutrientId {
+    var nutrientId: NutrientId? {
         get {
             guard let rawValue = nutrientId_?.intValue,
                   let id = NutrientId(rawValue: rawValue) else {
@@ -29,8 +29,11 @@ extension NutrientGoal {
             return id
         }
         set {
-            nutrientId_ = NSNumber(value: newValue.rawValue)
-        }
+            guard let id = newValue?.rawValue else {
+                nutrientId_ = nil
+                return
+            }
+            nutrientId_ = NSNumber(value: id)        }
     }
 }
 

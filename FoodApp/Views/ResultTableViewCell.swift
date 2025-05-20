@@ -117,14 +117,12 @@ class ResultTableViewCell: UITableViewCell {
     }
     
 //    func update<Item: FoodItem>(with foodItem: Item) {
-    func update(with foodItem: SearchResultFood) {
+    func update(with foodItem: FoodItem) {
 //        self.food = food
-        titleLabel.text = foodItem.description.firstUppercased
-        let foodMeasurement = foodItem.foodMeasures[(foodItem.foodMeasures.count - 1) / 2]
+        titleLabel.text = foodItem.description
 
-        descriptionLabel.text = foodItem.searchResultDescription
-//        let foodPortion = foodItem.foodPortions[(foodItem.foodPortions.count - 1) / 2]
-//        descriptionLabel.text = foodItem.getFoodPortionDescription(foodPortion: foodPortion, numberOfServings: 1, options: FoodEntryOptions.allCases)
+        let foodPortion = foodItem.foodPortions[(foodItem.foodPortions.count - 1) / 2]
+        descriptionLabel.text = foodItem.getFoodPortionDescription(foodPortion: foodPortion, numberOfServings: 1, options: FoodEntryOptions.allCases)
     }
     
     func didTapPlusButton() -> UIAction {
@@ -143,12 +141,5 @@ class ResultTableViewCell: UITableViewCell {
 //            let generator = UIImpactFeedbackGenerator(style: .medium)
 //            generator.impactOccurred()
         }
-    }
-}
-
-extension String {
-    var firstUppercased: String {
-        guard let first else { return "" }
-        return first.uppercased() + dropFirst().lowercased()
     }
 }

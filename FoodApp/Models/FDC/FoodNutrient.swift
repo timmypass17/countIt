@@ -22,6 +22,22 @@ struct FoodNutrient: Codable {
     }
 }
 
+extension FoodNutrient: NutrientIdentifiable {
+    var nutrientId: NutrientId? {
+        return nutrient?.id
+    }
+}
+
+protocol NutrientIdentifiable {
+    var nutrientId: NutrientId? { get }
+}
+
+extension Array where Element: NutrientIdentifiable {
+    subscript(nutrientID: NutrientId?) -> Element? {
+        self.first { $0.nutrientId == nutrientID }
+    }
+}
+
 extension FoodNutrient {
     static func empty(_ nutrientId: NutrientId) -> FoodNutrient {
         return FoodNutrient(nutrient: Nutrient(id: nutrientId, name: nutrientId.description, unitName: nutrientId.unitName, rank: 0), amount: 0)
