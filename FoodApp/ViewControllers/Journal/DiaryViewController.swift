@@ -88,7 +88,12 @@ class DiaryViewController: UIViewController {
             addMealButton.trailingAnchor.constraint(equalTo: footerView.layoutMarginsGuide.trailingAnchor, constant: -12),
         ])
         
-        //        updateUI()
+        updateUI()
+    }
+    
+    override func setEditing(_ editing: Bool, animated: Bool) {
+        super.setEditing(editing, animated: animated)
+        tableView.setEditing(editing, animated: animated)
     }
     
     func updateUI() {
@@ -262,11 +267,6 @@ extension DiaryViewController: UITableViewDataSource {
 
 extension DiaryViewController: UITableViewDelegate {
     
-    //    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-    //        guard section == 1 else { return nil }
-    //        return "Goals"
-    //    }
-    
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         guard section != 0, section != 1,
               let mealPlan
@@ -312,13 +312,6 @@ extension DiaryViewController: UITableViewDelegate {
         present(UINavigationController(rootViewController: updateFoodDetailTableViewController), animated: true)
     }
     
-    func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-        //        guard indexPath.section != 0 else { return false }
-        //        let addFoodRow = mealPlan.meals[indexPath.section - 1].foodEntries.count
-        //        guard indexPath.row != addFoodRow else { return false }
-        return true
-    }
-    
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
             let meal = mealPlan.meals[indexPath.section - 2]
@@ -330,7 +323,7 @@ extension DiaryViewController: UITableViewDelegate {
                 for (index, food) in meal.foods.enumerated() {
                     food.index = Int16(index)
                 }
-
+                
                 CoreDataStack.shared.saveContext()
                 let indexPaths = meal.foods.map { IndexPath(row: Int($0.index), section: indexPath.section) }
                 tableView.reloadRows(at: indexPaths, with: .automatic)
@@ -342,37 +335,80 @@ extension DiaryViewController: UITableViewDelegate {
         }
     }
     
-    // TODO: Bug with reordering
-    func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
-        //        guard destinationIndexPath.section != 0 else { return }
-        //
-        //        let foodEntry = mealPlan.meals[sourceIndexPath.section - 1].foodEntries.remove(at: sourceIndexPath.row)
-        //        mealPlan.meals[sourceIndexPath.section - 1].foodEntries.updateIndexes()
-        //
-        //        // Shift everything in array to the right, th#imageLiteral(resourceName: "simulator_screenshot_FBD26982-5845-4701-BBC6-AD449B84350D.png")en insert item (like implementing array insert). Update backwards (cause sorted by index)
-        //        let foodEntryCount = mealPlan.meals[destinationIndexPath.section - 1].foodEntries.count
-        //        for i in stride(from: foodEntryCount - 1, to: destinationIndexPath.row - 1, by: -1) {
-        //            mealPlan.meals[destinationIndexPath.section - 1].foodEntries[i].index += 1
-        //        }
-        //
-        //        foodEntry.index = Int16(destinationIndexPath.row)
-        //        mealPlan.meals[destinationIndexPath.section - 1].foodEntries.insert(foodEntry, at: destinationIndexPath.row)
-        //
-        //        foodEntry.meal = mealPlan.meals[destinationIndexPath.section - 1]
-        //        updateUI()
+    // Which view can be edited?
+    func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+        guard indexPath.section > 1 else { return false }
+        let isFood = indexPath.row < mealPlan.meals[indexPath.section - 2].foods.count
+        return isFood
     }
     
+    
+    // TODO: Bug with reordering
+    // Called when a user moves a row (cell) in a table view while it's in editing mode
+    // - update your data model to reflect the new position of a moved row
+    func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
+        guard destinationIndexPath.section > 1 else { return }
+
+        let sourceMeal = mealPlan.meals[sourceIndexPath.section - 2]
+        let destinationMeal = mealPlan.meals[destinationIndexPath.section - 2]
+        let food = sourceMeal.foods[sourceIndexPath.row]
+
+        if sourceMeal != destinationMeal {
+            // Moving across meals
+            sourceMeal.removeFromFoods_(food)   // does update sourceMeal.foods
+            destinationMeal.addToFoods_(food)
+            food.meal = destinationMeal
+
+            // Reindex source
+            let sourceFoods = sourceMeal.foods
+            for (i, item) in sourceFoods.enumerated() {
+                item.index = Int16(i)
+            }
+
+            // Shift destination indices
+            let destinationFoods = destinationMeal.foods
+            for item in destinationFoods {
+                if item.index >= Int16(destinationIndexPath.row) {
+                    item.index += 1
+                }
+            }
+        } else {
+            // Moving within the same meal
+            let sourceFoods = sourceMeal.foods
+            if sourceIndexPath.row < destinationIndexPath.row {
+                // Moving down
+                for item in sourceFoods {
+                    if item.index > Int16(sourceIndexPath.row) && item.index <= Int16(destinationIndexPath.row) {
+                        item.index -= 1
+                    }
+                }
+            } else if sourceIndexPath.row > destinationIndexPath.row {
+                // Moving up
+                for item in sourceFoods {
+                    if item.index >= Int16(destinationIndexPath.row) && item.index < Int16(sourceIndexPath.row) {
+                        item.index += 1
+                    }
+                }
+            }
+        }
+        
+        food.index = Int16(destinationIndexPath.row)
+        CoreDataStack.shared.saveContext()
+        updateUI()
+    }
+    
+    // Lets you control where a row is allowed to be moved (e.g. Don't let users move food item under "add button")
+    // - “Can I drop the row at this new location?”
     func tableView(_ tableView: UITableView, targetIndexPathForMoveFromRowAt sourceIndexPath: IndexPath, toProposedIndexPath proposedDestinationIndexPath: IndexPath) -> IndexPath {
-        //        // Restricts cell's reorder destination (i.e. repositioning food under "Add Food" button)
-        //        guard proposedDestinationIndexPath.section != 0 else { return sourceIndexPath }
-        //        var addFoodRow = mealPlan.meals[proposedDestinationIndexPath.section - 1].foodEntries.count
-        //        if sourceIndexPath.section != proposedDestinationIndexPath.section {
-        //            addFoodRow += 1
-        //        }
-        //        guard proposedDestinationIndexPath.row != addFoodRow else { return sourceIndexPath }
-        //        print(proposedDestinationIndexPath)
-        //        return proposedDestinationIndexPath
-        return IndexPath()
+        // Rejects any move into sections 0 or 1
+        guard proposedDestinationIndexPath.section > 1 else { return sourceIndexPath }
+        var isAddButtonRow = mealPlan.meals[proposedDestinationIndexPath.section - 2].foods.count
+        if sourceIndexPath.section != proposedDestinationIndexPath.section {
+            // When moving between different meals (sections), the Add Food row shifts down by 1. This adjusts for the layout difference that happens when a row is being dragged into a new section.
+            isAddButtonRow += 1
+        }
+        guard proposedDestinationIndexPath.row != isAddButtonRow else { return sourceIndexPath }
+        return proposedDestinationIndexPath
     }
 }
 
@@ -450,3 +486,10 @@ extension DiaryViewController: ResultTableViewCellDelegate {
     }
 }
 
+extension Array where Element == Food {
+    func updateIndexes() {
+        for (index, foodEntry) in self.enumerated() {
+            foodEntry.index = Int16(index)
+        }
+    }
+}
