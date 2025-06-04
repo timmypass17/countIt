@@ -50,7 +50,7 @@ class ResultsTableViewController: UITableViewController {
         super.init(style: .grouped)
     }
     
-    weak var foodDetailDelegate: FoodDetailTableViewControllerDelegate?
+    weak var addFoodDelegate: AddFoodDetailViewControllerDelegate?
     weak var historyDelegate: FoodDetailTableViewControllerHistoryDelegate?
     weak var resultDelegate: ResultTableViewCellDelegate?
     weak var resultHistoryDelegate: ResultTableViewCellHistoryDelegate?
@@ -113,12 +113,12 @@ class ResultsTableViewController: UITableViewController {
             foodItem = moreResultsResponse.foods[indexPath.row]
         }
         
-        let foodDetailTableViewController = FoodDetailTableViewController(fdcFood: foodItem, meal: meal, foodService: foodService)
-        foodDetailTableViewController.delegate = foodDetailDelegate
-        foodDetailTableViewController.dismissDelegate = self
-        foodDetailTableViewController.historyDelegate = historyDelegate
+        let addFoodDetailViewController = AddFoodDetailViewController(fdcFood: foodItem, meal: meal, foodService: foodService)
+        addFoodDetailViewController.delegate = addFoodDelegate
+        addFoodDetailViewController.dismissDelegate = self
+        addFoodDetailViewController.historyDelegate = historyDelegate
 
-        present(UINavigationController(rootViewController: foodDetailTableViewController), animated: true)
+        present(UINavigationController(rootViewController: addFoodDetailViewController), animated: true)
     }
     
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {

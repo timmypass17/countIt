@@ -12,11 +12,6 @@ protocol FoodDetailTableViewControllerDismissDelegate: AnyObject {
     func foodDetailTableViewController(_ tableViewController: FoodDetailTableViewController, didDismiss: Bool)
 }
 
-protocol FoodDetailTableViewControllerDelegate: AnyObject {
-    func foodDetailTableViewController(_ tableViewController: FoodDetailTableViewController, didAddFood food: Food)
-    func foodDetailTableViewController(_ tableViewController: FoodDetailTableViewController, didUpdateFoodEntry foodEntry: Food)
-}
-
 protocol FoodDetailTableViewControllerHistoryDelegate: AnyObject {
     func foodDetailTableViewController(_ tableViewController: FoodDetailTableViewController, didUpdateHistoryWithFood food: Food)
 }
@@ -31,7 +26,6 @@ class FoodDetailTableViewController: UITableViewController {
     var numberOfServings: Int
     let foodService: FoodService
     let state: State
-    weak var delegate: FoodDetailTableViewControllerDelegate?
     weak var dismissDelegate: FoodDetailTableViewControllerDismissDelegate?
     weak var historyDelegate: FoodDetailTableViewControllerHistoryDelegate?
     var macronutrients: [FoodNutrient] = []
@@ -91,14 +85,8 @@ class FoodDetailTableViewController: UITableViewController {
         for nutrient in fdcFood.foodNutrients {
             print("\(nutrient.description) \(nutrient.amount ?? 0)")
         }
-//        Task {
-//            self.fdcFoodAdditional = try await foodService.getFood(fdcId: fdcFood.fdcId)
-//            
-//        }
 
         super.init(style: .insetGrouped)
-//        print("Timmy food")
-//        print(fdcFood)
     }
     
     required init?(coder: NSCoder) {
@@ -109,12 +97,6 @@ class FoodDetailTableViewController: UITableViewController {
         super.viewDidLoad()
         navigationItem.title = "\(fdcFood.description) \(fdcFood.fdcId)"
         navigationItem.leftBarButtonItem = UIBarButtonItem(systemItem: .cancel, primaryAction: cancelButtonTapped())
-        switch state {
-        case .add:
-            navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Add", primaryAction: didTapAddButton())
-        case .edit:
-            navigationItem.rightBarButtonItem = UIBarButtonItem(systemItem: .save, primaryAction: updateButtonTapped())
-        }
         tableView.register(SelectTableViewCell.self, forCellReuseIdentifier: SelectTableViewCell.reuseIdentifier)
         tableView.register(NutritionTableViewCell.self, forCellReuseIdentifier: NutritionTableViewCell.reuseIdentifier)
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: MacrosView.reuseIdentifier)
@@ -241,43 +223,6 @@ class FoodDetailTableViewController: UITableViewController {
             let vc = UINavigationController(rootViewController: quantityTableViewController)
             vc.sheetPresentationController?.detents = [.medium(), .large()]
             present(vc, animated: true)
-        }
-    }
-    
-    func didTapAddButton() -> UIAction {
-        return UIAction { [self] _ in
-            guard let meal else { return }
-            do {
-                let food = try foodService.addFood(fdcFood, with: selectedFoodPortion, quantity: numberOfServings, to: meal)
-                self.delegate?.foodDetailTableViewController(self, didAddFood: food)
-            } catch {
-                print("Error adding food: \(error)")
-            }
-            
-            let generator = UIImpactFeedbackGenerator(style: .medium)
-            generator.impactOccurred()
-            dismiss(animated: true)
-        }
-    }
-    
-    func updateButtonTapped() -> UIAction {
-        return UIAction { [self] _ in
-//            if let foodEntry {
-//                let updatedFoodEntry = CoreDataStack.shared.updateFoodEntry(
-//                    foodEntry: foodEntry,
-//                    servingSize: selectedFoodPortion,
-//                    numberOfServings: numberOfServings
-//                )
-//                delegate?.foodDetailTableViewController(self, didUpdateFoodEntry: updatedFoodEntry)
-//                
-//                if let food = foodEntry.food {
-//                    food.updatedAt = .now
-//                    historyDelegate?.foodDetailTableViewController(self, didUpdateHistoryWithFood: food)
-//                }
-//            }
-//            let generator = UIImpactFeedbackGenerator(style: .medium)
-//            generator.impactOccurred()
-//            dismiss(animated: true)
         }
     }
     

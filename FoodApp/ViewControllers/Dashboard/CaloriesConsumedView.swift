@@ -12,7 +12,7 @@ struct CaloriesConsumedView: View {
     static let reuseIdentifier = "CaloriesConsumedView"
     
     @FetchRequest
-    var meals: FetchedResults<Meal>
+    var meals: FetchedResults<Meal> // when meal changes (e.g. includes food added/removed but does not see deeper relationship automatically, ui changes
     
     var mealPlan: MealPlan
 

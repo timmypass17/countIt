@@ -20,7 +20,7 @@ class SearchFoodTableViewController: UITableViewController {
     var searchTask: Task<Void, Never>? = nil
     var debounceTimer: Timer?
     
-    weak var foodDetailDelegate: FoodDetailTableViewControllerDelegate?
+    weak var addFoodDelegate: AddFoodDetailViewControllerDelegate?
     weak var quickAddDelegate: QuickAddTableViewControllerDelegate?
     weak var resultDelegate: ResultTableViewCellDelegate?
 
@@ -50,7 +50,7 @@ class SearchFoodTableViewController: UITableViewController {
         }
 
         resultsTableController = ResultsTableViewController(meal: meal, foodService: foodService)
-        resultsTableController.foodDetailDelegate = foodDetailDelegate
+        resultsTableController.addFoodDelegate = addFoodDelegate
         resultsTableController.historyDelegate = self
         resultsTableController.resultDelegate = resultDelegate
         resultsTableController.resultHistoryDelegate = self

@@ -109,6 +109,7 @@ class DiaryViewController: UIViewController {
         guard let mealHeaderView = tableView.headerView(forSection: section) as? MealHeaderView,
               let mealPlan
         else { return }
+        print("timmy reload header: \(section)")
         let meal = mealPlan.meals[section - 2]
         mealHeaderView.update(with: meal)
     }
@@ -296,7 +297,7 @@ extension DiaryViewController: UITableViewDelegate {
             tableView.deselectRow(at: indexPath, animated: true)
             let meal = mealPlan.meals[indexPath.section - 2]
             let searchFoodTableViewController = SearchFoodTableViewController(foodService: foodService, meal: meal)
-            searchFoodTableViewController.foodDetailDelegate = self
+            searchFoodTableViewController.addFoodDelegate = self
             searchFoodTableViewController.quickAddDelegate = self
             searchFoodTableViewController.resultDelegate = self
             navigationController?.pushViewController(searchFoodTableViewController, animated: true)
@@ -306,8 +307,9 @@ extension DiaryViewController: UITableViewDelegate {
         let food: Food = meal.foods[indexPath.row]
         guard let fdcFood = food.convertToFDCFood() else { return }
         let selectedPortion = food.foodInfo?.convertToFoodPortions().first { $0.id == food.portionId }
-        let foodDetailTableViewController = FoodDetailTableViewController(food: food, fdcFood: fdcFood, meal: meal, foodService: foodService, selectedFoodPortion: selectedPortion, numberOfServings: Int(food.quantity))
-        present(UINavigationController(rootViewController: foodDetailTableViewController), animated: true)
+        let updateFoodDetailTableViewController = UpdateFoodDetailViewController(food: food, fdcFood: fdcFood, meal: meal, foodService: foodService, selectedFoodPortion: selectedPortion, numberOfServings: Int(food.quantity))
+        updateFoodDetailTableViewController.delegate = self
+        present(UINavigationController(rootViewController: updateFoodDetailTableViewController), animated: true)
     }
     
     func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
@@ -372,27 +374,27 @@ extension DiaryViewController: UITableViewDelegate {
         //        return proposedDestinationIndexPath
         return IndexPath()
     }
-    
-    
-    
-//    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-//        return 100
-//    }
 }
 
-extension DiaryViewController: FoodDetailTableViewControllerDelegate {
-    func foodDetailTableViewController(_ tableViewController: FoodDetailTableViewController, didAddFood food: Food) {
-        print("timmy did add food")
+extension DiaryViewController: AddFoodDetailViewControllerDelegate {
+    func addFoodDetailViewController(_ tableViewController: AddFoodDetailViewController, didAddFood food: Food) {
         guard let meal = food.meal,
               let section = mealPlan.meals.firstIndex(of: meal)
         else { return }
         let indexPath = IndexPath(row: Int(food.index), section: section + 2)
         tableView.insertRows(at: [indexPath], with: .automatic)
-        reloadTableViewHeader(section: section)
+        reloadTableViewHeader(section: section + 2)
     }
-    
-    func foodDetailTableViewController(_ tableViewController: FoodDetailTableViewController, didUpdateFoodEntry foodEntry: Food) {
-        updateUI()
+}
+
+extension DiaryViewController: UpdateFoodDetailViewControllerDelegate {
+    func updateFoodDetailViewController(_ viewController: UpdateFoodDetailViewController, didUpdateFood food: Food) {
+        guard let meal = food.meal,
+              let section = mealPlan.meals.firstIndex(of: meal)
+        else { return }
+        let indexPath = IndexPath(row: Int(food.index), section: section + 2)
+        tableView.reloadRows(at: [indexPath, IndexPath(row: 0, section: 0), IndexPath(row: 0, section: 1)], with: .automatic)
+        reloadTableViewHeader(section: section + 2)
     }
 }
 
