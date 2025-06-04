@@ -141,13 +141,27 @@ class FoodService: FoodServiceProtocol {
         return mealPlan
     }
     
-    func addFood(_ fdcFood: FoodItem, with portion: FoodPortion, servings: Int, to meal: Meal) throws -> Food {
+    func addFood(_ fdcFood: FoodItem, with portion: FoodPortion, quantity: Int, to meal: Meal) throws -> Food {
         let food = Food(context: context)
         food.index = Int16(meal.foods.count)
+        food.quantity = Int16(quantity)
         food.gramWeight = Double(portion.gramWeight)
-        food.numberOfServings = Int16(servings)
-        food.modifier_ = portion.modifier
-        food.servingSizeUnit_ = "g" // TODO: Maybe not needed since its all in grams?
+
+        if let amount = portion.amount,
+           let modifier = portion.modifier {
+            food.amount = Double(amount)
+            food.modifier = modifier
+        } else if let portionDescription = portion.portionDescription {
+            // extract "banana" from "1 banana"
+            let parts = extractQuantityAndModifier(from: portionDescription)
+            if let quantity = parts?.0,
+               let modifier = parts?.1 {
+                food.amount = quantity
+                food.modifier = modifier
+            }
+        }
+        
+        
         meal.addToFoods_(food)
         
         if let foodInfo = getFoodInfo(fdcId: fdcFood.fdcId) {
@@ -160,6 +174,13 @@ class FoodService: FoodServiceProtocol {
             for nutrientId in NutrientId.allCases {
                 let foodInfoNutrient = createFoodInfoNutrients(fdcFood, nutrientId: nutrientId)
                 foodInfo.addToNutrients_(foodInfoNutrient)
+            }
+            
+            // Add portion relationship
+            for (index, fdcPortion) in fdcFood.foodPortions.enumerated() {
+                let portion = createFoodInfoPortion(fdcPortion)
+                portion.id = Int32(index)
+                foodInfo.addToPortions_(portion)
             }
         }
         
@@ -188,6 +209,38 @@ class FoodService: FoodServiceProtocol {
         foodInfoNutrient.value = Double(fdcFood.foodNutrients[nutrientId]?.amount ?? 0)
         
         return foodInfoNutrient
+    }
+    
+    func createFoodInfoPortion(_ foodPortion: FoodPortion) -> FoodInfoPortion {
+        let foodInfoPortion = FoodInfoPortion(context: context)
+        foodInfoPortion.gramWeight = Double(foodPortion.gramWeight)
+        if let amount = foodPortion.amount,
+           let modifier = foodPortion.modifier {
+            foodInfoPortion.amount = Double(amount)
+            foodInfoPortion.modifier = modifier
+        } else if let portionDescription = foodPortion.portionDescription {
+            // extract "banana" from "1 banana"
+            let parts = extractQuantityAndModifier(from: portionDescription)
+            if let quantity = parts?.0,
+               let modifier = parts?.1 {
+                foodInfoPortion.amount = quantity
+                foodInfoPortion.modifier = modifier
+            }
+        }
+        return foodInfoPortion
+    }
+    
+    func extractQuantityAndModifier(from string: String) -> (Double, String)? {
+        let components: [Substring] = string.split(separator: " ")
+        guard let quantityString = components.first,
+              let quantity = Double(quantityString),
+              components.count > 1
+        else {
+            return nil
+        }
+        let modifier = String(components[1])
+        
+        return (quantity, modifier)
     }
     
     func getFoodInfo(fdcId: Int) -> FoodInfo? {

@@ -53,7 +53,7 @@ struct BrandedFoodItem: FoodItem {
 //        var foodPortions = try container.decode([FoodPortion].self, forKey: .foodPortions)
         var foodPortions: [FoodPortion] = []
         foodPortions.append(FoodPortion.default100g)
-        foodPortions.append(FoodPortion(id: 1, gramWeight: Float(servingSize), sequenceNumber: 0, measureUnit: MeasureUnit(id: 1, name: "", abbreviation: "")))
+        foodPortions.append(FoodPortion(id: 1, gramWeight: Float(servingSize)))
         self.foodPortions = foodPortions
         
         let rawNutrients = try container.decode([RawFoodNutrient].self, forKey: .foodNutrients)

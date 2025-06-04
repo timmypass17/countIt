@@ -20,7 +20,6 @@ struct SurveyFoodItem: FoodItem {
     let dataType: DataType
     let description: String
     let foodPortions: [FoodPortion]
-//    let inputFoods: [InputFoodSurvey]
     let foodNutrients: [FoodNutrient]
     let brandName = "USDA"
 
@@ -29,7 +28,6 @@ struct SurveyFoodItem: FoodItem {
         case dataType
         case description
         case foodPortions
-//        case inputFoods
         case foodNutrients
     }
 

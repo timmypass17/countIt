@@ -7,24 +7,21 @@
 
 import Foundation
 
-// modifer and portionDescription are similar, found in different
+// modifer and portionDescription are similar, found in different (foundation, survey)
+// branded dont have foodportion array? Use explicitt
 struct FoodPortion: Codable {
     var id: Int
-    var amount: Float?
     var gramWeight: Float
+    var amount: Float? // foundation 1.00 -> used like 1.00 and "banana" (modifier). amount + modifier
     var modifier: String?    // foundation "tbsp"
     var portionDescription: String? // survey "1 tbsp"
-    var sequenceNumber: Int // survey
-    var measureUnit: MeasureUnit
     
-    init(id: Int, amount: Float? = nil, gramWeight: Float, modifier: String? = nil, sequenceNumber: Int, portionDescription: String? = nil, measureUnit: MeasureUnit) {
+    init(id: Int, amount: Float? = nil, gramWeight: Float, modifier: String? = nil, portionDescription: String? = nil) {
         self.id = id
         self.amount = amount
         self.gramWeight = gramWeight
         self.modifier = modifier
-        self.sequenceNumber = sequenceNumber
         self.portionDescription = portionDescription
-        self.measureUnit = measureUnit
     }
     
     enum CodingKeys: CodingKey {
@@ -32,9 +29,7 @@ struct FoodPortion: Codable {
         case amount
         case gramWeight
         case modifier
-        case sequenceNumber
         case portionDescription
-        case measureUnit
     }
     
     init(from decoder: any Decoder) throws {
@@ -43,17 +38,15 @@ struct FoodPortion: Codable {
         self.amount = try container.decodeIfPresent(Float.self, forKey: .amount)
         self.gramWeight = try container.decode(Float.self, forKey: .gramWeight)
         self.modifier = try container.decodeIfPresent(String.self, forKey: .modifier)?.lowercased()
-        self.sequenceNumber = try container.decode(Int.self, forKey: .sequenceNumber)
         let portionDescription = try container.decodeIfPresent(String.self, forKey: .portionDescription)
         if let portionDescription, portionDescription != "Quantity not specified" {
             self.portionDescription = portionDescription.lowercased()
         }
-        self.measureUnit = try container.decode(MeasureUnit.self, forKey: .measureUnit)
     }
 }
 
 extension FoodPortion {
-    static let default100g = FoodPortion(id: 0, gramWeight: 100, sequenceNumber: 0, measureUnit:  MeasureUnit(id: 0, name: "", abbreviation: ""))
+    static let default100g = FoodPortion(id: 0, gramWeight: 100)
 }
 
 struct MeasureUnit: Codable, Equatable {
@@ -87,3 +80,67 @@ extension FoodPortion: Comparable {
 //    }
 //}
 
+// TODO: Food portions (Want 3 things, gramWeight (110), amount (1), modifier("peeled"))
+// foundation
+//"foodPortions": [
+//    {
+//        "id": 267488,
+//        "dataPoints": 50,
+//        "gramWeight": 110.00000000 <- GOOD
+//        "sequenceNumber": 1,
+//        "amount": 1.00000000, <- GOOD
+//        "modifier": "Peeled", <- GOOD
+//        "minDateAcquired": "12/2/2019",
+//        "measureUnit": {
+//            "id": 1119,
+//            "name": "Banana",
+//            "abbreviation": "Banana"
+//        },
+//        "minYearAcquired": 2019
+//    }
+//],
+
+// sr legacy
+//"foodPortions": [
+//    {
+//        "id": 93520,
+//        "gramWeight": 6.20000000, <- GOOD
+//        "sequenceNumber": 2,
+//        "amount": 1.00000000, <- GOOD
+//        "modifier": "tbsp", <- GOOD
+//        "measureUnit": {
+//            "id": 9999,
+//            "name": "undetermined",
+//            "abbreviation": "undetermined"
+//        }
+//    },
+
+// branded, no foodPortions (skippy pb)
+// JUST USE GRAMS (e.g. 32 g). no reliable way to extract "2 Tbsp"
+//         "householdServingFullText": "2 Tbsp", <- OKAY? Can extract AMOUNT and MODIFIER
+//         "servingSize": 32.00000000, <- GOOD
+//         "servingSizeUnit": "g", <- Maybe? Is it all in grams? could be "ml"
+// if common format like "2 Tbsp", can extract (2 words)
+// 2 <- amount
+// modifier <- tbsp
+
+// If strange format
+// "1 bar (45g)"
+// nil <- amount
+// modifier <- "1 bar (45g)"
+// Display to user "2x 1 bar (45g)"
+
+// survey (Ignore survey, not worth headache)
+//"foodPortions": [
+//    {
+//        "id": 306103,
+//        "measureUnit": {
+//            "id": 9999,
+//            "name": "undetermined",
+//            "abbreviation": "undetermined"
+//        },
+//        "modifier": "10118",
+//        "gramWeight": 225, <- GOOD
+//        "portionDescription": "1 cup, mashed", <- BAD
+//        "sequenceNumber": 4
+//    },

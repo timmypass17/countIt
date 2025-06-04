@@ -74,10 +74,11 @@ class FoodEntryTableViewCell: UITableViewCell {
     
     func update(_ food: Food) {
         titleLabel.text = food.foodInfo?.name
-        if let modifer = food.modifier_ {
-            descriptionLabel.text = "\(food.numberOfServings) \(food.modifier_ ?? "") (\(food.gramWeight.trimmed) g), \(food.foodInfo?.brandName_ ?? "NA")"
+        let totalGramWeight = (food.gramWeight) * Double(food.quantity)
+        if let modifer = food.modifier {
+            descriptionLabel.text = "\(food.quantity) \(modifer) (\(totalGramWeight.trimmed) g), \(food.foodInfo?.brandName_ ?? "NA")"
         } else {
-            descriptionLabel.text = "\((food.gramWeight * Double(food.numberOfServings)).trimmed) g, \(food.foodInfo?.brandName_ ?? "NA")"
+            descriptionLabel.text = "\(totalGramWeight.trimmed) g, \(food.foodInfo?.brandName_ ?? "NA")"
         }
         caloriesLabel.text = "\(Int(food.getNutrientAmount(.calories)))"
 //        food.

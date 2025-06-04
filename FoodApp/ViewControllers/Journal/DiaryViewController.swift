@@ -105,7 +105,7 @@ class DiaryViewController: UIViewController {
         tableView.reloadData()
     }
     
-    func reloadTableViewHeader(at section: Int) {
+    func reloadTableViewHeader(section: Int) {
         guard let mealHeaderView = tableView.headerView(forSection: section) as? MealHeaderView,
               let mealPlan
         else { return }
@@ -234,6 +234,7 @@ extension DiaryViewController: UITableViewDataSource {
         
         if indexPath.section == 1 {
             let cell = tableView.dequeueReusableCell(withIdentifier: MacrosView.reuseIdentifier, for: indexPath)
+            
             cell.contentConfiguration = UIHostingConfiguration {
                 MacrosView(mealPlan: mealPlan)  // uses coredata fetch, updated automatically when core data changes
                     .environment(\.managedObjectContext, CoreDataStack.shared.context)
@@ -326,7 +327,7 @@ extension DiaryViewController: UITableViewDelegate {
                 let indexPaths = meal.foods.map { IndexPath(row: Int($0.index), section: indexPath.section) }
                 tableView.reloadRows(at: indexPaths, with: .automatic)
                 
-                reloadTableViewHeader(at: indexPath.section)
+                reloadTableViewHeader(section: indexPath.section)
             } catch {
                 print("Error deleting food: \(error)")
             }
@@ -368,9 +369,9 @@ extension DiaryViewController: UITableViewDelegate {
     
     
     
-    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return 24
-    }
+//    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+//        return 100
+//    }
 }
 
 extension DiaryViewController: FoodDetailTableViewControllerDelegate {
@@ -381,6 +382,7 @@ extension DiaryViewController: FoodDetailTableViewControllerDelegate {
         else { return }
         let indexPath = IndexPath(row: Int(food.index), section: section + 2)
         tableView.insertRows(at: [indexPath], with: .automatic)
+        reloadTableViewHeader(section: section)
     }
     
     func foodDetailTableViewController(_ tableViewController: FoodDetailTableViewController, didUpdateFoodEntry foodEntry: Food) {

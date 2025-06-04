@@ -67,7 +67,7 @@ class NutrientView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
 
-    func update(amount: Float, unit: String, iconImage: UIImage?, tintColor: UIColor) {
+    func update(amount: Double, unit: String, iconImage: UIImage?, tintColor: UIColor) {
         var config = UIImage.SymbolConfiguration(pointSize: 12)
         let colors: [UIColor] = [.label, tintColor]
         config = config.applying(UIImage.SymbolConfiguration(paletteColors: colors))

@@ -111,7 +111,7 @@ enum AnyFoodItem: FoodItem {
         switch self {
         case .foundation(let item): return item.foodNutrients
         case .branded(let item): return item.foodNutrients
-        case .survey(let item): return []
+        case .survey(let item): return item.foodNutrients
         }
     }
 
@@ -173,7 +173,6 @@ extension AnyFoodItem {
 
 enum DataType: String, Codable, CaseIterable {
     case foundation = "Foundation"
-//    case srLegacy = "SR Legacy"
     case branded = "Branded"
     case survey = "Survey (FNDDS)"
 }

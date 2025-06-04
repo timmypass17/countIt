@@ -70,23 +70,24 @@ class FoodDetailTableViewController: UITableViewController {
 //            }
         }
         
-        for (index, nutrientId) in NutrientId.macronutrients.enumerated() {
-            var foodNutrient = fdcFood.foodNutrients[nutrientId] ?? FoodNutrient.empty(nutrientId)
+        for nutrientId in NutrientId.macronutrients {
+            let foodNutrient = fdcFood.foodNutrients[nutrientId] ?? FoodNutrient.empty(nutrientId)
             macronutrients.append(foodNutrient)
         }
         
-        for (index, nutrientId) in NutrientId.vitamins.enumerated() {
-            var foodNutrient = fdcFood.foodNutrients[nutrientId] ?? FoodNutrient.empty(nutrientId)
+        for nutrientId in NutrientId.vitamins {
+            let foodNutrient = fdcFood.foodNutrients[nutrientId] ?? FoodNutrient.empty(nutrientId)
             vitamins.append(foodNutrient)
         }
         
-        for (index, nutrientId) in NutrientId.minerals.enumerated() {
-            var foodNutrient = fdcFood.foodNutrients[nutrientId] ?? FoodNutrient.empty(nutrientId)
+        for nutrientId in NutrientId.minerals {
+            let foodNutrient = fdcFood.foodNutrients[nutrientId] ?? FoodNutrient.empty(nutrientId)
             minerals.append(foodNutrient)
         }
         
-        for portion in fdcFood.foodPortions {
-            print("timmy: \(portion.modifier)")
+        print("timmy nutrients: \(fdcFood.foodNutrients.count)")
+        for nutrient in fdcFood.foodNutrients {
+            print("\(nutrient.description) \(nutrient.amount ?? 0)")
         }
 //        Task {
 //            self.fdcFoodAdditional = try await foodService.getFood(fdcId: fdcFood.fdcId)
@@ -245,7 +246,7 @@ class FoodDetailTableViewController: UITableViewController {
         return UIAction { [self] _ in
             guard let meal else { return }
             do {
-                let food = try foodService.addFood(fdcFood, with: selectedFoodPortion, servings: numberOfServings, to: meal)
+                let food = try foodService.addFood(fdcFood, with: selectedFoodPortion, quantity: numberOfServings, to: meal)
                 self.delegate?.foodDetailTableViewController(self, didAddFood: food)
             } catch {
                 print("Error adding food: \(error)")

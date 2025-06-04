@@ -21,6 +21,7 @@ extension FoodInfo {
     @NSManaged public var fdcId: Int64
     @NSManaged public var foods_: NSSet?
     @NSManaged public var nutrients_: NSSet?
+    @NSManaged public var portions_: NSSet?
 
     var name: String {
         get {
@@ -72,5 +73,22 @@ extension FoodInfo {
 
     @objc(removeNutrients_:)
     @NSManaged public func removeFromNutrients_(_ values: NSSet)
+
+}
+
+// MARK: Generated accessors for portions_
+extension FoodInfo {
+
+    @objc(addPortions_Object:)
+    @NSManaged public func addToPortions_(_ value: FoodInfoPortion)
+
+    @objc(removePortions_Object:)
+    @NSManaged public func removeFromPortions_(_ value: FoodInfoPortion)
+
+    @objc(addPortions_:)
+    @NSManaged public func addToPortions_(_ values: NSSet)
+
+    @objc(removePortions_:)
+    @NSManaged public func removeFromPortions_(_ values: NSSet)
 
 }
