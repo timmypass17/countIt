@@ -27,9 +27,9 @@ struct FoodSearchResponse: Decodable {
 ///   - amountPer100g: Nutrient amount per 100g (as provided by USDA).
 ///   - actualServingSize: The actual serving size in grams or milliliters.
 /// - Returns: The scaled nutrient amount for the given serving.
-func scaledNutrientAmount(amountPer100g: Float, actualServingSize: Float) -> Float {
+func scaledNutrientAmount(amountPer100g: Double, actualServingSize: Double) -> Double {
     guard actualServingSize > 0 else { return 0 }
-    return (amountPer100g / 100) * Float(actualServingSize)
+    return (amountPer100g / 100) * Double(actualServingSize)
 }
 
 struct SearchResultFood: Codable {

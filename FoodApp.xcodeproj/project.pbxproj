@@ -44,6 +44,8 @@
 		3242C8DB2DEFF04400F05FF8 /* Food+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3242C8D92DEFDD2D00F05FF8 /* Food+CoreDataProperties.swift */; };
 		3242C8DC2DEFF05E00F05FF8 /* Food+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3242C8D92DEFDD2D00F05FF8 /* Food+CoreDataProperties.swift */; };
 		3242C8DD2DEFF05E00F05FF8 /* Food+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3242C8D82DEFDD2D00F05FF8 /* Food+CoreDataClass.swift */; };
+		3242C8E12DF0C22C00F05FF8 /* CDFoodItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3242C8E02DF0C22C00F05FF8 /* CDFoodItem.swift */; };
+		3242C8E22DF0C22C00F05FF8 /* CDFoodItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3242C8E02DF0C22C00F05FF8 /* CDFoodItem.swift */; };
 		324AB9372BA6B27900CECA72 /* CoreDataStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 324AB9362BA6B27900CECA72 /* CoreDataStack.swift */; };
 		32515EC62DD3D4FD00594145 /* FoodAPIRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32515EC52DD3D4FD00594145 /* FoodAPIRequest.swift */; };
 		325463BE2DD0114100BEDCE0 /* HeightCmPickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 325463BD2DD0114100BEDCE0 /* HeightCmPickerViewController.swift */; };
@@ -228,6 +230,7 @@
 		323FB9AB2DCC13D800A71C53 /* MenuPickerTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuPickerTableViewCell.swift; sourceTree = "<group>"; };
 		3242C8D82DEFDD2D00F05FF8 /* Food+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Food+CoreDataClass.swift"; sourceTree = "<group>"; };
 		3242C8D92DEFDD2D00F05FF8 /* Food+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Food+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		3242C8E02DF0C22C00F05FF8 /* CDFoodItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CDFoodItem.swift; sourceTree = "<group>"; };
 		324AB9362BA6B27900CECA72 /* CoreDataStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataStack.swift; sourceTree = "<group>"; };
 		32515EC52DD3D4FD00594145 /* FoodAPIRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodAPIRequest.swift; sourceTree = "<group>"; };
 		325463BD2DD0114100BEDCE0 /* HeightCmPickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeightCmPickerViewController.swift; sourceTree = "<group>"; };
@@ -570,6 +573,7 @@
 				32C3864F2DC5AF7E0018D282 /* SurveyFoodItem.swift */,
 				32C386552DC5B82B0018D282 /* BrandedFoodItem.swift */,
 				32C388752DC6B1B30018D282 /* FoundationFoodItem.swift */,
+				3242C8E02DF0C22C00F05FF8 /* CDFoodItem.swift */,
 			);
 			path = FDC;
 			sourceTree = "<group>";
@@ -829,6 +833,7 @@
 				32DFCAE42BC1CA29001BDA8E /* FoodWidgetBundle.swift in Sources */,
 				32DFCB112BC1FEEA001BDA8E /* SingleMacroWidget.swift in Sources */,
 				329C1C032DDA76F700087FEF /* Utility.swift in Sources */,
+				3242C8E22DF0C22C00F05FF8 /* CDFoodItem.swift in Sources */,
 				32C3864C2DC55E150018D282 /* FDCFoodInput.swift in Sources */,
 				32DFCB0C2BC1F1B6001BDA8E /* WidgetView.swift in Sources */,
 				32DFCB032BC1D459001BDA8E /* FoodPortion.swift in Sources */,
@@ -949,6 +954,7 @@
 				32870FAD2DD6D1E4005099D1 /* FoodInfoNutrient+CoreDataClass.swift in Sources */,
 				324AB9372BA6B27900CECA72 /* CoreDataStack.swift in Sources */,
 				3290A2A42DD286D3008A4320 /* LoginViewController.swift in Sources */,
+				3242C8E12DF0C22C00F05FF8 /* CDFoodItem.swift in Sources */,
 				32F51A7B2B92C3150080CC09 /* SearchFoodTableViewController.swift in Sources */,
 				325463BE2DD0114100BEDCE0 /* HeightCmPickerViewController.swift in Sources */,
 				32CB60B62BABCE78002DA0C2 /* CalendarViewController.swift in Sources */,

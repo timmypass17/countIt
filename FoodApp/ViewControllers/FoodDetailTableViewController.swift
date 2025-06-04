@@ -24,10 +24,10 @@ protocol FoodDetailTableViewControllerHistoryDelegate: AnyObject {
 class FoodDetailTableViewController: UITableViewController {
 
     var fdcFood: FoodItem
-    var foodEntry: Food?
+    var food: Food?
     var fdcFoodAdditional: FoodItem?
     let meal: Meal?
-    var selectedFoodPortion: FoodPortion
+    var selectedFoodPortion: FoodPortion    // never optional (always have atleast 100g)
     var numberOfServings: Int
     let foodService: FoodService
     let state: State
@@ -52,8 +52,9 @@ class FoodDetailTableViewController: UITableViewController {
     enum State {
         case add, edit
     }
-
-    init(fdcFood: FoodItem, meal: Meal?, foodService: FoodService, selectedFoodPortion: FoodPortion? = nil, numberOfServings: Int = 1, state: State = .add) {
+    
+    init(food: Food? = nil, fdcFood: FoodItem, meal: Meal?, foodService: FoodService, selectedFoodPortion: FoodPortion? = nil, numberOfServings: Int = 1, state: State = .add) {
+        self.food = food
         self.fdcFood = fdcFood
         self.meal = meal
         self.foodService = foodService
@@ -67,6 +68,7 @@ class FoodDetailTableViewController: UITableViewController {
 //                self.selectedFoodPortion = foodMeasure
 //            } else {
             self.selectedFoodPortion = fdcFood.foodPortions[(fdcFood.foodPortions.count - 1) / 2]
+
 //            }
         }
         
@@ -170,7 +172,7 @@ class FoodDetailTableViewController: UITableViewController {
             let carbs = fdcFood.getNutrientAmount(.carbs, using: selectedFoodPortion, quantity: numberOfServings)
             let protein = fdcFood.getNutrientAmount(.protein, using: selectedFoodPortion, quantity: numberOfServings)
             let fats = fdcFood.getNutrientAmount(.fatTotal, using: selectedFoodPortion, quantity: numberOfServings)
-            let nutrients: [NutrientId: Float] = [
+            let nutrients: [NutrientId: Double] = [
                 .calories: calories,
                 .carbs: carbs,
                 .protein: protein,

@@ -85,7 +85,7 @@ class NutritionTableViewCell: UITableViewCell {
     
     func update(with foodNutrient: FoodNutrient, foodPortion: FoodPortion, quantity: Int) {
         nameLabel.text = foodNutrient.nutrient?.name
-        let amount = Int(scaledNutrientAmount(amountPer100g: foodNutrient.amount ?? 0, actualServingSize: foodPortion.gramWeight)) * quantity
+        let amount = Int(scaledNutrientAmount(amountPer100g: foodNutrient.amount ?? 0, actualServingSize: Double(foodPortion.gramWeight))) * quantity
         amountLabel.text = "\(amount) \(foodNutrient.nutrient?.unitName ?? "")"
         percentLabel.text = "-"
         

@@ -290,9 +290,9 @@ extension DiaryViewController: UITableViewDelegate {
             return
         }
         
-        let count = mealPlan.meals[indexPath.section - 2].foods.count
-        let selectedAddFoodButton = indexPath.row == count
-        if selectedAddFoodButton {
+        let meal = mealPlan.meals[indexPath.section - 2]
+        let isAddFoodButton = indexPath.row == meal.foods.count
+        if isAddFoodButton {
             tableView.deselectRow(at: indexPath, animated: true)
             let meal = mealPlan.meals[indexPath.section - 2]
             let searchFoodTableViewController = SearchFoodTableViewController(foodService: foodService, meal: meal)
@@ -302,6 +302,12 @@ extension DiaryViewController: UITableViewDelegate {
             navigationController?.pushViewController(searchFoodTableViewController, animated: true)
             return
         }
+        
+        let food: Food = meal.foods[indexPath.row]
+        guard let fdcFood = food.convertToFDCFood() else { return }
+        let selectedPortion = food.foodInfo?.convertToFoodPortions().first { $0.id == food.portionId }
+        let foodDetailTableViewController = FoodDetailTableViewController(food: food, fdcFood: fdcFood, meal: meal, foodService: foodService, selectedFoodPortion: selectedPortion, numberOfServings: Int(food.quantity))
+        present(UINavigationController(rootViewController: foodDetailTableViewController), animated: true)
     }
     
     func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {

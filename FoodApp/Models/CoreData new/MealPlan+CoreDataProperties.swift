@@ -16,6 +16,7 @@ extension MealPlan {
     }
 
     @NSManaged public var date_: Date?  // always stored as utc midnight (12:00AM)
+    @NSManaged public var dateKey_: String? // e.g. "06/04/2025"
     @NSManaged public var meals_: NSSet?
     @NSManaged public var nutrientGoals_: NSSet?
     
@@ -25,6 +26,15 @@ extension MealPlan {
         }
         set {
             date_ = Calendar.current.startOfDay(for: newValue)
+        }
+    }
+    
+    var dateKey: String {
+        get {
+            return dateKey_ ?? ""
+        }
+        set {
+            dateKey_ = newValue
         }
     }
     

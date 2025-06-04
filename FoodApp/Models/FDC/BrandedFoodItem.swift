@@ -53,7 +53,7 @@ struct BrandedFoodItem: FoodItem {
 //        var foodPortions = try container.decode([FoodPortion].self, forKey: .foodPortions)
         var foodPortions: [FoodPortion] = []
         foodPortions.append(FoodPortion.default100g)
-        foodPortions.append(FoodPortion(id: 1, gramWeight: Float(servingSize)))
+        foodPortions.append(FoodPortion(id: 1, gramWeight: Double(servingSize)))
         self.foodPortions = foodPortions
         
         let rawNutrients = try container.decode([RawFoodNutrient].self, forKey: .foodNutrients)
@@ -67,7 +67,7 @@ struct BrandedFoodItem: FoodItem {
         var descriptionParts: [String] = []
         
         if options.contains(.calories) {
-            descriptionParts.append("\(Int(getNutrientAmountPerServing(.calories, foodPortion: foodPortion) * Float(numberOfServings))) cal")
+            descriptionParts.append("\(Int(getNutrientAmountPerServing(.calories, foodPortion: foodPortion) * Double(numberOfServings))) cal")
         }
         if options.contains(.servingSize) {
             descriptionParts.append(getServingSizeFormatted(foodPortion: foodPortion, numberOfServings: numberOfServings))

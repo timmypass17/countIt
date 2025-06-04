@@ -23,6 +23,7 @@ extension Food {
     @NSManaged public var modifier: String? // "banana"
     @NSManaged public var foodInfo: FoodInfo?
     @NSManaged public var meal: Meal?
+    @NSManaged public var portionId: Int32 // 0 -> 100g, 1 -> Custom
     
     var amount: Double? {
         get { amount_?.doubleValue }
@@ -36,5 +37,26 @@ extension Food {
         let totalNutrientAmount = nutrientPerGram * totalGrams
         
         return totalNutrientAmount
+    }
+    
+    func convertToFDCFood() -> FoodItem? {
+        guard let fdcId = foodInfo?.fdcId,
+              let name = foodInfo?.name,
+              let brandName = foodInfo?.brandName_
+        else {
+            return nil
+        }
+        
+              
+        let food: CDFoodItem = CDFoodItem(
+            fdcId: Int(fdcId),
+            description: name,
+            dataType: .foundation, // TODO: Don't think this matters
+            foodNutrients: foodInfo?.convertToFoodNutrients() ?? [],
+            foodPortions: foodInfo?.convertToFoodPortions() ?? [],
+            brandName: brandName
+        )
+
+        return food
     }
 }

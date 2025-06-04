@@ -51,7 +51,7 @@ struct SurveyFoodItem: FoodItem {
             var descriptionParts: [String] = []
 
             if options.contains(.calories) {
-                descriptionParts.append("\(Int(getNutrientAmountPerServing(.calories, foodPortion: foodPortion) * Float(numberOfServings))) cal")
+                descriptionParts.append("\(Int(getNutrientAmountPerServing(.calories, foodPortion: foodPortion) * Double(numberOfServings))) cal")
             }
             if options.contains(.servingSize) {
                 descriptionParts.append(getServingSizeFormatted(foodPortion: foodPortion, numberOfServings: numberOfServings))

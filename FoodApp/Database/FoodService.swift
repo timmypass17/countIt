@@ -76,9 +76,9 @@ class FoodService: FoodServiceProtocol {
     }
     
     func getMealPlan(date: Date) -> MealPlan? {
-        let startOfDay = Calendar.current.startOfDay(for: date)
+        let dateKey = formatDateAsDateKey(date)
         let request: NSFetchRequest<MealPlan> = MealPlan.fetchRequest()
-        request.predicate = NSPredicate(format: "date_ == %@", startOfDay as NSDate)
+        request.predicate = NSPredicate(format: "dateKey_ == %@", dateKey)
         request.fetchLimit = 1
 
         do {
@@ -100,6 +100,7 @@ class FoodService: FoodServiceProtocol {
         
         let mealPlan = MealPlan(context: context)
         mealPlan.date = date
+        mealPlan.dateKey = formatDateAsDateKey(date)
 
         let mealNames = ["Breakfast", "Lunch", "Dinner", "Snack"]
 
@@ -146,6 +147,7 @@ class FoodService: FoodServiceProtocol {
         food.index = Int16(meal.foods.count)
         food.quantity = Int16(quantity)
         food.gramWeight = Double(portion.gramWeight)
+        food.portionId = Int32(portion.id)
 
         if let amount = portion.amount,
            let modifier = portion.modifier {
@@ -160,7 +162,6 @@ class FoodService: FoodServiceProtocol {
                 food.modifier = modifier
             }
         }
-        
         
         meal.addToFoods_(food)
         
@@ -179,7 +180,6 @@ class FoodService: FoodServiceProtocol {
             // Add portion relationship
             for (index, fdcPortion) in fdcFood.foodPortions.enumerated() {
                 let portion = createFoodInfoPortion(fdcPortion)
-                portion.id = Int32(index)
                 foodInfo.addToPortions_(portion)
             }
         }
@@ -213,6 +213,7 @@ class FoodService: FoodServiceProtocol {
     
     func createFoodInfoPortion(_ foodPortion: FoodPortion) -> FoodInfoPortion {
         let foodInfoPortion = FoodInfoPortion(context: context)
+        foodInfoPortion.id = Int32(foodPortion.id)
         foodInfoPortion.gramWeight = Double(foodPortion.gramWeight)
         if let amount = foodPortion.amount,
            let modifier = foodPortion.modifier {

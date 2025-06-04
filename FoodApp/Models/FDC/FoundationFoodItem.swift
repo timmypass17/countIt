@@ -32,7 +32,7 @@ struct FoundationFoodItem: FoodItem {
         let rawNutrients = try container.decode([RawFoodNutrient].self, forKey: .foodNutrients)
         self.foodNutrients = rawNutrients.compactMap { raw in
             guard let nutrientId = NutrientId(rawValue: raw.nutrient.id) else { return nil }
-            return FoodNutrient(nutrient: Nutrient(id: nutrientId, name: raw.nutrient.name, unitName: raw.nutrient.unitName, rank: 0), amount: raw.amount)
+            return FoodNutrient(nutrient: Nutrient(id: nutrientId, name: raw.nutrient.name, unitName: raw.nutrient.unitName, rank: 0), amount: Double(raw.amount))
         }
         
         var foodPortions = try container.decodeIfPresent([FoodPortion].self, forKey: .foodPortions) ?? []
@@ -40,12 +40,11 @@ struct FoundationFoodItem: FoodItem {
         self.foodPortions = foodPortions
     }
     
-    
     func getFoodPortionDescription(foodPortion: FoodPortion, numberOfServings: Int = 1, options: [FoodEntryOptions] = FoodEntryOptions.allCases) -> String {
             var descriptionParts: [String] = []
 
             if options.contains(.calories) {
-                descriptionParts.append("\(Int(getNutrientAmountPerServing(.calories, foodPortion: foodPortion) * Float(numberOfServings))) cal")
+                descriptionParts.append("\(Int(getNutrientAmountPerServing(.calories, foodPortion: foodPortion) * Double(numberOfServings))) cal")
             }
             if options.contains(.servingSize) {
                 descriptionParts.append(getServingSizeFormatted(foodPortion: foodPortion, numberOfServings: numberOfServings))

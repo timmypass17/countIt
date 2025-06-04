@@ -40,6 +40,33 @@ extension FoodInfo {
             nutrients_ = NSSet(array: newValue)
         }
     }
+    
+    var portions: [FoodInfoPortion] {
+        get {
+            return (portions_?.allObjects as! [FoodInfoPortion])
+        }
+        set {
+            portions_ = NSSet(array: newValue)
+        }
+    }
+    
+    func convertToFoodNutrients() -> [FoodNutrient] {
+        return nutrients.compactMap { foodInfoNutrient in
+            guard let nutrientId = foodInfoNutrient.nutrientId else { return nil }
+            return FoodNutrient(nutrient: Nutrient(id: nutrientId, name: nutrientId.description, unitName: nutrientId.unitName, rank: 0), amount: foodInfoNutrient.value)
+        }
+    }
+    
+    func convertToFoodPortions() -> [FoodPortion] {
+        return portions.compactMap { portion in
+            return FoodPortion(
+                id: Int(portion.id),
+                amount: portion.amount,
+                gramWeight: portion.gramWeight,
+                modifier: portion.modifier,
+                portionDescription: nil)
+        }
+    }
 }
 
 // MARK: Generated accessors for food

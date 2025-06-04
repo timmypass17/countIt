@@ -10,9 +10,9 @@ import SwiftUICore
 
 struct FoodNutrient: Codable {
     var nutrient: Nutrient?
-    var amount: Float?   // 590
+    var amount: Double?   // 590
     
-    init(nutrient: Nutrient, amount: Float?) {
+    init(nutrient: Nutrient, amount: Double?) {
         self.nutrient = nutrient
         self.amount = amount
     }
@@ -47,7 +47,7 @@ extension FoodNutrient {
 }
 
 struct RawFoodNutrient: Codable {
-    let amount: Float
+    let amount: Double
     let unitName: String
     let nutrient: RawNutrient
     
@@ -59,7 +59,7 @@ struct RawFoodNutrient: Codable {
     
     init(from decoder: any Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        self.amount = try container.decodeIfPresent(Float.self, forKey: .amount) ?? 0
+        self.amount = try container.decodeIfPresent(Double.self, forKey: .amount) ?? 0
         self.unitName = try container.decodeIfPresent(String.self, forKey: .unitName) ?? ""
         self.nutrient = try container.decode(RawNutrient.self, forKey: .nutrient)
     }

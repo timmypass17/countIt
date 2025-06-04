@@ -11,12 +11,12 @@ import Foundation
 // branded dont have foodportion array? Use explicitt
 struct FoodPortion: Codable {
     var id: Int
-    var gramWeight: Float
-    var amount: Float? // foundation 1.00 -> used like 1.00 and "banana" (modifier). amount + modifier
+    var gramWeight: Double
+    var amount: Double? // foundation 1.00 -> used like 1.00 and "banana" (modifier). amount + modifier
     var modifier: String?    // foundation "tbsp"
     var portionDescription: String? // survey "1 tbsp"
     
-    init(id: Int, amount: Float? = nil, gramWeight: Float, modifier: String? = nil, portionDescription: String? = nil) {
+    init(id: Int, amount: Double? = nil, gramWeight: Double, modifier: String? = nil, portionDescription: String? = nil) {
         self.id = id
         self.amount = amount
         self.gramWeight = gramWeight
@@ -35,8 +35,8 @@ struct FoodPortion: Codable {
     init(from decoder: any Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.id = try container.decode(Int.self, forKey: .id)
-        self.amount = try container.decodeIfPresent(Float.self, forKey: .amount)
-        self.gramWeight = try container.decode(Float.self, forKey: .gramWeight)
+        self.amount = try container.decodeIfPresent(Double.self, forKey: .amount)
+        self.gramWeight = try container.decode(Double.self, forKey: .gramWeight)
         self.modifier = try container.decodeIfPresent(String.self, forKey: .modifier)?.lowercased()
         let portionDescription = try container.decodeIfPresent(String.self, forKey: .portionDescription)
         if let portionDescription, portionDescription != "Quantity not specified" {
