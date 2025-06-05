@@ -26,9 +26,9 @@ struct FoundationFoodItem: FoodItem {
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         fdcId = try container.decode(Int.self, forKey: .fdcId)
+        print("timmy :( \(fdcId)")
         dataType = try container.decode(DataType.self, forKey: .dataType)
         description = try container.decode(String.self, forKey: .description).firstUppercased
-        
         let rawNutrients = try container.decode([RawFoodNutrient].self, forKey: .foodNutrients)
         self.foodNutrients = rawNutrients.compactMap { raw in
             guard let nutrientId = NutrientId(rawValue: raw.nutrient.id) else { return nil }

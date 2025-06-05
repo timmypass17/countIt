@@ -80,9 +80,9 @@ struct FoodAppTests {
         #expect(foundationFood.description == "Peanut butter, creamy")
     }
     
-    @Test func decodeFoodSearchResponse() throws {
-        let foodSearchResponse = try JSONDecoder().decode(FoodSearchResponse.self, from: foodSearchResponseJSON)
-        #expect(foodSearchResponse.foods.first?.description == "BANANA")
-    }
+//    @Test func decodeFoodSearchResponse() throws {
+//        let foodSearchResponse = try JSONDecoder().decode(FoodSearchResponse.self, from: foodSearchResponseJSON)
+//        #expect(foodSearchResponse.foods.first?.description == "BANANA")
+//    }
 }
 

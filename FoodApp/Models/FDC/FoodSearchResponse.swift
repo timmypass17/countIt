@@ -184,7 +184,7 @@ struct SearchResultFoodNutrient: Codable {
         self.nutrientId = try container.decode(NutrientId.self, forKey: .nutrientId)
         self.nutrientName = try container.decode(String.self, forKey: .nutrientName)
         self.unitName = try container.decode(String.self, forKey: .unitName).lowercased()
-        self.value = try container.decode(Float.self, forKey: .value)
+        self.value = try container.decodeIfPresent(Float.self, forKey: .value) ?? 0
         self.indentLevel = try container.decode(Int.self, forKey: .indentLevel)
     }
 }
@@ -207,6 +207,23 @@ struct RawSearchResultFoodNutrients: Codable {
     let unitName: String
     let value: Float
     let indentLevel: Int
+    
+    enum CodingKeys: CodingKey {
+        case nutrientId
+        case nutrientName
+        case unitName
+        case value
+        case indentLevel
+    }
+    
+    init(from decoder: any Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.nutrientId = try container.decode(Int.self, forKey: .nutrientId)
+        self.nutrientName = try container.decode(String.self, forKey: .nutrientName)
+        self.unitName = try container.decode(String.self, forKey: .unitName)
+        self.value = try container.decodeIfPresent(Float.self, forKey: .value) ?? 0
+        self.indentLevel = try container.decode(Int.self, forKey: .indentLevel)
+    }
 }
 
 struct SearchResultFoodMeasurement: Codable {

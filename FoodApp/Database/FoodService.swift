@@ -270,11 +270,13 @@ class FoodService: FoodServiceProtocol {
     
     func getFoods(query: String, dataTypes: [DataType], pageSize: Int, pageNumber: Int) async throws -> FoodSearchResponse {
         let abridgedRequest = FoodsSearchAPIRequest(query: query, dataTypes: dataTypes, pageSize: pageSize, pageNumber: pageNumber)
+        print("timmy 1")
         var searchResultResponse = try await sendRequest(abridgedRequest)
-        // TODO: Get fdcids from query, and get food detail (because it contains food portions). Search result doesn't contain all good portions
+        print("timmy 2")
         let fdcIds = searchResultResponse.foodParts.map { $0.fdcId }
+        // TODO: Don't use multiple fdcIds at once, is slow. Make multiple tasks for each item, fetch concurrently
         let foods: [FoodItem] = try await getFoods(fdcIds: fdcIds, dataTypes: DataType.allCases)
-        print(foods.count)
+        print("timmy 3")
         searchResultResponse.foods.append(contentsOf: foods)
         return searchResultResponse
     }
@@ -288,6 +290,7 @@ class FoodService: FoodServiceProtocol {
 //    }
     
     func getFoods(fdcIds: [Int], dataTypes: [DataType]) async throws -> [FoodItem] {
+        print("timmy: \(fdcIds)")
         let request = FoodListAPIRequest(fdcIds: fdcIds)
         let searchResult = try await sendRequest(request)
         return searchResult
