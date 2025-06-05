@@ -97,29 +97,30 @@ class OnboardingPageViewController: UIPageViewController {
     }
     
     func showMainApp(userProfile: UserProfile) {
-        let foodService = FoodService()
-        let dashboardViewController = DashboardViewController()
-        let diaryViewController = DiaryViewController(userProfile: userProfile, foodService: foodService)
-        let entryViewController = EntryViewController()
-        let progressViewController = ProgressViewController()
-        let settingsViewController = SettingsViewController()
-
-        let tabBarController = UITabBarController()
-        dashboardViewController.tabBarItem = UITabBarItem(title: "Home", image: UIImage(systemName: "house"), tag: 0)
-        diaryViewController.tabBarItem = UITabBarItem(title: "Diary", image: UIImage(systemName: "fork.knife"), tag: 1)
-        entryViewController.tabBarItem = UITabBarItem(title: "", image: UIImage(systemName: "plus.circle.fill"), tag: 2)
-        progressViewController.tabBarItem = UITabBarItem(title: "Progress", image: UIImage(systemName: "chart.bar.fill"), tag: 3)
-        settingsViewController.tabBarItem = UITabBarItem(title: "Profile", image: UIImage(systemName: "person.fill"), tag: 4)
-
-        tabBarController.viewControllers = [dashboardViewController, diaryViewController, entryViewController, progressViewController, settingsViewController]
-            .map { UINavigationController(rootViewController: $0) }
-
-        
-        if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-           let window = windowScene.windows.first {
-            window.rootViewController = tabBarController
-            window.makeKeyAndVisible()
-        }
+        // TODO: 
+//        let foodService = FoodService()
+//        let dashboardViewController = DashboardViewController()
+//        let diaryViewController = DiaryViewController(userProfile: userProfile, foodService: foodService)
+//        let entryViewController = EntryViewController()
+//        let progressViewController = ProgressViewController()
+//        let settingsViewController = SettingsViewController()
+//
+//        let tabBarController = UITabBarController()
+//        dashboardViewController.tabBarItem = UITabBarItem(title: "Home", image: UIImage(systemName: "house"), tag: 0)
+//        diaryViewController.tabBarItem = UITabBarItem(title: "Diary", image: UIImage(systemName: "fork.knife"), tag: 1)
+//        entryViewController.tabBarItem = UITabBarItem(title: "", image: UIImage(systemName: "plus.circle.fill"), tag: 2)
+//        progressViewController.tabBarItem = UITabBarItem(title: "Progress", image: UIImage(systemName: "chart.bar.fill"), tag: 3)
+//        settingsViewController.tabBarItem = UITabBarItem(title: "Profile", image: UIImage(systemName: "person.fill"), tag: 4)
+//
+//        tabBarController.viewControllers = [dashboardViewController, diaryViewController, entryViewController, progressViewController, settingsViewController]
+//            .map { UINavigationController(rootViewController: $0) }
+//
+//        
+//        if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+//           let window = windowScene.windows.first {
+//            window.rootViewController = tabBarController
+//            window.makeKeyAndVisible()
+//        }
     }
     
     func moveNext() {

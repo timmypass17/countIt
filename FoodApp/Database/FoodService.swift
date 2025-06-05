@@ -274,7 +274,7 @@ class FoodService: FoodServiceProtocol {
         // TODO: Get fdcids from query, and get food detail (because it contains food portions). Search result doesn't contain all good portions
         let fdcIds = searchResultResponse.foodParts.map { $0.fdcId }
         let foods: [FoodItem] = try await getFoods(fdcIds: fdcIds, dataTypes: DataType.allCases)
-        print(foods)
+        print(foods.count)
         searchResultResponse.foods.append(contentsOf: foods)
         return searchResultResponse
     }

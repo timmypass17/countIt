@@ -13,12 +13,12 @@ protocol ReorderMealTableViewControllerDelegate: AnyObject {
 
 class ReorderMealTableViewController: UITableViewController {
 
-    var meals: [Meal]
+    var mealPlan: MealPlan
     weak var delegate: ReorderMealTableViewControllerDelegate?
     private let reuseIdentifier = "ReorderCell"
     
-    init(meals: [Meal]) {
-        self.meals = meals
+    init(mealPlan: MealPlan) {
+        self.mealPlan = mealPlan
         super.init(style: .plain)
     }
     
@@ -42,33 +42,58 @@ class ReorderMealTableViewController: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return meals.count
+        return mealPlan.meals.count
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: reuseIdentifier, for: indexPath)
-        let meal = meals[indexPath.row]
+        let meal = mealPlan.meals[indexPath.row]
         var config = cell.defaultContentConfiguration()
-//        config.text = meal.name
-//        config.secondaryText = meal.foodEntries.compactMap { $0.food?.name }.joined(separator: " | ")
-//        config.secondaryTextProperties.color = .secondaryLabel
-//        cell.contentConfiguration = config
+        config.text = meal.name
+        config.secondaryText = meal.foods.compactMap { $0.foodInfo?.name }.joined(separator: " ,")
+        config.secondaryTextProperties.numberOfLines = 1
+        config.secondaryTextProperties.color = .secondaryLabel
+        cell.contentConfiguration = config
         return cell
     }
 
     override func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
-        let foodEntry = meals.remove(at: sourceIndexPath.row)
-        meals.insert(foodEntry, at: destinationIndexPath.row)
-//        meals.updateIndexes()
+        let meals = mealPlan.meals
+        let meal = mealPlan.meals[sourceIndexPath.row]
+        if sourceIndexPath.row < destinationIndexPath.row {
+            // Shift affected items left
+            for meal in meals {
+                if meal.index > Int16(sourceIndexPath.row) && meal.index <= Int16(destinationIndexPath.row) {
+                    meal.index -= 1
+                }
+            }
+        } else if sourceIndexPath.row > destinationIndexPath.row {
+            // Shift affected items right
+            for meal in meals {
+                if meal.index >= Int16(destinationIndexPath.row) && meal.index < Int16(sourceIndexPath.row) {
+                    meal.index += 1
+                }
+            }
+        }
+        
+        meal.index = Int16(destinationIndexPath.row)
+        CoreDataStack.shared.saveContext()
         delegate?.reorderMealTableViewController(self, didReorderMeals: true)
     }
     
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
-            let removedMeal = meals.remove(at: indexPath.row)
-            CoreDataStack.shared.context.delete(removedMeal)
+            var meals = mealPlan.meals
+            let mealToRemove = meals.remove(at: indexPath.row)
+            mealPlan.removeFromMeals_(mealToRemove) // doesn't remove from "meals" array
+            
+            for (i, meal) in meals.enumerated() {
+                meal.index = Int16(i)
+            }
+            
+            CoreDataStack.shared.context.delete(mealToRemove)
+            CoreDataStack.shared.saveContext()
             self.tableView.deleteRows(at: [indexPath], with: .automatic)
-//            meals.updateIndexes()
             delegate?.reorderMealTableViewController(self, didReorderMeals: true)
         }
     }

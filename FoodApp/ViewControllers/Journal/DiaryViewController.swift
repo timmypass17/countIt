@@ -93,21 +93,26 @@ class DiaryViewController: UIViewController {
     
     override func setEditing(_ editing: Bool, animated: Bool) {
         super.setEditing(editing, animated: animated)
-        tableView.setEditing(editing, animated: animated)
     }
     
     func updateUI() {
+        let optionsButton = UIBarButtonItem(image: UIImage(systemName: "slider.horizontal.3"), menu: buildMenu())
+        let profileBarButton = UIBarButtonItem(image: UIImage(systemName: "person.fill"), primaryAction: nil)
+
+        navigationItem.leftBarButtonItem = optionsButton
+        navigationItem.rightBarButtonItem = profileBarButton
+        
+        
+        tableView.reloadData()
+    }
+    
+    func buildMenu() -> UIMenu {
         let copyMenu = UIMenu(title: "Copy Meal Plan",
                               image: UIImage(systemName: "doc.on.doc"),
                               children: [copyLatestAction(), copyDateAction()])
         
-        let menu = UIMenu(children: [reorderMealAction(), copyMenu])
-        
-        let optionsButton = UIBarButtonItem(image: UIImage(systemName: "slider.horizontal.3"), menu: menu)
-        navigationItem.leftBarButtonItem = optionsButton
-        navigationItem.rightBarButtonItem = editButtonItem
-        
-        tableView.reloadData()
+        let menu = UIMenu(children: [editFoodsAction(), editMealsAction(), copyMenu])
+        return menu
     }
     
     func reloadTableViewHeader(section: Int) {
@@ -157,12 +162,23 @@ class DiaryViewController: UIViewController {
         //        self.present(alert, animated: true, completion: nil)
     }
     
-    func reorderMealAction() -> UIAction {
+    func editFoodsAction() -> UIAction {
+        return UIAction(title: NSLocalizedString("Edit Foods", comment: ""),
+                        image: UIImage(systemName: "carrot"),
+                        state: tableView.isEditing ? .on : .off
+        ) { [weak self] action in
+            guard let self else { return }
+            tableView.setEditing(!tableView.isEditing, animated: true)
+            navigationItem.leftBarButtonItem?.menu = buildMenu()
+        }
+    }
+    
+    func editMealsAction() -> UIAction {
         return UIAction(title: NSLocalizedString("Edit Meals", comment: ""),
                         image: UIImage(systemName: "takeoutbag.and.cup.and.straw")) { [self] action in
-            //            let reorderMealTableViewController = ReorderMealTableViewController(meals: mealPlan.meals)
-            //            reorderMealTableViewController.delegate = self
-            //            self.present(UINavigationController(rootViewController: reorderMealTableViewController), animated: true)
+            let reorderMealTableViewController = ReorderMealTableViewController(mealPlan: mealPlan)
+            reorderMealTableViewController.delegate = self
+            self.present(UINavigationController(rootViewController: reorderMealTableViewController), animated: true)
         }
     }
     
@@ -376,14 +392,14 @@ extension DiaryViewController: UITableViewDelegate {
             // Moving within the same meal
             let sourceFoods = sourceMeal.foods
             if sourceIndexPath.row < destinationIndexPath.row {
-                // Moving down
+                // Shift affected items left
                 for item in sourceFoods {
                     if item.index > Int16(sourceIndexPath.row) && item.index <= Int16(destinationIndexPath.row) {
                         item.index -= 1
                     }
                 }
             } else if sourceIndexPath.row > destinationIndexPath.row {
-                // Moving up
+                // Shift affected items right
                 for item in sourceFoods {
                     if item.index >= Int16(destinationIndexPath.row) && item.index < Int16(sourceIndexPath.row) {
                         item.index += 1
@@ -446,10 +462,24 @@ extension DiaryViewController: FoodDetailTableViewControllerDismissDelegate {
 extension DiaryViewController: MealPlanDateViewDelegate {
     func mealPlanDateViewDelegate(_ sender: MealPlanDateView, datePickerValueChanged date: Date) {
         // When moving between dates, clean up empty meals
-        //        if self.mealPlan.isEmpty {
-        //            CoreDataStack.shared.context.delete(mealPlan)
-        //        }
-        //        self.mealPlan = CoreDataStack.shared.getMealPlan(for: date) ?? CoreDataStack.shared.createEmpty(for: date)
+        if self.mealPlan.isEmpty {
+            print("Deleting meal plan: \(date.formatted(date: .abbreviated, time: .omitted))")
+            CoreDataStack.shared.context.delete(mealPlan)
+        }
+        
+        if let existingMealPlan = foodService.getMealPlan(date: date) {
+            print("Found meal plan: \(date.formatted(date: .abbreviated, time: .omitted))")
+            self.mealPlan = existingMealPlan
+        } else {
+            do {
+                print("Creating meal plan: \(date.formatted(date: .abbreviated, time: .omitted))")
+                self.mealPlan = try foodService.createEmptyMealPlan(date: date)
+            } catch {
+                // useful for development, don't keep in prod
+                fatalError("User profile is missing")
+            }
+        }
+        
         updateUI()
     }
 }

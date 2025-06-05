@@ -144,6 +144,16 @@ struct SearchResultFood: Codable {
 //        let amount = (caloriesPer100g * Float(foodMeasurement.gramWeight)) / 100
 //        return amount * Float(quantity)
     }
+    
+//    func convertToFoodItem() -> FoodItem {
+//        let foodNutrients = foodNutrients.map {
+//            FoodNutrient(nutrient: Nutrient(id: $0.nutrientId, name: $0.nutrientName, unitName: $0.unitName, rank: 0), amount: Double($0.value))
+//        }
+//        let foodPortions = foodMeasures.map {
+//            FoodPortion(id: $0.id, amount: $0., gramWeight: <#T##Double#>, modifier: <#T##String?#>, portionDescription: <#T##String?#>)
+//        }
+//        return CDFoodItem(fdcId: fdcId, description: description, dataType: dataType, foodNutrients: foodNutrients, foodPortions: <#T##[FoodPortion]#>, brandName: <#T##String#>)
+//    }
 }
 
 struct SearchResultFoodNutrient: Codable {

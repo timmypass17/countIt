@@ -97,20 +97,22 @@ class ResultsPaginatedViewController: UIViewController {
                 pageNumber: foodResponse.currentPage
             )
             
-            let start = foodResponse.foodParts.count
-            let newItems = response.foodParts
+            let start = foodResponse.foods.count
+            let newItems = response.foods
             let end = start + newItems.count
             
-            foodResponse.foodParts.append(contentsOf: newItems)
+            foodResponse.foods.append(contentsOf: newItems)
             foodResponse.currentPage += 1
             foodResponse.totalPages  = response.totalPages
             
             let paths = (start..<end).map { IndexPath(row: $0, section: 0) }
             
             if isInitialLoad {
-              tableView.reloadData()
+                print("reloadData")
+                tableView.reloadData()
             } else {
-              tableView.insertRows(at: paths, with: .automatic)
+                print("insert Rows")
+                tableView.insertRows(at: paths, with: .automatic)
             }
         } catch {
             print("Error loading food:", error)
