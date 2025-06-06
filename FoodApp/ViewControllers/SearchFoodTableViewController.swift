@@ -7,6 +7,7 @@
 
 import UIKit
 import VisionKit
+import CoreData
 
 class SearchFoodTableViewController: UITableViewController {
 
@@ -14,7 +15,8 @@ class SearchFoodTableViewController: UITableViewController {
     
     var searchController: UISearchController!
     private var resultsTableController: ResultsTableViewController!
-    
+    var fetchedResultsController: NSFetchedResultsController<History>! // source of truth
+
     var meal: Meal?
     let foodService: FoodService
     var searchTask: Task<Void, Never>? = nil
@@ -51,9 +53,7 @@ class SearchFoodTableViewController: UITableViewController {
 
         resultsTableController = ResultsTableViewController(meal: meal, foodService: foodService)
         resultsTableController.addFoodDelegate = addFoodDelegate
-        resultsTableController.historyDelegate = self
         resultsTableController.resultDelegate = resultDelegate
-        resultsTableController.resultHistoryDelegate = self
         
         searchController = UISearchController(searchResultsController: resultsTableController)
 //        searchController.delegate = self
@@ -73,23 +73,51 @@ class SearchFoodTableViewController: UITableViewController {
         let quickAddButton = UIBarButtonItem(image: UIImage(systemName: "flame"), primaryAction: didTapQuickAddButton())
         navigationItem.rightBarButtonItems = [barcodeButton, quickAddButton]
         navigationItem.rightBarButtonItem?.isEnabled = scannerAvailable
+        
+        let fetchRequest: NSFetchRequest<History> = History.fetchRequest()
+        let sortDescriptor = NSSortDescriptor(key: "createdAt_", ascending: false)
+        fetchRequest.sortDescriptors = [sortDescriptor]
+        
+        
+        fetchedResultsController = NSFetchedResultsController(
+            fetchRequest: fetchRequest,
+            managedObjectContext: CoreDataStack.shared.context,
+            sectionNameKeyPath: nil,    // to define sections
+            cacheName: nil)
+
+        fetchedResultsController.delegate = self
+        
+        // Perform a fetch.
+        do {
+            // actually fetches from cloudkit, when delete and reinstall app
+            try fetchedResultsController?.performFetch()
+//            contentUnavailableView.isHidden = !(fetchedResultsController.fetchedObjects?.isEmpty ?? true)
+        } catch {
+            // Handle error appropriately. It's useful to use
+            // `fatalError(_:file:line:)` during development.
+            fatalError("Failed to perform fetch: \(error.localizedDescription)")
+        }
     }
 
     // MARK: - Table view data source
 
     override func numberOfSections(in tableView: UITableView) -> Int {
-        return 1
+        return fetchedResultsController.sections?.count ?? 0
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return history.count
+        guard let sectionInfo = fetchedResultsController?.sections?[section] else {
+            return 0
+        }
+        
+        return sectionInfo.numberOfObjects
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: HistoryTableViewCell.reuseIdentifier, for: indexPath) as! HistoryTableViewCell
         cell.delegate = self
-        let food = history[indexPath.row]
-        cell.update(with: food)
+        let history = fetchedResultsController.object(at: indexPath)
+        cell.update(history: history)
         return cell
     }
     
@@ -129,12 +157,52 @@ class SearchFoodTableViewController: UITableViewController {
             guard let meal else { return }
             let quickAddTableViewController = QuickAddTableViewController(meal: meal)
             quickAddTableViewController.delegate = quickAddDelegate
-            quickAddTableViewController.historyDelegate = self
             present(UINavigationController(rootViewController: quickAddTableViewController), animated: true)
         }
     }
     
 }
+
+extension SearchFoodTableViewController: NSFetchedResultsControllerDelegate {
+    func controllerWillChangeContent(_ controller: NSFetchedResultsController<any NSFetchRequestResult>) {
+        tableView.beginUpdates()
+    }
+    
+    func controllerDidChangeContent(_ controller: NSFetchedResultsController<any NSFetchRequestResult>) {
+        tableView.endUpdates()
+    }
+    
+    // Find out when the fetched results controller adds, removes, moves, or updates a fetched object.
+    func controller(_ controller: NSFetchedResultsController<any NSFetchRequestResult>,
+                    didChange anObject: Any,
+                    at indexPath: IndexPath?,
+                    for type: NSFetchedResultsChangeType,
+                    newIndexPath: IndexPath?) {
+        
+        switch type {
+        case .insert:
+            guard let newIndexPath else { return }
+            tableView.insertRows(at: [newIndexPath], with: .fade)
+        case .delete:
+            guard let indexPath else { return }
+            tableView.deleteRows(at: [indexPath], with: .fade)
+        case .update:
+            guard let indexPath else { return }
+            // Update the cell as the specified indexPath.
+            print("Update row: \(indexPath)")
+            if let cell = tableView.cellForRow(at: indexPath) as? HistoryTableViewCell {
+                let history = fetchedResultsController.object(at: indexPath)
+                cell.update(history: history)
+            }
+        case .move:
+            guard let indexPath, let newIndexPath else { return }
+            tableView.moveRow(at: indexPath, to: newIndexPath)
+        @unknown default:
+            break
+        }
+    }
+}
+    
 
 
 // MARK: - UISearchBarDelegate
@@ -168,31 +236,12 @@ extension SearchFoodTableViewController: SearchTitleViewDelegate {
     }
 }
 
-extension SearchFoodTableViewController: FoodDetailTableViewControllerHistoryDelegate {
-    func foodDetailTableViewController(_ tableViewController: FoodDetailTableViewController, didUpdateHistoryWithFood food: Food) {
-        if !history.contains(food) {
-            history.append(food)
-        }
-//        history = history.sorted { $0.updatedAt > $1.updatedAt }
-        tableView.reloadData()
-    }
-}
-
-extension SearchFoodTableViewController: QuickAddTableViewControllerHistoryDelegate {
-    func quickAddTableViewController(_ viewController: QuickAddTableViewController, didUpdateHistoryWithFood food: Food) {
-//        if !history.contains(food) {
-//            history.append(food)
-//        }
-//        history = history.sorted { $0.updatedAt > $1.updatedAt }
-//        tableView.reloadData()
-    }
-}
-
 extension SearchFoodTableViewController: HistoryTableViewCellDelegate {
-    func historyTableViewCell(_ cell: HistoryTableViewCell, didDeleteFood food: Food) {
-//        guard let row = history.firstIndex(where: { $0 == food }) else { return }
-//        history.remove(at: row)
-//        tableView.deleteRows(at: [IndexPath(row: row, section: 0)], with: .automatic)
+    func historyTableViewCell(_ cell: HistoryTableViewCell, didSelectDeleteButton: Bool) {
+        guard let indexPath = tableView.indexPath(for: cell) else { return }
+        let history = fetchedResultsController.object(at: indexPath)
+        CoreDataStack.shared.context.delete(history)
+        CoreDataStack.shared.saveContext()
     }
 }
 
@@ -244,16 +293,5 @@ extension SearchFoodTableViewController: DataScannerViewControllerDelegate {
         let alert = UIAlertController(title: "Item not found", message: "This item is not in the database. Please try using the search bar to find a similar product.\n\(id)", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "Got it!", style: .cancel, handler: nil))
         self.present(alert, animated: true, completion: nil)
-    }
-}
-
-extension SearchFoodTableViewController: ResultTableViewCellHistoryDelegate {
-    func resultTableViewCell(_ cell: ResultTableViewCell, didUpdateHistoryWithFood food: Food) {
-//        print(#function)
-//        if !history.contains(food) {
-//            history.append(food)
-//        }
-//        history = history.sorted { $0.updatedAt > $1.updatedAt }
-//        tableView.reloadData()
     }
 }

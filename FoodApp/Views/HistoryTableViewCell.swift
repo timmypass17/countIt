@@ -8,13 +8,12 @@
 import UIKit
 
 protocol HistoryTableViewCellDelegate: AnyObject {
-    func historyTableViewCell(_ cell: HistoryTableViewCell, didDeleteFood food: Food)
+    func historyTableViewCell(_ cell: HistoryTableViewCell, didSelectDeleteButton: Bool)
 }
 
 class HistoryTableViewCell: UITableViewCell {
     static let reuseIdentifier = "HistoryCell"
 
-    var cdFood: Food!
     weak var delegate: HistoryTableViewCellDelegate?
 
     let titleLabel: UILabel = {
@@ -85,18 +84,22 @@ class HistoryTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func update(with cdFood: Food) {
-        self.cdFood = cdFood
-//        let food = cdFood.convertToFDCFood()
-//        titleLabel.text = "\(food.description)"
-//        descriptionLabel.text = food.getDescriptionFormatted(foodPortion: food.foodPortions[(food.foodPortions.count - 1) / 2])
-//        descriptionLabel.text = food.getFoodEntryDescriptionFormatted(foodPortion: food.foodPortions[(food.foodPortions.count - 1) / 2])
+    func update(history: History) {
+        let food = history.food
+        titleLabel.text = food?.foodInfo?.name
+        let totalGramWeight = (food?.gramWeight ?? 0) * Double(food?.quantity ?? 0)
+        if let modifer = food?.modifier {
+            descriptionLabel.text = "\(food?.quantity ?? 0) \(modifer) (\(totalGramWeight.trimmed) g), \(food?.foodInfo?.brandName_ ?? "NA")"
+        } else {
+            descriptionLabel.text = "\(totalGramWeight.trimmed) g, \(food?.foodInfo?.brandName_ ?? "NA")"
+        }
     }
     
     func deleteButtonTapped() -> UIAction {
         return UIAction { [self] _ in
-            CoreDataStack.shared.deleteHistory(cdFood)
-            delegate?.historyTableViewCell(self, didDeleteFood: cdFood)
+            delegate?.historyTableViewCell(self, didSelectDeleteButton: true)
+//            CoreDataStack.shared.deleteHistory(cdFood)
+//            delegate?.historyTableViewCell(self, didDeleteFood: cdFood)
         }
     }
 }

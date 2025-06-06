@@ -155,6 +155,7 @@ class FoodService: FoodServiceProtocol {
             food.modifier = modifier
         } else if let portionDescription = portion.portionDescription {
             // extract "banana" from "1 banana"
+            // TODO: Use foodPortion.csv to get modifier instead of extracting
             let parts = extractQuantityAndModifier(from: portionDescription)
             if let quantity = parts?.0,
                let modifier = parts?.1 {
@@ -184,10 +185,44 @@ class FoodService: FoodServiceProtocol {
             }
         }
         
+        updateFoodHistoryIfNeeded(food: food)
+        
         try context.save()
         
         return food
     }
+    
+    func getFoodHistory(fdcId: Int) -> History? {
+        let request: NSFetchRequest<History> = History.fetchRequest()
+        request.predicate = NSPredicate(format: "fdcId == %d", fdcId)
+        request.fetchLimit = 1
+
+        do {
+            let res = try context.fetch(request).first
+            return res
+        } catch {
+            print("Error checking existence: \(error)")
+            return nil
+        }
+    }
+    
+    func updateFoodHistoryIfNeeded(food: Food) {
+        guard let fdcId = food.foodInfo?.fdcId else { return }
+
+        if let history = getFoodHistory(fdcId: Int(fdcId)) {
+            updateHistory(history)
+        } else {
+            let history = History(context: context)
+            history.fdcId = fdcId
+            history.createdAt_ = .now
+            history.food = food
+        }
+    }
+    
+    func updateHistory(_ history: History) {
+        history.createdAt_ = .now
+    }
+
     
     func updateFood(_ food: Food, foodPortion: FoodPortion, quantity: Int) throws -> Food {
         food.quantity = Int16(quantity)

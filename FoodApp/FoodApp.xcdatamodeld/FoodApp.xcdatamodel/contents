@@ -8,6 +8,7 @@
         <attribute name="portionId" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="quantity" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <relationship name="foodInfo" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="FoodInfo" inverseName="foods_" inverseEntity="FoodInfo"/>
+        <relationship name="history" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="History" inverseName="food" inverseEntity="History"/>
         <relationship name="meal" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Meal" inverseName="foods_" inverseEntity="Meal"/>
     </entity>
     <entity name="FoodInfo" representedClassName="FoodInfo" syncable="YES">
@@ -29,6 +30,11 @@
         <attribute name="id" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="modifier" optional="YES" attributeType="String"/>
         <relationship name="foodInfo" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="FoodInfo" inverseName="portions_" inverseEntity="FoodInfo"/>
+    </entity>
+    <entity name="History" representedClassName="History" syncable="YES">
+        <attribute name="createdAt_" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="fdcId" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <relationship name="food" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Food" inverseName="history" inverseEntity="Food"/>
     </entity>
     <entity name="Meal" representedClassName="Meal" syncable="YES">
         <attribute name="index" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>

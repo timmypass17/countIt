@@ -95,6 +95,11 @@ class DiaryViewController: UIViewController {
         super.setEditing(editing, animated: animated)
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        showToast(message: "Hello World", in: tableView)
+    }
+    
     func updateUI() {
         let optionsButton = UIBarButtonItem(image: UIImage(systemName: "slider.horizontal.3"), menu: buildMenu())
         let profileBarButton = UIBarButtonItem(image: UIImage(systemName: "person.fill"), primaryAction: nil)
@@ -520,6 +525,39 @@ extension Array where Element == Food {
     func updateIndexes() {
         for (index, foodEntry) in self.enumerated() {
             foodEntry.index = Int16(index)
+        }
+    }
+}
+
+func showToast(message: String, in view: UIView) {
+    let toastLabel = UILabel()
+    toastLabel.text = message
+    toastLabel.textColor = .white
+    toastLabel.backgroundColor = UIColor.black.withAlphaComponent(0.8)
+    toastLabel.textAlignment = .center
+    toastLabel.font = UIFont.systemFont(ofSize: 14)
+    toastLabel.numberOfLines = 0
+    toastLabel.alpha = 0.0
+    toastLabel.layer.cornerRadius = 10
+    toastLabel.clipsToBounds = true
+
+    let padding: CGFloat = 16
+    let maxWidth = view.frame.width - padding * 2
+    let textSize = toastLabel.sizeThatFits(CGSize(width: maxWidth, height: CGFloat.greatestFiniteMagnitude))
+    toastLabel.frame = CGRect(x: padding,
+                              y: view.safeAreaInsets.top + 10,
+                              width: maxWidth,
+                              height: textSize.height + 20)
+
+    view.addSubview(toastLabel)
+
+    UIView.animate(withDuration: 0.5, animations: {
+        toastLabel.alpha = 1.0
+    }) { _ in
+        UIView.animate(withDuration: 0.5, delay: 2.0, options: .curveEaseOut, animations: {
+            toastLabel.alpha = 0.0
+        }) { _ in
+            toastLabel.removeFromSuperview()
         }
     }
 }

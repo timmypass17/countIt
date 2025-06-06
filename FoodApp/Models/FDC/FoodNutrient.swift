@@ -98,8 +98,9 @@ struct Nutrient: Codable {
     var rank: Int
 }
 
-enum NutrientId: Int, Codable, CaseIterable {    
-    case calories = 1008
+// TODO: Import nutrient csv? 
+enum NutrientId: Int, Codable, CaseIterable {
+    case calories = 1008 // 2047 - Energy (Atwater General Factors) - (fdcid: 2514746 - "Chicken breast")
     case carbs = 1005
     case fiber = 1079
     case sugarTotal = 2000
