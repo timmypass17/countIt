@@ -39,7 +39,7 @@ class CalendarViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        title = "Select Date to Copy"
+        title = "Select Meal Plan Date to Copy"
         datePicker.date = date
         view.backgroundColor = .systemBackground
         

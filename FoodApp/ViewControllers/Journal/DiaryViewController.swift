@@ -224,14 +224,14 @@ class DiaryViewController: UIViewController {
     func copyDateAction() -> UIAction {
         return UIAction(title: NSLocalizedString("Date", comment: ""),
                         image: UIImage(systemName: "calendar")) { [self] action in
-            //            let calendarViewController =  CalendarViewController(date: mealPlan.date)
-            //            calendarViewController.delegate = self
-            //            let navigationController = UINavigationController(rootViewController: calendarViewController)
-            //            if let sheet = navigationController.sheetPresentationController {
-            //                sheet.detents = [.medium()]
-            //            }
-            //            
-            //            self.present(navigationController, animated: true)
+            let calendarViewController =  CalendarViewController(date: mealPlan.date)
+            calendarViewController.delegate = self
+            let navigationController = UINavigationController(rootViewController: calendarViewController)
+            if let sheet = navigationController.sheetPresentationController {
+                sheet.detents = [.medium()]
+            }
+            
+            self.present(navigationController, animated: true)
         }
     }
 }
@@ -495,15 +495,22 @@ extension DiaryViewController: MealPlanDateViewDelegate {
             }
         }
         
-        navigationItem.leftBarButtonItem?.menu = buildMenu()
         updateUI()
     }
 }
 
 extension DiaryViewController: CalendarViewControllerDelegate {
     func calendarViewController(_ sender: CalendarViewController, didSelectDate date: Date) {
-        //        self.mealPlan = CoreDataStack.shared.copy(mealPlanAt: date, into: self.mealPlan)
-        //        updateUI()
+        guard let otherMealPlan = foodService.getMealPlan(date: date) else {
+            return
+        }
+        
+        do {
+            self.mealPlan = try foodService.copyMeals(from: otherMealPlan, to: mealPlan)
+        } catch {
+            print("Error copying meal by date: \(error)")
+        }
+        updateUI()
     }
 }
 
