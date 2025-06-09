@@ -41,7 +41,7 @@ struct BrandedFoodItem: FoodItem {
     init(from decoder: any Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.fdcId = try container.decode(Int.self, forKey: .fdcId)
-        self.brandName = try container.decode(String.self, forKey: .brandName)
+        self.brandName = try container.decode(String.self, forKey: .brandName).capitalized
         self.dataType = try container.decode(DataType.self, forKey: .dataType)
         self.description = try container.decode(String.self, forKey: .description).firstUppercased
         self.gtinUpc = try container.decode(String.self, forKey: .gtinUpc)

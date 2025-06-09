@@ -93,11 +93,12 @@ extension CoreDataStack {
         return foodEntry
     }
     
-    func addMeal(mealName: String, to mealPlan: MealPlan) {
+    func addMeal(mealName: String, to mealPlan: MealPlan) throws {
         let meal = Meal(context: context)
-//        meal.name = mealName
-//        meal.index = Int16(mealPlan.meals.count)
-//        meal.mealPlan = mealPlan
+        meal.name = mealName
+        meal.index = Int16(mealPlan.meals.count)
+        meal.mealPlan = mealPlan
+        try context.save()
     }
     
     func copy(mealPlanAt date: Date, into mealPlan: MealPlan) -> MealPlan {

@@ -39,13 +39,13 @@ extension MealPlan {
     }
     
     var meals: [Meal] {
-        get { (meals_?.allObjects as! [Meal]).sorted { $0.index < $1.index } }
+        get { (meals_?.allObjects as? [Meal] ?? []).sorted { $0.index < $1.index } }
         set { meals_ = NSSet(array: newValue) }
     }
     
     var nutrientGoals: [NutrientGoal] {
         get {
-            nutrientGoals_?.allObjects as! [NutrientGoal]
+            nutrientGoals_?.allObjects as? [NutrientGoal] ?? []
         }
         set {
             nutrientGoals_ = NSSet(array: newValue)

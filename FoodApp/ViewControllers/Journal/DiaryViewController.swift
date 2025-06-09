@@ -9,11 +9,12 @@ import UIKit
 import SwiftUI
 import CoreData
 
-// Can't use FRC, doesn't detect relationship changes properly. E.g. FRC<Meal>, if you insert food to meal, doesn't see it as "insert" but as an "update" to meal. So doesn't know when to insert/delete rows and crashes
+// Can't use fetch result controller, doesn't detect relationship changes properly. E.g. FRC<Meal>, if you insert food to meal, doesn't see it as "insert" but as an "update" to meal. So doesn't know when to insert/delete rows and crashes
+// TODO: add nickname to foods
 class DiaryViewController: UIViewController {
     
     let tableView: UITableView = {
-        let tableView = UITableView(frame: .zero, style: .grouped)
+        let tableView = UITableView(frame: .zero, style: .insetGrouped)
         tableView.translatesAutoresizingMaskIntoConstraints = false
         return tableView
     }()
@@ -97,7 +98,6 @@ class DiaryViewController: UIViewController {
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        showToast(message: "Hello World", in: tableView)
     }
     
     func updateUI() {
@@ -146,25 +146,31 @@ class DiaryViewController: UIViewController {
     }
     
     private func showMealAlert() {
-        //        let alert = UIAlertController(title: "Add Meal", message: "Enter name for meal", preferredStyle: .alert)
-        //
-        //        alert.addTextField { textField in
-        //            textField.placeholder = "Ex. Breakfast"
-        //            let textChangedAction = UIAction { _ in
-        //                alert.actions[1].isEnabled = textField.text!.count > 0
-        //            }
-        //            textField.addAction(textChangedAction, for: .allEditingEvents)
-        //        }
-        //        
-        //        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
-        //        alert.addAction(UIAlertAction(title: "Save", style: .default, handler: { [self] _ in
-        //            guard let mealName = alert.textFields?.first?.text else { return }
-        //            CoreDataStack.shared.addMeal(mealName: mealName, to: mealPlan)
-        //            tableView.insertSections(IndexSet(integer: mealPlan.meals.count), with: .automatic)
-        //        }))
-        //
-        //        // show the alert
-        //        self.present(alert, animated: true, completion: nil)
+        let alert = UIAlertController(title: "Add Meal", message: "Enter name for meal", preferredStyle: .alert)
+
+        alert.addTextField { textField in
+            textField.placeholder = "e.g. Breakfast"
+            let textChangedAction = UIAction { _ in
+                alert.actions[1].isEnabled = textField.text!.count > 0
+            }
+            textField.addAction(textChangedAction, for: .allEditingEvents)
+        }
+        
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        alert.addAction(UIAlertAction(title: "Save", style: .default, handler: { [self] _ in
+            guard let mealName = alert.textFields?.first?.text else { return }
+            
+            do {
+                let section = mealPlan.meals.count + 2
+                try CoreDataStack.shared.addMeal(mealName: mealName, to: mealPlan)
+                tableView.insertSections(IndexSet(integer: section), with: .automatic)
+            } catch {
+                print("Error adding meal: \(error)")
+            }
+        }))
+
+        // show the alert
+        self.present(alert, animated: true, completion: nil)
     }
     
     func editFoodsAction() -> UIAction {
@@ -195,21 +201,24 @@ class DiaryViewController: UIViewController {
     }
     
     func copyLatestAction() -> UIAction {
-        //        if let previousMealPlan = CoreDataStack.shared.getLatestMealPlan(currentDate: mealPlan.date), previousMealPlan.date != mealPlan.date {
-        //            let copyAction = UIAction(title: "Latest", image: UIImage(systemName: "clock")) { [self] action in
-        //                let mealPlan = CoreDataStack.shared.copy(mealPlanAt: previousMealPlan.date, into: mealPlan)
-        //                self.mealPlan = mealPlan
-        //                tableView.reloadData()
-        //            }
-        //            return copyAction
-        //            
-        //        } else {
-        //            let copyAction = UIAction(title: "Latest", image: UIImage(systemName: "clock"), attributes: .disabled) { _ in
-        //            }
-        //            return copyAction
-        //        }
-        
-        return UIAction {_ in }
+        if let previousMealPlan = foodService.getPreviousMealPlan(for: mealPlan.date) {
+            let copyAction = UIAction(title: "Previous (\(previousMealPlan.date.formatted(date: .numeric, time: .omitted)))", image: UIImage(systemName: "clock")) { [self] action in
+                do {
+                    print("timmy copying meal plan")
+                    let mealPlan = try foodService.copyMeals(from: previousMealPlan, to: mealPlan)
+                    self.mealPlan = mealPlan
+                    tableView.reloadData()
+                } catch{
+                    print("Error copying meals: \(error)")
+                }
+            }
+            return copyAction
+            
+        } else {
+            let copyAction = UIAction(title: "Previous", image: UIImage(systemName: "clock"), attributes: .disabled) { _ in
+            }
+            return copyAction
+        }
     }
     
     func copyDateAction() -> UIAction {
@@ -470,6 +479,7 @@ extension DiaryViewController: MealPlanDateViewDelegate {
         if self.mealPlan.isEmpty {
             print("Deleting meal plan: \(date.formatted(date: .abbreviated, time: .omitted))")
             CoreDataStack.shared.context.delete(mealPlan)
+            CoreDataStack.shared.saveContext()
         }
         
         if let existingMealPlan = foodService.getMealPlan(date: date) {
@@ -485,6 +495,7 @@ extension DiaryViewController: MealPlanDateViewDelegate {
             }
         }
         
+        navigationItem.leftBarButtonItem?.menu = buildMenu()
         updateUI()
     }
 }
@@ -525,39 +536,6 @@ extension Array where Element == Food {
     func updateIndexes() {
         for (index, foodEntry) in self.enumerated() {
             foodEntry.index = Int16(index)
-        }
-    }
-}
-
-func showToast(message: String, in view: UIView) {
-    let toastLabel = UILabel()
-    toastLabel.text = message
-    toastLabel.textColor = .white
-    toastLabel.backgroundColor = UIColor.black.withAlphaComponent(0.8)
-    toastLabel.textAlignment = .center
-    toastLabel.font = UIFont.systemFont(ofSize: 14)
-    toastLabel.numberOfLines = 0
-    toastLabel.alpha = 0.0
-    toastLabel.layer.cornerRadius = 10
-    toastLabel.clipsToBounds = true
-
-    let padding: CGFloat = 16
-    let maxWidth = view.frame.width - padding * 2
-    let textSize = toastLabel.sizeThatFits(CGSize(width: maxWidth, height: CGFloat.greatestFiniteMagnitude))
-    toastLabel.frame = CGRect(x: padding,
-                              y: view.safeAreaInsets.top + 10,
-                              width: maxWidth,
-                              height: textSize.height + 20)
-
-    view.addSubview(toastLabel)
-
-    UIView.animate(withDuration: 0.5, animations: {
-        toastLabel.alpha = 1.0
-    }) { _ in
-        UIView.animate(withDuration: 0.5, delay: 2.0, options: .curveEaseOut, animations: {
-            toastLabel.alpha = 0.0
-        }) { _ in
-            toastLabel.removeFromSuperview()
         }
     }
 }

@@ -46,6 +46,7 @@ struct MacrosView: View {
                 }
             }
         }
+        .padding(.vertical, 4)
     }
     
     func getNutrientConsumed(_ nutrientId: NutrientId) -> Double {

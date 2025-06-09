@@ -73,7 +73,6 @@ class MealHeaderView: UITableViewHeaderFooterView {
             nutrientsView[i].update(
                 amount: meal.nutrientAmount(nutrientId),
                 unit: nutrientId.unitName,
-                iconImage: UIImage(systemName: "\(firstLetter).circle"),
                 tintColor: UIColor(nutrientId.color)
             )
         }

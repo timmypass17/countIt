@@ -41,7 +41,7 @@ struct CaloriesConsumedView: View {
             
             HStack(alignment: .lastTextBaseline) {
                 Text("\(caloriesConsumed)")
-                    .font(.system(size: 50, weight: .semibold))
+                    .font(.system(size: 42, weight: .semibold))
                 VStack(alignment: .leading) {
                     Text("cal")
                         .bold()

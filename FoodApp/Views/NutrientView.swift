@@ -52,6 +52,7 @@ class NutrientView: UIView {
         
         container.addArrangedSubview(iconImageView)
         container.addArrangedSubview(textContainer)
+        container.setCustomSpacing(2, after: iconImageView)
         
         self.addSubview(container)
         
@@ -67,12 +68,13 @@ class NutrientView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
 
-    func update(amount: Double, unit: String, iconImage: UIImage?, tintColor: UIColor) {
-        var config = UIImage.SymbolConfiguration(pointSize: 12)
-        let colors: [UIColor] = [.label, tintColor]
-        config = config.applying(UIImage.SymbolConfiguration(paletteColors: colors))
-        iconImageView.image = iconImage?.withConfiguration(config)
-        
+    func update(amount: Double, unit: String, tintColor: UIColor) {
+        let config = UIImage.SymbolConfiguration(pointSize: 6, weight: .regular)
+        let image = UIImage(systemName: "circle.fill", withConfiguration: config)
+        iconImageView.image = image?
+            .withRenderingMode(.alwaysTemplate) // ignore original color
+        iconImageView.tintColor = tintColor
+
         amountLabel.text = "\(Int(amount))"
         unitLabel.text = unit
     }

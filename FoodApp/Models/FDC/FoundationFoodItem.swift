@@ -11,7 +11,7 @@ struct FoundationFoodItem: FoodItem {
     let fdcId: Int
     let dataType: DataType
     let description: String
-    let foodNutrients: [FoodNutrient]
+    var foodNutrients: [FoodNutrient]
     let foodPortions: [FoodPortion] // not in foundation
     let brandName: String = "USDA"
     
@@ -26,15 +26,38 @@ struct FoundationFoodItem: FoodItem {
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         fdcId = try container.decode(Int.self, forKey: .fdcId)
-        print("timmy :( \(fdcId)")
         dataType = try container.decode(DataType.self, forKey: .dataType)
         description = try container.decode(String.self, forKey: .description).firstUppercased
         let rawNutrients = try container.decode([RawFoodNutrient].self, forKey: .foodNutrients)
-        self.foodNutrients = rawNutrients.compactMap { raw in
-            guard let nutrientId = NutrientId(rawValue: raw.nutrient.id) else { return nil }
-            return FoodNutrient(nutrient: Nutrient(id: nutrientId, name: raw.nutrient.name, unitName: raw.nutrient.unitName, rank: 0), amount: Double(raw.amount))
+        var foodNutrients: [FoodNutrient] = []
+        for nutrientId in NutrientId.allCases {
+            if let rawNutrient = rawNutrients.first(where: { NutrientId(rawValue: $0.nutrient.id) == nutrientId }) {
+                // Nutrient exists
+                let nutrient = FoodNutrient(nutrient: Nutrient(id: nutrientId, name: nutrientId.description, unitName: nutrientId.unitName, rank: 0), amount: Double(rawNutrient.amount))
+                foodNutrients.append(nutrient)
+            } else {
+                // Add placeholder
+                let empty = FoodNutrient(nutrient: Nutrient(id: nutrientId, name: nutrientId.description, unitName: nutrientId.unitName, rank: 0), amount: 0)
+                foodNutrients.append(empty)
+            }
         }
-        
+
+        // Edge case: Calories is missing, fallback on other calories
+        if let caloriesIndex = foodNutrients.firstIndex(where: { $0.nutrientId == .calories }) {
+            let calories = foodNutrients[caloriesIndex]
+            print("timmy \(description) - \(calories.amount)")
+            if calories.amount == 0 {
+                // Fall back on other calories
+                if let fallbackCalories = foodNutrients.first(where: { $0.nutrientId == .fallbackCalories }) {
+                    print("timmy calories is 0, updating to \(fallbackCalories.amount)")
+                    foodNutrients[caloriesIndex].amount = fallbackCalories.amount
+                }
+            }
+        }
+        foodNutrients.forEach {
+            print("timmy \($0.description) - \($0.amount)")
+        }
+        self.foodNutrients = foodNutrients
         var foodPortions = try container.decodeIfPresent([FoodPortion].self, forKey: .foodPortions) ?? []
         foodPortions.append(FoodPortion.default100g)
         self.foodPortions = foodPortions

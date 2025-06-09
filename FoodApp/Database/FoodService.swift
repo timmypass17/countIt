@@ -80,30 +80,78 @@ class FoodService: FoodServiceProtocol {
         let request: NSFetchRequest<MealPlan> = MealPlan.fetchRequest()
         request.predicate = NSPredicate(format: "dateKey_ == %@", dateKey)
         request.fetchLimit = 1
-
+        
         do {
             let mealPlans = try context.fetch(request)
             if let mealPlan = mealPlans.first {
-                print("✅ Fetched existing meal plan for (\(Date.now.formatted()))")
+                print("timmy found meal plan for (\(date.formatted()))")
                 return mealPlan
             }
-            print("❌ Failed to get meal plan for (\(Date.now.formatted()))")
+            print("timmy did not find any meal plan for (\(date.formatted()))")
             return nil
         } catch {
-            print("❌ Failed to get meal plan for (\(Date.now.formatted())): \(error)")
+            print("timmy failed to get meal plan for (\(date.formatted())): \(error)")
             return nil
         }
+    }
+    
+    // Copies meals/foods from one mealplan into another
+    func copyMeals(from source: MealPlan, to destination: MealPlan) throws -> MealPlan {
+        // Delete other meal plan's meals and foods
+        for meal in destination.meals {
+            context.delete(meal)
+        }
+        
+        let meals = source.meals
+        print("timmy source: \(source.date.formatted(date: .abbreviated, time: .omitted))")
+        for meal in meals {
+            print("timmy food count: \(meal.foods.count)")
+        }
+
+        for meal in source.meals {
+            // Copy meals
+            let mealCopy = Meal(context: context)
+            print("timmy meal: \(meal.name) - food count: \(meal.foods.count)")
+            mealCopy.name = meal.name
+            mealCopy.index = meal.index
+            mealCopy.mealPlan = destination
+            for food in meal.foods {
+                // Copy foods
+                print("timmy food: \(food.description)")
+                let foodCopy = Food(context: context)
+                foodCopy.index = food.index
+                foodCopy.quantity = food.quantity
+                foodCopy.gramWeight = food.gramWeight
+                foodCopy.modifier = food.modifier
+                foodCopy.amount = food.amount
+                foodCopy.foodInfo = food.foodInfo
+                foodCopy.meal = mealCopy
+            }
+        }
+        
+        try context.save()
+        return destination
     }
     
     func createEmptyMealPlan(date: Date) throws -> MealPlan {
         guard let userProfile = getUserProfile() else { throw FoodError.missingUserProfile }
         
+        let mealNames: [String]
+        
+        if let latestMealPlan = getPreviousMealPlan(for: date) {
+            print("timmy found latest meal plan and extracting meals: \(latestMealPlan.date.formatted(date: .abbreviated, time: .omitted))")
+            mealNames = latestMealPlan.meals.map { $0.name }
+        } else {
+            print("timmy using default meal plan")
+            mealNames = ["Breakfast", "Lunch", "Dinner", "Snack"]
+        }
+        
+        print("timmy is creating empty mealPlan for :\(date.formatted(date: .abbreviated, time: .omitted))")
         let mealPlan = MealPlan(context: context)
         mealPlan.date = date
         mealPlan.dateKey = formatDateAsDateKey(date)
-
-        let mealNames = ["Breakfast", "Lunch", "Dinner", "Snack"]
-
+        
+        // TODO: Get previous meal names if possible
         for (index, name) in mealNames.enumerated() {
             let meal = Meal(context: context)
             meal.index = Int16(index)
@@ -138,8 +186,30 @@ class FoodService: FoodServiceProtocol {
         mealPlan.addToNutrientGoals_(fatsGoal)
 
         try context.save()
-        print("✅ Created empty meal plan for today (\(Date.now.formatted()))")
+        print("timmy created empty meal plan for \(date.formatted(date: .abbreviated, time: .omitted))")
         return mealPlan
+    }
+    
+    func getPreviousMealPlan(for date: Date) -> MealPlan? {
+        let fetchRequest: NSFetchRequest<MealPlan> = MealPlan.fetchRequest()
+        
+        let startOfDay = Calendar.current.startOfDay(for: date)
+        fetchRequest.predicate = NSPredicate(format: "date_ < %@", startOfDay as NSDate)
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "date_", ascending: false)]
+        fetchRequest.fetchLimit = 1
+        
+        do {
+            if let latestMealPlan = try context.fetch(fetchRequest).first {
+                print("timmy found latest meal plan for \(latestMealPlan.date.formatted(date: .abbreviated, time: .omitted))")
+                return latestMealPlan
+            } else {
+                print("timmy no latest meal plan exist")
+            }
+        } catch {
+            print("Fetch failed: \(error)")
+        }
+        
+        return nil
     }
     
     func addFood(_ fdcFood: FoodItem, with portion: FoodPortion, quantity: Int, to meal: Meal) throws -> Food {
@@ -253,7 +323,6 @@ class FoodService: FoodServiceProtocol {
         let foodInfoNutrient = FoodInfoNutrient(context: context)
         foodInfoNutrient.nutrientId = nutrientId
         foodInfoNutrient.value = Double(fdcFood.foodNutrients[nutrientId]?.amount ?? 0)
-        
         return foodInfoNutrient
     }
     
@@ -267,6 +336,7 @@ class FoodService: FoodServiceProtocol {
             foodInfoPortion.modifier = modifier
         } else if let portionDescription = foodPortion.portionDescription {
             // extract "banana" from "1 banana"
+            // TODO: Use sheets with portionId
             let parts = extractQuantityAndModifier(from: portionDescription)
             if let quantity = parts?.0,
                let modifier = parts?.1 {
@@ -305,13 +375,30 @@ class FoodService: FoodServiceProtocol {
     
     func getFoods(query: String, dataTypes: [DataType], pageSize: Int, pageNumber: Int) async throws -> FoodSearchResponse {
         let abridgedRequest = FoodsSearchAPIRequest(query: query, dataTypes: dataTypes, pageSize: pageSize, pageNumber: pageNumber)
-        print("timmy 1")
         var searchResultResponse = try await sendRequest(abridgedRequest)
-        print("timmy 2")
         let fdcIds = searchResultResponse.foodParts.map { $0.fdcId }
         // TODO: Don't use multiple fdcIds at once, is slow. Make multiple tasks for each item, fetch concurrently
-        let foods: [FoodItem] = try await getFoods(fdcIds: fdcIds, dataTypes: DataType.allCases)
-        print("timmy 3")
+//        let foods: [FoodItem] = try await getFoods(fdcIds: fdcIds, dataTypes: DataType.allCases)
+        
+        let foods: [FoodItem] = try await withThrowingTaskGroup(of: FoodItem.self) { group in
+            var foodDict: [Int: FoodItem] = [:]
+            
+            for id in fdcIds {
+                group.addTask {
+                    let food = try await self.getFood(fdcId: id)
+                    return food
+                }
+            }
+            
+            for try await food in group {
+                foodDict[food.fdcId] = food
+            }
+            
+            // Sort by original order of fdcIds
+            let sortedFoods = fdcIds.compactMap { foodDict[$0] }
+            return sortedFoods
+        }
+    
         searchResultResponse.foods.append(contentsOf: foods)
         return searchResultResponse
     }

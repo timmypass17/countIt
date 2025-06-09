@@ -81,7 +81,7 @@ class FoodDetailTableViewController: UITableViewController {
             minerals.append(foodNutrient)
         }
         
-        print("timmy nutrients: \(fdcFood.foodNutrients.count)")
+        print("fdcId: \(fdcFood.fdcId)")
         for nutrient in fdcFood.foodNutrients {
             print("\(nutrient.description) \(nutrient.amount ?? 0)")
         }
@@ -169,6 +169,7 @@ class FoodDetailTableViewController: UITableViewController {
         case .macros:
             let cell = tableView.dequeueReusableCell(withIdentifier: NutritionTableViewCell.reuseIdentifier, for: indexPath) as! NutritionTableViewCell
             let nutrient = macronutrients[indexPath.row]
+            // Calories edge case
             cell.update(with: nutrient, foodPortion: selectedFoodPortion, quantity: numberOfServings)
             cell.progressView.tintColor = .systemBlue
             cell.selectionStyle = .none

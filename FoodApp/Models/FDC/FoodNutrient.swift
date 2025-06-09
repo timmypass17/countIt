@@ -100,7 +100,8 @@ struct Nutrient: Codable {
 
 // TODO: Import nutrient csv? 
 enum NutrientId: Int, Codable, CaseIterable {
-    case calories = 1008 // 2047 - Energy (Atwater General Factors) - (fdcid: 2514746 - "Chicken breast")
+    case calories = 1008
+    case fallbackCalories = 2047 // fall back Energy (Atwater General Factors) - (fdcid: 2514746 - "Chicken breast")
     case carbs = 1005
     case fiber = 1079
     case sugarTotal = 2000
@@ -150,6 +151,8 @@ enum NutrientId: Int, Codable, CaseIterable {
         switch self {
         case .calories:
             return "Calories"
+        case .fallbackCalories:
+            return "Fallback Calories"
         case .carbs:
             return "Carbohydrates"
         case .fiber:
@@ -228,6 +231,7 @@ enum NutrientId: Int, Codable, CaseIterable {
     var shortDescription: String {
         switch self {
         case .calories: return "Calories"
+        case .fallbackCalories: return "Calories"
         case .carbs: return "Carbs"
         case .fiber: return "Fiber"
         case .sugarTotal: return "Sugars"
@@ -275,7 +279,8 @@ enum NutrientId: Int, Codable, CaseIterable {
         // Energy
         case .calories:
             return "cal"
-        
+        case .fallbackCalories:
+            return "cal"
         // Macronutrients (mass)
         case .carbs, .fiber,
              .sugarTotal, .sugarAdded,
