@@ -53,7 +53,8 @@ class DiaryViewController: UIViewController {
         super.viewDidLoad()
         tableView.dataSource = self
         tableView.delegate = self
-        
+        tableView.showsVerticalScrollIndicator = false
+
         view.addSubview(tableView)
         
         NSLayoutConstraint.activate([
@@ -112,11 +113,12 @@ class DiaryViewController: UIViewController {
     }
     
     func buildMenu() -> UIMenu {
-        let copyMenu = UIMenu(title: "Copy Meal Plan",
+        let copyMenu = UIMenu(title: "Copy Meal Plan From Another Date",
                               image: UIImage(systemName: "doc.on.doc"),
+                              options: .displayInline,
                               children: [copyLatestAction(), copyDateAction()])
         
-        let menu = UIMenu(children: [editFoodsAction(), editMealsAction(), copyMenu])
+        let menu = UIMenu(children: [editMealsAction(), editFoodsAction(), copyMenu])
         return menu
     }
     
@@ -202,7 +204,7 @@ class DiaryViewController: UIViewController {
     
     func copyLatestAction() -> UIAction {
         if let previousMealPlan = foodService.getPreviousMealPlan(for: mealPlan.date) {
-            let copyAction = UIAction(title: "Previous (\(previousMealPlan.date.formatted(date: .numeric, time: .omitted)))", image: UIImage(systemName: "clock")) { [self] action in
+            let copyAction = UIAction(title: "\(previousMealPlan.date.formatted(date: .abbreviated, time: .omitted))", image: UIImage(systemName: "clock.arrow.circlepath")) { [self] action in
                 do {
                     print("timmy copying meal plan")
                     let mealPlan = try foodService.copyMeals(from: previousMealPlan, to: mealPlan)
@@ -215,14 +217,14 @@ class DiaryViewController: UIViewController {
             return copyAction
             
         } else {
-            let copyAction = UIAction(title: "Previous", image: UIImage(systemName: "clock"), attributes: .disabled) { _ in
+            let copyAction = UIAction(title: "No Previous", image: UIImage(systemName: "clock.arrow.circlepath"), attributes: .disabled) { _ in
             }
             return copyAction
         }
     }
     
     func copyDateAction() -> UIAction {
-        return UIAction(title: NSLocalizedString("Date", comment: ""),
+        return UIAction(title: NSLocalizedString("Select a Date", comment: ""),
                         image: UIImage(systemName: "calendar")) { [self] action in
             let calendarViewController =  CalendarViewController(date: mealPlan.date)
             calendarViewController.delegate = self
@@ -475,6 +477,7 @@ extension DiaryViewController: FoodDetailTableViewControllerDismissDelegate {
 
 extension DiaryViewController: MealPlanDateViewDelegate {
     func mealPlanDateViewDelegate(_ sender: MealPlanDateView, datePickerValueChanged date: Date) {
+        let oldDate = mealPlan.date
         // When moving between dates, clean up empty meals
         if self.mealPlan.isEmpty {
             print("Deleting meal plan: \(date.formatted(date: .abbreviated, time: .omitted))")
@@ -496,6 +499,22 @@ extension DiaryViewController: MealPlanDateViewDelegate {
         }
         
         updateUI()
+        animateTableChange(direction: date > oldDate ? .left : .right)
+    }
+    
+    enum TableAnimationDirection {
+        case left, right
+    }
+
+    func animateTableChange(direction: TableAnimationDirection) {
+        let transition = CATransition()
+        transition.type = .push
+        transition.subtype = direction == .left ? .fromRight : .fromLeft
+        transition.duration = 0.3
+        transition.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
+        tableView.layer.add(transition, forKey: kCATransition)
+
+        tableView.reloadData()
     }
 }
 
