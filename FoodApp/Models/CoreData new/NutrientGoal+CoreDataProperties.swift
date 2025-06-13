@@ -33,7 +33,8 @@ extension NutrientGoal {
                 nutrientId_ = nil
                 return
             }
-            nutrientId_ = NSNumber(value: id)        }
+            nutrientId_ = NSNumber(value: id)
+        }
     }
 }
 

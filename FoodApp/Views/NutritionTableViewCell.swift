@@ -83,11 +83,33 @@ class NutritionTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func update(with foodNutrient: FoodNutrient, foodPortion: FoodPortion, quantity: Int) {
-        nameLabel.text = foodNutrient.nutrient?.name
+    func update(with foodNutrient: FoodNutrient, foodPortion: FoodPortion, quantity: Int, goal: Double) {
+        nameLabel.text = foodNutrient.nutrient?.id.description
         let amount = Int(scaledNutrientAmount(amountPer100g: foodNutrient.amount ?? 0, actualServingSize: Double(foodPortion.gramWeight))) * quantity
         amountLabel.text = "\(amount) \(foodNutrient.nutrient?.unitName ?? "")"
-        percentLabel.text = "-"
+        let value = foodNutrient.amount ?? 0
+        var progress = 0.0
+        if goal > 0 {
+            progress = value / goal
+        }
+        let percentage = Int(((progress) * 100).rounded())
+        if percentage < 1 {
+            percentLabel.text = "-"
+        } else {
+            percentLabel.text = "\(percentage)%"
+        }
+        
+        if let isSecondary = foodNutrient.nutrient?.id.isSecondary, isSecondary == true {
+            nameLabel.textColor = .secondaryLabel
+            leadingConstraint.constant = 25
+        }  else if let isTertiary = foodNutrient.nutrient?.id.isTertiary, isTertiary == true {
+            nameLabel.textColor = .secondaryLabel
+            leadingConstraint.constant = 50
+        } else {
+            nameLabel.textColor = .label
+            leadingConstraint.constant = 0
+        }
+        
         
 //        let nutrientAmount = (calculateNutrientPerServing(nutrientPer100g: foodNutrient.amount ?? 0, servingSizeGramWeight: foodPortion.gramWeight) * Float(quantity))
 //        if let nutrientID = foodNutrient.nutrient?.id,

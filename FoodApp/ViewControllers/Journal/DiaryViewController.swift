@@ -34,7 +34,7 @@ class DiaryViewController: UIViewController {
             self.mealPlan = existingMealPlan
         } else {
             do {
-                self.mealPlan = try foodService.createEmptyMealPlan(date: .now)
+                self.mealPlan = try foodService.createEmptyMealPlan(date: .now, userProfile: userProfile)
             } catch {
                 // useful for development, don't keep in prod
                 fatalError("User profile is missing")
@@ -103,13 +103,19 @@ class DiaryViewController: UIViewController {
     
     func updateUI() {
         let optionsButton = UIBarButtonItem(image: UIImage(systemName: "slider.horizontal.3"), menu: buildMenu())
-        let profileBarButton = UIBarButtonItem(image: UIImage(systemName: "person.fill"), primaryAction: nil)
+        let profileBarButton = UIBarButtonItem(image: UIImage(systemName: "person.fill"), primaryAction: didTapProfileButton())
 
         navigationItem.leftBarButtonItem = optionsButton
         navigationItem.rightBarButtonItem = profileBarButton
         
         
         tableView.reloadData()
+    }
+    
+    func didTapProfileButton() -> UIAction {
+        return UIAction { _ in
+            self.navigationController?.pushViewController(ProfileViewController(userProfile: self.userProfile), animated: true)
+        }
     }
     
     func buildMenu() -> UIMenu {
@@ -341,6 +347,7 @@ extension DiaryViewController: UITableViewDelegate {
         let selectedPortion = food.foodInfo?.convertToFoodPortions().first { $0.id == food.portionId }
         let updateFoodDetailTableViewController = UpdateFoodDetailViewController(food: food, fdcFood: fdcFood, meal: meal, foodService: foodService, selectedFoodPortion: selectedPortion, numberOfServings: Int(food.quantity))
         updateFoodDetailTableViewController.delegate = self
+        updateFoodDetailTableViewController.dismissDelegate = self
         present(UINavigationController(rootViewController: updateFoodDetailTableViewController), animated: true)
     }
     
@@ -491,7 +498,7 @@ extension DiaryViewController: MealPlanDateViewDelegate {
         } else {
             do {
                 print("Creating meal plan: \(date.formatted(date: .abbreviated, time: .omitted))")
-                self.mealPlan = try foodService.createEmptyMealPlan(date: date)
+                self.mealPlan = try foodService.createEmptyMealPlan(date: date, userProfile: userProfile)
             } catch {
                 // useful for development, don't keep in prod
                 fatalError("User profile is missing")

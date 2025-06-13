@@ -7,6 +7,10 @@
 
 import UIKit
 
+protocol OnboardingGoalViewControllerDelegate: AnyObject {
+    func onboardingGoalViewController(_ viewController: OnboardingGoalViewController, didUpdateCurrentWeightKg weightKg: Double?)
+}
+
 class OnboardingGoalViewController: UIViewController {
     
     let titleLabel: UILabel = {
@@ -47,6 +51,8 @@ class OnboardingGoalViewController: UIViewController {
     
     let weightGoals = WeightGoal.allCases
     let userProfile: UserProfile
+    var startingWeightKg: Double? = nil
+    weak var delegate: OnboardingGoalViewControllerDelegate?
     
     enum Section: Int, CaseIterable {
         case goal, weightInput
@@ -118,16 +124,23 @@ extension OnboardingGoalViewController: UITableViewDataSource {
         case .weightInput:
             if indexPath.row == 0 {
                 let cell = tableView.dequeueReusableCell(withIdentifier: WeightInputTableViewCell.reuseIdentifier, for: indexPath) as! WeightInputTableViewCell
-                cell.update(title: "Current Weight", unit: userProfile.weightUnit, weightKg: userProfile.currentWeightKg) { weightText in
+                cell.update(title: "Current Weight", unit: userProfile.weightUnit, weightKg: startingWeightKg) { weightText in
                     guard let weight = Double(weightText) else {
-                        self.userProfile.currentWeightKg = nil
+                        self.startingWeightKg = nil
+                        self.delegate?.onboardingGoalViewController(self, didUpdateCurrentWeightKg: self.startingWeightKg)
                         NotificationCenter.default.post(name: .userInfoUpdated, object: nil)
                         return
                     }
+                                        
+                    switch self.userProfile.weightUnit {
+                    case .pounds:
+                        self.startingWeightKg = convertPoundsToKilograms(weight)
+                    case .kilograms:
+                        self.startingWeightKg = weight
+                    }
+                    self.delegate?.onboardingGoalViewController(self, didUpdateCurrentWeightKg: self.startingWeightKg)
                     
-                    self.userProfile.setCurrentWeight(weight: weight)
-                    
-                    if let currentWeightKg = self.userProfile.currentWeightKg,
+                    if let currentWeightKg = self.startingWeightKg,
                        let goalWeightKg = self.userProfile.goalWeightKg {
                         if currentWeightKg > goalWeightKg {
                             // Don't update weekly goal if user didn't change weightGoal
@@ -164,7 +177,7 @@ extension OnboardingGoalViewController: UITableViewDataSource {
                     
                     self.userProfile.setGoalWeight(weight: weight)
                     
-                    if let currentWeightKg = self.userProfile.currentWeightKg,
+                    if let currentWeightKg = self.startingWeightKg,
                        let goalWeightKg = self.userProfile.goalWeightKg {
                         if currentWeightKg > goalWeightKg {
                             // Don't update weekly goal if user didn't change weightGoal

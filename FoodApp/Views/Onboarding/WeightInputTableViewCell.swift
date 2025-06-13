@@ -70,10 +70,8 @@ class WeightInputTableViewCell: UITableViewCell {
 
     func update(title: String, unit: WeightUnit, weightKg: Double?, editingChangedAction: @escaping (String) -> Void) {
         titleLabel.text = title
-        unitLabel.text = unit.shortSymbol
-        print("timmy weightKg: \(weightKg)")
+        unitLabel.text = unit.singularSymbol
         if let weightKg {
-            print("timmy 1")
             switch unit {
             case .pounds:
                 weightTextField.text = convertKilogramsToPounds(weightKg).trimmed
@@ -81,7 +79,6 @@ class WeightInputTableViewCell: UITableViewCell {
                 weightTextField.text = weightKg.trimmed
             }
         } else {
-            print("timmy 2")
             weightTextField.text = nil
         }
         

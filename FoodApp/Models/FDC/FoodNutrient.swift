@@ -154,7 +154,7 @@ enum NutrientId: Int, Codable, CaseIterable {
         case .fallbackCalories:
             return "Fallback Calories"
         case .carbs:
-            return "Carbohydrates"
+            return "Total Carbohydrates"
         case .fiber:
             return "Fiber"
         case .sugarTotal:
@@ -333,9 +333,8 @@ enum NutrientId: Int, Codable, CaseIterable {
     }
     
     static let macronutrients: [NutrientId] = [
-        .calories, .carbs, .fiber, .sugarTotal, .sugarAdded,
-        .fatTotal, .fatMono, .fatPoly, .fatSaturated,
-        .cholesterol, .protein
+        .calories, .fatTotal, .fatMono, .fatPoly, .fatSaturated,
+        .cholesterol, .sodium, .carbs, .fiber, .sugarTotal, .sugarAdded, .protein
     ]
     
     static let vitamins: [NutrientId] = [
@@ -352,6 +351,27 @@ enum NutrientId: Int, Codable, CaseIterable {
     static let other: [NutrientId] = [
         .water, .caffeine
     ]
+    
+}
+
+extension NutrientId {
+    var isSecondary: Bool {
+        switch self {
+        case .fatMono, .fatPoly, .fiber, .sugarTotal:
+            return true
+        default:
+            return false
+        }
+    }
+
+    var isTertiary: Bool {
+        switch self {
+        case .sugarAdded:
+            return true
+        default:
+            return false
+        }
+    }
 }
 
 //// Wrapper for nutrients

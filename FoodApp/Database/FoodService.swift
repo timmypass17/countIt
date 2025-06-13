@@ -14,7 +14,7 @@ protocol FoodServiceProtocol {
     func getFoods(query: String, dataTypes: [DataType], pageSize: Int, pageNumber: Int) async throws -> FoodSearchResponse
     func getFoods(fdcIds: [Int], dataTypes: [DataType]) async throws -> [FoodItem]
     func getFood(fdcId: Int) async throws -> FoodItem
-    func createEmptyMealPlan(date: Date) throws -> MealPlan
+//    func createEmptyMealPlan(date: Date) throws -> MealPlan
 }
 
 class FoodService: FoodServiceProtocol {
@@ -25,37 +25,126 @@ class FoodService: FoodServiceProtocol {
         case missingUserProfile
     }
     
-    func createUserProfile(_ userProfile: UserProfile) {
-        do {
-            try userProfile.managedObjectContext?.save()
-            print("✅ User profile saved")
-        } catch {
-            print("❌ Failed to save user profile: \(error.localizedDescription)")
-        }
+    func createUserProfile(_ userProfile: UserProfile) throws {
+        guard let dailyCalories = userProfile.dailyCalories,
+              let dailyCarbs = userProfile.carbsGrams,
+              let dailyProtein = userProfile.proteinGrams,
+              let dailyFat = userProfile.fatsGrams
+        else { return }
+        // set defaults
+        let calorieGoal = createUserNutrientGoal(.calories, value: Double(dailyCalories))
+        let carbsGoal = createUserNutrientGoal(.carbs, value: Double(dailyCarbs))
+        let proteinGoal = createUserNutrientGoal(.protein, value: Double(dailyProtein))
+        let fatGoal = createUserNutrientGoal(.fatTotal, value: Double(dailyFat))
+        
+        // macros
+        let fatMono = createUserNutrientGoal(.fatMono, value: 20)
+        let fatPoly = createUserNutrientGoal(.fatPoly, value: 8)
+        let fatSaturated = createUserNutrientGoal(.fatSaturated, value: 20)
+        let cholestrol = createUserNutrientGoal(.cholesterol, value: 300)
+        let sodium = createUserNutrientGoal(.sodium, value: 2300)
+        let fiber = createUserNutrientGoal(.fiber, value: 28)
+        let sugarTotal = createUserNutrientGoal(.sugarTotal, value: 50)
+        let sugarAdded = createUserNutrientGoal(.sugarAdded, value: 30)
+        
+        // vitamins
+        let vitaminA = createUserNutrientGoal(.vitaminA, value: 3000)
+        let vitaminB1 = createUserNutrientGoal(.vitaminB1, value: 1.2)
+        let vitaminB2 = createUserNutrientGoal(.vitaminB2, value: 1.3)
+        let vitaminB3 = createUserNutrientGoal(.vitaminB3, value: 16)
+        let vitaminB6 = createUserNutrientGoal(.vitaminB6, value: 1.7)
+        let vitaminB7 = createUserNutrientGoal(.vitaminB7, value: 30)
+        let vitaminB12 = createUserNutrientGoal(.vitaminB12, value: 2.4)
+        let vitaminC = createUserNutrientGoal(.vitaminC, value: 90)
+        let vitaminD = createUserNutrientGoal(.vitaminD, value: 20)
+        let vitaminE = createUserNutrientGoal(.vitaminE, value: 15)
+        let vitaminK = createUserNutrientGoal(.vitaminK, value: 120)
+        let folate = createUserNutrientGoal(.folate, value: 400)
+        
+        // minerals
+        let calcium = createUserNutrientGoal(.calcium, value: 1300)
+        let iron = createUserNutrientGoal(.iron, value: 18)
+        let magnesium = createUserNutrientGoal(.magnesium, value: 420)
+        let phosphorus = createUserNutrientGoal(.phosphorus, value: 1250)
+        let potassium = createUserNutrientGoal(.potassium, value: 4700)
+        let zinc = createUserNutrientGoal(.zinc, value: 11)
+        let copper = createUserNutrientGoal(.copper, value: 0.9)
+        let iodine = createUserNutrientGoal(.iodine, value: 150)
+        let manganese = createUserNutrientGoal(.manganese, value: 2.3)
+        let selenium = createUserNutrientGoal(.selenium, value: 55)
+        
+        // other
+        let water = createUserNutrientGoal(.water, value: 3700)
+        let caffeine = createUserNutrientGoal(.caffeine, value: 400)
+        
+        let allGoals = [
+            calorieGoal, carbsGoal, proteinGoal, fatGoal,
+            fatMono, fatPoly, fatSaturated, cholestrol, sodium, fiber, sugarTotal, sugarAdded,
+            vitaminA, vitaminB1, vitaminB2, vitaminB3, vitaminB6, vitaminB7, vitaminB12,
+            vitaminC, vitaminD, vitaminE, vitaminK, folate,
+            calcium, iron, magnesium, phosphorus, potassium,
+            zinc, copper, iodine, manganese, selenium,
+            water, caffeine
+        ]
+        
+        allGoals.forEach { $0.userProfile = userProfile }
+        
+        try context.save()
+        print("✅ User profile saved")
+    }
+    
+    func createUserWeight(weightInKg: Double, date: Date) throws {
+        let userWeight = UserWeight(context: context)
+        userWeight.date_ = date
+        userWeight.weightInKg = weightInKg
+        try context.save()
+    }
+    
+    func createUserNutrientGoal(_ nutrientId: NutrientId, value: Double) -> UserNutrientGoal {
+        let userNutrientGoal = UserNutrientGoal(context: context)
+        userNutrientGoal.nutrientId = nutrientId
+        userNutrientGoal.value = value
+        return userNutrientGoal
     }
     
     func signOut()  {
         KeychainItem.deleteUserIdentifierFromKeychain()
     }
     
+    // NSBatchDeleteRequest - deletes items efficiently without having to fetch them.
+    // note: Ignore's deletion rules
+    // https://www.avanderlee.com/swift/nsbatchdeleterequest-core-data/
     func deleteAccount() throws {
-        deleteUserProfile()
-        // Delete rest of user stuff? Maybe cascade deletion rule is enough
+        for entityName in CoreDataStack.shared.persistentContainer.managedObjectModel.entities.map({ $0.name! }) {
+            let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: entityName)
+            let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
+            batchDeleteRequest.resultType = .resultTypeObjectIDs
+            
+            let result = try context.execute(batchDeleteRequest) as? NSBatchDeleteResult
+            if let objectIDs = result?.result as? [NSManagedObjectID] {
+                let changes: [AnyHashable: Any] = [NSDeletedObjectsKey: objectIDs]
+                // need to notifiy cloudkit about deletion
+                // "Hey, these object IDs were deleted—clean up your in-memory state, and notify CloudKit too."
+                NSManagedObjectContext.mergeChanges(fromRemoteContextSave: changes, into: [context])
+            }
+        }
+
+        try context.save()
     }
     
-    func deleteUserProfile() {
-        if let userProfile = getUserProfile() {
-            context.delete(userProfile)
-            do {
-                try context.save()
-                print("✅ Successfully deleted UserProfile")
-            } catch {
-                print("❌ Failed to delete UserProfile: \(error)")
-            }
-        } else {
-            print("❌ UserProfile with  not found.")
-        }
-    }
+//    func deleteUserProfile() {
+//        if let userProfile = getUserProfile() {
+//            context.delete(userProfile)
+//            do {
+//                try context.save()
+//                print("✅ Successfully deleted UserProfile")
+//            } catch {
+//                print("❌ Failed to delete UserProfile: \(error)")
+//            }
+//        } else {
+//            print("❌ UserProfile with  not found.")
+//        }
+//    }
 
     func getUserProfile() -> UserProfile? {
         let fetchRequest: NSFetchRequest<UserProfile> = UserProfile.fetchRequest()
@@ -133,7 +222,7 @@ class FoodService: FoodServiceProtocol {
         return destination
     }
     
-    func createEmptyMealPlan(date: Date) throws -> MealPlan {
+    func createEmptyMealPlan(date: Date, userProfile: UserProfile) throws -> MealPlan {
         guard let userProfile = getUserProfile() else { throw FoodError.missingUserProfile }
         
         let mealNames: [String]
@@ -160,34 +249,21 @@ class FoodService: FoodServiceProtocol {
             mealPlan.addToMeals_(meal)
         }
         
-        // Take a snapshot of current users goal and apply it to this meal plan
-        let calorieGoal = NutrientGoal(context: context)
-        calorieGoal.nutrientId = .calories
-        calorieGoal.value = Double(userProfile.dailyCalories ?? 0)
-        calorieGoal.mealPlan = mealPlan
-        mealPlan.addToNutrientGoals_(calorieGoal)
-        
-        let carbsGoal = NutrientGoal(context: context)
-        carbsGoal.nutrientId = .carbs
-        carbsGoal.value = Double(userProfile.carbsGrams ?? 0)
-        carbsGoal.mealPlan = mealPlan
-        mealPlan.addToNutrientGoals_(carbsGoal)
-        
-        let proteinGoal = NutrientGoal(context: context)
-        proteinGoal.nutrientId = .protein
-        proteinGoal.value = Double(userProfile.proteinGrams ?? 0)
-        proteinGoal.mealPlan = mealPlan
-        mealPlan.addToNutrientGoals_(proteinGoal)
-        
-        let fatsGoal = NutrientGoal(context: context)
-        fatsGoal.nutrientId = .fatTotal
-        fatsGoal.value = Double(userProfile.fatsGrams ?? 0)
-        fatsGoal.mealPlan = mealPlan
-        mealPlan.addToNutrientGoals_(fatsGoal)
+        copyNutrientGoals(userProfile, to: mealPlan)
 
         try context.save()
         print("timmy created empty meal plan for \(date.formatted(date: .abbreviated, time: .omitted))")
         return mealPlan
+    }
+    
+    func copyNutrientGoals(_ source: UserProfile, to destination: MealPlan) {
+        let userNutrientGoals = source.userNutrientGoals
+        for userNutrientGoal in userNutrientGoals {
+            let nutrientGoal = NutrientGoal(context: context)
+            nutrientGoal.value = userNutrientGoal.value
+            nutrientGoal.nutrientId = userNutrientGoal.nutrientId
+            destination.addToNutrientGoals_(nutrientGoal)
+        }
     }
     
     func getPreviousMealPlan(for date: Date) -> MealPlan? {

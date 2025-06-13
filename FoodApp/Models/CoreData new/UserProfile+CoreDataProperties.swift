@@ -17,7 +17,6 @@ extension UserProfile {
     }
     
     @NSManaged public var weightGoal_: String?
-    @NSManaged public var currentWeightKg_: NSNumber?   // all
     @NSManaged public var goalWeightKg_: NSNumber?
     @NSManaged public var weeklyGoal_: String?
     @NSManaged public var heightCm_: NSNumber?
@@ -49,14 +48,47 @@ extension UserProfile {
         weightUnit = .pounds
     }
     
-    var currentWeightKg: Double? {
-        get { currentWeightKg_?.doubleValue }
-        set { currentWeightKg_ = newValue.map(NSNumber.init) }
+    var userNutrientGoals: [UserNutrientGoal] {
+        get {
+            userNutrientGoals_?.allObjects as? [UserNutrientGoal] ?? []
+        }
+        set {
+            userNutrientGoals_ = NSSet(array: newValue)
+        }
     }
-        
+    
+//    var startingWeightKg: Double? {
+//        get { startingWeightKg_?.doubleValue }
+//        set { startingWeightKg_ = newValue.map(NSNumber.init) }
+//    }
+//    
+//    var startingWeight: Double? {
+//        get {
+//            switch weightUnit {
+//            case .pounds:
+//                let currentWeightKg = startingWeightKg_?.doubleValue ?? 0
+//                return convertKilogramsToPounds(currentWeightKg)
+//            case .kilograms:
+//                return startingWeightKg_?.doubleValue
+//            }
+//        }
+//    }
+//        
     var goalWeightKg: Double? {
         get { goalWeightKg_?.doubleValue }
         set { goalWeightKg_ = newValue.map(NSNumber.init) }
+    }
+    
+    var goalWeight: Double? {
+        get {
+            switch weightUnit {
+            case .pounds:
+                let goalWeightKg = goalWeightKg_?.doubleValue ?? 0
+                return convertKilogramsToPounds(goalWeightKg)
+            case .kilograms:
+                return goalWeightKg_?.doubleValue
+            }
+        }
     }
 
     var heightCm: Int16? {
@@ -152,13 +184,15 @@ extension UserProfile {
         return ageComponents.year ?? 0
     }
     
-    var bmr: Double {
-        guard let currentWeightKg, let heightCm else { return 0}
+    func bmr(currentWeightKg: Double) -> Double {
+        guard let heightCm else { return 0}
         let base = 10 * currentWeightKg + 6.25 * Double(heightCm) - 5 * Double(age)
         return sex == .male ? base + 5 : base - 161
     }
 
-    var tdee: Double { bmr * activityLevel.activityFactor }
+    func tdee(bmr: Double) -> Double {
+        return bmr * activityLevel.activityFactor
+    }
     
     var heightInFeetAndInches: (feet: Int, inches: Int)? {
         guard let heightCm else { return (0, 0)}
@@ -174,14 +208,14 @@ extension UserProfile {
         self.heightCm = Int16(round(newHeightCm))
     }
     
-    func setCurrentWeight(weight: Double) {
-        switch weightUnit {
-        case .pounds:
-            currentWeightKg = convertPoundsToKilograms(weight)
-        case .kilograms:
-            currentWeightKg = weight
-        }
-    }
+//    func setCurrentWeight(weight: Double) {
+//        switch weightUnit {
+//        case .pounds:
+//            startingWeightKg = convertPoundsToKilograms(weight)
+//        case .kilograms:
+//            startingWeightKg = weight
+//        }
+//    }
     
     func setGoalWeight(weight: Double) {
         switch weightUnit {
@@ -192,7 +226,7 @@ extension UserProfile {
         }
     }
 
-    func recalculateDailyCalories() {
+    func recalculateDailyCalories(tdee: Double) {
         switch weightUnit {
         case .pounds:
             let dailyAdj = weeklyGoal.poundsPerWeek * 3500 / 7
@@ -353,12 +387,17 @@ enum WeightUnit: String {
     case pounds
     case kilograms
     
-    var shortSymbol: String {
+    var singularSymbol: String {
         switch self {
-        case .pounds:
-            return "lb"
-        case .kilograms:
-            return "kg"
+        case .pounds: return "lb"
+        case .kilograms: return "kg"
+        }
+    }
+    
+    var pluralSymbol: String {
+        switch self {
+        case .pounds: return "lbs"
+        case .kilograms: return "kgs"
         }
     }
 }

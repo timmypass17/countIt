@@ -38,6 +38,7 @@ class OnboardingPageViewController: UIPageViewController {
     
     let initialPage = 0
     let userProfile: UserProfile
+    var startingWeightKg: Double? = nil
     
     var onboardingGoalViewController: OnboardingGoalViewController?
     var onboardingUserViewController: OnboardingUserViewController?
@@ -58,11 +59,13 @@ class OnboardingPageViewController: UIPageViewController {
         super.viewDidLoad()
 
         onboardingGoalViewController = OnboardingGoalViewController(userProfile: userProfile)
+        onboardingGoalViewController?.delegate = self
         onboardingUserViewController = OnboardingUserViewController(userProfile: userProfile)
         onboardingCalculationViewController = OnboardingCalculationViewController(userProfile: userProfile)
         pages = [onboardingGoalViewController, onboardingUserViewController, onboardingCalculationViewController]
             .compactMap { $0}
             .map { UINavigationController(rootViewController: $0) }
+        
         
         view.addSubview(pageControl)
         view.addSubview(continueButton)
@@ -89,38 +92,26 @@ class OnboardingPageViewController: UIPageViewController {
             if self.pageControl.currentPage < self.pages.count - 1{
                 self.moveNext()
             } else {
-                self.foodService.createUserProfile(self.userProfile)
-                self.showMainApp(userProfile: self.userProfile)
+                do {
+                    try self.foodService.createUserProfile(self.userProfile)
+                    try self.foodService.createUserWeight(weightInKg: self.startingWeightKg ?? 0, date: .now)
+                    self.showMainApp(userProfile: self.userProfile)
+                } catch {
+                    print("Failed to create User profile: \(error)")
+                }
             }
-
         }
     }
     
     func showMainApp(userProfile: UserProfile) {
-        // TODO: 
-//        let foodService = FoodService()
-//        let dashboardViewController = DashboardViewController()
-//        let diaryViewController = DiaryViewController(userProfile: userProfile, foodService: foodService)
-//        let entryViewController = EntryViewController()
-//        let progressViewController = ProgressViewController()
-//        let settingsViewController = SettingsViewController()
-//
-//        let tabBarController = UITabBarController()
-//        dashboardViewController.tabBarItem = UITabBarItem(title: "Home", image: UIImage(systemName: "house"), tag: 0)
-//        diaryViewController.tabBarItem = UITabBarItem(title: "Diary", image: UIImage(systemName: "fork.knife"), tag: 1)
-//        entryViewController.tabBarItem = UITabBarItem(title: "", image: UIImage(systemName: "plus.circle.fill"), tag: 2)
-//        progressViewController.tabBarItem = UITabBarItem(title: "Progress", image: UIImage(systemName: "chart.bar.fill"), tag: 3)
-//        settingsViewController.tabBarItem = UITabBarItem(title: "Profile", image: UIImage(systemName: "person.fill"), tag: 4)
-//
-//        tabBarController.viewControllers = [dashboardViewController, diaryViewController, entryViewController, progressViewController, settingsViewController]
-//            .map { UINavigationController(rootViewController: $0) }
-//
-//        
-//        if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-//           let window = windowScene.windows.first {
-//            window.rootViewController = tabBarController
-//            window.makeKeyAndVisible()
-//        }
+        let foodService = FoodService()
+        let diaryViewController = DiaryViewController(userProfile: userProfile, foodService: foodService)
+        
+        if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+           let window = windowScene.windows.first {
+            window.rootViewController = UINavigationController(rootViewController: diaryViewController)
+            window.makeKeyAndVisible()
+        }
     }
     
     func moveNext() {
@@ -132,7 +123,10 @@ class OnboardingPageViewController: UIPageViewController {
         pageControl.currentPage = nextPage
 
         if nextPage == 2 {
-            userProfile.recalculateDailyCalories()
+            guard let startingWeightKg else { return }
+            let bmr = userProfile.bmr(currentWeightKg: startingWeightKg)
+            let tdee = userProfile.tdee(bmr: bmr)
+            userProfile.recalculateDailyCalories(tdee: tdee)
             
             if userProfile.carbsGrams == nil &&
                 userProfile.proteinGrams == nil &&
@@ -168,13 +162,13 @@ class OnboardingPageViewController: UIPageViewController {
 
         switch pageControl.currentPage {
         case 0:
-            valid = userProfile.currentWeightKg != nil && userProfile.goalWeightKg != nil
+            valid = startingWeightKg != nil && userProfile.goalWeightKg != nil
             title = "Continue"
         case 1:
             valid = userProfile.sex_ != nil && userProfile.heightCm != nil
             title = "Continue"
         case 2:
-            valid = userProfile.currentWeightKg != nil &&
+            valid = startingWeightKg != nil &&
                     userProfile.goalWeightKg != nil &&
                     userProfile.sex_ != nil &&
                     userProfile.heightCm != nil &&
@@ -190,5 +184,11 @@ class OnboardingPageViewController: UIPageViewController {
 
         continueButton.isEnabled = valid
         continueButton.setTitle(title, for: .normal)
+    }
+}
+
+extension OnboardingPageViewController: OnboardingGoalViewControllerDelegate {
+    func onboardingGoalViewController(_ viewController: OnboardingGoalViewController, didUpdateCurrentWeightKg weightKg: Double?) {
+        self.startingWeightKg = weightKg
     }
 }

@@ -169,22 +169,24 @@ class FoodDetailTableViewController: UITableViewController {
         case .macros:
             let cell = tableView.dequeueReusableCell(withIdentifier: NutritionTableViewCell.reuseIdentifier, for: indexPath) as! NutritionTableViewCell
             let nutrient = macronutrients[indexPath.row]
-            // Calories edge case
-            cell.update(with: nutrient, foodPortion: selectedFoodPortion, quantity: numberOfServings)
+            let goal = meal?.mealPlan?.nutrientGoals[nutrient.nutrientId]?.value ?? 0
+            cell.update(with: nutrient, foodPortion: selectedFoodPortion, quantity: numberOfServings, goal: goal)
             cell.progressView.tintColor = .systemBlue
             cell.selectionStyle = .none
             return cell
         case .vitamins:
             let cell = tableView.dequeueReusableCell(withIdentifier: NutritionTableViewCell.reuseIdentifier, for: indexPath) as! NutritionTableViewCell
             let vitamin = vitamins[indexPath.row]
-            cell.update(with: vitamin, foodPortion: selectedFoodPortion, quantity: numberOfServings)
+            let goal = meal?.mealPlan?.nutrientGoals[vitamin.nutrientId]?.value ?? 0
+            cell.update(with: vitamin, foodPortion: selectedFoodPortion, quantity: numberOfServings, goal: goal)
             cell.progressView.tintColor = .systemOrange
             cell.selectionStyle = .none
             return cell
         case .minerals:
             let cell = tableView.dequeueReusableCell(withIdentifier: NutritionTableViewCell.reuseIdentifier, for: indexPath) as! NutritionTableViewCell
             let mineral = minerals[indexPath.row]
-            cell.update(with: mineral, foodPortion: selectedFoodPortion, quantity: numberOfServings)
+            let goal = meal?.mealPlan?.nutrientGoals[mineral.nutrientId]?.value ?? 0
+            cell.update(with: mineral, foodPortion: selectedFoodPortion, quantity: numberOfServings, goal: goal)
             cell.progressView.tintColor = .white
             cell.selectionStyle = .none
             return cell

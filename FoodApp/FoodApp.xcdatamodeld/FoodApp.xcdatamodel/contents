@@ -54,15 +54,14 @@
         <relationship name="mealPlan" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="MealPlan" inverseName="nutrientGoals_" inverseEntity="MealPlan"/>
     </entity>
     <entity name="UserNutrientGoal" representedClassName="UserNutrientGoal" syncable="YES">
-        <attribute name="goalValue" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
-        <attribute name="id" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="nutrientId_" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="value" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <relationship name="userProfile" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="UserProfile" inverseName="userNutrientGoals_" inverseEntity="UserProfile"/>
     </entity>
     <entity name="UserProfile" representedClassName="UserProfile" syncable="YES">
         <attribute name="activityLevel_" optional="YES" attributeType="String"/>
         <attribute name="carbsGrams_" optional="YES" attributeType="Integer 16" usesScalarValueType="YES"/>
         <attribute name="carbsPercentage" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
-        <attribute name="currentWeightKg_" optional="YES" attributeType="Double" usesScalarValueType="NO"/>
         <attribute name="dailyCalories_" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="dateOfBirth_" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="fatsGrams_" optional="YES" attributeType="Integer 16" usesScalarValueType="YES"/>
@@ -77,5 +76,9 @@
         <attribute name="weightGoal_" optional="YES" attributeType="String"/>
         <attribute name="weightUnit_" optional="YES" attributeType="String"/>
         <relationship name="userNutrientGoals_" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="UserNutrientGoal" inverseName="userProfile" inverseEntity="UserNutrientGoal"/>
+    </entity>
+    <entity name="UserWeight" representedClassName="UserWeight" syncable="YES">
+        <attribute name="date_" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="weightInKg" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
     </entity>
 </model>
