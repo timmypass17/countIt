@@ -52,6 +52,7 @@ class FoodEntryTableViewCell: UITableViewCell {
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
+
         labelContainer.addArrangedSubview(titleLabel)
         labelContainer.addArrangedSubview(descriptionLabel)
         

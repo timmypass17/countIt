@@ -12,6 +12,7 @@ class AddFoodTableViewCell: UITableViewCell {
     
     var plusImageView: UIImageView = {
         let imageView = UIImageView(image: UIImage(systemName: "plus"))
+        imageView.tintColor = .secondaryLabel
         imageView.contentMode = .scaleAspectFit
         imageView.setContentHuggingPriority(.required, for: .horizontal)
         imageView.setContentCompressionResistancePriority(.required, for: .horizontal)
@@ -21,7 +22,7 @@ class AddFoodTableViewCell: UITableViewCell {
     var titleLabel: UILabel = {
         let label = UILabel()
         label.text = "Add Food"
-        label.textColor = .systemBlue
+        label.textColor = .secondaryLabel
         return label
     }()
     

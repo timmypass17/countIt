@@ -96,7 +96,7 @@ extension LoginViewController: ASAuthorizationControllerDelegate {
         let diaryViewController = DiaryViewController(userProfile: userProfile, foodService: foodService)
         let entryViewController = EntryViewController()
         let progressViewController = ProgressViewController()
-        let settingsViewController = SettingsViewController()
+        let settingsViewController = SettingsViewController(userProfile: userProfile)
 
         let tabBarController = UITabBarController()
         dashboardViewController.tabBarItem = UITabBarItem(title: "Home", image: UIImage(systemName: "house"), tag: 0)

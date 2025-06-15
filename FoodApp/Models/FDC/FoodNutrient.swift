@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import UIKit
 import SwiftUICore
 
 struct FoodNutrient: Codable {
@@ -320,17 +321,49 @@ enum NutrientId: Int, Codable, CaseIterable {
     var color: Color {
         switch self {
         case .calories:
-            return .blue
+            return Color(uiColor: UIColor(hex: "#2E8AFF"))  // blue
         case .carbs:
-            return .yellow
+            return Color(uiColor: UIColor(hex: "#DFAB01"))  // yellow
         case .protein:
-            return .pink
+            return Color(uiColor: UIColor(hex: "#E03E3E"))  // red/pink
         case .fatTotal:
-            return .green
+            return Color(uiColor: UIColor(hex: "#0F7B6C"))  // green
         default:
             return .purple
         }
     }
+    
+    // Lighter
+//    var color: Color {
+//        switch self {
+//        case .calories:
+//            return Color(uiColor: UIColor(hex: "#2E8AFF"))  // blue
+//        case .carbs:
+//            return Color(uiColor: UIColor(hex: "#F5A623"))  // yellow
+//        case .protein:
+//            return Color(uiColor: UIColor(hex: "#FF6B6B"))  // red/pink
+//        case .fatTotal:
+//            return Color(uiColor: UIColor(hex: "#29CC7A"))  // green
+//        default:
+//            return .purple
+//        }
+//    }
+    
+    // Darker
+//    var color: Color {
+//        switch self {
+//        case .calories:
+//            return Color(uiColor: UIColor(hex: "#0B6E99"))  // blue
+//        case .carbs:
+//            return Color(uiColor: UIColor(hex: "#DFAB01"))  // yellow
+//        case .protein:
+//            return Color(uiColor: UIColor(hex: "#E03E3E"))  // red/pink
+//        case .fatTotal:
+//            return Color(uiColor: UIColor(hex: "#0F7B6C"))  // green
+//        default:
+//            return .purple
+//        }
+//    }
     
     static let macronutrients: [NutrientId] = [
         .calories, .fatTotal, .fatMono, .fatPoly, .fatSaturated,

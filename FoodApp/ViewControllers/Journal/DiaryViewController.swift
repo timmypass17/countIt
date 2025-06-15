@@ -15,6 +15,7 @@ class DiaryViewController: UIViewController {
     
     let tableView: UITableView = {
         let tableView = UITableView(frame: .zero, style: .insetGrouped)
+        tableView.backgroundColor = UIColor(hex: "#202020")
         tableView.translatesAutoresizingMaskIntoConstraints = false
         return tableView
     }()
@@ -81,7 +82,7 @@ class DiaryViewController: UIViewController {
         addMealButton.setTitle("Add Meal", for: .normal)
         footerView.addSubview(addMealButton)
         addMealButton.translatesAutoresizingMaskIntoConstraints = false
-        tableView.tableFooterView = footerView
+//        tableView.tableFooterView = footerView
         
         NSLayoutConstraint.activate([
             addMealButton.topAnchor.constraint(equalTo: footerView.layoutMarginsGuide.topAnchor),
@@ -102,19 +103,31 @@ class DiaryViewController: UIViewController {
     }
     
     func updateUI() {
-        let optionsButton = UIBarButtonItem(image: UIImage(systemName: "slider.horizontal.3"), menu: buildMenu())
-        let profileBarButton = UIBarButtonItem(image: UIImage(systemName: "person.fill"), primaryAction: didTapProfileButton())
+        let optionsButton = UIBarButtonItem(
+            image: UIImage(systemName: "ellipsis")?.withRenderingMode(.alwaysTemplate),
+            menu: buildMenu()
+        )
+        optionsButton.tintColor = .white
 
-        navigationItem.leftBarButtonItem = optionsButton
-        navigationItem.rightBarButtonItem = profileBarButton
+//        let profileBarButton = UIBarButtonItem(
+//            image: UIImage(systemName: "person.fill")?.withRenderingMode(.alwaysTemplate),
+//            primaryAction: didTapProfileButton()
+//        )
+//        profileBarButton.tintColor = .white
+
+//        navigationItem.leftBarButtonItem = optionsButton
+//        navigationItem.rightBarButtonItem = profileBarButton
         
-        
+        navigationItem.rightBarButtonItem = optionsButton
+
         tableView.reloadData()
     }
     
     func didTapProfileButton() -> UIAction {
         return UIAction { _ in
-            self.navigationController?.pushViewController(ProfileViewController(userProfile: self.userProfile), animated: true)
+            self.navigationController?.pushViewController(SettingsViewController(userProfile: self.userProfile), animated: true)
+
+//            self.navigationController?.pushViewController(GoalsViewController(userProfile: self.userProfile), animated: true)
         }
     }
     
@@ -272,6 +285,7 @@ extension DiaryViewController: UITableViewDataSource {
                 CaloriesConsumedView(mealPlan: mealPlan)
                     .environment(\.managedObjectContext, CoreDataStack.shared.context)
             }
+            cell.backgroundColor = UIColor(hex: "#252525")
             
             return cell
         }
@@ -283,6 +297,7 @@ extension DiaryViewController: UITableViewDataSource {
                 MacrosView(mealPlan: mealPlan)  // uses coredata fetch, updated automatically when core data changes
                     .environment(\.managedObjectContext, CoreDataStack.shared.context)
             }
+            cell.backgroundColor = UIColor(hex: "#252525")
             
             return cell
         }
@@ -291,11 +306,14 @@ extension DiaryViewController: UITableViewDataSource {
         if indexPath.row == meal.foods.count {
             // Add Button
             let cell = tableView.dequeueReusableCell(withIdentifier: AddFoodTableViewCell.reuseIdentifier, for: indexPath) as! AddFoodTableViewCell
+            cell.backgroundColor = UIColor(hex: "#252525")
+
             return cell
         }
         
         let food = meal.foods[indexPath.row]
         let cell = tableView.dequeueReusableCell(withIdentifier: FoodEntryTableViewCell.reuseIdentifier, for: indexPath) as! FoodEntryTableViewCell
+        cell.backgroundColor = UIColor(hex: "#252525")
         cell.update(food)
         cell.accessoryType = .disclosureIndicator
         return cell
@@ -310,6 +328,7 @@ extension DiaryViewController: UITableViewDelegate {
               let mealPlan
         else { return nil }
         
+        // TODO: Instead of using date picke, just use label and show "Today", "Yesterday", 
         let header = tableView.dequeueReusableHeaderFooterView(withIdentifier: MealHeaderView.reuseIdentifier) as! MealHeaderView
         let meal = mealPlan.meals[section - 2]
         header.update(with: meal)

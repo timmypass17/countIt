@@ -19,6 +19,14 @@ extension UserWeight {
     @NSManaged public var date_: Date?
     @NSManaged public var weightInKg: Double
 
+    func getWeight(_ weightUnit: WeightUnit) -> Double {
+        switch weightUnit {
+        case .pounds:
+            return convertKilogramsToPounds(weightInKg)
+        case .kilograms:
+            return weightInKg
+        }
+    }
 }
 
 extension UserWeight : Identifiable {

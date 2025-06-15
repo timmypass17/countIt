@@ -8,37 +8,60 @@
 import SwiftUI
 import Charts
 
+import SwiftUI
+import Charts
+
 struct CaloriesConsumedView: View {
     static let reuseIdentifier = "CaloriesConsumedView"
-    
+
     @FetchRequest
-    var meals: FetchedResults<Meal> // when meal changes (e.g. includes food added/removed but does not see deeper relationship automatically, ui changes
-    
+    var meals: FetchedResults<Meal>
+
     var mealPlan: MealPlan
+
+    // Notion Dark Mode-Inspired Colors
+    let mealColors: [Color] = [
+        Color(hex: "#2E8AFF"), // Blue
+        Color(hex: "#F5A623"), // Yellow
+        Color(hex: "#FF6B6B"), // Red
+        Color(hex: "#29CC7A")  // Green
+    ]
 
     init(mealPlan: MealPlan) {
         self.mealPlan = mealPlan
         _meals = FetchRequest(fetchRequest: Meal.fetchMeals(for: mealPlan))
     }
-    
+
     var caloriesRemaining: Int {
         return caloriesGoal - caloriesConsumed
     }
-    
+
     var caloriesGoal: Int {
         return Int(mealPlan.nutrientGoals[.calories]?.value ?? 0)
     }
-    
+
     var caloriesConsumed: Int {
         return Int(mealPlan.nutrientAmount(.calories))
     }
-        
+
+    // Sorted meals by index
+    var sortedMeals: [Meal] {
+        meals.sorted { $0.index < $1.index }
+    }
+
+    // Map sorted meal names to color
+    var sortedMealColorPairs: [(String, Color)] {
+        sortedMeals.enumerated().map { (i, meal) in
+            (meal.name, mealColors[i % mealColors.count])
+        }
+    }
+
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             Text("Calories Consumed")
                 .foregroundStyle(.secondary)
                 .padding(.bottom, 12)
-            
+
             HStack(alignment: .lastTextBaseline) {
                 Text("\(caloriesConsumed)")
                     .font(.system(size: 42, weight: .semibold))
@@ -51,29 +74,64 @@ struct CaloriesConsumedView: View {
                 }
             }
             .padding(.bottom, 12)
-            
+
             Chart {
-                ForEach(meals) { meal in
+                ForEach(sortedMeals, id: \.self) { meal in
                     BarMark(
                         x: .value("Amount", meal.nutrientAmount(.calories)),
                         y: .value("Type", "Calories")
                     )
-                    .foregroundStyle(by: .value("Name", meal.name))
+                    .foregroundStyle(by: .value("Meal", meal.name))
                     .cornerRadius(4)
                 }
-                
+
                 BarMark(
                     x: .value("Goal", caloriesRemaining),
                     y: .value("Type", "Calories")
                 )
                 .foregroundStyle(Color.gray.opacity(0.2))
                 .cornerRadius(4)
-
             }
             .frame(height: 65)
             .chartXScale(domain: 0...caloriesGoal)
             .chartYAxis(.hidden)
+            .chartLegend(.visible)
+            .chartForegroundStyleScale(
+                domain: sortedMealColorPairs.map { $0.0 },
+                range: sortedMealColorPairs.map { $0.1 }
+            )
         }
         .padding(.vertical, 8)
     }
 }
+
+extension Color {
+    init(hex: String) {
+        let scanner = Scanner(string: hex)
+        _ = scanner.scanString("#")
+        var rgb: UInt64 = 0
+        scanner.scanHexInt64(&rgb)
+
+        let r = Double((rgb >> 16) & 0xFF) / 255
+        let g = Double((rgb >> 8) & 0xFF) / 255
+        let b = Double(rgb & 0xFF) / 255
+
+        self.init(red: r, green: g, blue: b)
+    }
+}
+
+
+//var color: Color {
+//    switch self {
+//    case .calories:
+//        return Color(uiColor: UIColor(hex: "#0B6E99"))  // blue
+//    case .carbs:
+//        return Color(uiColor: UIColor(hex: "#DFAB01"))  // yellow
+//    case .protein:
+//        return Color(uiColor: UIColor(hex: "#E03E3E"))  // red/pink
+//    case .fatTotal:
+//        return Color(uiColor: UIColor(hex: "#0F7B6C"))  // green
+//    default:
+//        return .purple
+//    }
+//}

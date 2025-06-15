@@ -93,6 +93,33 @@ class FoodService: FoodServiceProtocol {
         print("✅ User profile saved")
     }
     
+    func getStartingUserWeight() -> UserWeight? {
+        let request: NSFetchRequest<UserWeight> = UserWeight.fetchRequest()
+        request.sortDescriptors = [NSSortDescriptor(key: #keyPath(UserWeight.date_), ascending: true)]
+        request.fetchLimit = 1
+        
+        do {
+            let startingWeight = try context.fetch(request).first
+            return startingWeight
+        } catch {
+            return nil
+        }
+    }
+    
+    func getCurrentUserWeight() -> UserWeight? {
+        let request: NSFetchRequest<UserWeight> = UserWeight.fetchRequest()
+        request.predicate = NSPredicate(format: "%K <= %@", #keyPath(UserWeight.date_), Date() as NSDate)
+        request.sortDescriptors = [NSSortDescriptor(key: #keyPath(UserWeight.date_), ascending: false)]
+        request.fetchLimit = 1
+        
+        do {
+            let currentWeight = try context.fetch(request).first
+            return currentWeight
+        } catch {
+            return nil
+        }
+    }
+    
     func createUserWeight(weightInKg: Double, date: Date) throws {
         let userWeight = UserWeight(context: context)
         userWeight.date_ = date

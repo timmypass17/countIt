@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SwiftUI
 
 class SettingsViewController: UIViewController {
     
@@ -41,6 +42,12 @@ class SettingsViewController: UIViewController {
             title: "",
             data: [
                 Model(
+                    image: UIImage(systemName: "person.fill")!,
+                    text: "My Profile",
+                    secondary: "",
+                    backgroundColor: .charcoal
+                ),
+                Model(
                     image: UIImage(systemName: "book.pages.fill")!,
                     text: "My Meals, Recipes & Foods",
                     secondary: "",
@@ -48,7 +55,7 @@ class SettingsViewController: UIViewController {
                 ),
                 Model(
                     image: UIImage(systemName: "chart.bar.fill")!,  // flag
-                    text: "Goals",
+                    text: "Nutrition Goals",
                     secondary: "",
                     backgroundColor: .charcoal
                 ),
@@ -58,58 +65,52 @@ class SettingsViewController: UIViewController {
                     secondary: "",
                     backgroundColor: .charcoal
                 ),
-                Model(
-                    image: UIImage(systemName: "bell.fill")!,
-                    text: "Notifications",
-                    secondary: "",
-                    backgroundColor: .charcoal
-                ),
-                Model(
-                    image: UIImage(systemName: "ruler.fill")!,
-                    text: "Units",
-                    secondary: "",
-                    backgroundColor: .charcoal
-                ),
+//                Model(
+//                    image: UIImage(systemName: "ruler.fill")!,
+//                    text: "Units",
+//                    secondary: "",
+//                    backgroundColor: .charcoal
+//                ),
                 Model(
                     image: UIImage(systemName: "fork.knife")!,
                     text: "Meal Types",
                     secondary: "",
                     backgroundColor: .charcoal
-                ),
-                Model(
-                    image: UIImage(systemName: "person.fill")!,
-                    text: "Personal Info",
-                    secondary: "",
-                    backgroundColor: .charcoal
-                ),
-                Model(
-                    image: UIImage(systemName: "person.fill")!,
-                    text: "Sign Out",
-                    secondary: "",
-                    backgroundColor: .charcoal
-                ),
-                Model(
-                    image: UIImage(systemName: "person.fill")!,
-                    text: "Delete Account",
-                    secondary: "",
-                    backgroundColor: .charcoal
                 )
+//                Model(
+//                    image: UIImage(systemName: "person.fill")!,
+//                    text: "Sign Out",
+//                    secondary: "",
+//                    backgroundColor: .charcoal
+//                ),
+//                Model(
+//                    image: UIImage(systemName: "person.fill")!,
+//                    text: "Delete Account",
+//                    secondary: "",
+//                    backgroundColor: .charcoal
+//                )
             ]
         )
     ]
-
-    static let weightIndexPath = IndexPath(row: 0, section: 0)
-    static let showTimerIndexPath = IndexPath(row: 1, section: 0)
-    static let hapticIndexPath = IndexPath(row: 2, section: 0)
-
+    
+    let userProfile: UserProfile
     let foodService = FoodService()
     
     private let email = "timmysappstuff@gmail.com"
     
+    init(userProfile: UserProfile) {
+        self.userProfile = userProfile
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         navigationItem.title = "Profile"
-        navigationController?.navigationBar.prefersLargeTitles = true
+        navigationController?.navigationBar.prefersLargeTitles = false
         tableView.dataSource = self
         tableView.delegate = self
         tableView.register(SettingsSelectableTableViewCell.self, forCellReuseIdentifier: SettingsSelectableTableViewCell.reuseIdentifier)
@@ -157,59 +158,22 @@ extension SettingsViewController: UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if indexPath.row == sections[0].data.count - 2 {
-            print("sign out")
-            foodService.signOut()
-            self.showLoginViewController()
-        } else if indexPath.row == sections[0].data.count - 1 {
-            do {
-                try foodService.deleteAccount()
-                self.showLoginViewController()
-            } catch {
-                print("Error deleting account: \(error)")
-            }
+        if indexPath == IndexPath(row: 0, section: 0)  {
+            let profileViewController = ProfileViewController(userProfile: userProfile)
+            navigationController?.pushViewController(profileViewController, animated: true)
         }
-//        if indexPath == SettingsTableViewController.weightIndexPath {
-//            let weightTableViewController = WeightTableViewController(style: .grouped)
-//            weightTableViewController.delegate = self
-//            navigationController?.pushViewController(weightTableViewController, animated: true)
-//        } else if indexPath == SettingsTableViewController.themeIndexpath {
-//            let themeTableViewController = ThemeTableViewController(style: .grouped)
-//            themeTableViewController.delegate = self
-//            navigationController?.pushViewController(themeTableViewController, animated: true)
-//        } else if indexPath == SettingsTableViewController.accentColorIndexpath {
-//            let accentColorTableViewController = AccentColorTableViewController(style: .grouped)
-//            accentColorTableViewController.delegate = self
-//            navigationController?.pushViewController(accentColorTableViewController, animated: true)
-//        } else if indexPath == SettingsTableViewController.contactIndexPath {
-//            guard MFMailComposeViewController.canSendMail() else {
-//                showMailErrorAlert()
-//                return
-//            }
-//            
-//            let mailComposer = MFMailComposeViewController()
-//            mailComposer.mailComposeDelegate = self
-//            mailComposer.setToRecipients([email])
-//            mailComposer.setSubject("[BuiltDiff] Contact Us")
-//            
-//            present(mailComposer, animated: true)
-//        } else if indexPath == SettingsTableViewController.bugIndexPath {
-//            guard MFMailComposeViewController.canSendMail() else {
-//                showMailErrorAlert()
-//                return
-//            }
-//            
-//            let mailComposer = MFMailComposeViewController()
-//            mailComposer.mailComposeDelegate = self
-//            
-//            mailComposer.setToRecipients([email])
-//            mailComposer.setSubject("[BuiltDiff] Bug Report")
-//            
-//            present(mailComposer, animated: true)
-//        } else if indexPath == SettingsTableViewController.privacyIndexPath {
-//            let privacyTableViewController = PrivacyTableViewController(style: .insetGrouped)
-//            navigationController?.pushViewController(privacyTableViewController, animated: true)
-//        }
+        if indexPath == IndexPath(row: 2, section: 0) {
+            let goalsViewController = GoalsViewController(userProfile: userProfile)
+            navigationController?.pushViewController(goalsViewController, animated: true)
+        }
+        
+        if indexPath == IndexPath(row: 3, section: 0) {
+            let context = CoreDataStack.shared.persistentContainer.viewContext
+            let weightProgressView = WeightProgressView()
+            let hostingController = UIHostingController(rootView: weightProgressView
+                .environment(\.managedObjectContext, context))
+            navigationController?.pushViewController(hostingController, animated: true)
+        }
     }
 }
 

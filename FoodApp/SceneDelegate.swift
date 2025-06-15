@@ -31,11 +31,49 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     func showMainApp(userProfile: UserProfile) {
         let foodService = FoodService()
+        let dashboardViewController = DashboardViewController()
         let diaryViewController = DiaryViewController(userProfile: userProfile, foodService: foodService)
+        let progressViewController = ProgressViewController()
+        let settingsViewController = SettingsViewController(userProfile: userProfile)
+
+        diaryViewController.tabBarItem = UITabBarItem(title: nil, image: UIImage(systemName: "house"), tag: 0)
+
+        dashboardViewController.tabBarItem = UITabBarItem(title: nil, image: UIImage(systemName: "magnifyingglass"), tag: 1)
+
+        progressViewController.tabBarItem = UITabBarItem(title: nil, image: UIImage(systemName: "chart.bar.fill"), tag: 2)
+
+        settingsViewController.tabBarItem = UITabBarItem(title: nil, image: UIImage(systemName: "person.fill"), tag: 3)
+
+        // Set view controllers
+        let tabBarController = UITabBarController()
+        tabBarController.viewControllers = [
+            diaryViewController,
+            dashboardViewController,
+            progressViewController,
+            settingsViewController
+        ].map { UINavigationController(rootViewController: $0) }
+
+        // Customize tab bar appearance
+        let appearance = UITabBarAppearance()
+        appearance.configureWithOpaqueBackground()
+        appearance.backgroundColor = UIColor(hex: "#191919")
+
+        // Set selected and unselected icon colors
+        appearance.stackedLayoutAppearance.selected.iconColor = .white
+        appearance.stackedLayoutAppearance.normal.iconColor = .secondaryLabel
+
+        tabBarController.tabBar.standardAppearance = appearance
+        if #available(iOS 15.0, *) {
+            tabBarController.tabBar.scrollEdgeAppearance = appearance
+        }
+
+        // Also update tint color to match selected icon
+        tabBarController.tabBar.tintColor = .white
         
+        // Set as root
         if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
            let window = windowScene.windows.first {
-            window.rootViewController = UINavigationController(rootViewController: diaryViewController)
+            window.rootViewController = tabBarController
             window.makeKeyAndVisible()
         }
     }

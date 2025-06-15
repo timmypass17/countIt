@@ -46,10 +46,10 @@
 		323FB9A72DCC04A800A71C53 /* SelectableTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 323FB9A62DCC04A800A71C53 /* SelectableTableViewCell.swift */; };
 		323FB9AA2DCC0AFA00A71C53 /* WeightInputTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 323FB9A92DCC0AFA00A71C53 /* WeightInputTableViewCell.swift */; };
 		323FB9AC2DCC13D800A71C53 /* MenuPickerTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 323FB9AB2DCC13D800A71C53 /* MenuPickerTableViewCell.swift */; };
-		3242C8DA2DEFF04400F05FF8 /* Food+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3242C8D82DEFDD2D00F05FF8 /* Food+CoreDataClass.swift */; };
-		3242C8DB2DEFF04400F05FF8 /* Food+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3242C8D92DEFDD2D00F05FF8 /* Food+CoreDataProperties.swift */; };
-		3242C8DC2DEFF05E00F05FF8 /* Food+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3242C8D92DEFDD2D00F05FF8 /* Food+CoreDataProperties.swift */; };
-		3242C8DD2DEFF05E00F05FF8 /* Food+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3242C8D82DEFDD2D00F05FF8 /* Food+CoreDataClass.swift */; };
+		3242C8DA2DEFF04400F05FF8 /* FoodEntry+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3242C8D82DEFDD2D00F05FF8 /* FoodEntry+CoreDataClass.swift */; };
+		3242C8DB2DEFF04400F05FF8 /* FoodEntry+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3242C8D92DEFDD2D00F05FF8 /* FoodEntry+CoreDataProperties.swift */; };
+		3242C8DC2DEFF05E00F05FF8 /* FoodEntry+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3242C8D92DEFDD2D00F05FF8 /* FoodEntry+CoreDataProperties.swift */; };
+		3242C8DD2DEFF05E00F05FF8 /* FoodEntry+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3242C8D82DEFDD2D00F05FF8 /* FoodEntry+CoreDataClass.swift */; };
 		3242C8E12DF0C22C00F05FF8 /* CDFoodItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3242C8E02DF0C22C00F05FF8 /* CDFoodItem.swift */; };
 		3242C8E22DF0C22C00F05FF8 /* CDFoodItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3242C8E02DF0C22C00F05FF8 /* CDFoodItem.swift */; };
 		3242C8E42DF0D7E700F05FF8 /* UpdateFoodDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3242C8E32DF0D7E700F05FF8 /* UpdateFoodDetailViewController.swift */; };
@@ -65,6 +65,66 @@
 		3262F83D2DFCC2DC006CB8A4 /* UserWeight+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3262F83B2DFCC2DC006CB8A4 /* UserWeight+CoreDataProperties.swift */; };
 		3262F83E2DFCC2EB006CB8A4 /* UserWeight+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3262F83A2DFCC2DC006CB8A4 /* UserWeight+CoreDataClass.swift */; };
 		3262F83F2DFCC2EB006CB8A4 /* UserWeight+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3262F83B2DFCC2DC006CB8A4 /* UserWeight+CoreDataProperties.swift */; };
+		3262F8432DFCE66A006CB8A4 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3262F8422DFCE66A006CB8A4 /* ProfileViewController.swift */; };
+		3262F89C2DFCFE20006CB8A4 /* WeightProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3262F89B2DFCFE20006CB8A4 /* WeightProgressView.swift */; };
+		3262FB7A2DFD49A7006CB8A4 /* Inter_28pt-Black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3262FB622DFD49A7006CB8A4 /* Inter_28pt-Black.ttf */; };
+		3262FB7B2DFD49A7006CB8A4 /* Inter_18pt-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3262FB492DFD49A7006CB8A4 /* Inter_18pt-Medium.ttf */; };
+		3262FB7C2DFD49A7006CB8A4 /* Inter_24pt-BlackItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3262FB512DFD49A7006CB8A4 /* Inter_24pt-BlackItalic.ttf */; };
+		3262FB7D2DFD49A7006CB8A4 /* Inter_24pt-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3262FB5E2DFD49A7006CB8A4 /* Inter_24pt-SemiBold.ttf */; };
+		3262FB7E2DFD49A7006CB8A4 /* Inter_24pt-ExtraBoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3262FB552DFD49A7006CB8A4 /* Inter_24pt-ExtraBoldItalic.ttf */; };
+		3262FB7F2DFD49A7006CB8A4 /* Inter_18pt-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3262FB462DFD49A7006CB8A4 /* Inter_18pt-Italic.ttf */; };
+		3262FB802DFD49A7006CB8A4 /* OFL.txt in Resources */ = {isa = PBXBuildFile; fileRef = 3262FB772DFD49A7006CB8A4 /* OFL.txt */; };
+		3262FB812DFD49A7006CB8A4 /* Inter_24pt-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3262FB5B2DFD49A7006CB8A4 /* Inter_24pt-Medium.ttf */; };
+		3262FB822DFD49A7006CB8A4 /* Inter_28pt-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3262FB642DFD49A7006CB8A4 /* Inter_28pt-Bold.ttf */; };
+		3262FB832DFD49A7006CB8A4 /* Inter_28pt-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3262FB6B2DFD49A7006CB8A4 /* Inter_28pt-Light.ttf */; };
+		3262FB842DFD49A7006CB8A4 /* Inter_24pt-ExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3262FB542DFD49A7006CB8A4 /* Inter_24pt-ExtraBold.ttf */; };
+		3262FB852DFD49A7006CB8A4 /* Inter_24pt-Black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3262FB502DFD49A7006CB8A4 /* Inter_24pt-Black.ttf */; };
+		3262FB862DFD49A7006CB8A4 /* Inter_24pt-Thin.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3262FB602DFD49A7006CB8A4 /* Inter_24pt-Thin.ttf */; };
+		3262FB872DFD49A7006CB8A4 /* Inter_24pt-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3262FB5D2DFD49A7006CB8A4 /* Inter_24pt-Regular.ttf */; };
+		3262FB882DFD49A7006CB8A4 /* Inter_18pt-MediumItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3262FB4A2DFD49A7006CB8A4 /* Inter_18pt-MediumItalic.ttf */; };
+		3262FB892DFD49A7006CB8A4 /* Inter_28pt-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3262FB6A2DFD49A7006CB8A4 /* Inter_28pt-Italic.ttf */; };
+		3262FB8A2DFD49A7006CB8A4 /* Inter_18pt-ExtraLight.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3262FB442DFD49A7006CB8A4 /* Inter_18pt-ExtraLight.ttf */; };
+		3262FB8B2DFD49A7006CB8A4 /* Inter_18pt-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3262FB4B2DFD49A7006CB8A4 /* Inter_18pt-Regular.ttf */; };
+		3262FB8C2DFD49A7006CB8A4 /* Inter_24pt-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3262FB522DFD49A7006CB8A4 /* Inter_24pt-Bold.ttf */; };
+		3262FB8D2DFD49A7006CB8A4 /* Inter_28pt-BoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3262FB652DFD49A7006CB8A4 /* Inter_28pt-BoldItalic.ttf */; };
+		3262FB8E2DFD49A7006CB8A4 /* Inter_28pt-LightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3262FB6C2DFD49A7006CB8A4 /* Inter_28pt-LightItalic.ttf */; };
+		3262FB8F2DFD49A7006CB8A4 /* Inter_18pt-ThinItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3262FB4F2DFD49A7006CB8A4 /* Inter_18pt-ThinItalic.ttf */; };
+		3262FB902DFD49A7006CB8A4 /* Inter-VariableFont_opsz,wght.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3262FB762DFD49A7006CB8A4 /* Inter-VariableFont_opsz,wght.ttf */; };
+		3262FB912DFD49A7006CB8A4 /* Inter_24pt-SemiBoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3262FB5F2DFD49A7006CB8A4 /* Inter_24pt-SemiBoldItalic.ttf */; };
+		3262FB922DFD49A7006CB8A4 /* Inter_18pt-ExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3262FB422DFD49A7006CB8A4 /* Inter_18pt-ExtraBold.ttf */; };
+		3262FB932DFD49A7006CB8A4 /* Inter_28pt-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3262FB6F2DFD49A7006CB8A4 /* Inter_28pt-Regular.ttf */; };
+		3262FB942DFD49A7006CB8A4 /* Inter_24pt-ExtraLightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3262FB572DFD49A7006CB8A4 /* Inter_24pt-ExtraLightItalic.ttf */; };
+		3262FB952DFD49A7006CB8A4 /* Inter_24pt-LightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3262FB5A2DFD49A7006CB8A4 /* Inter_24pt-LightItalic.ttf */; };
+		3262FB962DFD49A7006CB8A4 /* Inter_24pt-ThinItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3262FB612DFD49A7006CB8A4 /* Inter_24pt-ThinItalic.ttf */; };
+		3262FB972DFD49A7006CB8A4 /* Inter_28pt-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3262FB702DFD49A7006CB8A4 /* Inter_28pt-SemiBold.ttf */; };
+		3262FB982DFD49A7006CB8A4 /* Inter_18pt-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3262FB472DFD49A7006CB8A4 /* Inter_18pt-Light.ttf */; };
+		3262FB992DFD49A7006CB8A4 /* Inter_18pt-LightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3262FB482DFD49A7006CB8A4 /* Inter_18pt-LightItalic.ttf */; };
+		3262FB9A2DFD49A7006CB8A4 /* Inter_28pt-ThinItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3262FB732DFD49A7006CB8A4 /* Inter_28pt-ThinItalic.ttf */; };
+		3262FB9B2DFD49A7006CB8A4 /* Inter_28pt-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3262FB6D2DFD49A7006CB8A4 /* Inter_28pt-Medium.ttf */; };
+		3262FB9C2DFD49A7006CB8A4 /* Inter_28pt-Thin.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3262FB722DFD49A7006CB8A4 /* Inter_28pt-Thin.ttf */; };
+		3262FB9D2DFD49A7006CB8A4 /* Inter_18pt-ExtraBoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3262FB432DFD49A7006CB8A4 /* Inter_18pt-ExtraBoldItalic.ttf */; };
+		3262FB9E2DFD49A7006CB8A4 /* Inter_18pt-ExtraLightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3262FB452DFD49A7006CB8A4 /* Inter_18pt-ExtraLightItalic.ttf */; };
+		3262FB9F2DFD49A7006CB8A4 /* Inter_28pt-ExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3262FB662DFD49A7006CB8A4 /* Inter_28pt-ExtraBold.ttf */; };
+		3262FBA02DFD49A7006CB8A4 /* Inter_18pt-SemiBoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3262FB4D2DFD49A7006CB8A4 /* Inter_18pt-SemiBoldItalic.ttf */; };
+		3262FBA12DFD49A7006CB8A4 /* Inter_24pt-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3262FB592DFD49A7006CB8A4 /* Inter_24pt-Light.ttf */; };
+		3262FBA22DFD49A7006CB8A4 /* Inter_18pt-Black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3262FB3E2DFD49A7006CB8A4 /* Inter_18pt-Black.ttf */; };
+		3262FBA32DFD49A7006CB8A4 /* Inter_24pt-ExtraLight.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3262FB562DFD49A7006CB8A4 /* Inter_24pt-ExtraLight.ttf */; };
+		3262FBA42DFD49A7006CB8A4 /* Inter_24pt-MediumItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3262FB5C2DFD49A7006CB8A4 /* Inter_24pt-MediumItalic.ttf */; };
+		3262FBA52DFD49A7006CB8A4 /* Inter_18pt-BlackItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3262FB3F2DFD49A7006CB8A4 /* Inter_18pt-BlackItalic.ttf */; };
+		3262FBA62DFD49A7006CB8A4 /* Inter_18pt-BoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3262FB412DFD49A7006CB8A4 /* Inter_18pt-BoldItalic.ttf */; };
+		3262FBA72DFD49A7006CB8A4 /* Inter_28pt-ExtraLightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3262FB692DFD49A7006CB8A4 /* Inter_28pt-ExtraLightItalic.ttf */; };
+		3262FBA82DFD49A7006CB8A4 /* Inter_24pt-BoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3262FB532DFD49A7006CB8A4 /* Inter_24pt-BoldItalic.ttf */; };
+		3262FBA92DFD49A7006CB8A4 /* Inter-Italic-VariableFont_opsz,wght.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3262FB752DFD49A7006CB8A4 /* Inter-Italic-VariableFont_opsz,wght.ttf */; };
+		3262FBAA2DFD49A7006CB8A4 /* Inter_28pt-MediumItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3262FB6E2DFD49A7006CB8A4 /* Inter_28pt-MediumItalic.ttf */; };
+		3262FBAB2DFD49A7006CB8A4 /* Inter_18pt-Thin.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3262FB4E2DFD49A7006CB8A4 /* Inter_18pt-Thin.ttf */; };
+		3262FBAC2DFD49A7006CB8A4 /* Inter_24pt-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3262FB582DFD49A7006CB8A4 /* Inter_24pt-Italic.ttf */; };
+		3262FBAD2DFD49A7006CB8A4 /* Inter_18pt-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3262FB402DFD49A7006CB8A4 /* Inter_18pt-Bold.ttf */; };
+		3262FBAE2DFD49A7006CB8A4 /* README.txt in Resources */ = {isa = PBXBuildFile; fileRef = 3262FB782DFD49A7006CB8A4 /* README.txt */; };
+		3262FBAF2DFD49A7006CB8A4 /* Inter_28pt-ExtraBoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3262FB672DFD49A7006CB8A4 /* Inter_28pt-ExtraBoldItalic.ttf */; };
+		3262FBB02DFD49A7006CB8A4 /* Inter_28pt-ExtraLight.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3262FB682DFD49A7006CB8A4 /* Inter_28pt-ExtraLight.ttf */; };
+		3262FBB12DFD49A7006CB8A4 /* Inter_28pt-BlackItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3262FB632DFD49A7006CB8A4 /* Inter_28pt-BlackItalic.ttf */; };
+		3262FBB22DFD49A7006CB8A4 /* Inter_18pt-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3262FB4C2DFD49A7006CB8A4 /* Inter_18pt-SemiBold.ttf */; };
+		3262FBB32DFD49A7006CB8A4 /* Inter_28pt-SemiBoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3262FB712DFD49A7006CB8A4 /* Inter_28pt-SemiBoldItalic.ttf */; };
 		326FB8E32DDC4FF40015500E /* CaloriesConsumedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 326FB8E22DDC4FF40015500E /* CaloriesConsumedView.swift */; };
 		32723CF62BA63BE70074732C /* DiaryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32723CF52BA63BE70074732C /* DiaryViewController.swift */; };
 		32723CF82BA63CDB0074732C /* MealPlanDateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32723CF72BA63CDB0074732C /* MealPlanDateView.swift */; };
@@ -102,7 +162,7 @@
 		3290A3612DD2E139008A4320 /* NutrientGoal+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3290A35D2DD2CCE2008A4320 /* NutrientGoal+CoreDataProperties.swift */; };
 		3296C9B62BB0F21A00EC7770 /* EditGoalTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3296C9B52BB0F21A00EC7770 /* EditGoalTableViewController.swift */; };
 		3296C9B82BB1219700EC7770 /* GoalTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3296C9B72BB1219700EC7770 /* GoalTableViewCell.swift */; };
-		3297EC532DF8DC800062B83F /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3297EC522DF8DC800062B83F /* ProfileViewController.swift */; };
+		3297EC532DF8DC800062B83F /* GoalsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3297EC522DF8DC800062B83F /* GoalsViewController.swift */; };
 		3297EC552DF8E0350062B83F /* ProfileSelectableTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3297EC542DF8E0350062B83F /* ProfileSelectableTableViewCell.swift */; };
 		329C1C022DDA76F200087FEF /* Utility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 329C1C012DDA76F200087FEF /* Utility.swift */; };
 		329C1C032DDA76F700087FEF /* Utility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 329C1C012DDA76F200087FEF /* Utility.swift */; };
@@ -247,8 +307,8 @@
 		323FB9A62DCC04A800A71C53 /* SelectableTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectableTableViewCell.swift; sourceTree = "<group>"; };
 		323FB9A92DCC0AFA00A71C53 /* WeightInputTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeightInputTableViewCell.swift; sourceTree = "<group>"; };
 		323FB9AB2DCC13D800A71C53 /* MenuPickerTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuPickerTableViewCell.swift; sourceTree = "<group>"; };
-		3242C8D82DEFDD2D00F05FF8 /* Food+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Food+CoreDataClass.swift"; sourceTree = "<group>"; };
-		3242C8D92DEFDD2D00F05FF8 /* Food+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Food+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		3242C8D82DEFDD2D00F05FF8 /* FoodEntry+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FoodEntry+CoreDataClass.swift"; sourceTree = "<group>"; };
+		3242C8D92DEFDD2D00F05FF8 /* FoodEntry+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FoodEntry+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		3242C8E02DF0C22C00F05FF8 /* CDFoodItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CDFoodItem.swift; sourceTree = "<group>"; };
 		3242C8E32DF0D7E700F05FF8 /* UpdateFoodDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateFoodDetailViewController.swift; sourceTree = "<group>"; };
 		3242C8E52DF0D82300F05FF8 /* AddFoodDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddFoodDetailViewController.swift; sourceTree = "<group>"; };
@@ -260,6 +320,66 @@
 		3262F8322DFCB90A006CB8A4 /* DeleteAccountTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteAccountTableViewCell.swift; sourceTree = "<group>"; };
 		3262F83A2DFCC2DC006CB8A4 /* UserWeight+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserWeight+CoreDataClass.swift"; sourceTree = "<group>"; };
 		3262F83B2DFCC2DC006CB8A4 /* UserWeight+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserWeight+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		3262F8422DFCE66A006CB8A4 /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
+		3262F89B2DFCFE20006CB8A4 /* WeightProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeightProgressView.swift; sourceTree = "<group>"; };
+		3262FB3E2DFD49A7006CB8A4 /* Inter_18pt-Black.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Inter_18pt-Black.ttf"; sourceTree = "<group>"; };
+		3262FB3F2DFD49A7006CB8A4 /* Inter_18pt-BlackItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Inter_18pt-BlackItalic.ttf"; sourceTree = "<group>"; };
+		3262FB402DFD49A7006CB8A4 /* Inter_18pt-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Inter_18pt-Bold.ttf"; sourceTree = "<group>"; };
+		3262FB412DFD49A7006CB8A4 /* Inter_18pt-BoldItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Inter_18pt-BoldItalic.ttf"; sourceTree = "<group>"; };
+		3262FB422DFD49A7006CB8A4 /* Inter_18pt-ExtraBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Inter_18pt-ExtraBold.ttf"; sourceTree = "<group>"; };
+		3262FB432DFD49A7006CB8A4 /* Inter_18pt-ExtraBoldItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Inter_18pt-ExtraBoldItalic.ttf"; sourceTree = "<group>"; };
+		3262FB442DFD49A7006CB8A4 /* Inter_18pt-ExtraLight.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Inter_18pt-ExtraLight.ttf"; sourceTree = "<group>"; };
+		3262FB452DFD49A7006CB8A4 /* Inter_18pt-ExtraLightItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Inter_18pt-ExtraLightItalic.ttf"; sourceTree = "<group>"; };
+		3262FB462DFD49A7006CB8A4 /* Inter_18pt-Italic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Inter_18pt-Italic.ttf"; sourceTree = "<group>"; };
+		3262FB472DFD49A7006CB8A4 /* Inter_18pt-Light.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Inter_18pt-Light.ttf"; sourceTree = "<group>"; };
+		3262FB482DFD49A7006CB8A4 /* Inter_18pt-LightItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Inter_18pt-LightItalic.ttf"; sourceTree = "<group>"; };
+		3262FB492DFD49A7006CB8A4 /* Inter_18pt-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Inter_18pt-Medium.ttf"; sourceTree = "<group>"; };
+		3262FB4A2DFD49A7006CB8A4 /* Inter_18pt-MediumItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Inter_18pt-MediumItalic.ttf"; sourceTree = "<group>"; };
+		3262FB4B2DFD49A7006CB8A4 /* Inter_18pt-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Inter_18pt-Regular.ttf"; sourceTree = "<group>"; };
+		3262FB4C2DFD49A7006CB8A4 /* Inter_18pt-SemiBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Inter_18pt-SemiBold.ttf"; sourceTree = "<group>"; };
+		3262FB4D2DFD49A7006CB8A4 /* Inter_18pt-SemiBoldItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Inter_18pt-SemiBoldItalic.ttf"; sourceTree = "<group>"; };
+		3262FB4E2DFD49A7006CB8A4 /* Inter_18pt-Thin.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Inter_18pt-Thin.ttf"; sourceTree = "<group>"; };
+		3262FB4F2DFD49A7006CB8A4 /* Inter_18pt-ThinItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Inter_18pt-ThinItalic.ttf"; sourceTree = "<group>"; };
+		3262FB502DFD49A7006CB8A4 /* Inter_24pt-Black.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Inter_24pt-Black.ttf"; sourceTree = "<group>"; };
+		3262FB512DFD49A7006CB8A4 /* Inter_24pt-BlackItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Inter_24pt-BlackItalic.ttf"; sourceTree = "<group>"; };
+		3262FB522DFD49A7006CB8A4 /* Inter_24pt-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Inter_24pt-Bold.ttf"; sourceTree = "<group>"; };
+		3262FB532DFD49A7006CB8A4 /* Inter_24pt-BoldItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Inter_24pt-BoldItalic.ttf"; sourceTree = "<group>"; };
+		3262FB542DFD49A7006CB8A4 /* Inter_24pt-ExtraBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Inter_24pt-ExtraBold.ttf"; sourceTree = "<group>"; };
+		3262FB552DFD49A7006CB8A4 /* Inter_24pt-ExtraBoldItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Inter_24pt-ExtraBoldItalic.ttf"; sourceTree = "<group>"; };
+		3262FB562DFD49A7006CB8A4 /* Inter_24pt-ExtraLight.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Inter_24pt-ExtraLight.ttf"; sourceTree = "<group>"; };
+		3262FB572DFD49A7006CB8A4 /* Inter_24pt-ExtraLightItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Inter_24pt-ExtraLightItalic.ttf"; sourceTree = "<group>"; };
+		3262FB582DFD49A7006CB8A4 /* Inter_24pt-Italic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Inter_24pt-Italic.ttf"; sourceTree = "<group>"; };
+		3262FB592DFD49A7006CB8A4 /* Inter_24pt-Light.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Inter_24pt-Light.ttf"; sourceTree = "<group>"; };
+		3262FB5A2DFD49A7006CB8A4 /* Inter_24pt-LightItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Inter_24pt-LightItalic.ttf"; sourceTree = "<group>"; };
+		3262FB5B2DFD49A7006CB8A4 /* Inter_24pt-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Inter_24pt-Medium.ttf"; sourceTree = "<group>"; };
+		3262FB5C2DFD49A7006CB8A4 /* Inter_24pt-MediumItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Inter_24pt-MediumItalic.ttf"; sourceTree = "<group>"; };
+		3262FB5D2DFD49A7006CB8A4 /* Inter_24pt-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Inter_24pt-Regular.ttf"; sourceTree = "<group>"; };
+		3262FB5E2DFD49A7006CB8A4 /* Inter_24pt-SemiBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Inter_24pt-SemiBold.ttf"; sourceTree = "<group>"; };
+		3262FB5F2DFD49A7006CB8A4 /* Inter_24pt-SemiBoldItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Inter_24pt-SemiBoldItalic.ttf"; sourceTree = "<group>"; };
+		3262FB602DFD49A7006CB8A4 /* Inter_24pt-Thin.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Inter_24pt-Thin.ttf"; sourceTree = "<group>"; };
+		3262FB612DFD49A7006CB8A4 /* Inter_24pt-ThinItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Inter_24pt-ThinItalic.ttf"; sourceTree = "<group>"; };
+		3262FB622DFD49A7006CB8A4 /* Inter_28pt-Black.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Inter_28pt-Black.ttf"; sourceTree = "<group>"; };
+		3262FB632DFD49A7006CB8A4 /* Inter_28pt-BlackItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Inter_28pt-BlackItalic.ttf"; sourceTree = "<group>"; };
+		3262FB642DFD49A7006CB8A4 /* Inter_28pt-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Inter_28pt-Bold.ttf"; sourceTree = "<group>"; };
+		3262FB652DFD49A7006CB8A4 /* Inter_28pt-BoldItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Inter_28pt-BoldItalic.ttf"; sourceTree = "<group>"; };
+		3262FB662DFD49A7006CB8A4 /* Inter_28pt-ExtraBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Inter_28pt-ExtraBold.ttf"; sourceTree = "<group>"; };
+		3262FB672DFD49A7006CB8A4 /* Inter_28pt-ExtraBoldItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Inter_28pt-ExtraBoldItalic.ttf"; sourceTree = "<group>"; };
+		3262FB682DFD49A7006CB8A4 /* Inter_28pt-ExtraLight.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Inter_28pt-ExtraLight.ttf"; sourceTree = "<group>"; };
+		3262FB692DFD49A7006CB8A4 /* Inter_28pt-ExtraLightItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Inter_28pt-ExtraLightItalic.ttf"; sourceTree = "<group>"; };
+		3262FB6A2DFD49A7006CB8A4 /* Inter_28pt-Italic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Inter_28pt-Italic.ttf"; sourceTree = "<group>"; };
+		3262FB6B2DFD49A7006CB8A4 /* Inter_28pt-Light.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Inter_28pt-Light.ttf"; sourceTree = "<group>"; };
+		3262FB6C2DFD49A7006CB8A4 /* Inter_28pt-LightItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Inter_28pt-LightItalic.ttf"; sourceTree = "<group>"; };
+		3262FB6D2DFD49A7006CB8A4 /* Inter_28pt-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Inter_28pt-Medium.ttf"; sourceTree = "<group>"; };
+		3262FB6E2DFD49A7006CB8A4 /* Inter_28pt-MediumItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Inter_28pt-MediumItalic.ttf"; sourceTree = "<group>"; };
+		3262FB6F2DFD49A7006CB8A4 /* Inter_28pt-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Inter_28pt-Regular.ttf"; sourceTree = "<group>"; };
+		3262FB702DFD49A7006CB8A4 /* Inter_28pt-SemiBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Inter_28pt-SemiBold.ttf"; sourceTree = "<group>"; };
+		3262FB712DFD49A7006CB8A4 /* Inter_28pt-SemiBoldItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Inter_28pt-SemiBoldItalic.ttf"; sourceTree = "<group>"; };
+		3262FB722DFD49A7006CB8A4 /* Inter_28pt-Thin.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Inter_28pt-Thin.ttf"; sourceTree = "<group>"; };
+		3262FB732DFD49A7006CB8A4 /* Inter_28pt-ThinItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Inter_28pt-ThinItalic.ttf"; sourceTree = "<group>"; };
+		3262FB752DFD49A7006CB8A4 /* Inter-Italic-VariableFont_opsz,wght.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Inter-Italic-VariableFont_opsz,wght.ttf"; sourceTree = "<group>"; };
+		3262FB762DFD49A7006CB8A4 /* Inter-VariableFont_opsz,wght.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Inter-VariableFont_opsz,wght.ttf"; sourceTree = "<group>"; };
+		3262FB772DFD49A7006CB8A4 /* OFL.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = OFL.txt; sourceTree = "<group>"; };
+		3262FB782DFD49A7006CB8A4 /* README.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = README.txt; sourceTree = "<group>"; };
 		326FB8E22DDC4FF40015500E /* CaloriesConsumedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaloriesConsumedView.swift; sourceTree = "<group>"; };
 		32723CF52BA63BE70074732C /* DiaryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiaryViewController.swift; sourceTree = "<group>"; };
 		32723CF72BA63CDB0074732C /* MealPlanDateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MealPlanDateView.swift; sourceTree = "<group>"; };
@@ -291,7 +411,7 @@
 		3290A35D2DD2CCE2008A4320 /* NutrientGoal+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NutrientGoal+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		3296C9B52BB0F21A00EC7770 /* EditGoalTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditGoalTableViewController.swift; sourceTree = "<group>"; };
 		3296C9B72BB1219700EC7770 /* GoalTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoalTableViewCell.swift; sourceTree = "<group>"; };
-		3297EC522DF8DC800062B83F /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
+		3297EC522DF8DC800062B83F /* GoalsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoalsViewController.swift; sourceTree = "<group>"; };
 		3297EC542DF8E0350062B83F /* ProfileSelectableTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileSelectableTableViewCell.swift; sourceTree = "<group>"; };
 		329C1C012DDA76F200087FEF /* Utility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utility.swift; sourceTree = "<group>"; };
 		32A292452DDDA673004272A7 /* FoodInfoPortion+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FoodInfoPortion+CoreDataClass.swift"; sourceTree = "<group>"; };
@@ -501,6 +621,79 @@
 			path = Parts;
 			sourceTree = "<group>";
 		};
+		3262FB742DFD49A7006CB8A4 /* static */ = {
+			isa = PBXGroup;
+			children = (
+				3262FB3E2DFD49A7006CB8A4 /* Inter_18pt-Black.ttf */,
+				3262FB3F2DFD49A7006CB8A4 /* Inter_18pt-BlackItalic.ttf */,
+				3262FB402DFD49A7006CB8A4 /* Inter_18pt-Bold.ttf */,
+				3262FB412DFD49A7006CB8A4 /* Inter_18pt-BoldItalic.ttf */,
+				3262FB422DFD49A7006CB8A4 /* Inter_18pt-ExtraBold.ttf */,
+				3262FB432DFD49A7006CB8A4 /* Inter_18pt-ExtraBoldItalic.ttf */,
+				3262FB442DFD49A7006CB8A4 /* Inter_18pt-ExtraLight.ttf */,
+				3262FB452DFD49A7006CB8A4 /* Inter_18pt-ExtraLightItalic.ttf */,
+				3262FB462DFD49A7006CB8A4 /* Inter_18pt-Italic.ttf */,
+				3262FB472DFD49A7006CB8A4 /* Inter_18pt-Light.ttf */,
+				3262FB482DFD49A7006CB8A4 /* Inter_18pt-LightItalic.ttf */,
+				3262FB492DFD49A7006CB8A4 /* Inter_18pt-Medium.ttf */,
+				3262FB4A2DFD49A7006CB8A4 /* Inter_18pt-MediumItalic.ttf */,
+				3262FB4B2DFD49A7006CB8A4 /* Inter_18pt-Regular.ttf */,
+				3262FB4C2DFD49A7006CB8A4 /* Inter_18pt-SemiBold.ttf */,
+				3262FB4D2DFD49A7006CB8A4 /* Inter_18pt-SemiBoldItalic.ttf */,
+				3262FB4E2DFD49A7006CB8A4 /* Inter_18pt-Thin.ttf */,
+				3262FB4F2DFD49A7006CB8A4 /* Inter_18pt-ThinItalic.ttf */,
+				3262FB502DFD49A7006CB8A4 /* Inter_24pt-Black.ttf */,
+				3262FB512DFD49A7006CB8A4 /* Inter_24pt-BlackItalic.ttf */,
+				3262FB522DFD49A7006CB8A4 /* Inter_24pt-Bold.ttf */,
+				3262FB532DFD49A7006CB8A4 /* Inter_24pt-BoldItalic.ttf */,
+				3262FB542DFD49A7006CB8A4 /* Inter_24pt-ExtraBold.ttf */,
+				3262FB552DFD49A7006CB8A4 /* Inter_24pt-ExtraBoldItalic.ttf */,
+				3262FB562DFD49A7006CB8A4 /* Inter_24pt-ExtraLight.ttf */,
+				3262FB572DFD49A7006CB8A4 /* Inter_24pt-ExtraLightItalic.ttf */,
+				3262FB582DFD49A7006CB8A4 /* Inter_24pt-Italic.ttf */,
+				3262FB592DFD49A7006CB8A4 /* Inter_24pt-Light.ttf */,
+				3262FB5A2DFD49A7006CB8A4 /* Inter_24pt-LightItalic.ttf */,
+				3262FB5B2DFD49A7006CB8A4 /* Inter_24pt-Medium.ttf */,
+				3262FB5C2DFD49A7006CB8A4 /* Inter_24pt-MediumItalic.ttf */,
+				3262FB5D2DFD49A7006CB8A4 /* Inter_24pt-Regular.ttf */,
+				3262FB5E2DFD49A7006CB8A4 /* Inter_24pt-SemiBold.ttf */,
+				3262FB5F2DFD49A7006CB8A4 /* Inter_24pt-SemiBoldItalic.ttf */,
+				3262FB602DFD49A7006CB8A4 /* Inter_24pt-Thin.ttf */,
+				3262FB612DFD49A7006CB8A4 /* Inter_24pt-ThinItalic.ttf */,
+				3262FB622DFD49A7006CB8A4 /* Inter_28pt-Black.ttf */,
+				3262FB632DFD49A7006CB8A4 /* Inter_28pt-BlackItalic.ttf */,
+				3262FB642DFD49A7006CB8A4 /* Inter_28pt-Bold.ttf */,
+				3262FB652DFD49A7006CB8A4 /* Inter_28pt-BoldItalic.ttf */,
+				3262FB662DFD49A7006CB8A4 /* Inter_28pt-ExtraBold.ttf */,
+				3262FB672DFD49A7006CB8A4 /* Inter_28pt-ExtraBoldItalic.ttf */,
+				3262FB682DFD49A7006CB8A4 /* Inter_28pt-ExtraLight.ttf */,
+				3262FB692DFD49A7006CB8A4 /* Inter_28pt-ExtraLightItalic.ttf */,
+				3262FB6A2DFD49A7006CB8A4 /* Inter_28pt-Italic.ttf */,
+				3262FB6B2DFD49A7006CB8A4 /* Inter_28pt-Light.ttf */,
+				3262FB6C2DFD49A7006CB8A4 /* Inter_28pt-LightItalic.ttf */,
+				3262FB6D2DFD49A7006CB8A4 /* Inter_28pt-Medium.ttf */,
+				3262FB6E2DFD49A7006CB8A4 /* Inter_28pt-MediumItalic.ttf */,
+				3262FB6F2DFD49A7006CB8A4 /* Inter_28pt-Regular.ttf */,
+				3262FB702DFD49A7006CB8A4 /* Inter_28pt-SemiBold.ttf */,
+				3262FB712DFD49A7006CB8A4 /* Inter_28pt-SemiBoldItalic.ttf */,
+				3262FB722DFD49A7006CB8A4 /* Inter_28pt-Thin.ttf */,
+				3262FB732DFD49A7006CB8A4 /* Inter_28pt-ThinItalic.ttf */,
+			);
+			path = static;
+			sourceTree = "<group>";
+		};
+		3262FB792DFD49A7006CB8A4 /* Inter */ = {
+			isa = PBXGroup;
+			children = (
+				3262FB742DFD49A7006CB8A4 /* static */,
+				3262FB752DFD49A7006CB8A4 /* Inter-Italic-VariableFont_opsz,wght.ttf */,
+				3262FB762DFD49A7006CB8A4 /* Inter-VariableFont_opsz,wght.ttf */,
+				3262FB772DFD49A7006CB8A4 /* OFL.txt */,
+				3262FB782DFD49A7006CB8A4 /* README.txt */,
+			);
+			path = Inter;
+			sourceTree = "<group>";
+		};
 		328FA9422B939B36002A6FB6 /* ViewControllers */ = {
 			isa = PBXGroup;
 			children = (
@@ -572,7 +765,9 @@
 		3297EC512DF8DC720062B83F /* Profile */ = {
 			isa = PBXGroup;
 			children = (
-				3297EC522DF8DC800062B83F /* ProfileViewController.swift */,
+				3297EC522DF8DC800062B83F /* GoalsViewController.swift */,
+				3262F8422DFCE66A006CB8A4 /* ProfileViewController.swift */,
+				3262F89B2DFCFE20006CB8A4 /* WeightProgressView.swift */,
 			);
 			path = Profile;
 			sourceTree = "<group>";
@@ -596,8 +791,8 @@
 				32BD0C7E2DD19B150098253F /* UserProfile+CoreDataProperties.swift */,
 				32A292452DDDA673004272A7 /* FoodInfoPortion+CoreDataClass.swift */,
 				32A292462DDDA673004272A7 /* FoodInfoPortion+CoreDataProperties.swift */,
-				3242C8D82DEFDD2D00F05FF8 /* Food+CoreDataClass.swift */,
-				3242C8D92DEFDD2D00F05FF8 /* Food+CoreDataProperties.swift */,
+				3242C8D82DEFDD2D00F05FF8 /* FoodEntry+CoreDataClass.swift */,
+				3242C8D92DEFDD2D00F05FF8 /* FoodEntry+CoreDataProperties.swift */,
 				32267A6F2DF397AA001B9CFC /* History+CoreDataClass.swift */,
 				32267A702DF397AA001B9CFC /* History+CoreDataProperties.swift */,
 				3262F83A2DFCC2DC006CB8A4 /* UserWeight+CoreDataClass.swift */,
@@ -696,6 +891,7 @@
 				328FA9682B9BE560002A6FB6 /* Settings.swift */,
 				324AB9362BA6B27900CECA72 /* CoreDataStack.swift */,
 				329C1C012DDA76F200087FEF /* Utility.swift */,
+				3262FB792DFD49A7006CB8A4 /* Inter */,
 			);
 			path = FoodApp;
 			sourceTree = "<group>";
@@ -854,6 +1050,64 @@
 			buildActionMask = 2147483647;
 			files = (
 				32F51A572B92C1AA0080CC09 /* LaunchScreen.storyboard in Resources */,
+				3262FB7A2DFD49A7006CB8A4 /* Inter_28pt-Black.ttf in Resources */,
+				3262FB7B2DFD49A7006CB8A4 /* Inter_18pt-Medium.ttf in Resources */,
+				3262FB7C2DFD49A7006CB8A4 /* Inter_24pt-BlackItalic.ttf in Resources */,
+				3262FB7D2DFD49A7006CB8A4 /* Inter_24pt-SemiBold.ttf in Resources */,
+				3262FB7E2DFD49A7006CB8A4 /* Inter_24pt-ExtraBoldItalic.ttf in Resources */,
+				3262FB7F2DFD49A7006CB8A4 /* Inter_18pt-Italic.ttf in Resources */,
+				3262FB802DFD49A7006CB8A4 /* OFL.txt in Resources */,
+				3262FB812DFD49A7006CB8A4 /* Inter_24pt-Medium.ttf in Resources */,
+				3262FB822DFD49A7006CB8A4 /* Inter_28pt-Bold.ttf in Resources */,
+				3262FB832DFD49A7006CB8A4 /* Inter_28pt-Light.ttf in Resources */,
+				3262FB842DFD49A7006CB8A4 /* Inter_24pt-ExtraBold.ttf in Resources */,
+				3262FB852DFD49A7006CB8A4 /* Inter_24pt-Black.ttf in Resources */,
+				3262FB862DFD49A7006CB8A4 /* Inter_24pt-Thin.ttf in Resources */,
+				3262FB872DFD49A7006CB8A4 /* Inter_24pt-Regular.ttf in Resources */,
+				3262FB882DFD49A7006CB8A4 /* Inter_18pt-MediumItalic.ttf in Resources */,
+				3262FB892DFD49A7006CB8A4 /* Inter_28pt-Italic.ttf in Resources */,
+				3262FB8A2DFD49A7006CB8A4 /* Inter_18pt-ExtraLight.ttf in Resources */,
+				3262FB8B2DFD49A7006CB8A4 /* Inter_18pt-Regular.ttf in Resources */,
+				3262FB8C2DFD49A7006CB8A4 /* Inter_24pt-Bold.ttf in Resources */,
+				3262FB8D2DFD49A7006CB8A4 /* Inter_28pt-BoldItalic.ttf in Resources */,
+				3262FB8E2DFD49A7006CB8A4 /* Inter_28pt-LightItalic.ttf in Resources */,
+				3262FB8F2DFD49A7006CB8A4 /* Inter_18pt-ThinItalic.ttf in Resources */,
+				3262FB902DFD49A7006CB8A4 /* Inter-VariableFont_opsz,wght.ttf in Resources */,
+				3262FB912DFD49A7006CB8A4 /* Inter_24pt-SemiBoldItalic.ttf in Resources */,
+				3262FB922DFD49A7006CB8A4 /* Inter_18pt-ExtraBold.ttf in Resources */,
+				3262FB932DFD49A7006CB8A4 /* Inter_28pt-Regular.ttf in Resources */,
+				3262FB942DFD49A7006CB8A4 /* Inter_24pt-ExtraLightItalic.ttf in Resources */,
+				3262FB952DFD49A7006CB8A4 /* Inter_24pt-LightItalic.ttf in Resources */,
+				3262FB962DFD49A7006CB8A4 /* Inter_24pt-ThinItalic.ttf in Resources */,
+				3262FB972DFD49A7006CB8A4 /* Inter_28pt-SemiBold.ttf in Resources */,
+				3262FB982DFD49A7006CB8A4 /* Inter_18pt-Light.ttf in Resources */,
+				3262FB992DFD49A7006CB8A4 /* Inter_18pt-LightItalic.ttf in Resources */,
+				3262FB9A2DFD49A7006CB8A4 /* Inter_28pt-ThinItalic.ttf in Resources */,
+				3262FB9B2DFD49A7006CB8A4 /* Inter_28pt-Medium.ttf in Resources */,
+				3262FB9C2DFD49A7006CB8A4 /* Inter_28pt-Thin.ttf in Resources */,
+				3262FB9D2DFD49A7006CB8A4 /* Inter_18pt-ExtraBoldItalic.ttf in Resources */,
+				3262FB9E2DFD49A7006CB8A4 /* Inter_18pt-ExtraLightItalic.ttf in Resources */,
+				3262FB9F2DFD49A7006CB8A4 /* Inter_28pt-ExtraBold.ttf in Resources */,
+				3262FBA02DFD49A7006CB8A4 /* Inter_18pt-SemiBoldItalic.ttf in Resources */,
+				3262FBA12DFD49A7006CB8A4 /* Inter_24pt-Light.ttf in Resources */,
+				3262FBA22DFD49A7006CB8A4 /* Inter_18pt-Black.ttf in Resources */,
+				3262FBA32DFD49A7006CB8A4 /* Inter_24pt-ExtraLight.ttf in Resources */,
+				3262FBA42DFD49A7006CB8A4 /* Inter_24pt-MediumItalic.ttf in Resources */,
+				3262FBA52DFD49A7006CB8A4 /* Inter_18pt-BlackItalic.ttf in Resources */,
+				3262FBA62DFD49A7006CB8A4 /* Inter_18pt-BoldItalic.ttf in Resources */,
+				3262FBA72DFD49A7006CB8A4 /* Inter_28pt-ExtraLightItalic.ttf in Resources */,
+				3262FBA82DFD49A7006CB8A4 /* Inter_24pt-BoldItalic.ttf in Resources */,
+				3262FBA92DFD49A7006CB8A4 /* Inter-Italic-VariableFont_opsz,wght.ttf in Resources */,
+				3262FBAA2DFD49A7006CB8A4 /* Inter_28pt-MediumItalic.ttf in Resources */,
+				3262FBAB2DFD49A7006CB8A4 /* Inter_18pt-Thin.ttf in Resources */,
+				3262FBAC2DFD49A7006CB8A4 /* Inter_24pt-Italic.ttf in Resources */,
+				3262FBAD2DFD49A7006CB8A4 /* Inter_18pt-Bold.ttf in Resources */,
+				3262FBAE2DFD49A7006CB8A4 /* README.txt in Resources */,
+				3262FBAF2DFD49A7006CB8A4 /* Inter_28pt-ExtraBoldItalic.ttf in Resources */,
+				3262FBB02DFD49A7006CB8A4 /* Inter_28pt-ExtraLight.ttf in Resources */,
+				3262FBB12DFD49A7006CB8A4 /* Inter_28pt-BlackItalic.ttf in Resources */,
+				3262FBB22DFD49A7006CB8A4 /* Inter_18pt-SemiBold.ttf in Resources */,
+				3262FBB32DFD49A7006CB8A4 /* Inter_28pt-SemiBoldItalic.ttf in Resources */,
 				32F51A542B92C1AA0080CC09 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -899,8 +1153,8 @@
 				32A2924A2DDDA69D004272A7 /* FoodInfoPortion+CoreDataProperties.swift in Sources */,
 				320E6C382DC4336700ABD356 /* Meal+CoreDataClass.swift in Sources */,
 				32C386502DC5AF7E0018D282 /* SurveyFoodItem.swift in Sources */,
-				3242C8DC2DEFF05E00F05FF8 /* Food+CoreDataProperties.swift in Sources */,
-				3242C8DD2DEFF05E00F05FF8 /* Food+CoreDataClass.swift in Sources */,
+				3242C8DC2DEFF05E00F05FF8 /* FoodEntry+CoreDataProperties.swift in Sources */,
+				3242C8DD2DEFF05E00F05FF8 /* FoodEntry+CoreDataClass.swift in Sources */,
 				3290A3602DD2E139008A4320 /* NutrientGoal+CoreDataClass.swift in Sources */,
 				3290A3612DD2E139008A4320 /* NutrientGoal+CoreDataProperties.swift in Sources */,
 				320E6C3A2DC4336700ABD356 /* MealPlan+CoreDataClass.swift in Sources */,
@@ -970,13 +1224,14 @@
 				3242C8E62DF0D82300F05FF8 /* AddFoodDetailViewController.swift in Sources */,
 				323FB76A2DCADFB800A71C53 /* SettingsSelectableTableViewCell.swift in Sources */,
 				328FA9462B939C6A002A6FB6 /* SearchResponse.swift in Sources */,
+				3262F89C2DFCFE20006CB8A4 /* WeightProgressView.swift in Sources */,
 				320EE1D92DCEA89300D6B07D /* MacrosSplitTableViewCell.swift in Sources */,
 				320B31DD2DFBD36100F95406 /* CurrentWeightEditViewController.swift in Sources */,
 				320E6C292DC4336700ABD356 /* MealPlan+CoreDataClass.swift in Sources */,
 				32515EC62DD3D4FD00594145 /* FoodAPIRequest.swift in Sources */,
 				323FB7742DCAE66E00A71C53 /* EntryViewController.swift in Sources */,
 				32C386512DC5AF7E0018D282 /* SurveyFoodItem.swift in Sources */,
-				3297EC532DF8DC800062B83F /* ProfileViewController.swift in Sources */,
+				3297EC532DF8DC800062B83F /* GoalsViewController.swift in Sources */,
 				32A292472DDDA69D004272A7 /* FoodInfoPortion+CoreDataClass.swift in Sources */,
 				32A292482DDDA69D004272A7 /* FoodInfoPortion+CoreDataProperties.swift in Sources */,
 				323FB7662DCADDD000A71C53 /* SettingsViewController.swift in Sources */,
@@ -995,6 +1250,7 @@
 				329C1C022DDA76F200087FEF /* Utility.swift in Sources */,
 				328FA9552B954714002A6FB6 /* FoodItem.swift in Sources */,
 				3297EC552DF8E0350062B83F /* ProfileSelectableTableViewCell.swift in Sources */,
+				3262F8432DFCE66A006CB8A4 /* ProfileViewController.swift in Sources */,
 				328FA9612B994271002A6FB6 /* FoodPortion.swift in Sources */,
 				323FB9A32DCAF4C600A71C53 /* OnboardingViewController.swift in Sources */,
 				3262F83C2DFCC2DC006CB8A4 /* UserWeight+CoreDataClass.swift in Sources */,
@@ -1029,8 +1285,8 @@
 				325463C02DD03FF400BEDCE0 /* OnboardingPageViewController.swift in Sources */,
 				320EE1D52DCEA45B00D6B07D /* OnboardingCalculationViewController.swift in Sources */,
 				32B351F42BA7512600FF2752 /* AddFoodButton.swift in Sources */,
-				3242C8DA2DEFF04400F05FF8 /* Food+CoreDataClass.swift in Sources */,
-				3242C8DB2DEFF04400F05FF8 /* Food+CoreDataProperties.swift in Sources */,
+				3242C8DA2DEFF04400F05FF8 /* FoodEntry+CoreDataClass.swift in Sources */,
+				3242C8DB2DEFF04400F05FF8 /* FoodEntry+CoreDataProperties.swift in Sources */,
 				328FA9572B969FEF002A6FB6 /* NutritionTableViewCell.swift in Sources */,
 				32B351F62BA7556A00FF2752 /* AddMealButton.swift in Sources */,
 				328FA94E2B93B9D9002A6FB6 /* FoodService.swift in Sources */,
