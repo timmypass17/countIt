@@ -3,45 +3,30 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 56;
+	objectVersion = 70;
 	objects = {
 
 /* Begin PBXBuildFile section */
 		320B31DD2DFBD36100F95406 /* CurrentWeightEditViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 320B31DC2DFBD36100F95406 /* CurrentWeightEditViewController.swift */; };
-		320B31DF2DFBD3E800F95406 /* CurrentWeightEditTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 320B31DE2DFBD3E800F95406 /* CurrentWeightEditTableViewCell.swift */; };
 		320E6C292DC4336700ABD356 /* MealPlan+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 320E6C212DC4335500ABD356 /* MealPlan+CoreDataClass.swift */; };
 		320E6C352DC4336700ABD356 /* MealPlan+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 320E6C222DC4335500ABD356 /* MealPlan+CoreDataProperties.swift */; };
 		320E6C3A2DC4336700ABD356 /* MealPlan+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 320E6C212DC4335500ABD356 /* MealPlan+CoreDataClass.swift */; };
 		320E6C3F2DC4336700ABD356 /* MealPlan+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 320E6C222DC4335500ABD356 /* MealPlan+CoreDataProperties.swift */; };
 		320EE1CB2DCDB44100D6B07D /* OnboardingUserViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 320EE1CA2DCDB44100D6B07D /* OnboardingUserViewController.swift */; };
-		320EE1CD2DCDB5E300D6B07D /* OnboardingSegmentedTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 320EE1CC2DCDB5E300D6B07D /* OnboardingSegmentedTableViewCell.swift */; };
-		320EE1CF2DCDB7F700D6B07D /* HeightTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 320EE1CE2DCDB7F700D6B07D /* HeightTableViewCell.swift */; };
 		320EE1D12DCDBAC500D6B07D /* HeightFeetPickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 320EE1D02DCDBAC500D6B07D /* HeightFeetPickerViewController.swift */; };
-		320EE1D32DCE9F5500D6B07D /* DateOfBirthTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 320EE1D22DCE9F5500D6B07D /* DateOfBirthTableViewCell.swift */; };
 		320EE1D52DCEA45B00D6B07D /* OnboardingCalculationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 320EE1D42DCEA45B00D6B07D /* OnboardingCalculationViewController.swift */; };
-		320EE1D72DCEA5DF00D6B07D /* DailyCaloriesTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 320EE1D62DCEA5DF00D6B07D /* DailyCaloriesTableViewCell.swift */; };
-		320EE1D92DCEA89300D6B07D /* MacrosSplitTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 320EE1D82DCEA89300D6B07D /* MacrosSplitTableViewCell.swift */; };
 		320EE1DB2DCEAE6400D6B07D /* MacrosSplitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 320EE1DA2DCEAE6400D6B07D /* MacrosSplitViewController.swift */; };
-		320EE4092DCED7DD00D6B07D /* UnitPreferenceFooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 320EE4082DCED7DD00D6B07D /* UnitPreferenceFooterView.swift */; };
-		320EE40B2DCEF09200D6B07D /* HeightPreferenceFooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 320EE40A2DCEF09200D6B07D /* HeightPreferenceFooterView.swift */; };
-		3216CF792BB4D6C900D9E17A /* AddFoodTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3216CF782BB4D6C900D9E17A /* AddFoodTableViewCell.swift */; };
-		32216DBE2BA0FF4E0046A178 /* ProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32216DBD2BA0FF4E0046A178 /* ProgressView.swift */; };
 		32267A712DF397B2001B9CFC /* History+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32267A702DF397AA001B9CFC /* History+CoreDataProperties.swift */; };
 		32267A722DF397B2001B9CFC /* History+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32267A6F2DF397AA001B9CFC /* History+CoreDataClass.swift */; };
 		32267A732DF397B2001B9CFC /* History+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32267A6F2DF397AA001B9CFC /* History+CoreDataClass.swift */; };
 		32267A742DF397B2001B9CFC /* History+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32267A702DF397AA001B9CFC /* History+CoreDataProperties.swift */; };
-		323FB4862DC84CA600A71C53 /* ResultsHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 323FB4852DC84CA600A71C53 /* ResultsHeaderView.swift */; };
 		323FB6B42DC95E3600A71C53 /* ResultsPaginatedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 323FB6B32DC95E3600A71C53 /* ResultsPaginatedViewController.swift */; };
 		323FB7662DCADDD000A71C53 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 323FB7652DCADDD000A71C53 /* SettingsViewController.swift */; };
-		323FB76A2DCADFB800A71C53 /* SettingsSelectableTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 323FB7692DCADFB800A71C53 /* SettingsSelectableTableViewCell.swift */; };
 		323FB76E2DCAE64400A71C53 /* DashboardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 323FB76D2DCAE64400A71C53 /* DashboardViewController.swift */; };
 		323FB7712DCAE65B00A71C53 /* ProgressViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 323FB7702DCAE65B00A71C53 /* ProgressViewController.swift */; };
 		323FB7742DCAE66E00A71C53 /* EntryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 323FB7732DCAE66E00A71C53 /* EntryViewController.swift */; };
 		323FB9A32DCAF4C600A71C53 /* OnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 323FB9A22DCAF4C600A71C53 /* OnboardingViewController.swift */; };
 		323FB9A52DCC045200A71C53 /* OnboardingGoalViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 323FB9A42DCC045200A71C53 /* OnboardingGoalViewController.swift */; };
-		323FB9A72DCC04A800A71C53 /* SelectableTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 323FB9A62DCC04A800A71C53 /* SelectableTableViewCell.swift */; };
-		323FB9AA2DCC0AFA00A71C53 /* WeightInputTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 323FB9A92DCC0AFA00A71C53 /* WeightInputTableViewCell.swift */; };
-		323FB9AC2DCC13D800A71C53 /* MenuPickerTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 323FB9AB2DCC13D800A71C53 /* MenuPickerTableViewCell.swift */; };
 		3242C8E12DF0C22C00F05FF8 /* CDFoodItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3242C8E02DF0C22C00F05FF8 /* CDFoodItem.swift */; };
 		3242C8E22DF0C22C00F05FF8 /* CDFoodItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3242C8E02DF0C22C00F05FF8 /* CDFoodItem.swift */; };
 		3242C8E42DF0D7E700F05FF8 /* UpdateFoodDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3242C8E32DF0D7E700F05FF8 /* UpdateFoodDetailViewController.swift */; };
@@ -52,7 +37,6 @@
 		325463C02DD03FF400BEDCE0 /* OnboardingPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 325463BF2DD03FF400BEDCE0 /* OnboardingPageViewController.swift */; };
 		325463C42DD0409600BEDCE0 /* UserProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 325463C32DD0409600BEDCE0 /* UserProfile.swift */; };
 		325463C52DD0409600BEDCE0 /* UserProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 325463C32DD0409600BEDCE0 /* UserProfile.swift */; };
-		3262F8332DFCB90A006CB8A4 /* DeleteAccountTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3262F8322DFCB90A006CB8A4 /* DeleteAccountTableViewCell.swift */; };
 		3262F83C2DFCC2DC006CB8A4 /* UserWeight+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3262F83A2DFCC2DC006CB8A4 /* UserWeight+CoreDataClass.swift */; };
 		3262F83D2DFCC2DC006CB8A4 /* UserWeight+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3262F83B2DFCC2DC006CB8A4 /* UserWeight+CoreDataProperties.swift */; };
 		3262F83E2DFCC2EB006CB8A4 /* UserWeight+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3262F83A2DFCC2DC006CB8A4 /* UserWeight+CoreDataClass.swift */; };
@@ -119,7 +103,6 @@
 		3262FBB32DFD49A7006CB8A4 /* Inter_28pt-SemiBoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3262FB712DFD49A7006CB8A4 /* Inter_28pt-SemiBoldItalic.ttf */; };
 		326FB8E32DDC4FF40015500E /* CaloriesConsumedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 326FB8E22DDC4FF40015500E /* CaloriesConsumedView.swift */; };
 		32723CF62BA63BE70074732C /* DiaryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32723CF52BA63BE70074732C /* DiaryViewController.swift */; };
-		32723CF82BA63CDB0074732C /* MealPlanDateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32723CF72BA63CDB0074732C /* MealPlanDateView.swift */; };
 		32762A802DFF4D07001BB96F /* Meal+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32762A7E2DFF4CD1001BB96F /* Meal+CoreDataClass.swift */; };
 		32762A812DFF4D07001BB96F /* Meal+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32762A7F2DFF4CD1001BB96F /* Meal+CoreDataProperties.swift */; };
 		32762A822DFF4D07001BB96F /* Meal+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32762A7E2DFF4CD1001BB96F /* Meal+CoreDataClass.swift */; };
@@ -132,8 +115,6 @@
 		32762A8D2DFF5322001BB96F /* FoodEntry+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32762A8A2DFF52CA001BB96F /* FoodEntry+CoreDataClass.swift */; };
 		32762A8E2DFF5322001BB96F /* FoodEntry+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32762A8A2DFF52CA001BB96F /* FoodEntry+CoreDataClass.swift */; };
 		32762A8F2DFF5322001BB96F /* FoodEntry+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32762A8B2DFF52CA001BB96F /* FoodEntry+CoreDataProperties.swift */; };
-		32783F272BB2320400A698E4 /* MealHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32783F262BB2320400A698E4 /* MealHeaderView.swift */; };
-		32783F292BB2370800A698E4 /* NutrientView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32783F282BB2370800A698E4 /* NutrientView.swift */; };
 		32870FAA2DD6D1E4005099D1 /* FoodInfoNutrient+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32870FA72DD6D196005099D1 /* FoodInfoNutrient+CoreDataProperties.swift */; };
 		32870FAD2DD6D1E4005099D1 /* FoodInfoNutrient+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32870FA62DD6D196005099D1 /* FoodInfoNutrient+CoreDataClass.swift */; };
 		32870FAE2DD6D1E4005099D1 /* FoodInfoNutrient+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32870FA62DD6D196005099D1 /* FoodInfoNutrient+CoreDataClass.swift */; };
@@ -142,18 +123,14 @@
 		328FA94A2B93B704002A6FB6 /* APIRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 328FA9492B93B704002A6FB6 /* APIRequest.swift */; };
 		328FA94C2B93B7AA002A6FB6 /* APIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 328FA94B2B93B7AA002A6FB6 /* APIService.swift */; };
 		328FA94E2B93B9D9002A6FB6 /* FoodService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 328FA94D2B93B9D9002A6FB6 /* FoodService.swift */; };
-		328FA9512B93C986002A6FB6 /* ResultTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 328FA9502B93C986002A6FB6 /* ResultTableViewCell.swift */; };
 		328FA9532B954664002A6FB6 /* FoodDetailTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 328FA9522B954664002A6FB6 /* FoodDetailTableViewController.swift */; };
 		328FA9552B954714002A6FB6 /* FoodItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 328FA9542B954714002A6FB6 /* FoodItem.swift */; };
-		328FA9572B969FEF002A6FB6 /* NutritionTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 328FA9562B969FEF002A6FB6 /* NutritionTableViewCell.swift */; };
-		328FA9592B97BDB9002A6FB6 /* SelectTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 328FA9582B97BDB9002A6FB6 /* SelectTableViewCell.swift */; };
 		328FA95B2B97C925002A6FB6 /* ServingSizeTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 328FA95A2B97C924002A6FB6 /* ServingSizeTableViewController.swift */; };
 		328FA9612B994271002A6FB6 /* FoodPortion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 328FA9602B994271002A6FB6 /* FoodPortion.swift */; };
 		328FA9632B9948A8002A6FB6 /* FoodNutrient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 328FA9622B9948A8002A6FB6 /* FoodNutrient.swift */; };
 		328FA9652B9A2154002A6FB6 /* FoodSearchResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 328FA9642B9A2154002A6FB6 /* FoodSearchResponse.swift */; };
 		328FA9672B9ABAE3002A6FB6 /* DailyValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 328FA9662B9ABAE2002A6FB6 /* DailyValue.swift */; };
 		328FA9692B9BE560002A6FB6 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 328FA9682B9BE560002A6FB6 /* Settings.swift */; };
-		328FA96B2B9BEEFD002A6FB6 /* QuantityTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 328FA96A2B9BEEFD002A6FB6 /* QuantityTableViewCell.swift */; };
 		3290A2A42DD286D3008A4320 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3290A2A32DD286D3008A4320 /* LoginViewController.swift */; };
 		3290A2A62DD290BF008A4320 /* KeychainItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3290A2A52DD290BF008A4320 /* KeychainItem.swift */; };
 		3290A35E2DD2CCE2008A4320 /* NutrientGoal+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3290A35C2DD2CCE2008A4320 /* NutrientGoal+CoreDataClass.swift */; };
@@ -161,24 +138,15 @@
 		3290A3602DD2E139008A4320 /* NutrientGoal+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3290A35C2DD2CCE2008A4320 /* NutrientGoal+CoreDataClass.swift */; };
 		3290A3612DD2E139008A4320 /* NutrientGoal+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3290A35D2DD2CCE2008A4320 /* NutrientGoal+CoreDataProperties.swift */; };
 		3296C9B62BB0F21A00EC7770 /* EditGoalTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3296C9B52BB0F21A00EC7770 /* EditGoalTableViewController.swift */; };
-		3296C9B82BB1219700EC7770 /* GoalTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3296C9B72BB1219700EC7770 /* GoalTableViewCell.swift */; };
 		3297EC532DF8DC800062B83F /* GoalsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3297EC522DF8DC800062B83F /* GoalsViewController.swift */; };
-		3297EC552DF8E0350062B83F /* ProfileSelectableTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3297EC542DF8E0350062B83F /* ProfileSelectableTableViewCell.swift */; };
 		329C1C022DDA76F200087FEF /* Utility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 329C1C012DDA76F200087FEF /* Utility.swift */; };
 		329C1C032DDA76F700087FEF /* Utility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 329C1C012DDA76F200087FEF /* Utility.swift */; };
 		32A292472DDDA69D004272A7 /* FoodInfoPortion+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32A292452DDDA673004272A7 /* FoodInfoPortion+CoreDataClass.swift */; };
 		32A292482DDDA69D004272A7 /* FoodInfoPortion+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32A292462DDDA673004272A7 /* FoodInfoPortion+CoreDataProperties.swift */; };
 		32A292492DDDA69D004272A7 /* FoodInfoPortion+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32A292452DDDA673004272A7 /* FoodInfoPortion+CoreDataClass.swift */; };
 		32A2924A2DDDA69D004272A7 /* FoodInfoPortion+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32A292462DDDA673004272A7 /* FoodInfoPortion+CoreDataProperties.swift */; };
-		32A8CBE52B9E888800AAA264 /* CircularProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32A8CBE42B9E888800AAA264 /* CircularProgressView.swift */; };
-		32A8CBE72B9E8C9F00AAA264 /* MacrosView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32A8CBE62B9E8C9F00AAA264 /* MacrosView.swift */; };
 		32B0933D2B9C02F50047E6E2 /* QuantityViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32B0933C2B9C02F50047E6E2 /* QuantityViewController.swift */; };
 		32B257602BBDD739003C7C7C /* QuickAddTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32B2575F2BBDD739003C7C7C /* QuickAddTableViewController.swift */; };
-		32B257622BBDDDD5003C7C7C /* QuickAddTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32B257612BBDDDD5003C7C7C /* QuickAddTableViewCell.swift */; };
-		32B351F42BA7512600FF2752 /* AddFoodButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32B351F32BA7512600FF2752 /* AddFoodButton.swift */; };
-		32B351F62BA7556A00FF2752 /* AddMealButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32B351F52BA7556A00FF2752 /* AddMealButton.swift */; };
-		32B351F82BA758F200FF2752 /* FoodEntryTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32B351F72BA758F200FF2752 /* FoodEntryTableViewCell.swift */; };
-		32BD0C672DD149D80098253F /* MacroInputTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32BD0C662DD149D80098253F /* MacroInputTableViewCell.swift */; };
 		32BD0C792DD198EF0098253F /* UserNutrientGoal+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32BD0C752DD198EF0098253F /* UserNutrientGoal+CoreDataClass.swift */; };
 		32BD0C7A2DD198EF0098253F /* UserNutrientGoal+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32BD0C762DD198EF0098253F /* UserNutrientGoal+CoreDataProperties.swift */; };
 		32BD0C7F2DD19B150098253F /* UserProfile+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32BD0C7D2DD19B150098253F /* UserProfile+CoreDataClass.swift */; };
@@ -190,7 +158,6 @@
 		32C386472DC54F650018D282 /* FoodAppTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32C386462DC54F650018D282 /* FoodAppTests.swift */; };
 		32C3864B2DC55E150018D282 /* FDCFoodInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32C3864A2DC55E150018D282 /* FDCFoodInput.swift */; };
 		32C3864C2DC55E150018D282 /* FDCFoodInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32C3864A2DC55E150018D282 /* FDCFoodInput.swift */; };
-		32C3864E2DC565700018D282 /* IngredientTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32C3864D2DC565700018D282 /* IngredientTableViewCell.swift */; };
 		32C386502DC5AF7E0018D282 /* SurveyFoodItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32C3864F2DC5AF7E0018D282 /* SurveyFoodItem.swift */; };
 		32C386512DC5AF7E0018D282 /* SurveyFoodItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32C3864F2DC5AF7E0018D282 /* SurveyFoodItem.swift */; };
 		32C386532DC5B4840018D282 /* SampleData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32C386522DC5B4840018D282 /* SampleData.swift */; };
@@ -199,7 +166,6 @@
 		32C388762DC6B1B30018D282 /* FoundationFoodItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32C388752DC6B1B30018D282 /* FoundationFoodItem.swift */; };
 		32C388772DC6B1B30018D282 /* FoundationFoodItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32C388752DC6B1B30018D282 /* FoundationFoodItem.swift */; };
 		32C9F3372BAC91D100703540 /* ReorderMealTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32C9F3362BAC91D100703540 /* ReorderMealTableViewController.swift */; };
-		32C9F33D2BACDBEA00703540 /* HistoryTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32C9F33C2BACDBEA00703540 /* HistoryTableViewCell.swift */; };
 		32CB60B62BABCE78002DA0C2 /* CalendarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32CB60B52BABCE78002DA0C2 /* CalendarViewController.swift */; };
 		32CF12CA2BB9E97400BE6B82 /* GoalTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32CF12C92BB9E97400BE6B82 /* GoalTableViewController.swift */; };
 		32DFCADF2BC1CA29001BDA8E /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 32DFCADE2BC1CA29001BDA8E /* WidgetKit.framework */; };
@@ -216,14 +182,11 @@
 		32DFCB022BC1D459001BDA8E /* FoodItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 328FA9542B954714002A6FB6 /* FoodItem.swift */; };
 		32DFCB032BC1D459001BDA8E /* FoodPortion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 328FA9602B994271002A6FB6 /* FoodPortion.swift */; };
 		32DFCB042BC1D459001BDA8E /* FoodSearchResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 328FA9642B9A2154002A6FB6 /* FoodSearchResponse.swift */; };
-		32DFCB052BC1D47A001BDA8E /* MacrosView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32A8CBE62B9E8C9F00AAA264 /* MacrosView.swift */; };
-		32DFCB062BC1D491001BDA8E /* CircularProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32A8CBE42B9E888800AAA264 /* CircularProgressView.swift */; };
 		32DFCB072BC1D894001BDA8E /* FoodApp.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 32F51A502B92C1A70080CC09 /* FoodApp.xcdatamodeld */; };
 		32DFCB0B2BC1F108001BDA8E /* WidgetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32DFCB0A2BC1F108001BDA8E /* WidgetView.swift */; };
 		32DFCB0C2BC1F1B6001BDA8E /* WidgetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32DFCB0A2BC1F108001BDA8E /* WidgetView.swift */; };
 		32DFCB102BC1F971001BDA8E /* SingleMacroWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32DFCB0F2BC1F971001BDA8E /* SingleMacroWidget.swift */; };
 		32DFCB112BC1FEEA001BDA8E /* SingleMacroWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32DFCB0F2BC1F971001BDA8E /* SingleMacroWidget.swift */; };
-		32EB4FB02BACEBD9004898C8 /* SearchTitleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32EB4FAF2BACEBD9004898C8 /* SearchTitleView.swift */; };
 		32F51A482B92C1A70080CC09 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32F51A472B92C1A70080CC09 /* AppDelegate.swift */; };
 		32F51A4A2B92C1A70080CC09 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32F51A492B92C1A70080CC09 /* SceneDelegate.swift */; };
 		32F51A522B92C1A70080CC09 /* FoodApp.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 32F51A502B92C1A70080CC09 /* FoodApp.xcdatamodeld */; };
@@ -275,36 +238,21 @@
 
 /* Begin PBXFileReference section */
 		320B31DC2DFBD36100F95406 /* CurrentWeightEditViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrentWeightEditViewController.swift; sourceTree = "<group>"; };
-		320B31DE2DFBD3E800F95406 /* CurrentWeightEditTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrentWeightEditTableViewCell.swift; sourceTree = "<group>"; };
 		320E6C212DC4335500ABD356 /* MealPlan+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MealPlan+CoreDataClass.swift"; sourceTree = "<group>"; };
 		320E6C222DC4335500ABD356 /* MealPlan+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MealPlan+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		320EE1CA2DCDB44100D6B07D /* OnboardingUserViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingUserViewController.swift; sourceTree = "<group>"; };
-		320EE1CC2DCDB5E300D6B07D /* OnboardingSegmentedTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingSegmentedTableViewCell.swift; sourceTree = "<group>"; };
-		320EE1CE2DCDB7F700D6B07D /* HeightTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeightTableViewCell.swift; sourceTree = "<group>"; };
 		320EE1D02DCDBAC500D6B07D /* HeightFeetPickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeightFeetPickerViewController.swift; sourceTree = "<group>"; };
-		320EE1D22DCE9F5500D6B07D /* DateOfBirthTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateOfBirthTableViewCell.swift; sourceTree = "<group>"; };
 		320EE1D42DCEA45B00D6B07D /* OnboardingCalculationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingCalculationViewController.swift; sourceTree = "<group>"; };
-		320EE1D62DCEA5DF00D6B07D /* DailyCaloriesTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyCaloriesTableViewCell.swift; sourceTree = "<group>"; };
-		320EE1D82DCEA89300D6B07D /* MacrosSplitTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacrosSplitTableViewCell.swift; sourceTree = "<group>"; };
 		320EE1DA2DCEAE6400D6B07D /* MacrosSplitViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacrosSplitViewController.swift; sourceTree = "<group>"; };
-		320EE4082DCED7DD00D6B07D /* UnitPreferenceFooterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnitPreferenceFooterView.swift; sourceTree = "<group>"; };
-		320EE40A2DCEF09200D6B07D /* HeightPreferenceFooterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeightPreferenceFooterView.swift; sourceTree = "<group>"; };
-		3216CF782BB4D6C900D9E17A /* AddFoodTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddFoodTableViewCell.swift; sourceTree = "<group>"; };
-		32216DBD2BA0FF4E0046A178 /* ProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressView.swift; sourceTree = "<group>"; };
 		32267A6F2DF397AA001B9CFC /* History+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "History+CoreDataClass.swift"; sourceTree = "<group>"; };
 		32267A702DF397AA001B9CFC /* History+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "History+CoreDataProperties.swift"; sourceTree = "<group>"; };
-		323FB4852DC84CA600A71C53 /* ResultsHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultsHeaderView.swift; sourceTree = "<group>"; };
 		323FB6B32DC95E3600A71C53 /* ResultsPaginatedViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultsPaginatedViewController.swift; sourceTree = "<group>"; };
 		323FB7652DCADDD000A71C53 /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
-		323FB7692DCADFB800A71C53 /* SettingsSelectableTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsSelectableTableViewCell.swift; sourceTree = "<group>"; };
 		323FB76D2DCAE64400A71C53 /* DashboardViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardViewController.swift; sourceTree = "<group>"; };
 		323FB7702DCAE65B00A71C53 /* ProgressViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressViewController.swift; sourceTree = "<group>"; };
 		323FB7732DCAE66E00A71C53 /* EntryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntryViewController.swift; sourceTree = "<group>"; };
 		323FB9A22DCAF4C600A71C53 /* OnboardingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingViewController.swift; sourceTree = "<group>"; };
 		323FB9A42DCC045200A71C53 /* OnboardingGoalViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingGoalViewController.swift; sourceTree = "<group>"; };
-		323FB9A62DCC04A800A71C53 /* SelectableTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectableTableViewCell.swift; sourceTree = "<group>"; };
-		323FB9A92DCC0AFA00A71C53 /* WeightInputTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeightInputTableViewCell.swift; sourceTree = "<group>"; };
-		323FB9AB2DCC13D800A71C53 /* MenuPickerTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuPickerTableViewCell.swift; sourceTree = "<group>"; };
 		3242C8E02DF0C22C00F05FF8 /* CDFoodItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CDFoodItem.swift; sourceTree = "<group>"; };
 		3242C8E32DF0D7E700F05FF8 /* UpdateFoodDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateFoodDetailViewController.swift; sourceTree = "<group>"; };
 		3242C8E52DF0D82300F05FF8 /* AddFoodDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddFoodDetailViewController.swift; sourceTree = "<group>"; };
@@ -313,7 +261,6 @@
 		325463BD2DD0114100BEDCE0 /* HeightCmPickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeightCmPickerViewController.swift; sourceTree = "<group>"; };
 		325463BF2DD03FF400BEDCE0 /* OnboardingPageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingPageViewController.swift; sourceTree = "<group>"; };
 		325463C32DD0409600BEDCE0 /* UserProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfile.swift; sourceTree = "<group>"; };
-		3262F8322DFCB90A006CB8A4 /* DeleteAccountTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteAccountTableViewCell.swift; sourceTree = "<group>"; };
 		3262F83A2DFCC2DC006CB8A4 /* UserWeight+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserWeight+CoreDataClass.swift"; sourceTree = "<group>"; };
 		3262F83B2DFCC2DC006CB8A4 /* UserWeight+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserWeight+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		3262F8422DFCE66A006CB8A4 /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
@@ -378,66 +325,48 @@
 		3262FB782DFD49A7006CB8A4 /* README.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = README.txt; sourceTree = "<group>"; };
 		326FB8E22DDC4FF40015500E /* CaloriesConsumedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaloriesConsumedView.swift; sourceTree = "<group>"; };
 		32723CF52BA63BE70074732C /* DiaryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiaryViewController.swift; sourceTree = "<group>"; };
-		32723CF72BA63CDB0074732C /* MealPlanDateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MealPlanDateView.swift; sourceTree = "<group>"; };
 		32762A7E2DFF4CD1001BB96F /* Meal+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Meal+CoreDataClass.swift"; sourceTree = "<group>"; };
 		32762A7F2DFF4CD1001BB96F /* Meal+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Meal+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		32762A842DFF4D34001BB96F /* FoodInfo+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FoodInfo+CoreDataClass.swift"; sourceTree = "<group>"; };
 		32762A852DFF4D34001BB96F /* FoodInfo+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FoodInfo+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		32762A8A2DFF52CA001BB96F /* FoodEntry+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FoodEntry+CoreDataClass.swift"; sourceTree = "<group>"; };
 		32762A8B2DFF52CA001BB96F /* FoodEntry+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FoodEntry+CoreDataProperties.swift"; sourceTree = "<group>"; };
-		32783F262BB2320400A698E4 /* MealHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MealHeaderView.swift; sourceTree = "<group>"; };
-		32783F282BB2370800A698E4 /* NutrientView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NutrientView.swift; sourceTree = "<group>"; };
 		32870FA62DD6D196005099D1 /* FoodInfoNutrient+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FoodInfoNutrient+CoreDataClass.swift"; sourceTree = "<group>"; };
 		32870FA72DD6D196005099D1 /* FoodInfoNutrient+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FoodInfoNutrient+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		328FA9452B939C6A002A6FB6 /* SearchResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchResponse.swift; sourceTree = "<group>"; };
 		328FA9492B93B704002A6FB6 /* APIRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIRequest.swift; sourceTree = "<group>"; };
 		328FA94B2B93B7AA002A6FB6 /* APIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIService.swift; sourceTree = "<group>"; };
 		328FA94D2B93B9D9002A6FB6 /* FoodService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodService.swift; sourceTree = "<group>"; };
-		328FA9502B93C986002A6FB6 /* ResultTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultTableViewCell.swift; sourceTree = "<group>"; };
 		328FA9522B954664002A6FB6 /* FoodDetailTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodDetailTableViewController.swift; sourceTree = "<group>"; };
 		328FA9542B954714002A6FB6 /* FoodItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodItem.swift; sourceTree = "<group>"; };
-		328FA9562B969FEF002A6FB6 /* NutritionTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NutritionTableViewCell.swift; sourceTree = "<group>"; };
-		328FA9582B97BDB9002A6FB6 /* SelectTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectTableViewCell.swift; sourceTree = "<group>"; };
 		328FA95A2B97C924002A6FB6 /* ServingSizeTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServingSizeTableViewController.swift; sourceTree = "<group>"; };
 		328FA9602B994271002A6FB6 /* FoodPortion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodPortion.swift; sourceTree = "<group>"; };
 		328FA9622B9948A8002A6FB6 /* FoodNutrient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodNutrient.swift; sourceTree = "<group>"; };
 		328FA9642B9A2154002A6FB6 /* FoodSearchResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodSearchResponse.swift; sourceTree = "<group>"; };
 		328FA9662B9ABAE2002A6FB6 /* DailyValue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyValue.swift; sourceTree = "<group>"; };
 		328FA9682B9BE560002A6FB6 /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
-		328FA96A2B9BEEFD002A6FB6 /* QuantityTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuantityTableViewCell.swift; sourceTree = "<group>"; };
 		3290A2A32DD286D3008A4320 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		3290A2A52DD290BF008A4320 /* KeychainItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainItem.swift; sourceTree = "<group>"; };
 		3290A35C2DD2CCE2008A4320 /* NutrientGoal+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NutrientGoal+CoreDataClass.swift"; sourceTree = "<group>"; };
 		3290A35D2DD2CCE2008A4320 /* NutrientGoal+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NutrientGoal+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		3296C9B52BB0F21A00EC7770 /* EditGoalTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditGoalTableViewController.swift; sourceTree = "<group>"; };
-		3296C9B72BB1219700EC7770 /* GoalTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoalTableViewCell.swift; sourceTree = "<group>"; };
 		3297EC522DF8DC800062B83F /* GoalsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoalsViewController.swift; sourceTree = "<group>"; };
-		3297EC542DF8E0350062B83F /* ProfileSelectableTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileSelectableTableViewCell.swift; sourceTree = "<group>"; };
 		329C1C012DDA76F200087FEF /* Utility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utility.swift; sourceTree = "<group>"; };
 		32A292452DDDA673004272A7 /* FoodInfoPortion+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FoodInfoPortion+CoreDataClass.swift"; sourceTree = "<group>"; };
 		32A292462DDDA673004272A7 /* FoodInfoPortion+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FoodInfoPortion+CoreDataProperties.swift"; sourceTree = "<group>"; };
-		32A8CBE42B9E888800AAA264 /* CircularProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircularProgressView.swift; sourceTree = "<group>"; };
-		32A8CBE62B9E8C9F00AAA264 /* MacrosView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacrosView.swift; sourceTree = "<group>"; };
 		32B0933C2B9C02F50047E6E2 /* QuantityViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuantityViewController.swift; sourceTree = "<group>"; };
 		32B2575F2BBDD739003C7C7C /* QuickAddTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickAddTableViewController.swift; sourceTree = "<group>"; };
-		32B257612BBDDDD5003C7C7C /* QuickAddTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickAddTableViewCell.swift; sourceTree = "<group>"; };
-		32B351F32BA7512600FF2752 /* AddFoodButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddFoodButton.swift; sourceTree = "<group>"; };
-		32B351F52BA7556A00FF2752 /* AddMealButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddMealButton.swift; sourceTree = "<group>"; };
-		32B351F72BA758F200FF2752 /* FoodEntryTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodEntryTableViewCell.swift; sourceTree = "<group>"; };
-		32BD0C662DD149D80098253F /* MacroInputTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacroInputTableViewCell.swift; sourceTree = "<group>"; };
 		32BD0C752DD198EF0098253F /* UserNutrientGoal+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserNutrientGoal+CoreDataClass.swift"; sourceTree = "<group>"; };
 		32BD0C762DD198EF0098253F /* UserNutrientGoal+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserNutrientGoal+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		32BD0C7D2DD19B150098253F /* UserProfile+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserProfile+CoreDataClass.swift"; sourceTree = "<group>"; };
 		32BD0C7E2DD19B150098253F /* UserProfile+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserProfile+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		32C386462DC54F650018D282 /* FoodAppTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodAppTests.swift; sourceTree = "<group>"; };
 		32C3864A2DC55E150018D282 /* FDCFoodInput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FDCFoodInput.swift; sourceTree = "<group>"; };
-		32C3864D2DC565700018D282 /* IngredientTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IngredientTableViewCell.swift; sourceTree = "<group>"; };
 		32C3864F2DC5AF7E0018D282 /* SurveyFoodItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SurveyFoodItem.swift; sourceTree = "<group>"; };
 		32C386522DC5B4840018D282 /* SampleData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleData.swift; sourceTree = "<group>"; };
 		32C386552DC5B82B0018D282 /* BrandedFoodItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrandedFoodItem.swift; sourceTree = "<group>"; };
 		32C388752DC6B1B30018D282 /* FoundationFoodItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoundationFoodItem.swift; sourceTree = "<group>"; };
 		32C9F3362BAC91D100703540 /* ReorderMealTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReorderMealTableViewController.swift; sourceTree = "<group>"; };
-		32C9F33C2BACDBEA00703540 /* HistoryTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryTableViewCell.swift; sourceTree = "<group>"; };
 		32CB60B52BABCE78002DA0C2 /* CalendarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarViewController.swift; sourceTree = "<group>"; };
 		32CF12C92BB9E97400BE6B82 /* GoalTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoalTableViewController.swift; sourceTree = "<group>"; };
 		32DFCADC2BC1CA29001BDA8E /* FoodWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = FoodWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -451,7 +380,6 @@
 		32DFCB092BC1E3D1001BDA8E /* FoodWidgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = FoodWidgetExtension.entitlements; sourceTree = "<group>"; };
 		32DFCB0A2BC1F108001BDA8E /* WidgetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetView.swift; sourceTree = "<group>"; };
 		32DFCB0F2BC1F971001BDA8E /* SingleMacroWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleMacroWidget.swift; sourceTree = "<group>"; };
-		32EB4FAF2BACEBD9004898C8 /* SearchTitleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchTitleView.swift; sourceTree = "<group>"; };
 		32F51A442B92C1A70080CC09 /* BananaBite.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BananaBite.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		32F51A472B92C1A70080CC09 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		32F51A492B92C1A70080CC09 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -466,6 +394,21 @@
 		32F51A7A2B92C3150080CC09 /* SearchFoodTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchFoodTableViewController.swift; sourceTree = "<group>"; };
 		32F51A7C2B92D5280080CC09 /* ResultTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultTableViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		32762B7F2E00A572001BB96F /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				CircularProgressView.swift,
+				MacrosView.swift,
+			);
+			target = 32DFCADB2BC1CA29001BDA8E /* FoodWidgetExtension */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		32762B592E00A572001BB96F /* Views */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (32762B7F2E00A572001BB96F /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Views; sourceTree = "<group>"; };
+/* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		32DFCAD92BC1CA29001BDA8E /* Frameworks */ = {
@@ -535,16 +478,6 @@
 			path = Settings;
 			sourceTree = "<group>";
 		};
-		323FB7672DCADF8F00A71C53 /* Settings */ = {
-			isa = PBXGroup;
-			children = (
-				323FB7692DCADFB800A71C53 /* SettingsSelectableTableViewCell.swift */,
-				320B31DE2DFBD3E800F95406 /* CurrentWeightEditTableViewCell.swift */,
-				3262F8322DFCB90A006CB8A4 /* DeleteAccountTableViewCell.swift */,
-			);
-			path = Settings;
-			sourceTree = "<group>";
-		};
 		323FB76C2DCAE23E00A71C53 /* Dashboard */ = {
 			isa = PBXGroup;
 			children = (
@@ -579,24 +512,6 @@
 				325463BF2DD03FF400BEDCE0 /* OnboardingPageViewController.swift */,
 				3290A2A32DD286D3008A4320 /* LoginViewController.swift */,
 				3290A2A52DD290BF008A4320 /* KeychainItem.swift */,
-			);
-			path = Onboarding;
-			sourceTree = "<group>";
-		};
-		323FB9A82DCC0AD700A71C53 /* Onboarding */ = {
-			isa = PBXGroup;
-			children = (
-				323FB9A62DCC04A800A71C53 /* SelectableTableViewCell.swift */,
-				323FB9A92DCC0AFA00A71C53 /* WeightInputTableViewCell.swift */,
-				323FB9AB2DCC13D800A71C53 /* MenuPickerTableViewCell.swift */,
-				320EE1CC2DCDB5E300D6B07D /* OnboardingSegmentedTableViewCell.swift */,
-				320EE1CE2DCDB7F700D6B07D /* HeightTableViewCell.swift */,
-				320EE1D22DCE9F5500D6B07D /* DateOfBirthTableViewCell.swift */,
-				320EE1D62DCEA5DF00D6B07D /* DailyCaloriesTableViewCell.swift */,
-				320EE1D82DCEA89300D6B07D /* MacrosSplitTableViewCell.swift */,
-				320EE4082DCED7DD00D6B07D /* UnitPreferenceFooterView.swift */,
-				320EE40A2DCEF09200D6B07D /* HeightPreferenceFooterView.swift */,
-				32BD0C662DD149D80098253F /* MacroInputTableViewCell.swift */,
 			);
 			path = Onboarding;
 			sourceTree = "<group>";
@@ -732,36 +647,6 @@
 			path = Models;
 			sourceTree = "<group>";
 		};
-		328FA94F2B93C957002A6FB6 /* Views */ = {
-			isa = PBXGroup;
-			children = (
-				323FB9A82DCC0AD700A71C53 /* Onboarding */,
-				323FB7672DCADF8F00A71C53 /* Settings */,
-				32B351F32BA7512600FF2752 /* AddFoodButton.swift */,
-				3216CF782BB4D6C900D9E17A /* AddFoodTableViewCell.swift */,
-				32B351F52BA7556A00FF2752 /* AddMealButton.swift */,
-				32A8CBE42B9E888800AAA264 /* CircularProgressView.swift */,
-				32B351F72BA758F200FF2752 /* FoodEntryTableViewCell.swift */,
-				3296C9B72BB1219700EC7770 /* GoalTableViewCell.swift */,
-				32C9F33C2BACDBEA00703540 /* HistoryTableViewCell.swift */,
-				32A8CBE62B9E8C9F00AAA264 /* MacrosView.swift */,
-				32783F262BB2320400A698E4 /* MealHeaderView.swift */,
-				32723CF72BA63CDB0074732C /* MealPlanDateView.swift */,
-				32783F282BB2370800A698E4 /* NutrientView.swift */,
-				328FA9562B969FEF002A6FB6 /* NutritionTableViewCell.swift */,
-				32216DBD2BA0FF4E0046A178 /* ProgressView.swift */,
-				328FA96A2B9BEEFD002A6FB6 /* QuantityTableViewCell.swift */,
-				328FA9502B93C986002A6FB6 /* ResultTableViewCell.swift */,
-				32EB4FAF2BACEBD9004898C8 /* SearchTitleView.swift */,
-				328FA9582B97BDB9002A6FB6 /* SelectTableViewCell.swift */,
-				32B257612BBDDDD5003C7C7C /* QuickAddTableViewCell.swift */,
-				32C3864D2DC565700018D282 /* IngredientTableViewCell.swift */,
-				323FB4852DC84CA600A71C53 /* ResultsHeaderView.swift */,
-				3297EC542DF8E0350062B83F /* ProfileSelectableTableViewCell.swift */,
-			);
-			path = Views;
-			sourceTree = "<group>";
-		};
 		3297EC512DF8DC720062B83F /* Profile */ = {
 			isa = PBXGroup;
 			children = (
@@ -877,7 +762,7 @@
 			children = (
 				320E6C9C2DC440B800ABD356 /* Database */,
 				32DFCB082BC1E2F6001BDA8E /* FoodApp.entitlements */,
-				328FA94F2B93C957002A6FB6 /* Views */,
+				32762B592E00A572001BB96F /* Views */,
 				328FA9432B939B4A002A6FB6 /* Models */,
 				328FA9422B939B36002A6FB6 /* ViewControllers */,
 				32F51A472B92C1A70080CC09 /* AppDelegate.swift */,
@@ -947,6 +832,9 @@
 			);
 			dependencies = (
 				32DFCAEB2BC1CA2C001BDA8E /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				32762B592E00A572001BB96F /* Views */,
 			);
 			name = FoodApp;
 			productName = FoodApp;
@@ -1172,9 +1060,7 @@
 				32762A882DFF4D4C001BB96F /* FoodInfo+CoreDataClass.swift in Sources */,
 				32762A892DFF4D4C001BB96F /* FoodInfo+CoreDataProperties.swift in Sources */,
 				32DFCB022BC1D459001BDA8E /* FoodItem.swift in Sources */,
-				32DFCB052BC1D47A001BDA8E /* MacrosView.swift in Sources */,
 				32DFCAFF2BC1D459001BDA8E /* DailyValue.swift in Sources */,
-				32DFCB062BC1D491001BDA8E /* CircularProgressView.swift in Sources */,
 				32DFCB072BC1D894001BDA8E /* FoodApp.xcdatamodeld in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1184,10 +1070,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				323FB7712DCAE65B00A71C53 /* ProgressViewController.swift in Sources */,
-				32A8CBE52B9E888800AAA264 /* CircularProgressView.swift in Sources */,
-				32783F292BB2370800A698E4 /* NutrientView.swift in Sources */,
-				328FA96B2B9BEEFD002A6FB6 /* QuantityTableViewCell.swift in Sources */,
-				3296C9B82BB1219700EC7770 /* GoalTableViewCell.swift in Sources */,
 				328FA9532B954664002A6FB6 /* FoodDetailTableViewController.swift in Sources */,
 				32762A8C2DFF5322001BB96F /* FoodEntry+CoreDataProperties.swift in Sources */,
 				32762A8D2DFF5322001BB96F /* FoodEntry+CoreDataClass.swift in Sources */,
@@ -1195,39 +1077,23 @@
 				32C9F3372BAC91D100703540 /* ReorderMealTableViewController.swift in Sources */,
 				3296C9B62BB0F21A00EC7770 /* EditGoalTableViewController.swift in Sources */,
 				32DFCB102BC1F971001BDA8E /* SingleMacroWidget.swift in Sources */,
-				3216CF792BB4D6C900D9E17A /* AddFoodTableViewCell.swift in Sources */,
-				32EB4FB02BACEBD9004898C8 /* SearchTitleView.swift in Sources */,
 				32CF12CA2BB9E97400BE6B82 /* GoalTableViewController.swift in Sources */,
-				32C3864E2DC565700018D282 /* IngredientTableViewCell.swift in Sources */,
 				328FA95B2B97C925002A6FB6 /* ServingSizeTableViewController.swift in Sources */,
-				32BD0C672DD149D80098253F /* MacroInputTableViewCell.swift in Sources */,
 				32F51A522B92C1A70080CC09 /* FoodApp.xcdatamodeld in Sources */,
-				320B31DF2DFBD3E800F95406 /* CurrentWeightEditTableViewCell.swift in Sources */,
 				32F51A482B92C1A70080CC09 /* AppDelegate.swift in Sources */,
 				32BD0C792DD198EF0098253F /* UserNutrientGoal+CoreDataClass.swift in Sources */,
 				32BD0C7A2DD198EF0098253F /* UserNutrientGoal+CoreDataProperties.swift in Sources */,
 				32F51A7D2B92D5280080CC09 /* ResultTableViewController.swift in Sources */,
-				32783F272BB2320400A698E4 /* MealHeaderView.swift in Sources */,
 				32BD0C7F2DD19B150098253F /* UserProfile+CoreDataClass.swift in Sources */,
 				32BD0C802DD19B150098253F /* UserProfile+CoreDataProperties.swift in Sources */,
-				32B257622BBDDDD5003C7C7C /* QuickAddTableViewCell.swift in Sources */,
-				328FA9592B97BDB9002A6FB6 /* SelectTableViewCell.swift in Sources */,
-				323FB4862DC84CA600A71C53 /* ResultsHeaderView.swift in Sources */,
 				325463C52DD0409600BEDCE0 /* UserProfile.swift in Sources */,
-				328FA9512B93C986002A6FB6 /* ResultTableViewCell.swift in Sources */,
 				328FA9692B9BE560002A6FB6 /* Settings.swift in Sources */,
-				320EE1D32DCE9F5500D6B07D /* DateOfBirthTableViewCell.swift in Sources */,
-				320EE4092DCED7DD00D6B07D /* UnitPreferenceFooterView.swift in Sources */,
-				320EE40B2DCEF09200D6B07D /* HeightPreferenceFooterView.swift in Sources */,
-				323FB9AC2DCC13D800A71C53 /* MenuPickerTableViewCell.swift in Sources */,
 				323FB6B42DC95E3600A71C53 /* ResultsPaginatedViewController.swift in Sources */,
 				32B257602BBDD739003C7C7C /* QuickAddTableViewController.swift in Sources */,
 				32F51A4A2B92C1A70080CC09 /* SceneDelegate.swift in Sources */,
 				3242C8E62DF0D82300F05FF8 /* AddFoodDetailViewController.swift in Sources */,
-				323FB76A2DCADFB800A71C53 /* SettingsSelectableTableViewCell.swift in Sources */,
 				328FA9462B939C6A002A6FB6 /* SearchResponse.swift in Sources */,
 				3262F89C2DFCFE20006CB8A4 /* WeightProgressView.swift in Sources */,
-				320EE1D92DCEA89300D6B07D /* MacrosSplitTableViewCell.swift in Sources */,
 				320B31DD2DFBD36100F95406 /* CurrentWeightEditViewController.swift in Sources */,
 				320E6C292DC4336700ABD356 /* MealPlan+CoreDataClass.swift in Sources */,
 				32515EC62DD3D4FD00594145 /* FoodAPIRequest.swift in Sources */,
@@ -1237,21 +1103,16 @@
 				32A292472DDDA69D004272A7 /* FoodInfoPortion+CoreDataClass.swift in Sources */,
 				32A292482DDDA69D004272A7 /* FoodInfoPortion+CoreDataProperties.swift in Sources */,
 				323FB7662DCADDD000A71C53 /* SettingsViewController.swift in Sources */,
-				323FB9AA2DCC0AFA00A71C53 /* WeightInputTableViewCell.swift in Sources */,
-				320EE1CF2DCDB7F700D6B07D /* HeightTableViewCell.swift in Sources */,
 				32762A862DFF4D4C001BB96F /* FoodInfo+CoreDataClass.swift in Sources */,
 				32762A872DFF4D4C001BB96F /* FoodInfo+CoreDataProperties.swift in Sources */,
 				320E6C352DC4336700ABD356 /* MealPlan+CoreDataProperties.swift in Sources */,
 				320EE1CB2DCDB44100D6B07D /* OnboardingUserViewController.swift in Sources */,
-				32723CF82BA63CDB0074732C /* MealPlanDateView.swift in Sources */,
-				323FB9A72DCC04A800A71C53 /* SelectableTableViewCell.swift in Sources */,
 				328FA9632B9948A8002A6FB6 /* FoodNutrient.swift in Sources */,
 				328FA94A2B93B704002A6FB6 /* APIRequest.swift in Sources */,
 				3290A2A62DD290BF008A4320 /* KeychainItem.swift in Sources */,
 				326FB8E32DDC4FF40015500E /* CaloriesConsumedView.swift in Sources */,
 				329C1C022DDA76F200087FEF /* Utility.swift in Sources */,
 				328FA9552B954714002A6FB6 /* FoodItem.swift in Sources */,
-				3297EC552DF8E0350062B83F /* ProfileSelectableTableViewCell.swift in Sources */,
 				3262F8432DFCE66A006CB8A4 /* ProfileViewController.swift in Sources */,
 				328FA9612B994271002A6FB6 /* FoodPortion.swift in Sources */,
 				323FB9A32DCAF4C600A71C53 /* OnboardingViewController.swift in Sources */,
@@ -1261,16 +1122,10 @@
 				3290A35F2DD2CCE2008A4320 /* NutrientGoal+CoreDataProperties.swift in Sources */,
 				3242C8E42DF0D7E700F05FF8 /* UpdateFoodDetailViewController.swift in Sources */,
 				32DFCAF22BC1CC97001BDA8E /* MacroWidget.swift in Sources */,
-				32A8CBE72B9E8C9F00AAA264 /* MacrosView.swift in Sources */,
 				32723CF62BA63BE70074732C /* DiaryViewController.swift in Sources */,
-				32B351F82BA758F200FF2752 /* FoodEntryTableViewCell.swift in Sources */,
 				32C3864B2DC55E150018D282 /* FDCFoodInput.swift in Sources */,
-				3262F8332DFCB90A006CB8A4 /* DeleteAccountTableViewCell.swift in Sources */,
 				32C388762DC6B1B30018D282 /* FoundationFoodItem.swift in Sources */,
 				328FA94C2B93B7AA002A6FB6 /* APIService.swift in Sources */,
-				32C9F33D2BACDBEA00703540 /* HistoryTableViewCell.swift in Sources */,
-				320EE1D72DCEA5DF00D6B07D /* DailyCaloriesTableViewCell.swift in Sources */,
-				320EE1CD2DCDB5E300D6B07D /* OnboardingSegmentedTableViewCell.swift in Sources */,
 				323FB9A52DCC045200A71C53 /* OnboardingGoalViewController.swift in Sources */,
 				32870FAA2DD6D1E4005099D1 /* FoodInfoNutrient+CoreDataProperties.swift in Sources */,
 				32870FAD2DD6D1E4005099D1 /* FoodInfoNutrient+CoreDataClass.swift in Sources */,
@@ -1286,13 +1141,9 @@
 				320EE1D12DCDBAC500D6B07D /* HeightFeetPickerViewController.swift in Sources */,
 				325463C02DD03FF400BEDCE0 /* OnboardingPageViewController.swift in Sources */,
 				320EE1D52DCEA45B00D6B07D /* OnboardingCalculationViewController.swift in Sources */,
-				32B351F42BA7512600FF2752 /* AddFoodButton.swift in Sources */,
-				328FA9572B969FEF002A6FB6 /* NutritionTableViewCell.swift in Sources */,
-				32B351F62BA7556A00FF2752 /* AddMealButton.swift in Sources */,
 				328FA94E2B93B9D9002A6FB6 /* FoodService.swift in Sources */,
 				320EE1DB2DCEAE6400D6B07D /* MacrosSplitViewController.swift in Sources */,
 				32DFCB0B2BC1F108001BDA8E /* WidgetView.swift in Sources */,
-				32216DBE2BA0FF4E0046A178 /* ProgressView.swift in Sources */,
 				328FA9652B9A2154002A6FB6 /* FoodSearchResponse.swift in Sources */,
 				328FA9672B9ABAE3002A6FB6 /* DailyValue.swift in Sources */,
 				32267A712DF397B2001B9CFC /* History+CoreDataProperties.swift in Sources */,
