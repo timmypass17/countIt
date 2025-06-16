@@ -50,7 +50,7 @@ class ReorderMealTableViewController: UITableViewController {
         let meal = mealPlan.meals[indexPath.row]
         var config = cell.defaultContentConfiguration()
         config.text = meal.name
-        config.secondaryText = meal.foods.compactMap { $0.foodInfo?.name }.joined(separator: " ,")
+        config.secondaryText = meal.foodEntries.compactMap { $0.foodInfo?.name }.joined(separator: " ,")
         config.secondaryTextProperties.numberOfLines = 1
         config.secondaryTextProperties.color = .secondaryLabel
         cell.contentConfiguration = config

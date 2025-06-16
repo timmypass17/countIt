@@ -8,11 +8,7 @@
 import UIKit
 
 protocol ResultTableViewCellDelegate: AnyObject {
-    func resultTableViewCell(_ cell: ResultTableViewCell, didAddFoodEntry foodEntry: Food)
-}
-
-protocol ResultTableViewCellHistoryDelegate: AnyObject {
-    func resultTableViewCell(_ cell: ResultTableViewCell, didUpdateHistoryWithFood food: Food)
+    func resultTableViewCell(_ cell: ResultTableViewCell, didTapAddButton: Bool)
 }
 
 class ResultTableViewCell: UITableViewCell {
@@ -81,12 +77,8 @@ class ResultTableViewCell: UITableViewCell {
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
     }()
-    
-    var food: Food!
-    var meal: Meal!
-    
+        
     weak var delegate: ResultTableViewCellDelegate?
-    weak var historyDelegate: ResultTableViewCellHistoryDelegate?
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -116,20 +108,17 @@ class ResultTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-//    func update<Item: FoodItem>(with foodItem: Item) {
     func update(with foodItem: FoodItem) {
-//        self.food = food
         titleLabel.text = foodItem.description
 
-        let foodPortion = foodItem.foodPortions[(foodItem.foodPortions.count - 1) / 2]
+        let foodPortion = foodItem.foodPortions[foodItem.foodPortions.count / 2]
         descriptionLabel.text = foodItem.getFoodPortionDescription(foodPortion: foodPortion, numberOfServings: 1, options: FoodEntryOptions.allCases)
     }
     
     func didTapPlusButton() -> UIAction {
         return UIAction { [self] _ in
-//            print(#function)
+            delegate?.resultTableViewCell(self, didTapAddButton: true)
 //            if let meal {
-//                print("Has meal")
 //                let foodEntry = CoreDataStack.shared.addFoodEntry(food, to: meal, servingSize: selectedFoodPortion, numberOfServings: 1, servingSizeUnit: food.servingSizeUnit ?? "g")
 //                delegate?.resultTableViewCell(self, didAddFoodEntry: foodEntry)
 //                

@@ -31,14 +31,18 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     func showMainApp(userProfile: UserProfile) {
         let foodService = FoodService()
-        let dashboardViewController = DashboardViewController()
         let diaryViewController = DiaryViewController(userProfile: userProfile, foodService: foodService)
+        let searchViewController = SearchFoodTableViewController(foodService: foodService)
         let progressViewController = ProgressViewController()
         let settingsViewController = SettingsViewController(userProfile: userProfile)
 
+        diaryViewController.delegate = searchViewController
+        searchViewController.resultDelegate = diaryViewController
+        searchViewController.addFoodDelegate = diaryViewController
+        
         diaryViewController.tabBarItem = UITabBarItem(title: nil, image: UIImage(systemName: "house"), tag: 0)
 
-        dashboardViewController.tabBarItem = UITabBarItem(title: nil, image: UIImage(systemName: "magnifyingglass"), tag: 1)
+        searchViewController.tabBarItem = UITabBarItem(title: nil, image: UIImage(systemName: "magnifyingglass"), tag: 1)
 
         progressViewController.tabBarItem = UITabBarItem(title: nil, image: UIImage(systemName: "chart.bar.fill"), tag: 2)
 
@@ -48,7 +52,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let tabBarController = UITabBarController()
         tabBarController.viewControllers = [
             diaryViewController,
-            dashboardViewController,
+            searchViewController,
             progressViewController,
             settingsViewController
         ].map { UINavigationController(rootViewController: $0) }

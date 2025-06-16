@@ -18,6 +18,6 @@ extension History {
 
     @NSManaged public var createdAt_: Date?
     @NSManaged public var fdcId: Int64
-    @NSManaged public var food: Food?
+    @NSManaged public var foodEntry: FoodEntry?
 
 }

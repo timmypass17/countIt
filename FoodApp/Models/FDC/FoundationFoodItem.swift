@@ -45,21 +45,18 @@ struct FoundationFoodItem: FoodItem {
         // Edge case: Calories is missing, fallback on other calories
         if let caloriesIndex = foodNutrients.firstIndex(where: { $0.nutrientId == .calories }) {
             let calories = foodNutrients[caloriesIndex]
-            print("timmy \(description) - \(calories.amount)")
             if calories.amount == 0 {
                 // Fall back on other calories
                 if let fallbackCalories = foodNutrients.first(where: { $0.nutrientId == .fallbackCalories }) {
-                    print("timmy calories is 0, updating to \(fallbackCalories.amount)")
                     foodNutrients[caloriesIndex].amount = fallbackCalories.amount
                 }
             }
         }
-        foodNutrients.forEach {
-            print("timmy \($0.description) - \($0.amount)")
-        }
+
         self.foodNutrients = foodNutrients
         var foodPortions = try container.decodeIfPresent([FoodPortion].self, forKey: .foodPortions) ?? []
         foodPortions.append(FoodPortion.default100g)
+        foodPortions.sort { $0.gramWeight ?? 0 < $1.gramWeight ?? 0 }
         self.foodPortions = foodPortions
     }
     

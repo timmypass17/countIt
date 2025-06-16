@@ -53,7 +53,7 @@ extension MealPlan {
     }
     
     var isEmpty: Bool {
-        return meals.allSatisfy { $0.foods.count == 0 }
+        return meals.allSatisfy { $0.foodEntries.count == 0 }
     }
     
     func nutrientAmount(_ nutrientId: NutrientId) -> Double {

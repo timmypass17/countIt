@@ -13,13 +13,13 @@ protocol FoodDetailTableViewControllerDismissDelegate: AnyObject {
 }
 
 protocol FoodDetailTableViewControllerHistoryDelegate: AnyObject {
-    func foodDetailTableViewController(_ tableViewController: FoodDetailTableViewController, didUpdateHistoryWithFood food: Food)
+    func foodDetailTableViewController(_ tableViewController: FoodDetailTableViewController, didUpdateHistoryWithFood food: FoodEntry)
 }
 
 class FoodDetailTableViewController: UITableViewController {
 
     var fdcFood: FoodItem
-    var food: Food?
+    var food: FoodEntry?
     var fdcFoodAdditional: FoodItem?
     let meal: Meal?
     var selectedFoodPortion: FoodPortion    // never optional (always have atleast 100g)
@@ -47,7 +47,7 @@ class FoodDetailTableViewController: UITableViewController {
         case add, edit
     }
     
-    init(food: Food? = nil, fdcFood: FoodItem, meal: Meal?, foodService: FoodService, selectedFoodPortion: FoodPortion? = nil, numberOfServings: Int = 1, state: State = .add) {
+    init(food: FoodEntry? = nil, fdcFood: FoodItem, meal: Meal?, foodService: FoodService, selectedFoodPortion: FoodPortion? = nil, numberOfServings: Int = 1, state: State = .add) {
         self.food = food
         self.fdcFood = fdcFood
         self.meal = meal
@@ -57,13 +57,7 @@ class FoodDetailTableViewController: UITableViewController {
         if let selectedFoodPortion {
             self.selectedFoodPortion = selectedFoodPortion
         } else {
-//            if let householdServingFullText = fdcFood.householdServingFullText,
-//               let foodMeasure = fdcFood.foodMeasures.first(where: { $0.disseminationText == householdServingFullText }) {
-//                self.selectedFoodPortion = foodMeasure
-//            } else {
-            self.selectedFoodPortion = fdcFood.foodPortions[(fdcFood.foodPortions.count - 1) / 2]
-
-//            }
+            self.selectedFoodPortion = fdcFood.foodPortions[fdcFood.foodPortions.count / 2]
         }
         
         for nutrientId in NutrientId.macronutrients {
@@ -95,6 +89,8 @@ class FoodDetailTableViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+//        tableView.backgroundColor = .secondarySystemGroupedBackground
+        tableView.backgroundColor = UIColor(hex: "#1c1c1e") // secondarySystemGroupedBackground is diff on modal
         navigationItem.title = "\(fdcFood.description) \(fdcFood.fdcId)"
         navigationItem.leftBarButtonItem = UIBarButtonItem(systemItem: .cancel, primaryAction: cancelButtonTapped())
         tableView.register(SelectTableViewCell.self, forCellReuseIdentifier: SelectTableViewCell.reuseIdentifier)
@@ -136,6 +132,7 @@ class FoodDetailTableViewController: UITableViewController {
                     secondaryText: fdcFood.getServingSizeFormatted(foodPortion: selectedFoodPortion),
                     image: UIImage(systemName: "square.and.pencil"),
                     bgColor: UIColor.systemBlue)
+                cell.backgroundColor = UIColor(hex: "#252525")
                 return cell
             } else if indexPath == quantityIndexPath {
                 let cell = tableView.dequeueReusableCell(withIdentifier: SelectTableViewCell.reuseIdentifier, for: indexPath) as! SelectTableViewCell
@@ -144,6 +141,7 @@ class FoodDetailTableViewController: UITableViewController {
                     secondaryText: "\(numberOfServings)",
                     image: UIImage(systemName: "number"),
                     bgColor: UIColor.systemBlue)
+                cell.backgroundColor = UIColor(hex: "#252525")
                 return cell
             }
             
@@ -164,6 +162,7 @@ class FoodDetailTableViewController: UITableViewController {
             cell.contentConfiguration = UIHostingConfiguration {    // tableView.reloadData() or use swiftui state mangement
                 MacrosView(mealPlan: meal?.mealPlan, nutrients: nutrients)
             }
+            cell.backgroundColor = UIColor(hex: "#252525")
             cell.selectionStyle = .none
             return cell
         case .macros:
@@ -173,6 +172,7 @@ class FoodDetailTableViewController: UITableViewController {
             cell.update(with: nutrient, foodPortion: selectedFoodPortion, quantity: numberOfServings, goal: goal)
             cell.progressView.tintColor = .systemBlue
             cell.selectionStyle = .none
+            cell.backgroundColor = UIColor(hex: "#252525")
             return cell
         case .vitamins:
             let cell = tableView.dequeueReusableCell(withIdentifier: NutritionTableViewCell.reuseIdentifier, for: indexPath) as! NutritionTableViewCell
@@ -181,6 +181,7 @@ class FoodDetailTableViewController: UITableViewController {
             cell.update(with: vitamin, foodPortion: selectedFoodPortion, quantity: numberOfServings, goal: goal)
             cell.progressView.tintColor = .systemOrange
             cell.selectionStyle = .none
+            cell.backgroundColor = UIColor(hex: "#252525")
             return cell
         case .minerals:
             let cell = tableView.dequeueReusableCell(withIdentifier: NutritionTableViewCell.reuseIdentifier, for: indexPath) as! NutritionTableViewCell
@@ -189,6 +190,7 @@ class FoodDetailTableViewController: UITableViewController {
             cell.update(with: mineral, foodPortion: selectedFoodPortion, quantity: numberOfServings, goal: goal)
             cell.progressView.tintColor = .white
             cell.selectionStyle = .none
+            cell.backgroundColor = UIColor(hex: "#252525")
             return cell
         }
     }

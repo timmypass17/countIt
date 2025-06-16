@@ -33,12 +33,12 @@ extension FoodItem {
     func getNutrientAmountPerServing(_ nutrientID: NutrientId, foodPortion: FoodPortion) -> Double {
         guard let nutrient = getFoodNutrient(nutrientID),
               let nutrientPer100g = nutrient.amount else { return 0 }
-        return (nutrientPer100g * Double(foodPortion.gramWeight)) / 100
+        return (nutrientPer100g * Double(foodPortion.gramWeight ?? 0)) / 100
     }
     
     func getNutrientAmount(_ nutrientID: NutrientId, using foodPortion: FoodPortion, quantity: Int = 1) -> Double {
         guard let amountPer100g = foodNutrients[nutrientID]?.amount else { return 0 }
-        let totalGrams = Double(foodPortion.gramWeight) * Double(quantity)
+        let totalGrams = Double(foodPortion.gramWeight ?? 0) * Double(quantity)
         let nutrientPerGram = amountPer100g / 100
         let totalNutrientAmount = nutrientPerGram * totalGrams
         
@@ -53,7 +53,7 @@ extension FoodItem {
             return "1 serving"
         }
         
-        let gramWeight = Int(foodPortion.gramWeight * Double(numberOfServings))
+        let gramWeight = Int(foodPortion.gramWeight ?? 0 * Double(numberOfServings))
         if let amount = foodPortion.amount,
            let modifier = foodPortion.modifier {
             let servings = Int(amount * Double(numberOfServings))

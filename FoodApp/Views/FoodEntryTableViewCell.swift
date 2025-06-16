@@ -73,10 +73,12 @@ class FoodEntryTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func update(_ food: Food) {
+    func update(_ food: FoodEntry) {
         titleLabel.text = food.foodInfo?.name
-        let totalGramWeight = (food.gramWeight) * Double(food.quantity)
-        if let modifer = food.modifier {
+        let totalGramWeight = (food.gramWeight ?? 0) * Double(food.quantity)
+        if let fdcId = food.foodInfo?.fdcId, fdcId < 0 {
+            descriptionLabel.text = "\(food.quantity) serving, \(food.foodInfo?.brandName_ ?? "NA")"
+        } else if let modifer = food.modifier {
             descriptionLabel.text = "\(food.quantity) \(modifer) (\(totalGramWeight.trimmed) g), \(food.foodInfo?.brandName_ ?? "NA")"
         } else {
             descriptionLabel.text = "\(totalGramWeight.trimmed) g, \(food.foodInfo?.brandName_ ?? "NA")"

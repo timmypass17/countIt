@@ -22,6 +22,7 @@ class AddFoodTableViewCell: UITableViewCell {
     var titleLabel: UILabel = {
         let label = UILabel()
         label.text = "Add Food"
+//        label.textColor = .systemBlue
         label.textColor = .secondaryLabel
         return label
     }()

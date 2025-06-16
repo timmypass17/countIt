@@ -18,6 +18,12 @@ class CoreDataStack {
 //        context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
         return context
     }
+    
+    func childContext() -> NSManagedObjectContext {
+        let childContext = NSManagedObjectContext(.mainQueue)
+        childContext.parent = context
+        return childContext
+    }
 
     lazy var persistentContainer: NSPersistentCloudKitContainer = {
         let appGroup = "group.com.example.DuduMelon"
@@ -68,8 +74,8 @@ extension CoreDataStack {
 //        }
 //    }
     
-    func addFoodEntry(_ food: FoodItem, to meal: Meal, servingSize: FoodPortion, numberOfServings: Int, servingSizeUnit: String) -> Food {
-        let foodEntry = Food(context: context)
+    func addFoodEntry(_ food: FoodItem, to meal: Meal, servingSize: FoodPortion, numberOfServings: Int, servingSizeUnit: String) -> FoodEntry {
+        let foodEntry = FoodEntry(context: context)
 //        foodEntry.index = Int16(meal.foodEntries.count)
 //        foodEntry.servingSize = servingSize
 //        foodEntry.numberOfServings = numberOfServings
@@ -87,12 +93,12 @@ extension CoreDataStack {
         return foodEntry
     }
     
-    func updateFoodEntry(foodEntry: Food, servingSize: FoodPortion, numberOfServings: Int) -> Food {
-//        foodEntry.servingSize = servingSize
-//        foodEntry.numberOfServings = numberOfServings
-        return foodEntry
-    }
-    
+//    func updateFoodEntry(foodEntry: Food, servingSize: FoodPortion, numberOfServings: Int) -> Food {
+////        foodEntry.servingSize = servingSize
+////        foodEntry.numberOfServings = numberOfServings
+//        return foodEntry
+//    }
+//    
     func addMeal(mealName: String, to mealPlan: MealPlan) throws {
         let meal = Meal(context: context)
         meal.name = mealName
@@ -129,42 +135,42 @@ extension CoreDataStack {
         return newMealPlan
     }
     
-    func getCDFood(id: Int) -> Food? {
-        return nil
-//        let request: NSFetchRequest<CDFood> = CDFood.fetchRequest()
-//        request.predicate = NSPredicate(format: "fdcId == %d", id)
-//        request.fetchLimit = 1
-//        
-//        do {
-//            let foods = try context.fetch(request)
-//            if let food = foods.first {
-//                return food
-//            }
-//            return nil
-//        } catch {
-//            print("Error fetching food: \(error)")
-//            return nil
-//        }
-    }
+//    func getCDFood(id: Int) -> Food? {
+//        return nil
+////        let request: NSFetchRequest<CDFood> = CDFood.fetchRequest()
+////        request.predicate = NSPredicate(format: "fdcId == %d", id)
+////        request.fetchLimit = 1
+////        
+////        do {
+////            let foods = try context.fetch(request)
+////            if let food = foods.first {
+////                return food
+////            }
+////            return nil
+////        } catch {
+////            print("Error fetching food: \(error)")
+////            return nil
+////        }
+//    }
     
-    func getFoodHistory() -> [Food] {
-        return []
-//        let request: NSFetchRequest<CDFood> = CDFood.fetchRequest()
-//        request.predicate = NSPredicate(format: "updatedAt_ != nil")
-//        request.sortDescriptors = [NSSortDescriptor(key: "updatedAt_", ascending: false)]
-//        
-//        do {
-//            let foods = try context.fetch(request)
-//            return foods
-//        } catch {
-//            print("Error fetching history: \(error)")
-//            return []
-//        }
-    }
-    
-    func deleteHistory(_ food: Food) {
-//        food.updatedAt_ = nil
-    }
+//    func getFoodHistory() -> [Food] {
+//        return []
+////        let request: NSFetchRequest<CDFood> = CDFood.fetchRequest()
+////        request.predicate = NSPredicate(format: "updatedAt_ != nil")
+////        request.sortDescriptors = [NSSortDescriptor(key: "updatedAt_", ascending: false)]
+////        
+////        do {
+////            let foods = try context.fetch(request)
+////            return foods
+////        } catch {
+////            print("Error fetching history: \(error)")
+////            return []
+////        }
+//    }
+//    
+//    func deleteHistory(_ food: Food) {
+////        food.updatedAt_ = nil
+//    }
     
     func getLatestMealPlan(currentDate: Date) -> MealPlan? {
         return nil

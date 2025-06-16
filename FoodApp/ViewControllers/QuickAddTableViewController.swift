@@ -9,52 +9,51 @@ import UIKit
 import CoreData
 
 protocol QuickAddTableViewControllerDelegate: AnyObject {
-    func quickAddTableViewController(_ viewController: QuickAddTableViewController, didAddFoodEntry foodEntry: Food)
-}
-
-protocol QuickAddTableViewControllerHistoryDelegate: AnyObject {
-    func quickAddTableViewController(_ viewController: QuickAddTableViewController, didUpdateHistoryWithFood food: Food)
+    func quickAddTableViewController(_ viewController: QuickAddTableViewController, didAddFoodEntry foodEntry: FoodEntry)
 }
 
 class QuickAddTableViewController: UITableViewController {
 
-    // lazy - item isn't created until it's called for the first time (able to use 'self' within property initalizer)
-    lazy var foodEntry: Food = {
-        var foodEntry = Food(context: childContext)
-//        foodEntry.numberOfServings = 1
-//        let foodPortion = FoodPortion(amount: 1, gramWeight: 100, modifier: "Quick Add")
-//        foodEntry.servingSize = foodPortion
-//        foodEntry.index = Int16(meal.foodEntries.count)
-
-//        var food = CDFood(context: childContext)
-//        food.updatedAt_ = .now
-//        food.servingSize = 1
-//        food.servingSizeUnit = "unspecified"
-//        food.foodPortions = [foodPortion]
-//        food.foodNutrients = [
-//            FoodNutrient(nutrient: Nutrient(id: .calories, name: "Calories", unitName: "cal"), amount: nil),
-//            FoodNutrient(nutrient: Nutrient(id: .carbs, name: "Carbohydrates", unitName: "g"), amount: nil),
-//            FoodNutrient(nutrient: Nutrient(id: .protein, name: "Protein", unitName: "g"), amount: nil),
-//            FoodNutrient(nutrient: Nutrient(id: .totalFat, name: "Fats", unitName: "g"), amount: nil),
-//        ]
-//        food.fdcId = Int64.random(in: -2147483648...0)  // Using Int64.min doesn't work with core data predicates? Too low number maybe
-//        food.dataType = ""
-//        food.brandName = "Quick Add"
-//        
-//        foodEntry.food = food
+    lazy var foodEntry: FoodEntry = {
+        var foodEntry = FoodEntry(context: childContext)
+        foodEntry.quantity = 1
+        foodEntry.gramWeight = 100
+        foodEntry.amount = 1
+        foodEntry.modifier = "serving"
+        foodEntry.portionId = 0
+        
+        let foodInfo = FoodInfo(context: childContext)
+        foodInfo.fdcId = Int64.random(in: Int64.min..<0)
+        foodInfo.brandName_ = "Quick Add"
+        foodEntry.foodInfo = foodInfo
+        
+        for nutrientId in NutrientId.allCases {
+            let foodInfoNutrient = FoodInfoNutrient(context: childContext)
+            foodInfoNutrient.nutrientId = nutrientId
+            foodInfo.addToNutrients_(foodInfoNutrient)
+        }
+        
+        let foodPortion = FoodInfoPortion(context: childContext)
+        foodPortion.id = 0
+        foodPortion.gramWeight = 100
+        foodPortion.amount = 1
+        foodPortion.modifier = "serving"
+        foodPortion.foodInfo = foodInfo
         
         return foodEntry
     }()
     
-    var childContext: NSManagedObjectContext = {
-        var childContext = NSManagedObjectContext(.mainQueue)
-        childContext.parent = CoreDataStack.shared.context
-        return childContext
-    }()
+    var childContext: NSManagedObjectContext = CoreDataStack.shared.childContext()
+    
+    enum Section {
+        case main, extra
+    }
+    
+    let nutrientIds: [NutrientId] = [.calories, .carbs, .protein, .fatTotal]
 
     let meal: Meal
+    let foodService = FoodService()
     weak var delegate: QuickAddTableViewControllerDelegate?
-    weak var historyDelegate: QuickAddTableViewControllerHistoryDelegate?
 
     init(meal: Meal) {
         self.meal = meal
@@ -81,25 +80,24 @@ class QuickAddTableViewController: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 0
+        return 5
 //        guard let foodNutrients = foodEntry.food?.foodNutrients else { return 0 }
 //        return 1 + foodNutrients.count
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: QuickAddTableViewCell.reuseIdentifier, for: indexPath) as! QuickAddTableViewCell
-        cell.foodEntry = foodEntry
         cell.delegate = self
         cell.selectionStyle = .none
-//        if indexPath.row == 0 {
-//            let title = foodEntry.food?.name ?? ""
-//            cell.update(title: title)
-//            return cell
-//        }
+        if indexPath.row == 0 {
+            cell.update(title: foodEntry.foodInfo?.name)
+            return cell
+        }
         
-//        guard let foodNutrient = foodEntry.food?.foodNutrients[indexPath.row - 1] else { return UITableViewCell() }
-//        cell.update(foodNutrient: foodNutrient)
-//        cell.textField.keyboardType = .numberPad
+        let nutrientId = nutrientIds[indexPath.row - 1]
+        guard let nutrient = foodEntry.foodInfo?.nutrients[nutrientId] else { return UITableViewCell() }
+        cell.update(foodNutrient: nutrient)
+        cell.textField.keyboardType = .numberPad
         return cell
     }
 
@@ -115,28 +113,46 @@ class QuickAddTableViewController: UITableViewController {
     
     func didTapAddButton() -> UIAction {
         return UIAction { [self] _ in
-//            try? childContext.save()
-//            // fix illegal relationship (when setting foodEntry.meal) between multible contexts by updating the foodEntry child context with the main context
-//            let item = CoreDataStack.shared.context.object(with: foodEntry.objectID) as! FoodEntry
-//            item.meal = meal
-//            delegate?.quickAddTableViewController(self, didAddFoodEntry: item)
-//            if let food = item.food {
-//                historyDelegate?.quickAddTableViewController(self, didUpdateHistoryWithFood: food)
-//            }
-//            let generator = UIImpactFeedbackGenerator(style: .medium)
-//            generator.impactOccurred()
-//            dismiss(animated: true)
+            let nutrients = foodEntry.foodInfo?.nutrients ?? []
+            for nutrient in nutrients {
+                if nutrient.value == nil {
+                    nutrient.value = 0
+                }
+            }
+            
+            let mealInChildContext = childContext.object(with: meal.objectID) as! Meal
+            foodEntry.index = Int16(mealInChildContext.foodEntries.count)
+            foodEntry.meal = mealInChildContext
+            foodService.updateFoodHistoryIfNeeded(food: foodEntry, context: childContext)
+            try? childContext.save()
+            CoreDataStack.shared.saveContext()
+            delegate?.quickAddTableViewController(self, didAddFoodEntry: foodEntry)
+            let generator = UIImpactFeedbackGenerator(style: .medium)
+            generator.impactOccurred()
+            dismiss(animated: true)
         }
     }
     
     func updateUI() {
-//        let shouldEnableAddButton = foodEntry.food?.name != "" && foodEntry.food?.foodNutrients[0].amount != nil
-//        navigationItem.rightBarButtonItem?.isEnabled = shouldEnableAddButton
+        let shouldEnableAddButton = foodEntry.foodInfo?.name != "" && foodEntry.foodInfo?.nutrients[.calories]?.value != nil
+        navigationItem.rightBarButtonItem?.isEnabled = shouldEnableAddButton
     }
 }
 
 extension QuickAddTableViewController: QuickAddTableViewCellDelegate {
-    func quickAddTableViewCell(_ cell: QuickAddTableViewCell, textFieldValueChanged: String) {
+    func quickAddTableViewCell(_ cell: QuickAddTableViewCell, textFieldValueChanged text: String?) {
+        guard let indexPath = tableView.indexPath(for: cell) else { return }
+        if indexPath == IndexPath(row: 0, section: 0) {
+            foodEntry.foodInfo?.name_ = text
+        } else {
+            let nutrientId = nutrientIds[indexPath.row - 1]
+            if let text, let nutrientAmount = Double(text) {
+                foodEntry.foodInfo?.nutrients[nutrientId]?.value = nutrientAmount
+            } else {
+                foodEntry.foodInfo?.nutrients[nutrientId]?.value = nil
+            }
+        }
         updateUI()
     }
+
 }

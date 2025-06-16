@@ -11,7 +11,7 @@ import CoreData
 
 class SearchFoodTableViewController: UITableViewController {
 
-    var history: [Food] = []
+    var history: [FoodEntry] = []
     
     var searchController: UISearchController!
     private var resultsTableController: ResultsTableViewController!
@@ -32,7 +32,8 @@ class SearchFoodTableViewController: UITableViewController {
     }
     
     init(foodService: FoodService, meal: Meal? = nil) {
-        self.history = CoreDataStack.shared.getFoodHistory()
+//        self.history = CoreDataStack.shared.getFoodHistory()
+        self.history = []
         self.foodService = foodService
         self.meal = meal
         super.init(style: .grouped)
@@ -50,13 +51,13 @@ class SearchFoodTableViewController: UITableViewController {
             titleView.delegate = self
             navigationItem.titleView = titleView
         }
-
+        tableView.backgroundColor = UIColor(hex: "#1c1c1e")
+        
         resultsTableController = ResultsTableViewController(meal: meal, foodService: foodService)
         resultsTableController.addFoodDelegate = addFoodDelegate
         resultsTableController.resultDelegate = resultDelegate
         
         searchController = UISearchController(searchResultsController: resultsTableController)
-//        searchController.delegate = self
         searchController.searchBar.delegate = self
         searchController.searchBar.autocapitalizationType = .none
         
@@ -118,19 +119,21 @@ class SearchFoodTableViewController: UITableViewController {
         cell.delegate = self
         let history = fetchedResultsController.object(at: indexPath)
         cell.update(history: history)
+        cell.backgroundColor = UIColor(hex: "#252525")
         return cell
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-//        let food = history[indexPath.row]
-//        let detailVC = FoodDetailTableViewController(food: food.convertToFDCFood(), meal: meal, foodService: foodService)
-//        detailVC.delegate = delegate
-//        detailVC.historyDelegate = self
-//        present(UINavigationController(rootViewController: detailVC), animated: true)
+        let history = fetchedResultsController.object(at: indexPath)
+        guard let food = history.foodEntry?.convertToFDCFood() else { return }
+        print(food.fdcId)
+        let addFoodDetailViewController = AddFoodDetailViewController(fdcFood: food, meal: meal, foodService: foodService)
+        addFoodDetailViewController.delegate = addFoodDelegate
+        present(UINavigationController(rootViewController: addFoodDetailViewController), animated: true)
     }
     
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return "History"
+        return "Recently Added"
     }
 
     func didTapBarcodeButton() -> UIAction {
@@ -294,4 +297,18 @@ extension SearchFoodTableViewController: DataScannerViewControllerDelegate {
         alert.addAction(UIAlertAction(title: "Got it!", style: .cancel, handler: nil))
         self.present(alert, animated: true, completion: nil)
     }
+}
+
+extension SearchFoodTableViewController: DiaryViewControllerDelegate {
+    func diaryViewController(_ viewController: DiaryViewController, mealPlanChanged mealPlan: MealPlan) {
+        print("timmy \(#function)")
+        guard let meal = mealPlan.meals.first else { return }
+        self.meal = meal
+        print("timmy mealPlanChanged")
+
+        let titleView = SearchTitleView(selectedMeal: meal, meals: mealPlan.meals)
+        titleView.delegate = self
+        navigationItem.titleView = titleView
+    }
+    
 }

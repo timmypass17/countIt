@@ -2,7 +2,7 @@
 //  FoodInfo+CoreDataClass.swift
 //  FoodApp
 //
-//  Created by Timmy Nguyen on 5/15/25.
+//  Created by Timmy Nguyen on 6/15/25.
 //
 //
 

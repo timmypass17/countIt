@@ -21,7 +21,17 @@ class HistoryTableViewCell: UITableViewCell {
         label.numberOfLines = 1
         label.lineBreakMode = .byTruncatingTail
         label.font = UIFont.boldSystemFont(ofSize: 16.0)
+        label.setContentHuggingPriority(.required, for: .horizontal)    // hug its content to never stretch
+        label.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)    // should shrink
         return label
+    }()
+    
+    let checkmarkImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.image = UIImage(systemName: "checkmark.seal.fill")
+        imageView.setContentHuggingPriority(.required, for: .horizontal)
+        imageView.setContentCompressionResistancePriority(.required, for: .horizontal)
+        return imageView
     }()
     
     let descriptionLabel: UILabel = {
@@ -47,24 +57,35 @@ class HistoryTableViewCell: UITableViewCell {
         return button
     }()
     
-    let labelContainer: UIStackView = {
+    let titleContainer: UIStackView = {
         let hstack = UIStackView()
-        hstack.axis = .vertical
+        hstack.axis = .horizontal
         return hstack
     }()
     
+    let labelContainer: UIStackView = {
+        let stackView = UIStackView()
+        stackView.axis = .vertical
+        return stackView
+    }()
+    
     let container: UIStackView = {
-        let hstack = UIStackView()
-        hstack.axis = .horizontal
-        hstack.translatesAutoresizingMaskIntoConstraints = false
-        return hstack
+        let stackView = UIStackView()
+        stackView.axis = .horizontal
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        return stackView
     }()
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         deleteButton.addAction(deleteButtonTapped(), for: .touchUpInside)
         
-        labelContainer.addArrangedSubview(titleLabel)
+        titleContainer.addArrangedSubview(titleLabel)
+        titleContainer.addArrangedSubview(checkmarkImageView)
+        titleContainer.addArrangedSubview(UIView())
+        titleContainer.setCustomSpacing(8, after: titleLabel)
+        
+        labelContainer.addArrangedSubview(titleContainer)
         labelContainer.addArrangedSubview(descriptionLabel)
         
         container.addArrangedSubview(labelContainer)
@@ -85,7 +106,7 @@ class HistoryTableViewCell: UITableViewCell {
     }
     
     func update(history: History) {
-        let food = history.food
+        let food = history.foodEntry
         titleLabel.text = food?.foodInfo?.name
         let totalGramWeight = (food?.gramWeight ?? 0) * Double(food?.quantity ?? 0)
         if let modifer = food?.modifier {

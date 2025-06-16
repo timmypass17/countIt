@@ -8,7 +8,7 @@
 import UIKit
 
 protocol AddFoodDetailViewControllerDelegate: AnyObject {
-    func addFoodDetailViewController(_ tableViewController: AddFoodDetailViewController, didAddFood food: Food)
+    func addFoodDetailViewController(_ tableViewController: AddFoodDetailViewController, didAddFood food: FoodEntry)
 }
 
 class AddFoodDetailViewController: FoodDetailTableViewController {

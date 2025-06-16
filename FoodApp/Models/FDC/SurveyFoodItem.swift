@@ -38,6 +38,7 @@ struct SurveyFoodItem: FoodItem {
         description = try container.decode(String.self, forKey: .description).firstUppercased
         var foodPortions = try container.decode([FoodPortion].self, forKey: .foodPortions)
         foodPortions.append(FoodPortion.default100g)
+        foodPortions.sort { $0.gramWeight ?? 0 < $1.gramWeight ?? 0 }
         self.foodPortions = foodPortions
         let rawNutrients = try container.decode([RawFoodNutrient].self, forKey: .foodNutrients)
         self.foodNutrients = rawNutrients.compactMap { raw in

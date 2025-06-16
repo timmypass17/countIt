@@ -1,15 +1,15 @@
 //
-//  Food+CoreDataClass.swift
+//  FoodEntry+CoreDataClass.swift
 //  FoodApp
 //
-//  Created by Timmy Nguyen on 6/3/25.
+//  Created by Timmy Nguyen on 6/15/25.
 //
 //
 
 import Foundation
 import CoreData
 
-@objc(Food)
-public class Food: NSManagedObject {
+@objc(FoodEntry)
+public class FoodEntry: NSManagedObject {
 
 }

@@ -2,7 +2,7 @@
 //  FoodInfo+CoreDataProperties.swift
 //  FoodApp
 //
-//  Created by Timmy Nguyen on 5/15/25.
+//  Created by Timmy Nguyen on 6/15/25.
 //
 //
 
@@ -19,7 +19,7 @@ extension FoodInfo {
     @NSManaged public var brandName_: String?
     @NSManaged public var name_: String?
     @NSManaged public var fdcId: Int64
-    @NSManaged public var foods_: NSSet?
+    @NSManaged public var foodEntries_: NSSet?
     @NSManaged public var nutrients_: NSSet?
     @NSManaged public var portions_: NSSet?
 
@@ -69,20 +69,20 @@ extension FoodInfo {
     }
 }
 
-// MARK: Generated accessors for food
+// MARK: Generated accessors for foodEntries_
 extension FoodInfo {
 
-    @objc(addFoods_Object:)
-    @NSManaged public func addToFoods_(_ value: Food)
+    @objc(addFoodEntries_Object:)
+    @NSManaged public func addToFoodEntries_(_ value: FoodEntry)
 
-    @objc(removeFoods_Object:)
-    @NSManaged public func removeFromFoods_(_ value: Food)
+    @objc(removeFoodEntries_Object:)
+    @NSManaged public func removeFromFoodEntries_(_ value: FoodEntry)
 
-    @objc(addFoods_:)
-    @NSManaged public func addToFoods_(_ values: NSSet)
+    @objc(addFoodEntries_:)
+    @NSManaged public func addToFoodEntries_(_ values: NSSet)
 
-    @objc(removeFoods_:)
-    @NSManaged public func removeFromFoods_(_ values: NSSet)
+    @objc(removeFoodEntries_:)
+    @NSManaged public func removeFromFoodEntries_(_ values: NSSet)
 
 }
 

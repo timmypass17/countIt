@@ -85,7 +85,7 @@ class NutritionTableViewCell: UITableViewCell {
     
     func update(with foodNutrient: FoodNutrient, foodPortion: FoodPortion, quantity: Int, goal: Double) {
         nameLabel.text = foodNutrient.nutrient?.id.description
-        let amount = Int(scaledNutrientAmount(amountPer100g: foodNutrient.amount ?? 0, actualServingSize: Double(foodPortion.gramWeight))) * quantity
+        let amount = Int(scaledNutrientAmount(amountPer100g: foodNutrient.amount ?? 0, actualServingSize: Double(foodPortion.gramWeight ?? 0))) * quantity
         amountLabel.text = "\(amount) \(foodNutrient.nutrient?.unitName ?? "")"
         let value = foodNutrient.amount ?? 0
         var progress = 0.0

@@ -54,6 +54,7 @@ struct BrandedFoodItem: FoodItem {
         var foodPortions: [FoodPortion] = []
         foodPortions.append(FoodPortion.default100g)
         foodPortions.append(FoodPortion(id: 1, gramWeight: Double(servingSize)))
+        foodPortions.sort { $0.gramWeight ?? 0 < $1.gramWeight ?? 0 }
         self.foodPortions = foodPortions
         
         let rawNutrients = try container.decode([RawFoodNutrient].self, forKey: .foodNutrients)

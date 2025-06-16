@@ -23,7 +23,7 @@ extension FoodInfoPortion {
     // Add unitName? g or ml
     @NSManaged public var id: Int32
     @NSManaged public var foodInfo: FoodInfo?
-    @NSManaged public var food: Food?
+    @NSManaged public var foodEntry: FoodEntry? // TODO: not neccessary?
 
     var amount: Double? {
         get { amount_?.doubleValue }

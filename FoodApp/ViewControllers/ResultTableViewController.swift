@@ -53,7 +53,6 @@ class ResultsTableViewController: UITableViewController {
     weak var addFoodDelegate: AddFoodDetailViewControllerDelegate?
     weak var historyDelegate: FoodDetailTableViewControllerHistoryDelegate?
     weak var resultDelegate: ResultTableViewCellDelegate?
-    weak var resultHistoryDelegate: ResultTableViewCellHistoryDelegate?
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -90,8 +89,6 @@ class ResultsTableViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let section = Section(rawValue: indexPath.section) else { return UITableViewCell() }
         let cell = tableView.dequeueReusableCell(withIdentifier: ResultTableViewCell.reuseIdentifier, for: indexPath) as! ResultTableViewCell
-        cell.delegate = resultDelegate
-        cell.historyDelegate =  resultHistoryDelegate
         let foodItem: FoodItem
         switch section {
         case .bestMatch:
@@ -99,6 +96,7 @@ class ResultsTableViewController: UITableViewController {
         case .moreResults:
             foodItem = moreResultsResponse.foods[indexPath.row]
         }
+        cell.delegate = self
         cell.update(with: foodItem)
         return cell
     }
@@ -157,4 +155,31 @@ extension ResultsTableViewController: ResultsHeaderViewDelegate {
         present(UINavigationController(rootViewController: resultsPaginatedViewController), animated: true)
     }
     
+}
+
+extension ResultsTableViewController: ResultTableViewCellDelegate {
+    func resultTableViewCell(_ cell: ResultTableViewCell, didTapAddButton: Bool) {
+        guard let meal,
+              let indexPath = tableView.indexPath(for: cell),
+              let section = Section(rawValue: indexPath.section)
+        else { return }
+        
+        let foodItem: FoodItem
+        switch section {
+        case .bestMatch:
+            foodItem = bestMatchResponse.foods[indexPath.row]
+        case .moreResults:
+            foodItem = moreResultsResponse.foods[indexPath.row]
+        }
+        
+        let foodPortion = foodItem.foodPortions[foodItem.foodPortions.count / 2]
+        do {
+            try foodService.addFood(foodItem, with: foodPortion, quantity: 1, to: meal)
+        } catch {
+            print("Error adding food: \(error)")
+        }
+        let generator = UIImpactFeedbackGenerator(style: .medium)
+        generator.impactOccurred()
+        resultDelegate?.resultTableViewCell(cell, didTapAddButton: didTapAddButton)
+    }
 }

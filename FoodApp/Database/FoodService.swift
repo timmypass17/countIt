@@ -221,20 +221,20 @@ class FoodService: FoodServiceProtocol {
         let meals = source.meals
         print("timmy source: \(source.date.formatted(date: .abbreviated, time: .omitted))")
         for meal in meals {
-            print("timmy food count: \(meal.foods.count)")
+            print("timmy food count: \(meal.foodEntries.count)")
         }
 
         for meal in source.meals {
             // Copy meals
             let mealCopy = Meal(context: context)
-            print("timmy meal: \(meal.name) - food count: \(meal.foods.count)")
+            print("timmy meal: \(meal.name) - food count: \(meal.foodEntries.count)")
             mealCopy.name = meal.name
             mealCopy.index = meal.index
             mealCopy.mealPlan = destination
-            for food in meal.foods {
+            for food in meal.foodEntries {
                 // Copy foods
                 print("timmy food: \(food.description)")
-                let foodCopy = Food(context: context)
+                let foodCopy = FoodEntry(context: context)
                 foodCopy.index = food.index
                 foodCopy.quantity = food.quantity
                 foodCopy.gramWeight = food.gramWeight
@@ -315,9 +315,10 @@ class FoodService: FoodServiceProtocol {
         return nil
     }
     
-    func addFood(_ fdcFood: FoodItem, with portion: FoodPortion, quantity: Int, to meal: Meal) throws -> Food {
-        let food = Food(context: context)
-        food.index = Int16(meal.foods.count)
+    func addFood(_ fdcFood: FoodItem, with portion: FoodPortion, quantity: Int, to meal: Meal) throws -> FoodEntry {
+        print("timmy: \(fdcFood.fdcId)")
+        let food = FoodEntry(context: context)
+        food.index = Int16(meal.foodEntries.count)
         food.quantity = Int16(quantity)
         food.gramWeight = Double(portion.gramWeight)
         food.portionId = Int32(portion.id)
@@ -337,7 +338,7 @@ class FoodService: FoodServiceProtocol {
             }
         }
         
-        meal.addToFoods_(food)
+        meal.addToFoodEntries_(food)
         
         if let foodInfo = getFoodInfo(fdcId: fdcFood.fdcId) {
             food.foodInfo = foodInfo
@@ -348,6 +349,7 @@ class FoodService: FoodServiceProtocol {
             // Add nutrients relationship to foodInfo
             for nutrientId in NutrientId.allCases {
                 let foodInfoNutrient = createFoodInfoNutrients(fdcFood, nutrientId: nutrientId)
+                print("\(nutrientId.description) \(foodInfoNutrient.value)")
                 foodInfo.addToNutrients_(foodInfoNutrient)
             }
             
@@ -358,6 +360,8 @@ class FoodService: FoodServiceProtocol {
             }
         }
         
+        
+        // Add copy to history
         updateFoodHistoryIfNeeded(food: food)
         
         try context.save()
@@ -367,7 +371,7 @@ class FoodService: FoodServiceProtocol {
     
     func getFoodHistory(fdcId: Int) -> History? {
         let request: NSFetchRequest<History> = History.fetchRequest()
-        request.predicate = NSPredicate(format: "fdcId == %d", fdcId)
+        request.predicate = NSPredicate(format: "fdcId == %@", NSNumber(value: fdcId))  // to work with Int64 (negatives), %d only works with signed 32
         request.fetchLimit = 1
 
         do {
@@ -379,25 +383,44 @@ class FoodService: FoodServiceProtocol {
         }
     }
     
-    func updateFoodHistoryIfNeeded(food: Food) {
+    func updateFoodHistoryIfNeeded(food: FoodEntry, context: NSManagedObjectContext = CoreDataStack.shared.context) {
         guard let fdcId = food.foodInfo?.fdcId else { return }
-
+        print("timmy: \(fdcId)")
         if let history = getFoodHistory(fdcId: Int(fdcId)) {
+            print("timmy udpate")
             updateHistory(history)
         } else {
-            let history = History(context: context)
-            history.fdcId = fdcId
-            history.createdAt_ = .now
-            history.food = food
+            print("timmy add")
+            addHistory(foodEntry: food, context: context)
         }
     }
     
     func updateHistory(_ history: History) {
+        // Kinda annoying seeing it change positions
+//        history.createdAt_ = .now
+    }
+    
+    func addHistory(foodEntry: FoodEntry, context: NSManagedObjectContext = CoreDataStack.shared.context) {
+        guard let fdcId = foodEntry.foodInfo?.fdcId else { return }
+        
+        let history = History(context: context)
+        history.fdcId = fdcId
         history.createdAt_ = .now
+        
+        // Make copy of food entry (to fix bug where deleting foodEntry deletes history)
+        let foodEntryCopy = FoodEntry(context: context)
+        foodEntryCopy.amount = foodEntry.amount
+        foodEntryCopy.gramWeight = foodEntry.gramWeight
+        foodEntryCopy.index = foodEntry.index    // doesn't matter
+        foodEntryCopy.modifier = foodEntry.modifier
+        foodEntryCopy.portionId = foodEntry.portionId
+        foodEntryCopy.quantity = foodEntry.quantity
+        foodEntryCopy.foodInfo = foodEntry.foodInfo
+        history.foodEntry = foodEntryCopy
     }
 
     
-    func updateFood(_ food: Food, foodPortion: FoodPortion, quantity: Int) throws -> Food {
+    func updateFood(_ food: FoodEntry, foodPortion: FoodPortion, quantity: Int) throws -> FoodEntry {
         food.quantity = Int16(quantity)
         food.amount = foodPortion.amount
         food.gramWeight = foodPortion.gramWeight
@@ -408,13 +431,14 @@ class FoodService: FoodServiceProtocol {
         return food
     }
     
-    func deleteFood(_ food: Food) throws {
+    func deleteFood(_ food: FoodEntry) throws {
         context.delete(food)
 
         try context.save()
     }
     
     func createFoodInfo(_ fdcFood: FoodItem) -> FoodInfo {
+        print("timmy food info: \(fdcFood.description)")
         let foodInfo = FoodInfo(context: context)
         foodInfo.fdcId = Int64(fdcFood.fdcId)
         foodInfo.name = fdcFood.description
@@ -480,8 +504,7 @@ class FoodService: FoodServiceProtocol {
         let abridgedRequest = FoodsSearchAPIRequest(query: query, dataTypes: dataTypes, pageSize: pageSize, pageNumber: pageNumber)
         var searchResultResponse = try await sendRequest(abridgedRequest)
         let fdcIds = searchResultResponse.foodParts.map { $0.fdcId }
-        // TODO: Don't use multiple fdcIds at once, is slow. Make multiple tasks for each item, fetch concurrently
-//        let foods: [FoodItem] = try await getFoods(fdcIds: fdcIds, dataTypes: DataType.allCases)
+        // Note: Need another api call to get portions
         
         let foods: [FoodItem] = try await withThrowingTaskGroup(of: FoodItem.self) { group in
             var foodDict: [Int: FoodItem] = [:]

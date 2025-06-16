@@ -9,13 +9,18 @@ import UIKit
 import SwiftUI
 import CoreData
 
+protocol DiaryViewControllerDelegate: AnyObject {
+    func diaryViewController(_ viewController: DiaryViewController, mealPlanChanged mealPlan: MealPlan)
+}
+
 // Can't use fetch result controller, doesn't detect relationship changes properly. E.g. FRC<Meal>, if you insert food to meal, doesn't see it as "insert" but as an "update" to meal. So doesn't know when to insert/delete rows and crashes
 // TODO: add nickname to foods
 class DiaryViewController: UIViewController {
     
     let tableView: UITableView = {
         let tableView = UITableView(frame: .zero, style: .insetGrouped)
-        tableView.backgroundColor = UIColor(hex: "#202020")
+        tableView.backgroundColor = .secondarySystemGroupedBackground// UIColor(hex: "#202020")
+//        tableView.backgroundColor = UIColor(hex: "#202020")
         tableView.translatesAutoresizingMaskIntoConstraints = false
         return tableView
     }()
@@ -24,6 +29,7 @@ class DiaryViewController: UIViewController {
     var mealPlan: MealPlan!
     let foodService: FoodService
     let goalIndexPath = IndexPath(row: 0, section: 0)
+    weak var delegate: DiaryViewControllerDelegate?
     
     enum Section: Int, CaseIterable {
         case goal
@@ -92,6 +98,8 @@ class DiaryViewController: UIViewController {
         ])
         
         updateUI()
+        
+        self.delegate?.diaryViewController(self, mealPlanChanged: self.mealPlan)
     }
     
     override func setEditing(_ editing: Bool, animated: Bool) {
@@ -273,7 +281,7 @@ extension DiaryViewController: UITableViewDataSource {
         let sectionOffset = 2
         let addFoodButton = 1
         let meal = mealPlan.meals[section - 2]
-        return (meal.foods.count) + addFoodButton
+        return (meal.foodEntries.count) + addFoodButton
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -286,7 +294,8 @@ extension DiaryViewController: UITableViewDataSource {
                     .environment(\.managedObjectContext, CoreDataStack.shared.context)
             }
             cell.backgroundColor = UIColor(hex: "#252525")
-            
+//            cell.backgroundColor = .tertiarySystemGroupedBackground
+
             return cell
         }
         
@@ -303,7 +312,7 @@ extension DiaryViewController: UITableViewDataSource {
         }
         
         let meal = mealPlan.meals[indexPath.section - 2]
-        if indexPath.row == meal.foods.count {
+        if indexPath.row == meal.foodEntries.count {
             // Add Button
             let cell = tableView.dequeueReusableCell(withIdentifier: AddFoodTableViewCell.reuseIdentifier, for: indexPath) as! AddFoodTableViewCell
             cell.backgroundColor = UIColor(hex: "#252525")
@@ -311,7 +320,7 @@ extension DiaryViewController: UITableViewDataSource {
             return cell
         }
         
-        let food = meal.foods[indexPath.row]
+        let food = meal.foodEntries[indexPath.row]
         let cell = tableView.dequeueReusableCell(withIdentifier: FoodEntryTableViewCell.reuseIdentifier, for: indexPath) as! FoodEntryTableViewCell
         cell.backgroundColor = UIColor(hex: "#252525")
         cell.update(food)
@@ -349,7 +358,7 @@ extension DiaryViewController: UITableViewDelegate {
         }
         
         let meal = mealPlan.meals[indexPath.section - 2]
-        let isAddFoodButton = indexPath.row == meal.foods.count
+        let isAddFoodButton = indexPath.row == meal.foodEntries.count
         if isAddFoodButton {
             tableView.deselectRow(at: indexPath, animated: true)
             let meal = mealPlan.meals[indexPath.section - 2]
@@ -361,7 +370,7 @@ extension DiaryViewController: UITableViewDelegate {
             return
         }
         
-        let food: Food = meal.foods[indexPath.row]
+        let food: FoodEntry = meal.foodEntries[indexPath.row]
         guard let fdcFood = food.convertToFDCFood() else { return }
         let selectedPortion = food.foodInfo?.convertToFoodPortions().first { $0.id == food.portionId }
         let updateFoodDetailTableViewController = UpdateFoodDetailViewController(food: food, fdcFood: fdcFood, meal: meal, foodService: foodService, selectedFoodPortion: selectedPortion, numberOfServings: Int(food.quantity))
@@ -374,16 +383,16 @@ extension DiaryViewController: UITableViewDelegate {
         if editingStyle == .delete {
             let meal = mealPlan.meals[indexPath.section - 2]
             do {
-                let foodToDelete: Food = meal.foods.remove(at: indexPath.row)
+                let foodToDelete: FoodEntry = meal.foodEntries.remove(at: indexPath.row)
                 try foodService.deleteFood(foodToDelete)
                 tableView.deleteRows(at: [indexPath], with: .automatic)
                 
-                for (index, food) in meal.foods.enumerated() {
+                for (index, food) in meal.foodEntries.enumerated() {
                     food.index = Int16(index)
                 }
                 
                 CoreDataStack.shared.saveContext()
-                let indexPaths = meal.foods.map { IndexPath(row: Int($0.index), section: indexPath.section) }
+                let indexPaths = meal.foodEntries.map { IndexPath(row: Int($0.index), section: indexPath.section) }
                 tableView.reloadRows(at: indexPaths, with: .automatic)
                 
                 reloadTableViewHeader(section: indexPath.section)
@@ -396,7 +405,7 @@ extension DiaryViewController: UITableViewDelegate {
     // Which view can be edited?
     func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
         guard indexPath.section > 1 else { return false }
-        let isFood = indexPath.row < mealPlan.meals[indexPath.section - 2].foods.count
+        let isFood = indexPath.row < mealPlan.meals[indexPath.section - 2].foodEntries.count
         return isFood
     }
     
@@ -409,22 +418,22 @@ extension DiaryViewController: UITableViewDelegate {
 
         let sourceMeal = mealPlan.meals[sourceIndexPath.section - 2]
         let destinationMeal = mealPlan.meals[destinationIndexPath.section - 2]
-        let food = sourceMeal.foods[sourceIndexPath.row]
+        let food = sourceMeal.foodEntries[sourceIndexPath.row]
 
         if sourceMeal != destinationMeal {
             // Moving across meals
-            sourceMeal.removeFromFoods_(food)   // does update sourceMeal.foods
-            destinationMeal.addToFoods_(food)
+            sourceMeal.removeFromFoodEntries_(food)   // does update sourceMeal.foods
+            destinationMeal.addToFoodEntries_(food)
             food.meal = destinationMeal
 
             // Reindex source
-            let sourceFoods = sourceMeal.foods
+            let sourceFoods = sourceMeal.foodEntries
             for (i, item) in sourceFoods.enumerated() {
                 item.index = Int16(i)
             }
 
             // Shift destination indices
-            let destinationFoods = destinationMeal.foods
+            let destinationFoods = destinationMeal.foodEntries
             for item in destinationFoods {
                 if item.index >= Int16(destinationIndexPath.row) {
                     item.index += 1
@@ -432,7 +441,7 @@ extension DiaryViewController: UITableViewDelegate {
             }
         } else {
             // Moving within the same meal
-            let sourceFoods = sourceMeal.foods
+            let sourceFoods = sourceMeal.foodEntries
             if sourceIndexPath.row < destinationIndexPath.row {
                 // Shift affected items left
                 for item in sourceFoods {
@@ -460,7 +469,7 @@ extension DiaryViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, targetIndexPathForMoveFromRowAt sourceIndexPath: IndexPath, toProposedIndexPath proposedDestinationIndexPath: IndexPath) -> IndexPath {
         // Rejects any move into sections 0 or 1
         guard proposedDestinationIndexPath.section > 1 else { return sourceIndexPath }
-        var isAddButtonRow = mealPlan.meals[proposedDestinationIndexPath.section - 2].foods.count
+        var isAddButtonRow = mealPlan.meals[proposedDestinationIndexPath.section - 2].foodEntries.count
         if sourceIndexPath.section != proposedDestinationIndexPath.section {
             // When moving between different meals (sections), the Add Food row shifts down by 1. This adjusts for the layout difference that happens when a row is being dragged into a new section.
             isAddButtonRow += 1
@@ -471,7 +480,7 @@ extension DiaryViewController: UITableViewDelegate {
 }
 
 extension DiaryViewController: AddFoodDetailViewControllerDelegate {
-    func addFoodDetailViewController(_ tableViewController: AddFoodDetailViewController, didAddFood food: Food) {
+    func addFoodDetailViewController(_ tableViewController: AddFoodDetailViewController, didAddFood food: FoodEntry) {
         guard let meal = food.meal,
               let section = mealPlan.meals.firstIndex(of: meal)
         else { return }
@@ -482,7 +491,7 @@ extension DiaryViewController: AddFoodDetailViewControllerDelegate {
 }
 
 extension DiaryViewController: UpdateFoodDetailViewControllerDelegate {
-    func updateFoodDetailViewController(_ viewController: UpdateFoodDetailViewController, didUpdateFood food: Food) {
+    func updateFoodDetailViewController(_ viewController: UpdateFoodDetailViewController, didUpdateFood food: FoodEntry) {
         guard let meal = food.meal,
               let section = mealPlan.meals.firstIndex(of: meal)
         else { return }
@@ -526,6 +535,9 @@ extension DiaryViewController: MealPlanDateViewDelegate {
         
         updateUI()
         animateTableChange(direction: date > oldDate ? .left : .right)
+        
+        // Update search controller's meal
+        delegate?.diaryViewController(self, mealPlanChanged: self.mealPlan)
     }
     
     enum TableAnimationDirection {
@@ -566,7 +578,7 @@ extension DiaryViewController: ReorderMealTableViewControllerDelegate {
 }
 
 extension DiaryViewController: QuickAddTableViewControllerDelegate {
-    func quickAddTableViewController(_ viewController: QuickAddTableViewController, didAddFoodEntry: Food) {
+    func quickAddTableViewController(_ viewController: QuickAddTableViewController, didAddFoodEntry: FoodEntry) {
         updateUI()
     }
 }
@@ -578,13 +590,12 @@ extension DiaryViewController: GoalTableViewControllerDelegate {
 }
 
 extension DiaryViewController: ResultTableViewCellDelegate {
-    func resultTableViewCell(_ cell: ResultTableViewCell, didAddFoodEntry foodEntry: Food) {
-        print(#function)
+    func resultTableViewCell(_ cell: ResultTableViewCell, didTapAddButton: Bool) {
         updateUI()
     }
 }
 
-extension Array where Element == Food {
+extension Array where Element == FoodEntry {
     func updateIndexes() {
         for (index, foodEntry) in self.enumerated() {
             foodEntry.index = Int16(index)

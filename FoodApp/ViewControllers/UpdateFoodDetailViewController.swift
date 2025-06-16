@@ -8,7 +8,7 @@
 import UIKit
 
 protocol UpdateFoodDetailViewControllerDelegate: AnyObject {
-    func updateFoodDetailViewController(_ viewController: UpdateFoodDetailViewController, didUpdateFood food: Food)
+    func updateFoodDetailViewController(_ viewController: UpdateFoodDetailViewController, didUpdateFood food: FoodEntry)
 }
 
 class UpdateFoodDetailViewController: FoodDetailTableViewController {
