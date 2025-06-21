@@ -12,8 +12,7 @@ import CoreData
 class SearchFoodTableViewController: UIViewController {
 
     let tableView: UITableView = {
-        let tableView = UITableView(frame: .zero, style: .grouped)
-        tableView.backgroundColor = .secondarySystemGroupedBackground
+        let tableView = UITableView(frame: .zero, style: .insetGrouped)
         tableView.translatesAutoresizingMaskIntoConstraints = false
         return tableView
     }()
@@ -25,8 +24,8 @@ class SearchFoodTableViewController: UIViewController {
     
     var searchController: UISearchController!
     private var resultsTableController: ResultsTableViewController!
-    var historyFRC: NSFetchedResultsController<History>! // source of truth
-    var foodFRC: NSFetchedResultsController<FoodEntry>?
+    var fetchedResultsController: NSFetchedResultsController<History>! // source of truth
+//    var foodFRC: NSFetchedResultsController<FoodEntry>?
 
     var meal: Meal?
     let foodService: FoodService
@@ -63,14 +62,24 @@ class SearchFoodTableViewController: UIViewController {
         searchTabView.translatesAutoresizingMaskIntoConstraints = false
         searchTabView.delegate = self
         
+        let searchButtonRowView = SearchButtonRowView()
+        searchButtonRowView.translatesAutoresizingMaskIntoConstraints = false
+        searchButtonRowView.delegate = self
+        
         view.addSubview(searchTabView)
+        view.addSubview(searchButtonRowView)
         view.addSubview(tableView)
         
         NSLayoutConstraint.activate([
             searchTabView.topAnchor.constraint(equalTo: view.topAnchor),
             searchTabView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             searchTabView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-            tableView.topAnchor.constraint(equalTo: searchTabView.bottomAnchor),
+            
+            searchButtonRowView.topAnchor.constraint(equalTo: searchTabView.bottomAnchor),
+            searchButtonRowView.leadingAnchor.constraint(equalTo: searchTabView.leadingAnchor),
+            searchButtonRowView.trailingAnchor.constraint(equalTo: searchTabView.trailingAnchor),
+
+            tableView.topAnchor.constraint(equalTo: searchButtonRowView.bottomAnchor),
             tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
@@ -101,34 +110,12 @@ class SearchFoodTableViewController: UIViewController {
         definesPresentationContext = true
         
         // TODO: use pallete colors
-        let barcodeButton = UIBarButtonItem(image: UIImage(systemName: "barcode.viewfinder"), primaryAction: didTapBarcodeButton())
-        let quickAddButton = UIBarButtonItem(image: UIImage(systemName: "flame"), primaryAction: didTapQuickAddButton())
-        navigationItem.rightBarButtonItems = [barcodeButton, quickAddButton]
-        navigationItem.rightBarButtonItem?.isEnabled = scannerAvailable
+//        let barcodeButton = UIBarButtonItem(image: UIImage(systemName: "barcode.viewfinder"), primaryAction: didTapBarcodeButton())
+//        let quickAddButton = UIBarButtonItem(image: UIImage(systemName: "flame"), primaryAction: didTapQuickAddButton())
+//        navigationItem.rightBarButtonItems = [barcodeButton, quickAddButton]
+//        navigationItem.rightBarButtonItem?.isEnabled = scannerAvailable
         
-        let fetchRequest: NSFetchRequest<History> = History.fetchRequest()
-        let sortDescriptor = NSSortDescriptor(key: "createdAt_", ascending: false)
-        fetchRequest.sortDescriptors = [sortDescriptor]
-        
-        
-        historyFRC = NSFetchedResultsController(
-            fetchRequest: fetchRequest,
-            managedObjectContext: CoreDataStack.shared.context,
-            sectionNameKeyPath: nil,    // to define sections
-            cacheName: nil)
-
-        historyFRC.delegate = self
-        
-        // Perform a fetch.
-        do {
-            // actually fetches from cloudkit, when delete and reinstall app
-            try historyFRC?.performFetch()
-//            contentUnavailableView.isHidden = !(fetchedResultsController.fetchedObjects?.isEmpty ?? true)
-        } catch {
-            // Handle error appropriately. It's useful to use
-            // `fatalError(_:file:line:)` during development.
-            fatalError("Failed to perform fetch: \(error.localizedDescription)")
-        }
+        updateFetchedResultsController(for: .all)
     }
 
     func didTapBarcodeButton() -> UIAction {
@@ -163,11 +150,11 @@ class SearchFoodTableViewController: UIViewController {
 
 extension SearchFoodTableViewController: UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
-        return historyFRC.sections?.count ?? 0
+        return fetchedResultsController.sections?.count ?? 0
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        guard let sectionInfo = historyFRC?.sections?[section] else {
+        guard let sectionInfo = fetchedResultsController?.sections?[section] else {
             return 0
         }
         
@@ -177,7 +164,7 @@ extension SearchFoodTableViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: HistoryTableViewCell.reuseIdentifier, for: indexPath) as! HistoryTableViewCell
         cell.delegate = self
-        let history = historyFRC.object(at: indexPath)
+        let history = fetchedResultsController.object(at: indexPath)
         cell.update(history: history)
         cell.backgroundColor = UIColor(hex: "#252525")
         return cell
@@ -187,9 +174,8 @@ extension SearchFoodTableViewController: UITableViewDataSource {
 
 extension SearchFoodTableViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let history = historyFRC.object(at: indexPath)
+        let history = fetchedResultsController.object(at: indexPath)
         guard let food = history.foodEntry?.convertToFDCFood() else { return }
-        print(food.fdcId)
         let addFoodDetailViewController = AddFoodDetailViewController(fdcFood: food, meal: meal, foodService: foodService)
         addFoodDetailViewController.delegate = addFoodDelegate
         present(UINavigationController(rootViewController: addFoodDetailViewController), animated: true)
@@ -228,7 +214,7 @@ extension SearchFoodTableViewController: NSFetchedResultsControllerDelegate {
             // Update the cell as the specified indexPath.
             print("Update row: \(indexPath)")
             if let cell = tableView.cellForRow(at: indexPath) as? HistoryTableViewCell {
-                let history = historyFRC.object(at: indexPath)
+                let history = fetchedResultsController.object(at: indexPath)
                 cell.update(history: history)
             }
         case .move:
@@ -276,7 +262,7 @@ extension SearchFoodTableViewController: SearchTitleViewDelegate {
 extension SearchFoodTableViewController: HistoryTableViewCellDelegate {
     func historyTableViewCell(_ cell: HistoryTableViewCell, didSelectDeleteButton: Bool) {
         guard let indexPath = tableView.indexPath(for: cell) else { return }
-        let history = historyFRC.object(at: indexPath)
+        let history = fetchedResultsController.object(at: indexPath)
         CoreDataStack.shared.context.delete(history)
         CoreDataStack.shared.saveContext()
     }
@@ -353,34 +339,49 @@ extension SearchFoodTableViewController: SearchTabViewDelegate {
     }
     
     func updateFetchedResultsController(for tab: SearchTabView.TabItem) {
+        let request: NSFetchRequest<History> = History.fetchRequest()
+        request.sortDescriptors = [NSSortDescriptor(keyPath: \History.createdAt_, ascending: false)]
+
         switch tab {
         case .all:
-            let fetchRequest: NSFetchRequest<History> = History.fetchRequest()
-            fetchRequest.sortDescriptors = [NSSortDescriptor(key: "createdAt_", ascending: false)]
-            historyFRC = NSFetchedResultsController(
-                fetchRequest: fetchRequest,
-                managedObjectContext: CoreDataStack.shared.context,
-                sectionNameKeyPath: nil,
-                cacheName: nil
-            )
+            request.predicate = nil
+        case .myRecipes:
+            request.predicate = NSPredicate(format: "foodEntry.isRecipe == %@ AND foodEntry.isCustom == %@",
+                                            NSNumber(value: true),  NSNumber(value: true))
         case .myFoods:
-            let fetchRequest: NSFetchRequest<FoodEntry> = FoodEntry.fetchRequest()
-            fetchRequest.predicate = NSPredicate(format: "isCustom == true")
-            fetchRequest.sortDescriptors = [NSSortDescriptor(key: "name", ascending: true)]
-            foodFRC = NSFetchedResultsController(
-                fetchRequest: fetchRequest,
-                managedObjectContext: CoreDataStack.shared.context,
-                sectionNameKeyPath: nil,
-                cacheName: nil
-            )
-        default:
-            break
+            request.predicate = NSPredicate(format: "foodEntry.isRecipe == %@ AND foodEntry.isCustom == %@",
+                                            NSNumber(value: false),  NSNumber(value: true))
         }
 
-        // Example assumes only one is active; adapt logic accordingly
-        try? historyFRC?.performFetch()
-        try? foodFRC?.performFetch()
+        fetchedResultsController = NSFetchedResultsController(
+            fetchRequest: request,
+            managedObjectContext: CoreDataStack.shared.context,
+            sectionNameKeyPath: nil,
+            cacheName: nil
+        )
+        fetchedResultsController.delegate = self
 
-        tableView.reloadData()
+        do {
+            try fetchedResultsController.performFetch()
+            tableView.reloadData()
+        } catch {
+            print("Fetch failed: \(error)")
+        }
+    }
+}
+
+extension SearchFoodTableViewController: SearchButtonRowViewDelegate {
+    func searchButtonRowView(_ sender: SearchButtonRowView, didTapButton type: SearchButtonRowView.SearchButtonType) {
+        switch type {
+        case .barcode:
+            return
+        case .quickAdd:
+            return
+        case .addRecipe:
+            return
+        case .addFood:
+            let createFoodViewController = CreateFoodViewController()
+            present(UINavigationController(rootViewController: createFoodViewController), animated: true)
+        }
     }
 }

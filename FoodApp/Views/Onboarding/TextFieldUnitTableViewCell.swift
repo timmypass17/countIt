@@ -8,9 +8,7 @@
 
 import UIKit
 
-class WeightInputTableViewCell: UITableViewCell {
-
-    static let reuseIdentifier = "WeightInputTableViewCell"
+class TextFieldUnitTableViewCell: UITableViewCell {
 
     let titleLabel: UILabel = {
         let label = UILabel()
@@ -20,12 +18,11 @@ class WeightInputTableViewCell: UITableViewCell {
         return label
     }()
 
-    lazy var weightTextField: UITextField = {
+    lazy var textField: UITextField = {
         let textField = UITextField()
-        textField.placeholder = "Required"
         textField.textAlignment = .right
         textField.keyboardType = .decimalPad
-        textField.addAction(weightTextFieldDidChange(), for: .editingChanged)
+        textField.addAction(textFieldDidChange(), for: .editingChanged)
         return textField
     }()
 
@@ -46,13 +43,13 @@ class WeightInputTableViewCell: UITableViewCell {
         return stackView
     }()
 
-    private var editingChangedAction: ((String) -> Void)?
+    var editingChangedAction: ((String?) -> Void)?
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
 
         container.addArrangedSubview(titleLabel)
-        container.addArrangedSubview(weightTextField)
+        container.addArrangedSubview(textField)
         container.addArrangedSubview(unitLabel)
         contentView.addSubview(container)
 
@@ -68,26 +65,58 @@ class WeightInputTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
 
-    func update(title: String, unit: WeightUnit, weightKg: Double?, editingChangedAction: @escaping (String) -> Void) {
+    func textFieldDidChange() -> UIAction {
+        return UIAction { _ in
+            self.editingChangedAction?(self.textField.text)
+        }
+    }
+}
+
+class WeightTextFieldTableViewCell: TextFieldUnitTableViewCell {
+    
+    static let reuseIdentifier = "WeightTextFieldTableViewCell"
+
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        textField.placeholder = "Required"
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    func update(title: String, unit: WeightUnit, weightKg: Double?, editingChangedAction: @escaping (String?) -> Void) {
         titleLabel.text = title
         unitLabel.text = unit.singularSymbol
         if let weightKg {
             switch unit {
             case .pounds:
-                weightTextField.text = convertKilogramsToPounds(weightKg).trimmed
+                textField.text = convertKilogramsToPounds(weightKg).trimmed
             case .kilograms:
-                weightTextField.text = weightKg.trimmed
+                textField.text = weightKg.trimmed
             }
         } else {
-            weightTextField.text = nil
+            textField.text = nil
         }
         
         self.editingChangedAction = editingChangedAction
     }
+}
 
-    func weightTextFieldDidChange() -> UIAction {
-        return UIAction { _ in
-            self.editingChangedAction?(self.weightTextField.text ?? "")
+class NutritionTextFieldTableViewCell: TextFieldUnitTableViewCell {
+    
+    static let reuseIdentifier = "NutritionTextFieldTableViewCell"
+    
+    func update(_ nutrientId: NutrientId, value: Double?, editingChangedAction: @escaping (String?) -> Void) {
+        titleLabel.text = nutrientId.description
+        unitLabel.text = nutrientId.unitName
+        // set text field
+        if let value {
+            textField.text = value.trimmed
+        } else {
+            textField.text = nil
         }
+        textField.placeholder = nutrientId.isRequired ? "Required" : "Optional"
+        self.editingChangedAction = editingChangedAction
     }
 }

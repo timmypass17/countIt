@@ -227,19 +227,19 @@ class FoodService: FoodServiceProtocol {
         for meal in source.meals {
             // Copy meals
             let mealCopy = Meal(context: context)
-            print("timmy meal: \(meal.name) - food count: \(meal.foodEntries.count)")
             mealCopy.name = meal.name
             mealCopy.index = meal.index
             mealCopy.mealPlan = destination
             for food in meal.foodEntries {
                 // Copy foods
-                print("timmy food: \(food.description)")
                 let foodCopy = FoodEntry(context: context)
                 foodCopy.index = food.index
                 foodCopy.quantity = food.quantity
                 foodCopy.gramWeight = food.gramWeight
                 foodCopy.modifier = food.modifier
                 foodCopy.amount = food.amount
+                foodCopy.isCustom = food.isCustom
+                foodCopy.isRecipe = food.isRecipe
                 foodCopy.foodInfo = food.foodInfo
                 foodCopy.meal = mealCopy
             }
@@ -322,6 +322,8 @@ class FoodService: FoodServiceProtocol {
         food.quantity = Int16(quantity)
         food.gramWeight = Double(portion.gramWeight)
         food.portionId = Int32(portion.id)
+        food.isCustom = false
+        food.isRecipe = false
 
         if let amount = portion.amount,
            let modifier = portion.modifier {
@@ -416,6 +418,8 @@ class FoodService: FoodServiceProtocol {
         foodEntryCopy.portionId = foodEntry.portionId
         foodEntryCopy.quantity = foodEntry.quantity
         foodEntryCopy.foodInfo = foodEntry.foodInfo
+        foodEntryCopy.isCustom = foodEntry.isCustom
+        foodEntryCopy.isRecipe = foodEntry.isRecipe
         history.foodEntry = foodEntryCopy
     }
 

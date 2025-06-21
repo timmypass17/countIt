@@ -1,48 +1,55 @@
 //
-//  CurrentWeightEditTableViewCell.swift
+//  CreateFoodInfoTableViewCell.swift
 //  FoodApp
 //
-//  Created by Timmy Nguyen on 6/12/25.
+//  Created by Timmy Nguyen on 6/20/25.
 //
 
 import UIKit
 
-class CurrentWeightEditTableViewCell: UITableViewCell {
-    
-    static let reuseIdentifier = "CurrentWeightEditTableViewCell"
+class CreateFoodInfoTableViewCell: UITableViewCell {
+
+    static let reuseIdentifier = "CreateFoodInfoTableViewCell"
     
     let titleLabel: UILabel = {
         let label = UILabel()
         return label
     }()
     
-    let weightTextField: UITextField = {
+    let secondaryLabel: UILabel = {
+        let label = UILabel()
+        label.textColor = .secondaryLabel
+        label.font = .preferredFont(forTextStyle: .caption1)
+        return label
+    }()
+    
+    let textField: UITextField = {
         let textField = UITextField()
-        textField.keyboardType = .decimalPad
         textField.textAlignment = .right
         return textField
     }()
     
-    let weightUnitLabel: UILabel = {
-        let label = UILabel()
-        return label
+    let labelContainer: UIStackView = {
+        let stackView = UIStackView()
+        stackView.axis = .vertical
+        return stackView
     }()
     
     let container: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .horizontal
-        stackView.spacing = 8
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
     }()
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
+        labelContainer.addArrangedSubview(titleLabel)
+        labelContainer.addArrangedSubview(secondaryLabel)
         
-        container.addArrangedSubview(titleLabel)
-        container.addArrangedSubview(weightTextField)
-        container.addArrangedSubview(weightUnitLabel)
-                
+        container.addArrangedSubview(labelContainer)
+        container.addArrangedSubview(textField)
+        
         contentView.addSubview(container)
         
         NSLayoutConstraint.activate([
@@ -57,8 +64,9 @@ class CurrentWeightEditTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func update(weightPlaceholderText: String, weightUnit: WeightUnit) {
-        weightTextField.placeholder = weightPlaceholderText
-        weightUnitLabel.text = weightUnit.pluralSymbol
+    func update(title: String, description: String, placeholderText: String) {
+        titleLabel.text = title
+        secondaryLabel.text = description
+        textField.placeholder = placeholderText
     }
 }

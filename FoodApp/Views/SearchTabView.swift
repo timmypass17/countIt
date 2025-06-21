@@ -14,7 +14,7 @@ protocol SearchTabViewDelegate: AnyObject {
 class SearchTabView: UIView {
     
     enum TabItem: Int {
-        case all, myRecipse, myFoods
+        case all, myRecipes, myFoods
     }
 
     private let underlineView = UIView()
@@ -33,6 +33,7 @@ class SearchTabView: UIView {
         let button = UIButton()
         button.setTitle("All", for: .normal)
         button.setTitleColor(.white, for: .normal)
+        button.titleLabel?.font = UIFont.preferredFont(forTextStyle: .body)
         return button
     }()
 
@@ -40,6 +41,7 @@ class SearchTabView: UIView {
         let button = UIButton()
         button.setTitle("My Recipes", for: .normal)
         button.setTitleColor(.white, for: .normal)
+        button.titleLabel?.font = UIFont.preferredFont(forTextStyle: .body)
         return button
     }()
 
@@ -47,6 +49,7 @@ class SearchTabView: UIView {
         let button = UIButton()
         button.setTitle("My Foods", for: .normal)
         button.setTitleColor(.white, for: .normal)
+        button.titleLabel?.font = UIFont.preferredFont(forTextStyle: .body)
         return button
     }()
 
@@ -121,6 +124,10 @@ class SearchTabView: UIView {
         for button in buttons {
             let isSelected = (button == selectedButton)
             button.setTitleColor(isSelected ? .white : .secondaryLabel, for: .normal)
+            button.titleLabel?.font = UIFont.systemFont(
+                ofSize: UIFont.preferredFont(forTextStyle: .body).pointSize,
+                weight: isSelected ? .semibold : .regular
+            )
         }
     }
 

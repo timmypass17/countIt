@@ -25,6 +25,8 @@ extension FoodEntry {
     @NSManaged public var foodInfo: FoodInfo?
     @NSManaged public var history: History?
     @NSManaged public var meal: Meal?
+    @NSManaged public var isCustom: Bool
+    @NSManaged public var isRecipe: Bool
 
     var amount: Double? {
         get { amount_?.doubleValue }

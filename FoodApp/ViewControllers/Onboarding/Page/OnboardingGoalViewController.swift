@@ -72,7 +72,7 @@ class OnboardingGoalViewController: UIViewController {
         tableView.dataSource = self
         tableView.delegate = self
         tableView.register(SelectableTableViewCell.self, forCellReuseIdentifier: SelectableTableViewCell.reuseIdentifier)
-        tableView.register(WeightInputTableViewCell.self, forCellReuseIdentifier: WeightInputTableViewCell.reuseIdentifier)
+        tableView.register(WeightTextFieldTableViewCell.self, forCellReuseIdentifier: WeightTextFieldTableViewCell.reuseIdentifier)
         tableView.register(MenuPickerTableViewCell<WeeklyWeightGoal>.self, forCellReuseIdentifier: MenuPickerTableViewCell<WeeklyWeightGoal>.reuseIdentifier)
         tableView.register(UnitPreferenceFooterView.self, forHeaderFooterViewReuseIdentifier: UnitPreferenceFooterView.reuseIdentifier)
         
@@ -123,9 +123,9 @@ extension OnboardingGoalViewController: UITableViewDataSource {
             return cell
         case .weightInput:
             if indexPath.row == 0 {
-                let cell = tableView.dequeueReusableCell(withIdentifier: WeightInputTableViewCell.reuseIdentifier, for: indexPath) as! WeightInputTableViewCell
+                let cell = tableView.dequeueReusableCell(withIdentifier: WeightTextFieldTableViewCell.reuseIdentifier, for: indexPath) as! WeightTextFieldTableViewCell
                 cell.update(title: "Current Weight", unit: userProfile.weightUnit, weightKg: startingWeightKg) { weightText in
-                    guard let weight = Double(weightText) else {
+                    guard let weightText, let weight = Double(weightText) else {
                         self.startingWeightKg = nil
                         self.delegate?.onboardingGoalViewController(self, didUpdateCurrentWeightKg: self.startingWeightKg)
                         NotificationCenter.default.post(name: .userInfoUpdated, object: nil)
@@ -167,9 +167,9 @@ extension OnboardingGoalViewController: UITableViewDataSource {
                 }
                 return cell
             } else if indexPath.row == 1 {
-                let cell = tableView.dequeueReusableCell(withIdentifier: WeightInputTableViewCell.reuseIdentifier, for: indexPath) as! WeightInputTableViewCell
+                let cell = tableView.dequeueReusableCell(withIdentifier: WeightTextFieldTableViewCell.reuseIdentifier, for: indexPath) as! WeightTextFieldTableViewCell
                 cell.update(title: "Goal Weight", unit: userProfile.weightUnit, weightKg: userProfile.goalWeightKg) { weightText in
-                    guard let weight = Double(weightText) else {
+                    guard let weightText, let weight = Double(weightText) else {
                         self.userProfile.goalWeightKg = 0
                         NotificationCenter.default.post(name: .userInfoUpdated, object: nil)
                         return

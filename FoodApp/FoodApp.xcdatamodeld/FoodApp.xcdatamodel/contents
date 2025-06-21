@@ -4,6 +4,8 @@
         <attribute name="amount_" optional="YES" attributeType="Double" usesScalarValueType="YES"/>
         <attribute name="gramWeight" optional="YES" attributeType="Double" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="index" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="isCustom" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="isRecipe" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="modifier" optional="YES" attributeType="String"/>
         <attribute name="portionId" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="quantity" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>

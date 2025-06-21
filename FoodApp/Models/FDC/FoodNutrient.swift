@@ -155,7 +155,7 @@ enum NutrientId: Int, Codable, CaseIterable {
         case .fallbackCalories:
             return "Fallback Calories"
         case .carbs:
-            return "Total Carbohydrates"
+            return "Total Carbohydrate"
         case .fiber:
             return "Fiber"
         case .sugarTotal:
@@ -385,6 +385,14 @@ enum NutrientId: Int, Codable, CaseIterable {
         .water, .caffeine
     ]
     
+    var isRequired: Bool {
+        switch self {
+        case .calories:
+            return true
+        default:
+            return false
+        }
+    }
 }
 
 extension NutrientId {

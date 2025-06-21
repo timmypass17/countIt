@@ -21,6 +21,8 @@ class QuickAddTableViewController: UITableViewController {
         foodEntry.amount = 1
         foodEntry.modifier = "serving"
         foodEntry.portionId = 0
+        foodEntry.isCustom = true
+        foodEntry.isRecipe = false
         
         let foodInfo = FoodInfo(context: childContext)
         foodInfo.fdcId = Int64.random(in: Int64.min..<0)
