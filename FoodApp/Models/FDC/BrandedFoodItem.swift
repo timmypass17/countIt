@@ -10,7 +10,7 @@ import Foundation
 // Branded foods do not have inputFood, only ingredients
 struct BrandedFoodItem: FoodItem {
     let fdcId: Int
-    let brandName: String
+    let brandName: String?
     let dataType: DataType
     let description: String
     let gtinUpc: String // barcode
@@ -74,7 +74,9 @@ struct BrandedFoodItem: FoodItem {
             descriptionParts.append(getServingSizeFormatted(foodPortion: foodPortion, numberOfServings: numberOfServings))
         }
         
-        descriptionParts.append(brandName)
+        if let brandName {
+            descriptionParts.append(brandName)
+        }
         
         return descriptionParts.joined(separator: ", ")
     }

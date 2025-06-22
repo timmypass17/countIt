@@ -106,13 +106,26 @@ class HistoryTableViewCell: UITableViewCell {
     }
     
     func update(history: History) {
-        let food = history.foodEntry
-        titleLabel.text = food?.foodInfo?.name
-        let totalGramWeight = (food?.gramWeight ?? 0) * Double(food?.quantity ?? 0)
-        if let modifer = food?.modifier {
-            descriptionLabel.text = "\(food?.quantity ?? 0) \(modifer) (\(totalGramWeight.trimmed) g), \(food?.foodInfo?.brandName_ ?? "NA")"
+        let foodEntry = history.foodEntry
+        titleLabel.text = foodEntry?.foodInfo?.name
+        descriptionLabel.text = foodEntry?.description()
+//        let totalGramWeight = (foodEntry?.gramWeight ?? 0) * Double(foodEntry?.quantity ?? 0)
+//    
+//        if foodEntry?.gramWeight == nil {
+////            foodEntry
+////            descriptionLabel.text =
+//        }
+//        
+//        if let modifer = foodEntry?.modifier {
+//            descriptionLabel.text = "\(foodEntry?.quantity ?? 0) \(modifer) (\(totalGramWeight.trimmed) g), \(foodEntry?.foodInfo?.brandName_ ?? "NA")"
+//        } else {
+//            descriptionLabel.text = "\(totalGramWeight.trimmed) g, \(foodEntry?.foodInfo?.brandName_ ?? "NA")"
+//        }
+        
+        if foodEntry?.isCustom == true {
+            checkmarkImageView.tintColor = .systemGreen
         } else {
-            descriptionLabel.text = "\(totalGramWeight.trimmed) g, \(food?.foodInfo?.brandName_ ?? "NA")"
+            checkmarkImageView.tintColor = .systemBlue
         }
     }
     

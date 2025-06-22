@@ -169,7 +169,7 @@ class FoodDetailTableViewController: UITableViewController {
             let cell = tableView.dequeueReusableCell(withIdentifier: NutritionTableViewCell.reuseIdentifier, for: indexPath) as! NutritionTableViewCell
             let nutrient = macronutrients[indexPath.row]
             let goal = meal?.mealPlan?.nutrientGoals[nutrient.nutrientId]?.value ?? 0
-            cell.update(with: nutrient, foodPortion: selectedFoodPortion, quantity: numberOfServings, goal: goal)
+            cell.update(with: nutrient, foodPortion: selectedFoodPortion, quantity: numberOfServings, goal: goal, isCustom: fdcFood.fdcId < 0)  // negative fdcId also means "custom"
             cell.progressView.tintColor = .systemBlue
             cell.selectionStyle = .none
             cell.backgroundColor = UIColor(hex: "#252525")
@@ -178,7 +178,7 @@ class FoodDetailTableViewController: UITableViewController {
             let cell = tableView.dequeueReusableCell(withIdentifier: NutritionTableViewCell.reuseIdentifier, for: indexPath) as! NutritionTableViewCell
             let vitamin = vitamins[indexPath.row]
             let goal = meal?.mealPlan?.nutrientGoals[vitamin.nutrientId]?.value ?? 0
-            cell.update(with: vitamin, foodPortion: selectedFoodPortion, quantity: numberOfServings, goal: goal)
+            cell.update(with: vitamin, foodPortion: selectedFoodPortion, quantity: numberOfServings, goal: goal, isCustom: fdcFood.fdcId < 0)
             cell.progressView.tintColor = .systemOrange
             cell.selectionStyle = .none
             cell.backgroundColor = UIColor(hex: "#252525")
@@ -187,7 +187,7 @@ class FoodDetailTableViewController: UITableViewController {
             let cell = tableView.dequeueReusableCell(withIdentifier: NutritionTableViewCell.reuseIdentifier, for: indexPath) as! NutritionTableViewCell
             let mineral = minerals[indexPath.row]
             let goal = meal?.mealPlan?.nutrientGoals[mineral.nutrientId]?.value ?? 0
-            cell.update(with: mineral, foodPortion: selectedFoodPortion, quantity: numberOfServings, goal: goal)
+            cell.update(with: mineral, foodPortion: selectedFoodPortion, quantity: numberOfServings, goal: goal, isCustom: fdcFood.fdcId < 0)
             cell.progressView.tintColor = .white
             cell.selectionStyle = .none
             cell.backgroundColor = UIColor(hex: "#252525")

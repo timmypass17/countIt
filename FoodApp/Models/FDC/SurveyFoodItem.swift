@@ -21,7 +21,7 @@ struct SurveyFoodItem: FoodItem {
     let description: String
     let foodPortions: [FoodPortion]
     let foodNutrients: [FoodNutrient]
-    let brandName = "USDA"
+    let brandName: String? = "USDA"
 
     enum CodingKeys: String, CodingKey {
         case fdcId

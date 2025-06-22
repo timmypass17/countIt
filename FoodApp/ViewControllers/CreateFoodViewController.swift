@@ -24,15 +24,15 @@ class CreateFoodViewController: UIViewController {
     lazy var foodEntry: FoodEntry = {
         var foodEntry = FoodEntry(context: childContext)
         foodEntry.quantity = 1
-        foodEntry.gramWeight = 100
+        foodEntry.gramWeight = nil
         foodEntry.amount = nil
         foodEntry.modifier = nil
-        foodEntry.portionId = 0
+        foodEntry.portionId = 0 // 0 means user generated
         foodEntry.isCustom = true
         foodEntry.isRecipe = false
         
         let foodInfo = FoodInfo(context: childContext)
-        foodInfo.fdcId = Int64.random(in: Int64.min..<0)
+        foodInfo.fdcId = Int64.random(in: Int64.min..<0)    // negative means user generated
         foodInfo.brandName_ = nil
         foodEntry.foodInfo = foodInfo
         
@@ -42,18 +42,12 @@ class CreateFoodViewController: UIViewController {
             foodInfo.addToNutrients_(foodInfoNutrient)
         }
         
-        let foodPortion = FoodInfoPortion(context: childContext)
-        foodPortion.id = 0
-        foodPortion.gramWeight = 100
-        foodPortion.amount = nil
-        foodPortion.modifier = nil
-        foodPortion.foodInfo = foodInfo
-        
         return foodEntry
     }()
     
     var childContext: NSManagedObjectContext = CoreDataStack.shared.childContext()
     
+    let foodService = FoodService()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -72,7 +66,27 @@ class CreateFoodViewController: UIViewController {
         ])
         
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Cancel", primaryAction: nil)
-        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Save", primaryAction: nil)
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Save", primaryAction: didTapSaveButton())
+    }
+    
+    func didTapSaveButton() -> UIAction {
+        return UIAction { _ in
+            do {
+                // TODO: Remove grams, custom foods don't follow base 100g, they use their own
+                let foodPortion = FoodInfoPortion(context: self.childContext)
+                foodPortion.id = self.foodEntry.portionId
+                foodPortion.gramWeight = self.foodEntry.gramWeight
+                foodPortion.amount = self.foodEntry.amount
+                foodPortion.modifier = self.foodEntry.modifier
+                foodPortion.foodInfo = self.foodEntry.foodInfo
+                
+                self.foodService.addHistory(foodEntry: self.foodEntry, context: self.childContext)
+                try self.childContext.save()
+                CoreDataStack.shared.saveContext()
+            } catch {
+                print("Error saving food entry")
+            }
+        }
     }
 }
 
@@ -86,7 +100,7 @@ extension CreateFoodViewController: UITableViewDataSource {
         guard let section = Section(rawValue: section) else { return 0 }
         switch section {
         case .name:
-            return 3
+            return 4
         case .macro:
             return NutrientId.macronutrients.count
         case .vitamins:
@@ -100,59 +114,109 @@ extension CreateFoodViewController: UITableViewDataSource {
         guard let section = Section(rawValue: indexPath.section) else { return UITableViewCell() }
         switch section {
         case .name:
-            let cell = tableView.dequeueReusableCell(withIdentifier: CreateFoodInfoTableViewCell.reuseIdentifier, for: indexPath) as! CreateFoodInfoTableViewCell
             if indexPath.row == 0 {
-                cell.update(title: "Name", description: "Required*", placeholderText: "e.g. Peanut Butter")
+                let cell = tableView.dequeueReusableCell(withIdentifier: CreateFoodInfoTableViewCell.reuseIdentifier, for: indexPath) as! CreateFoodInfoTableViewCell
+                cell.update(title: "Name", description: "Required*", placeholderText: "e.g. Peanut Butter") { name in
+                    self.foodEntry.foodInfo?.name = name ?? ""
+                }
+                return cell
             } else if indexPath.row == 1 {
-                cell.update(title: "Brand Name", description: "Optional", placeholderText: "e.g. Skippy")
+                let cell = tableView.dequeueReusableCell(withIdentifier: CreateFoodInfoTableViewCell.reuseIdentifier, for: indexPath) as! CreateFoodInfoTableViewCell
+                cell.update(title: "Brand Name", description: "Optional", placeholderText: "e.g. Skippy") { brandName in
+                    self.foodEntry.foodInfo?.brandName_ = brandName
+                }
+                return cell
             } else if indexPath.row == 2 {
-                cell.update(title: "Serving Size", description: "Required*", placeholderText: "e.g. 2 tbsp")
+                let cell = tableView.dequeueReusableCell(withIdentifier: CreateFoodInfoTableViewCell.reuseIdentifier, for: indexPath) as! CreateFoodInfoTableViewCell
+                cell.update(title: "Serving Size", description: "Required*", placeholderText: "e.g. 2 tbsp") { servingSize in
+                    guard let servingSize else {
+                        self.foodEntry.amount = nil
+                        self.foodEntry.modifier = nil
+                        return
+                    }
+                    let (amount, modifier) = self.extractAmountAndUnit(from: servingSize)
+                    guard let amount else {
+                        self.foodEntry.amount = nil
+                        self.foodEntry.modifier = nil
+                        return
+                    }
+                    self.foodEntry.amount = amount
+                    self.foodEntry.modifier = modifier
+                }
+                return cell
+            } else if indexPath.row == 3 {
+                let cell = tableView.dequeueReusableCell(withIdentifier: NutritionTextFieldTableViewCell.reuseIdentifier, for: indexPath) as! NutritionTextFieldTableViewCell
+                cell.update(title: "Gram Weight", unit: "g", value: foodEntry.gramWeight, placeholder: "Optional") { gramWeight in
+                    guard let gramWeight else {
+                        self.foodEntry.gramWeight = nil
+                        return
+                    }
+
+                    self.foodEntry.gramWeight = Double(gramWeight)
+                }
+                return cell
             }
-            cell.backgroundColor = UIColor(hex: "#252525")
-            return cell
         case .macro:
             let cell = tableView.dequeueReusableCell(withIdentifier: NutritionTextFieldTableViewCell.reuseIdentifier, for: indexPath) as! NutritionTextFieldTableViewCell
             let nutrientId = NutrientId.macronutrients[indexPath.row]
-            print("\(nutrientId.description) \(foodEntry.foodInfo?.nutrients[nutrientId]?.value)")
-            cell.update(nutrientId, value: foodEntry.foodInfo?.nutrients[nutrientId]?.value) { valueText in
-                guard let valueText, let value = Double(valueText) else {
-                    self.foodEntry.foodInfo?.nutrients[nutrientId]?.value = nil
-                    return
+            cell.update(
+                title: nutrientId.description,
+                unit: nutrientId.unitName,
+                value: foodEntry.foodInfo?.nutrients[nutrientId]?.value,
+                placeholder: nutrientId.isRequired ? "Required" : "Optional") { valueText in
+                    guard let valueText, let value = Double(valueText) else {
+                        self.foodEntry.foodInfo?.nutrients[nutrientId]?.value = nil
+                        return
+                    }
+                    
+                    self.foodEntry.foodInfo?.nutrients[nutrientId]?.value = value
                 }
-                
-                self.foodEntry.foodInfo?.nutrients[nutrientId]?.value = value
-            }
-            cell.backgroundColor = UIColor(hex: "#252525")
             return cell
         case .vitamins:
             let cell = tableView.dequeueReusableCell(withIdentifier: NutritionTextFieldTableViewCell.reuseIdentifier, for: indexPath) as! NutritionTextFieldTableViewCell
             let nutrientId = NutrientId.vitamins[indexPath.row]
-            print("\(nutrientId.description) \(foodEntry.foodInfo?.nutrients[nutrientId]?.value)")
-            cell.update(nutrientId, value: foodEntry.foodInfo?.nutrients[nutrientId]?.value) { valueText in
-                guard let valueText, let value = Double(valueText) else {
-                    self.foodEntry.foodInfo?.nutrients[nutrientId]?.value = nil
-                    return
+            cell.update(
+                title: nutrientId.description,
+                unit: nutrientId.unitName,
+                value: foodEntry.foodInfo?.nutrients[nutrientId]?.value,
+                placeholder: nutrientId.isRequired ? "Required" : "Optional") { valueText in
+                    guard let valueText, let value = Double(valueText) else {
+                        self.foodEntry.foodInfo?.nutrients[nutrientId]?.value = nil
+                        return
+                    }
+                    
+                    self.foodEntry.foodInfo?.nutrients[nutrientId]?.value = value
                 }
-                
-                self.foodEntry.foodInfo?.nutrients[nutrientId]?.value = value
-            }
-            cell.backgroundColor = UIColor(hex: "#252525")
             return cell
         case .minerals:
             let cell = tableView.dequeueReusableCell(withIdentifier: NutritionTextFieldTableViewCell.reuseIdentifier, for: indexPath) as! NutritionTextFieldTableViewCell
             let nutrientId = NutrientId.minerals[indexPath.row]
-            print("\(nutrientId.description) \(foodEntry.foodInfo?.nutrients[nutrientId]?.value)")
-            cell.update(nutrientId, value: foodEntry.foodInfo?.nutrients[nutrientId]?.value) { valueText in
-                guard let valueText, let value = Double(valueText) else {
-                    self.foodEntry.foodInfo?.nutrients[nutrientId]?.value = nil
-                    return
+            cell.update(
+                title: nutrientId.description,
+                unit: nutrientId.unitName,
+                value: foodEntry.foodInfo?.nutrients[nutrientId]?.value,
+                placeholder: nutrientId.isRequired ? "Required" : "Optional") { valueText in
+                    guard let valueText, let value = Double(valueText) else {
+                        self.foodEntry.foodInfo?.nutrients[nutrientId]?.value = nil
+                        return
+                    }
+                    
+                    self.foodEntry.foodInfo?.nutrients[nutrientId]?.value = value
                 }
-                
-                self.foodEntry.foodInfo?.nutrients[nutrientId]?.value = value
-            }
-            cell.backgroundColor = UIColor(hex: "#252525")
             return cell
         }
+        return UITableViewCell()
+    }
+    
+    func extractAmountAndUnit(from string: String) -> (amount: Double?, unit: String) {
+        let scanner = Scanner(string: string)
+        var number: Double = 0.0
+
+        // Scan a double (e.g., 1.5)
+        let foundNumber = scanner.scanDouble(&number)
+        let unit = string[scanner.currentIndex...].trimmingCharacters(in: .whitespaces)
+
+        return (foundNumber ? number : nil, unit)
     }
 }
 

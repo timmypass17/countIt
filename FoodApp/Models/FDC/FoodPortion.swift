@@ -11,12 +11,12 @@ import Foundation
 // branded dont have foodportion array? Use explicitt
 struct FoodPortion: Codable {
     var id: Int
-    var gramWeight: Double
+    var gramWeight: Double?
     var amount: Double? // foundation 1.00 -> used like 1.00 and "banana" (modifier). amount + modifier
     var modifier: String?    // foundation "tbsp"
     var portionDescription: String? // survey "1 tbsp"
     
-    init(id: Int, amount: Double? = nil, gramWeight: Double, modifier: String? = nil, portionDescription: String? = nil) {
+    init(id: Int, amount: Double? = nil, gramWeight: Double?, modifier: String? = nil, portionDescription: String? = nil) {
         self.id = id
         self.amount = amount
         self.gramWeight = gramWeight
@@ -67,7 +67,7 @@ extension FoodPortion {
 
 extension FoodPortion: Comparable {
     public static func < (lhs: FoodPortion, rhs: FoodPortion) -> Bool {
-        return lhs.gramWeight < rhs.gramWeight
+        return lhs.gramWeight ?? 0 < rhs.gramWeight ?? 0
     }
     
 }

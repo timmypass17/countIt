@@ -18,7 +18,7 @@ struct CDFoodItem: FoodItem {
     
     var foodPortions: [FoodPortion]
     
-    var brandName: String
+    var brandName: String?
     
     func getFoodPortionDescription(foodPortion: FoodPortion, numberOfServings: Int, options: [FoodEntryOptions]) -> String {
         var descriptionParts: [String] = []

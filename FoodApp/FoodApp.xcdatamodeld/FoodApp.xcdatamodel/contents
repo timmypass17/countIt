@@ -2,7 +2,7 @@
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="23507" systemVersion="24B91" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithCloudKit="YES" userDefinedModelVersionIdentifier="">
     <entity name="FoodEntry" representedClassName="FoodEntry" syncable="YES">
         <attribute name="amount_" optional="YES" attributeType="Double" usesScalarValueType="YES"/>
-        <attribute name="gramWeight" optional="YES" attributeType="Double" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="gramWeight_" optional="YES" attributeType="Double" usesScalarValueType="YES"/>
         <attribute name="index" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="isCustom" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="isRecipe" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
@@ -11,7 +11,9 @@
         <attribute name="quantity" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <relationship name="foodInfo" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="FoodInfo" inverseName="foodEntries_" inverseEntity="FoodInfo"/>
         <relationship name="history" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="History" inverseName="foodEntry" inverseEntity="History"/>
+        <relationship name="ingredients" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="FoodEntry" inverseName="parent" inverseEntity="FoodEntry"/>
         <relationship name="meal" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Meal" inverseName="foodEntries_" inverseEntity="Meal"/>
+        <relationship name="parent" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="FoodEntry" inverseName="ingredients" inverseEntity="FoodEntry"/>
     </entity>
     <entity name="FoodInfo" representedClassName="FoodInfo" syncable="YES">
         <attribute name="brandName_" optional="YES" attributeType="String"/>
@@ -28,7 +30,7 @@
     </entity>
     <entity name="FoodInfoPortion" representedClassName="FoodInfoPortion" syncable="YES">
         <attribute name="amount_" optional="YES" attributeType="Double" usesScalarValueType="YES"/>
-        <attribute name="gramWeight" optional="YES" attributeType="Double" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="gramWeight_" optional="YES" attributeType="Double" usesScalarValueType="YES"/>
         <attribute name="id" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="modifier" optional="YES" attributeType="String"/>
         <relationship name="foodInfo" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="FoodInfo" inverseName="portions_" inverseEntity="FoodInfo"/>
@@ -36,7 +38,7 @@
     <entity name="History" representedClassName="History" syncable="YES">
         <attribute name="createdAt_" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="fdcId" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
-        <relationship name="foodEntry" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="FoodEntry" inverseName="history" inverseEntity="FoodEntry"/>
+        <relationship name="foodEntry" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="FoodEntry" inverseName="history" inverseEntity="FoodEntry"/>
     </entity>
     <entity name="Meal" representedClassName="Meal" syncable="YES">
         <attribute name="index" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>

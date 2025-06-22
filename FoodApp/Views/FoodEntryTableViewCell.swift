@@ -73,18 +73,9 @@ class FoodEntryTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func update(_ food: FoodEntry) {
-        titleLabel.text = food.foodInfo?.name
-        let totalGramWeight = (food.gramWeight ?? 0) * Double(food.quantity)
-        if let fdcId = food.foodInfo?.fdcId, fdcId < 0 {
-            descriptionLabel.text = "\(food.quantity) serving, \(food.foodInfo?.brandName_ ?? "NA")"
-        } else if let modifer = food.modifier {
-            descriptionLabel.text = "\(food.quantity) \(modifer) (\(totalGramWeight.trimmed) g), \(food.foodInfo?.brandName_ ?? "NA")"
-        } else {
-            descriptionLabel.text = "\(totalGramWeight.trimmed) g, \(food.foodInfo?.brandName_ ?? "NA")"
-        }
-        caloriesLabel.text = "\(Int(food.getNutrientAmount(.calories)))"
-//        food.
-//        caloriesLabel.text = "\(Int(food.getNutrientPerServing(.calories, foodPortion: foodEntry.servingSize) * Float(foodEntry.numberOfServings)))"
+    func update(_ foodEntry: FoodEntry) {
+        titleLabel.text = foodEntry.foodInfo?.name
+        descriptionLabel.text = foodEntry.description()
+        caloriesLabel.text = "\(Int(foodEntry.getNutrientAmount(.calories)))"
     }
 }

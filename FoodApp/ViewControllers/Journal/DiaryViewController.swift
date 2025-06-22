@@ -294,8 +294,6 @@ extension DiaryViewController: UITableViewDataSource {
                     .environment(\.managedObjectContext, CoreDataStack.shared.context)
             }
             cell.backgroundColor = UIColor(hex: "#252525")
-//            cell.backgroundColor = .tertiarySystemGroupedBackground
-
             return cell
         }
         

@@ -83,14 +83,23 @@ class NutritionTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func update(with foodNutrient: FoodNutrient, foodPortion: FoodPortion, quantity: Int, goal: Double) {
+    func update(with foodNutrient: FoodNutrient, foodPortion: FoodPortion, quantity: Int, goal: Double, isCustom: Bool) {
         nameLabel.text = foodNutrient.nutrient?.id.description
-        let amount = Int(scaledNutrientAmount(amountPer100g: foodNutrient.amount ?? 0, actualServingSize: Double(foodPortion.gramWeight ?? 0))) * quantity
-        amountLabel.text = "\(amount) \(foodNutrient.nutrient?.unitName ?? "")"
-        let value = foodNutrient.amount ?? 0
+        
+        let amount: Double
+        let amountRaw = foodNutrient.amount ?? 0
+        if isCustom {
+            amount = (amountRaw * Double(quantity))
+        } else {
+            // USDA 100g conversion
+            amount = (amountRaw / 100) * Double(foodPortion.gramWeight ?? 0) * Double(quantity)
+        }
+        
+        amountLabel.text = "\(amount.trimmed) \(foodNutrient.nutrient?.unitName ?? "")"
+        
         var progress = 0.0
         if goal > 0 {
-            progress = value / goal
+            progress = amount / goal
         }
         let percentage = Int(((progress) * 100).rounded())
         if percentage < 1 {

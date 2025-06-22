@@ -316,14 +316,15 @@ class FoodService: FoodServiceProtocol {
     }
     
     func addFood(_ fdcFood: FoodItem, with portion: FoodPortion, quantity: Int, to meal: Meal) throws -> FoodEntry {
-        print("timmy: \(fdcFood.fdcId)")
         let food = FoodEntry(context: context)
         food.index = Int16(meal.foodEntries.count)
         food.quantity = Int16(quantity)
-        food.gramWeight = Double(portion.gramWeight)
+        if let gramWeight = portion.gramWeight {
+            food.gramWeight = gramWeight
+        }
         food.portionId = Int32(portion.id)
-        food.isCustom = false
-        food.isRecipe = false
+        food.isCustom = fdcFood.fdcId < 0
+        food.isRecipe = false   // TODO: how to know if food item is recipe? 
 
         if let amount = portion.amount,
            let modifier = portion.modifier {
@@ -370,7 +371,7 @@ class FoodService: FoodServiceProtocol {
         
         return food
     }
-    
+        
     func getFoodHistory(fdcId: Int) -> History? {
         let request: NSFetchRequest<History> = History.fetchRequest()
         request.predicate = NSPredicate(format: "fdcId == %@", NSNumber(value: fdcId))  // to work with Int64 (negatives), %d only works with signed 32
@@ -460,7 +461,9 @@ class FoodService: FoodServiceProtocol {
     func createFoodInfoPortion(_ foodPortion: FoodPortion) -> FoodInfoPortion {
         let foodInfoPortion = FoodInfoPortion(context: context)
         foodInfoPortion.id = Int32(foodPortion.id)
-        foodInfoPortion.gramWeight = Double(foodPortion.gramWeight)
+        if let gramWeight = foodPortion.gramWeight {
+            foodInfoPortion.gramWeight = foodPortion.gramWeight
+        }
         if let amount = foodPortion.amount,
            let modifier = foodPortion.modifier {
             foodInfoPortion.amount = Double(amount)

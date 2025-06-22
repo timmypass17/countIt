@@ -15,7 +15,8 @@ protocol FoodItem: Codable {
     var dataType: DataType { get }
     var foodNutrients: [FoodNutrient] { get }
     var foodPortions: [FoodPortion] { get }
-    var brandName: String { get }
+    var brandName: String? { get }
+    
 //    var foodInputs: [FDCFoodInput]    - not really possible with fdcapi
     func getFoodPortionDescription(foodPortion: FoodPortion, numberOfServings: Int, options: [FoodEntryOptions]) -> String
     func getServingSizeFormatted(foodPortion: FoodPortion, numberOfServings: Int) -> String
@@ -37,18 +38,26 @@ extension FoodItem {
     }
     
     func getNutrientAmount(_ nutrientID: NutrientId, using foodPortion: FoodPortion, quantity: Int = 1) -> Double {
-        guard let amountPer100g = foodNutrients[nutrientID]?.amount else { return 0 }
-        let totalGrams = Double(foodPortion.gramWeight ?? 0) * Double(quantity)
-        let nutrientPerGram = amountPer100g / 100
-        let totalNutrientAmount = nutrientPerGram * totalGrams
-        
-        return totalNutrientAmount
-//        let nutrientAmount = (amountPer100g * Float(foodMeasurement.gramWeight)) / 100
-//        return nutrientAmount * Float(quantity)
+        let isCustom = fdcId < 0
+        if isCustom {
+            return (foodNutrients[nutrientID]?.amount ?? 0) * Double(quantity)
+        } else {
+            guard let amountPer100g = foodNutrients[nutrientID]?.amount else { return 0 }
+            return (amountPer100g / 100) * Double(foodPortion.gramWeight ?? 0) * Double(quantity)
+        }
     }
 
     func getServingSizeFormatted(foodPortion: FoodPortion, numberOfServings: Int = 1) -> String {
         print(foodPortion)
+        
+        if foodPortion.gramWeight == nil {
+            guard let amount = foodPortion.amount,
+                  let modifier = foodPortion.modifier else { return "" }
+            
+            let servings = Int(amount * Double(numberOfServings))
+            return  "\(servings) \(modifier)"
+        }
+        
         if foodPortion.modifier == "Quick Add" {
             return "1 serving"
         }
@@ -88,7 +97,7 @@ enum AnyFoodItem: FoodItem {
         }
     }
     
-    var brandName: String {
+    var brandName: String? {
         switch self {
         case .foundation(let foundationFoodItem):
             return foundationFoodItem.brandName

@@ -23,9 +23,10 @@ class CreateFoodInfoTableViewCell: UITableViewCell {
         return label
     }()
     
-    let textField: UITextField = {
+    lazy var textField: UITextField = {
         let textField = UITextField()
         textField.textAlignment = .right
+        textField.addAction(textFieldDidChange(), for: .editingChanged)
         return textField
     }()
     
@@ -42,8 +43,12 @@ class CreateFoodInfoTableViewCell: UITableViewCell {
         return stackView
     }()
 
+    var editingChangedAction: ((String?) -> Void)?
+
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
+        backgroundColor = UIColor(hex: "#252525")
+
         labelContainer.addArrangedSubview(titleLabel)
         labelContainer.addArrangedSubview(secondaryLabel)
         
@@ -64,9 +69,16 @@ class CreateFoodInfoTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func update(title: String, description: String, placeholderText: String) {
+    func update(title: String, description: String, placeholderText: String, editingChangedAction: @escaping (String?) -> Void) {
         titleLabel.text = title
         secondaryLabel.text = description
         textField.placeholder = placeholderText
+        self.editingChangedAction = editingChangedAction
+    }
+    
+    func textFieldDidChange() -> UIAction {
+        return UIAction { _ in
+            self.editingChangedAction?(self.textField.text)
+        }
     }
 }

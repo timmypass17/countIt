@@ -13,7 +13,7 @@ struct FoundationFoodItem: FoodItem {
     let description: String
     var foodNutrients: [FoodNutrient]
     let foodPortions: [FoodPortion] // not in foundation
-    let brandName: String = "USDA"
+    let brandName: String? = "USDA"
     
     enum CodingKeys: String, CodingKey {
         case fdcId

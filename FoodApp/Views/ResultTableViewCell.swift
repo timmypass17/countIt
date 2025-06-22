@@ -113,6 +113,7 @@ class ResultTableViewCell: UITableViewCell {
 
         let foodPortion = foodItem.foodPortions[foodItem.foodPortions.count / 2]
         descriptionLabel.text = foodItem.getFoodPortionDescription(foodPortion: foodPortion, numberOfServings: 1, options: FoodEntryOptions.allCases)
+        
     }
     
     func didTapPlusButton() -> UIAction {

@@ -17,7 +17,7 @@ extension FoodInfoPortion {
     }
     
     // 1 banana (100g)
-    @NSManaged public var gramWeight: Double // 100
+    @NSManaged public var gramWeight_: NSNumber? // 100
     @NSManaged public var amount_: NSNumber? // 1
     @NSManaged public var modifier: String?  // banana
     // Add unitName? g or ml
@@ -25,6 +25,11 @@ extension FoodInfoPortion {
     @NSManaged public var foodInfo: FoodInfo?
     @NSManaged public var foodEntry: FoodEntry? // TODO: not neccessary?
 
+    var gramWeight: Double? {
+        get { gramWeight_?.doubleValue }
+        set { gramWeight_ = newValue.map(NSNumber.init) }
+    }
+    
     var amount: Double? {
         get { amount_?.doubleValue }
         set { amount_ = newValue.map(NSNumber.init) }
