@@ -315,16 +315,24 @@ class FoodService: FoodServiceProtocol {
         return nil
     }
     
-    func addFood(_ fdcFood: FoodItem, with portion: FoodPortion, quantity: Int, to meal: Meal) throws -> FoodEntry {
+    // TODO: Maybe add one with fdcFood and one that takes in a foodEntry (from history?)?
+    func addFood(_ fdcFood: FoodItem, foodEntry: FoodEntry? = nil, with portion: FoodPortion, quantity: Int, to meal: Meal? = nil) throws -> FoodEntry {
         let food = FoodEntry(context: context)
-        food.index = Int16(meal.foodEntries.count)
+        if let meal {
+            food.index = Int16(meal.foodEntries.count)
+        }
         food.quantity = Int16(quantity)
         if let gramWeight = portion.gramWeight {
             food.gramWeight = gramWeight
         }
         food.portionId = Int32(portion.id)
-        food.isCustom = fdcFood.fdcId < 0
-        food.isRecipe = false   // TODO: how to know if food item is recipe? 
+        if let foodEntry {
+            food.isCustom = foodEntry.isCustom
+            food.isRecipe = foodEntry.isRecipe
+        } else {
+            food.isCustom = false
+            food.isRecipe = false
+        }
 
         if let amount = portion.amount,
            let modifier = portion.modifier {
@@ -341,7 +349,7 @@ class FoodService: FoodServiceProtocol {
             }
         }
         
-        meal.addToFoodEntries_(food)
+        food.meal = meal
         
         if let foodInfo = getFoodInfo(fdcId: fdcFood.fdcId) {
             food.foodInfo = foodInfo
@@ -360,6 +368,23 @@ class FoodService: FoodServiceProtocol {
             for (index, fdcPortion) in fdcFood.foodPortions.enumerated() {
                 let portion = createFoodInfoPortion(fdcPortion)
                 foodInfo.addToPortions_(portion)
+            }
+        }
+        
+        if let foodEntry {
+            let ingredients = foodEntry.ingredients
+            for ingredient in ingredients {
+                let ingredientCopy = FoodEntry(context: context)
+                ingredientCopy.amount = ingredient.amount
+                ingredientCopy.gramWeight = ingredient.gramWeight
+                ingredientCopy.index = ingredient.index
+                ingredientCopy.modifier = ingredient.modifier
+                ingredientCopy.portionId = ingredient.portionId
+                ingredientCopy.quantity = ingredient.quantity
+                ingredientCopy.foodInfo = ingredient.foodInfo
+                ingredientCopy.isCustom = ingredient.isCustom
+                ingredientCopy.isRecipe = ingredient.isRecipe
+                ingredientCopy.parent = food   // updates ingredients aswell
             }
         }
         
@@ -421,6 +446,20 @@ class FoodService: FoodServiceProtocol {
         foodEntryCopy.foodInfo = foodEntry.foodInfo
         foodEntryCopy.isCustom = foodEntry.isCustom
         foodEntryCopy.isRecipe = foodEntry.isRecipe
+        // TODO: Copy ingredients
+        for ingredient in foodEntry.ingredients {
+            let ingredientCopy = FoodEntry(context: context)
+            ingredientCopy.amount = ingredient.amount
+            ingredientCopy.gramWeight = ingredient.gramWeight
+            ingredientCopy.index = ingredient.index    // doesn't matter
+            ingredientCopy.modifier = ingredient.modifier
+            ingredientCopy.portionId = ingredient.portionId
+            ingredientCopy.quantity = ingredient.quantity
+            ingredientCopy.foodInfo = ingredient.foodInfo
+            ingredientCopy.isCustom = ingredient.isCustom
+            ingredientCopy.isRecipe = ingredient.isRecipe
+            ingredientCopy.parent = foodEntryCopy   // updates ingredients aswell
+        }
         history.foodEntry = foodEntryCopy
     }
 

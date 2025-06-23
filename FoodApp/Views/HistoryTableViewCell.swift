@@ -122,7 +122,9 @@ class HistoryTableViewCell: UITableViewCell {
 //            descriptionLabel.text = "\(totalGramWeight.trimmed) g, \(foodEntry?.foodInfo?.brandName_ ?? "NA")"
 //        }
         
-        if foodEntry?.isCustom == true {
+        if foodEntry?.isRecipe == true {
+            checkmarkImageView.tintColor = .systemYellow
+        } else if foodEntry?.isCustom == true {
             checkmarkImageView.tintColor = .systemGreen
         } else {
             checkmarkImageView.tintColor = .systemBlue

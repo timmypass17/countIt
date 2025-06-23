@@ -79,7 +79,7 @@ class DiaryViewController: UIViewController {
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: MacrosView.reuseIdentifier)
         tableView.register(FoodEntryTableViewCell.self, forCellReuseIdentifier: FoodEntryTableViewCell.reuseIdentifier)
         tableView.register(MealHeaderView.self, forHeaderFooterViewReuseIdentifier: MealHeaderView.reuseIdentifier)
-        tableView.register(AddFoodTableViewCell.self, forCellReuseIdentifier: AddFoodTableViewCell.reuseIdentifier)
+        tableView.register(AddItemTableViewCell.self, forCellReuseIdentifier: AddItemTableViewCell.reuseIdentifier)
         
         let footerView = UIView()
         footerView.frame = CGRect(x: 0, y: 0, width: tableView.frame.width, height: 50)
@@ -312,7 +312,7 @@ extension DiaryViewController: UITableViewDataSource {
         let meal = mealPlan.meals[indexPath.section - 2]
         if indexPath.row == meal.foodEntries.count {
             // Add Button
-            let cell = tableView.dequeueReusableCell(withIdentifier: AddFoodTableViewCell.reuseIdentifier, for: indexPath) as! AddFoodTableViewCell
+            let cell = tableView.dequeueReusableCell(withIdentifier: AddItemTableViewCell.reuseIdentifier, for: indexPath) as! AddItemTableViewCell
             cell.backgroundColor = UIColor(hex: "#252525")
 
             return cell
@@ -368,10 +368,10 @@ extension DiaryViewController: UITableViewDelegate {
             return
         }
         
-        let food: FoodEntry = meal.foodEntries[indexPath.row]
-        guard let fdcFood = food.convertToFDCFood() else { return }
-        let selectedPortion = food.foodInfo?.convertToFoodPortions().first { $0.id == food.portionId }
-        let updateFoodDetailTableViewController = UpdateFoodDetailViewController(food: food, fdcFood: fdcFood, meal: meal, foodService: foodService, selectedFoodPortion: selectedPortion, numberOfServings: Int(food.quantity))
+        let foodEntry: FoodEntry = meal.foodEntries[indexPath.row]
+        guard let fdcFood = foodEntry.convertToFDCFood() else { return }
+        let selectedPortion = foodEntry.foodInfo?.convertToFoodPortions().first { $0.id == foodEntry.portionId }
+        let updateFoodDetailTableViewController = UpdateFoodDetailViewController(foodEntry: foodEntry, fdcFood: fdcFood, meal: meal, foodService: foodService, selectedFoodPortion: selectedPortion, numberOfServings: Int(foodEntry.quantity))
         updateFoodDetailTableViewController.delegate = self
         updateFoodDetailTableViewController.dismissDelegate = self
         present(UINavigationController(rootViewController: updateFoodDetailTableViewController), animated: true)

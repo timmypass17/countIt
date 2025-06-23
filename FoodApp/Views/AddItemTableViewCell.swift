@@ -7,8 +7,8 @@
 
 import UIKit
 
-class AddFoodTableViewCell: UITableViewCell {
-    static let reuseIdentifier = "AddFoodCell"
+class AddItemTableViewCell: UITableViewCell {
+    static let reuseIdentifier = "AddItemTableViewCell"
     
     var plusImageView: UIImageView = {
         let imageView = UIImageView(image: UIImage(systemName: "plus"))
@@ -22,7 +22,6 @@ class AddFoodTableViewCell: UITableViewCell {
     var titleLabel: UILabel = {
         let label = UILabel()
         label.text = "Add Food"
-//        label.textColor = .systemBlue
         label.textColor = .secondaryLabel
         return label
     }()

@@ -23,9 +23,9 @@ class UpdateFoodDetailViewController: FoodDetailTableViewController {
     
     func updateButtonTapped() -> UIAction {
         return UIAction { [self] _ in
-            guard let food else { return }
+            guard let foodEntry else { return }
             do {
-                let updatedFood = try foodService.updateFood(food, foodPortion: selectedFoodPortion, quantity: numberOfServings)
+                let updatedFood = try foodService.updateFood(foodEntry, foodPortion: selectedFoodPortion, quantity: numberOfServings)
                 delegate?.updateFoodDetailViewController(self, didUpdateFood: updatedFood)
             } catch {
                 print("Error updating food: \(error)")

@@ -176,7 +176,7 @@ extension SearchFoodTableViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let history = fetchedResultsController.object(at: indexPath)
         guard let food = history.foodEntry?.convertToFDCFood() else { return }
-        let addFoodDetailViewController = AddFoodDetailViewController(fdcFood: food, meal: meal, foodService: foodService)
+        let addFoodDetailViewController = AddFoodDetailViewController(foodEntry: history.foodEntry, fdcFood: food, meal: meal, foodService: foodService)
         addFoodDetailViewController.delegate = addFoodDelegate
         present(UINavigationController(rootViewController: addFoodDetailViewController), animated: true)
     }
@@ -378,6 +378,8 @@ extension SearchFoodTableViewController: SearchButtonRowViewDelegate {
         case .quickAdd:
             return
         case .addRecipe:
+            let createRecipeViewController = CreateRecipeViewController()
+            present(UINavigationController(rootViewController: createRecipeViewController), animated: true)
             return
         case .addFood:
             let createFoodViewController = CreateFoodViewController()

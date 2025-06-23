@@ -28,7 +28,12 @@ extension FoodEntry {
     @NSManaged public var isCustom: Bool    // negative fdcId also means "custom"
     @NSManaged public var isRecipe: Bool
     @NSManaged public var parent: FoodEntry?
-    @NSManaged public var ingredients: NSSet?
+    @NSManaged public var ingredients_: NSSet?
+    
+    var ingredients: [FoodEntry] {
+        get { (ingredients_?.allObjects as? [FoodEntry] ?? []).sorted { $0.index < $1.index } }
+        set { ingredients_ = NSSet(array: newValue) }
+    }
     
     var amount: Double? {
         get { amount_?.doubleValue }
@@ -40,10 +45,23 @@ extension FoodEntry {
         set { gramWeight_ = newValue.map(NSNumber.init) }
     }
     
+    // Ingredients can only be other FoodEntry, not recipe
     func getNutrientAmount(_ nutrientID: NutrientId) -> Double {
-        if isCustom {
+        print("timmy isRecipe: \(isRecipe), isCustom: \(isCustom), parent: \(parent == nil), ingredients: \(ingredients.count)")
+        if isRecipe && parent == nil {
+            print("timmy recipe \(nutrientID.shortDescription): \(foodInfo?.name)")
+            // Need to sum of ingredients
+            var amount = 0.0
+            for ingredient in ingredients {
+                amount += ingredient.getNutrientAmount(nutrientID)
+                print("timmy ingredients \(nutrientID.shortDescription): \(ingredient.foodInfo?.name) \(ingredient.getNutrientAmount(nutrientID))")
+            }
+            return amount
+        } else if isCustom {
+            print("timmy custom \(nutrientID.shortDescription): \(foodInfo?.name)")
             return foodInfo?.nutrients[nutrientID]?.value ?? 0
         } else {
+            print("timmy usda api \(nutrientID.shortDescription): \(foodInfo?.name)")
             // Values stored per 100g (e.g. USDA API)
             guard let amountPer100g = foodInfo?.nutrients[nutrientID]?.value else { return 0 }
             let totalGrams = Double(gramWeight ?? 0) * Double(quantity)
@@ -102,16 +120,16 @@ extension FoodEntry {
 // MARK: Generated accessors for ingredients
 extension FoodEntry {
 
-    @objc(addIngredientsObject:)
-    @NSManaged public func addToIngredients(_ value: FoodEntry)
+    @objc(addIngredients_Object:)
+    @NSManaged public func addToIngredients_(_ value: FoodEntry)
 
-    @objc(removeIngredientsObject:)
-    @NSManaged public func removeFromIngredients(_ value: FoodEntry)
+    @objc(removeIngredients_Object:)
+    @NSManaged public func removeFromIngredients_(_ value: FoodEntry)
 
-    @objc(addIngredients:)
-    @NSManaged public func addToIngredients(_ values: NSSet)
+    @objc(addIngredients_:)
+    @NSManaged public func addToIngredients_(_ values: NSSet)
 
-    @objc(removeIngredients:)
-    @NSManaged public func removeFromIngredients(_ values: NSSet)
+    @objc(removeIngredients_:)
+    @NSManaged public func removeFromIngredients_(_ values: NSSet)
 
 }

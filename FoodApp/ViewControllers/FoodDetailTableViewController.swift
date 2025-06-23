@@ -19,7 +19,7 @@ protocol FoodDetailTableViewControllerHistoryDelegate: AnyObject {
 class FoodDetailTableViewController: UITableViewController {
 
     var fdcFood: FoodItem
-    var food: FoodEntry?
+    var foodEntry: FoodEntry?
     var fdcFoodAdditional: FoodItem?
     let meal: Meal?
     var selectedFoodPortion: FoodPortion    // never optional (always have atleast 100g)
@@ -47,8 +47,8 @@ class FoodDetailTableViewController: UITableViewController {
         case add, edit
     }
     
-    init(food: FoodEntry? = nil, fdcFood: FoodItem, meal: Meal?, foodService: FoodService, selectedFoodPortion: FoodPortion? = nil, numberOfServings: Int = 1, state: State = .add) {
-        self.food = food
+    init(foodEntry: FoodEntry? = nil, fdcFood: FoodItem, meal: Meal?, foodService: FoodService, selectedFoodPortion: FoodPortion? = nil, numberOfServings: Int = 1, state: State = .add) {
+        self.foodEntry = foodEntry
         self.fdcFood = fdcFood
         self.meal = meal
         self.foodService = foodService

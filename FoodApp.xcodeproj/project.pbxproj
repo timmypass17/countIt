@@ -101,6 +101,7 @@
 		3262FBB12DFD49A7006CB8A4 /* Inter_28pt-BlackItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3262FB632DFD49A7006CB8A4 /* Inter_28pt-BlackItalic.ttf */; };
 		3262FBB22DFD49A7006CB8A4 /* Inter_18pt-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3262FB4C2DFD49A7006CB8A4 /* Inter_18pt-SemiBold.ttf */; };
 		3262FBB32DFD49A7006CB8A4 /* Inter_28pt-SemiBoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3262FB712DFD49A7006CB8A4 /* Inter_28pt-SemiBoldItalic.ttf */; };
+		326DB7D12E08C3C000849E3F /* CreateRecipeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 326DB7D02E08C3C000849E3F /* CreateRecipeViewController.swift */; };
 		326FB8E32DDC4FF40015500E /* CaloriesConsumedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 326FB8E22DDC4FF40015500E /* CaloriesConsumedView.swift */; };
 		32723CF62BA63BE70074732C /* DiaryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32723CF52BA63BE70074732C /* DiaryViewController.swift */; };
 		32762A802DFF4D07001BB96F /* Meal+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32762A7E2DFF4CD1001BB96F /* Meal+CoreDataClass.swift */; };
@@ -324,6 +325,7 @@
 		3262FB762DFD49A7006CB8A4 /* Inter-VariableFont_opsz,wght.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Inter-VariableFont_opsz,wght.ttf"; sourceTree = "<group>"; };
 		3262FB772DFD49A7006CB8A4 /* OFL.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = OFL.txt; sourceTree = "<group>"; };
 		3262FB782DFD49A7006CB8A4 /* README.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = README.txt; sourceTree = "<group>"; };
+		326DB7D02E08C3C000849E3F /* CreateRecipeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateRecipeViewController.swift; sourceTree = "<group>"; };
 		326FB8E22DDC4FF40015500E /* CaloriesConsumedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaloriesConsumedView.swift; sourceTree = "<group>"; };
 		32723CF52BA63BE70074732C /* DiaryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiaryViewController.swift; sourceTree = "<group>"; };
 		32762A7E2DFF4CD1001BB96F /* Meal+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Meal+CoreDataClass.swift"; sourceTree = "<group>"; };
@@ -635,6 +637,7 @@
 				3242C8E32DF0D7E700F05FF8 /* UpdateFoodDetailViewController.swift */,
 				3242C8E52DF0D82300F05FF8 /* AddFoodDetailViewController.swift */,
 				32762B842E010FDE001BB96F /* CreateFoodViewController.swift */,
+				326DB7D02E08C3C000849E3F /* CreateRecipeViewController.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -1092,6 +1095,7 @@
 				325463C52DD0409600BEDCE0 /* UserProfile.swift in Sources */,
 				328FA9692B9BE560002A6FB6 /* Settings.swift in Sources */,
 				323FB6B42DC95E3600A71C53 /* ResultsPaginatedViewController.swift in Sources */,
+				326DB7D12E08C3C000849E3F /* CreateRecipeViewController.swift in Sources */,
 				32B257602BBDD739003C7C7C /* QuickAddTableViewController.swift in Sources */,
 				32F51A4A2B92C1A70080CC09 /* SceneDelegate.swift in Sources */,
 				3242C8E62DF0D82300F05FF8 /* AddFoodDetailViewController.swift in Sources */,
