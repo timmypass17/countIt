@@ -10,6 +10,7 @@ import UIKit
 extension Notification.Name {
     static let userInfoUpdated = Notification.Name("userInfoUpdated")
     static let onboardingBackButton = Notification.Name("onboardingBack")
+    static let reloadDiary = Notification.Name("reloadDiary")
 }
 
 class OnboardingViewController: UIViewController {

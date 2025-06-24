@@ -17,6 +17,7 @@ struct CDFoodItem: FoodItem {
     var brandName: String?
     var ingredients: [FoodItem] = []
     var selectedFoodPortion: FoodPortion
+    var quantity: Int = 1
     
     func getFoodPortionDescription(foodPortion: FoodPortion, numberOfServings: Int, options: [FoodEntryOptions]) -> String {
         var descriptionParts: [String] = []
@@ -50,7 +51,8 @@ struct CDFoodItem: FoodItem {
         foodPortions: [FoodPortion],
         brandName: String?,
         ingredients: [CDFoodItem] = [],
-        selectedFoodPortion: FoodPortion
+        selectedFoodPortion: FoodPortion,
+        quantity: Int
     ) {
         self.fdcId = fdcId
         self.description = description
@@ -60,6 +62,7 @@ struct CDFoodItem: FoodItem {
         self.brandName = brandName
         self.ingredients = ingredients
         self.selectedFoodPortion = selectedFoodPortion
+        self.quantity = quantity
     }
     
     // Never gets called

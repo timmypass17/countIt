@@ -51,7 +51,7 @@ extension FoodEntry {
             let currentAmount = (foodInfo?.nutrients[nutrientID]?.value ?? 0) * Double(quantity)
             var ingredientAmount = 0.0
             for ingredient in ingredients {
-                ingredientAmount += ingredient.getNutrientAmount(nutrientID, quantity: quantity)
+                ingredientAmount += ingredient.getNutrientAmount(nutrientID, quantity: Int(ingredient.quantity))
             }
             return currentAmount + ingredientAmount
         } else {
@@ -75,7 +75,8 @@ extension FoodEntry {
             foodPortions: foodInfo?.convertToFoodPortions() ?? [],
             brandName: foodInfo?.brandName_,
             ingredients: ingredients.compactMap { $0.convertToFDCFood() as? CDFoodItem },
-            selectedFoodPortion: FoodPortion(id: Int(portionId), amount: amount, gramWeight: gramWeight, modifier: modifier, portionDescription: nil)
+            selectedFoodPortion: FoodPortion(id: Int(portionId), amount: amount, gramWeight: gramWeight, modifier: modifier, portionDescription: nil),
+            quantity: Int(quantity)
         )
 
         return food

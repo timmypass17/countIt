@@ -13,6 +13,7 @@ protocol FoodItem: Codable {
     var fdcId: Int { get }
     var description: String { get }
     var dataType: DataType { get }
+    var quantity: Int { get set }
     var selectedFoodPortion: FoodPortion { get set }
     var foodNutrients: [FoodNutrient] { get }
     var foodPortions: [FoodPortion] { get }
@@ -45,13 +46,19 @@ extension FoodItem {
         let isCustom = fdcId < 0
         if isCustom {
             let currentAmount = (foodNutrients[nutrientID]?.amount ?? 0) * Double(quantity)
+            if nutrientID == .calories {
+                print("timmy custom: \(currentAmount)")
+            }
             var ingredientAmount = 0.0
             for ingredient in ingredients {
-                ingredientAmount += ingredient.getNutrientAmount(nutrientID, quantity: quantity)
+                ingredientAmount += ingredient.getNutrientAmount(nutrientID, quantity: ingredient.quantity)
             }
             return currentAmount + ingredientAmount
         } else {
             guard let amountPer100g = foodNutrients[nutrientID]?.amount else { return 0 }
+            if nutrientID == .calories {
+                print("timmy fdc: \((amountPer100g / 100) * Double(selectedFoodPortion.gramWeight ?? 0) * Double(quantity)), quantity: \(quantity)")
+            }
             return (amountPer100g / 100) * Double(selectedFoodPortion.gramWeight ?? 0) * Double(quantity)
         }
     }
@@ -143,6 +150,19 @@ enum AnyFoodItem: FoodItem {
             self.setSelectedFoodPortion(newValue)
         }
     }
+    
+    var quantity: Int {
+        get {
+            switch self {
+            case .foundation(let item): return item.quantity
+            case .branded(let item): return item.quantity
+            case .survey(let item): return item.quantity
+            }
+        }
+        set {
+            setQuantity(newValue)
+        }
+    }
 
     mutating func setSelectedFoodPortion(_ portion: FoodPortion) {
         switch self {
@@ -158,6 +178,20 @@ enum AnyFoodItem: FoodItem {
         }
     }
 
+    mutating func setQuantity(_ quantity: Int) {
+        switch self {
+        case .foundation(var item):
+            item.quantity = quantity
+            self = .foundation(item)
+        case .branded(var item):
+            item.quantity = quantity
+            self = .branded(item)
+        case .survey(var item):
+            item.quantity = quantity
+            self = .survey(item)
+        }
+    }
+    
     var foodPortions: [FoodPortion] {
         switch self {
         case .foundation(let item): return item.foodPortions

@@ -22,6 +22,7 @@ struct BrandedFoodItem: FoodItem {
     let foodPortions: [FoodPortion] // branded fod has none
     let ingredients: [FoodItem] = []
     var selectedFoodPortion: FoodPortion
+    var quantity: Int = 1
 
 //    let labelNutrients unnecessary
     

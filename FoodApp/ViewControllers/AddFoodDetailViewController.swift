@@ -17,7 +17,7 @@ class AddFoodDetailViewController: FoodDetailTableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        print("timmy ingredients count: \(foodEntry?.ingredients.map { $0.foodInfo?.name ?? "" })")
+//        print("timmy ingredients count: \(foodEntry?.ingredients.map { $0.foodInfo?.name ?? "" })")
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Add", primaryAction: didTapAddButton())
     }
     
@@ -35,7 +35,7 @@ class AddFoodDetailViewController: FoodDetailTableViewController {
     func didTapAddButton() -> UIAction {
         return UIAction { [self] _ in
             do {
-                let food = try foodService.addFood(fdcFood, foodEntry: foodEntry, with: selectedFoodPortion, quantity: numberOfServings, to: meal)
+                let food = try foodService.addFood(fdcFood, foodEntry: foodEntry, with: fdcFood.selectedFoodPortion, quantity: fdcFood.quantity, to: meal)
                 self.delegate?.addFoodDetailViewController(self, didAddFood: food)
             } catch {
                 print("Error adding food: \(error)")

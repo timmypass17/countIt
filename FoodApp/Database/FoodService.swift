@@ -464,15 +464,15 @@ class FoodService: FoodServiceProtocol {
     }
 
     
-    func updateFood(_ food: FoodEntry, foodPortion: FoodPortion, quantity: Int) throws -> FoodEntry {
-        food.quantity = Int16(quantity)
-        food.amount = foodPortion.amount
-        food.gramWeight = foodPortion.gramWeight
-        food.modifier = foodPortion.modifier
-        food.portionId = Int32(foodPortion.id)  // 100g - 0, custom - 1
+    func updateFood(_ foodEntry: FoodEntry, foodPortion: FoodPortion, quantity: Int) throws -> FoodEntry {
+        foodEntry.quantity = Int16(quantity)
+        foodEntry.amount = foodPortion.amount
+        foodEntry.gramWeight = foodPortion.gramWeight
+        foodEntry.modifier = foodPortion.modifier
+        foodEntry.portionId = Int32(foodPortion.id)  // 100g - 0, custom - 1
         try context.save()
         
-        return food
+        return foodEntry
     }
     
     func deleteFood(_ food: FoodEntry) throws {

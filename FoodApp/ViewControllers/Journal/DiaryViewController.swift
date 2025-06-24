@@ -129,6 +129,12 @@ class DiaryViewController: UIViewController {
         navigationItem.rightBarButtonItem = optionsButton
 
         tableView.reloadData()
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(reloadTableData), name: .reloadDiary, object: nil)
+    }
+    
+    @objc func reloadTableData() {
+        tableView.reloadData()
     }
     
     func didTapProfileButton() -> UIAction {
@@ -318,10 +324,10 @@ extension DiaryViewController: UITableViewDataSource {
             return cell
         }
         
-        let food = meal.foodEntries[indexPath.row]
+        let foodEntry = meal.foodEntries[indexPath.row]
         let cell = tableView.dequeueReusableCell(withIdentifier: FoodEntryTableViewCell.reuseIdentifier, for: indexPath) as! FoodEntryTableViewCell
         cell.backgroundColor = UIColor(hex: "#252525")
-        cell.update(food)
+        cell.update(foodEntry)
         cell.accessoryType = .disclosureIndicator
         return cell
         
@@ -371,9 +377,7 @@ extension DiaryViewController: UITableViewDelegate {
         let foodEntry: FoodEntry = meal.foodEntries[indexPath.row]
         guard let fdcFood = foodEntry.convertToFDCFood() else { return }
         let selectedPortion = foodEntry.foodInfo?.convertToFoodPortions().first { $0.id == foodEntry.portionId }
-        fdcFood.ingredients.forEach {
-            print("timmy ingred: \($0.description) - \($0.foodPortions)")
-        }
+        
         let updateFoodDetailTableViewController = UpdateFoodDetailViewController(foodEntry: foodEntry, fdcFood: fdcFood, meal: meal, foodService: foodService, selectedFoodPortion: selectedPortion, numberOfServings: Int(foodEntry.quantity))
         updateFoodDetailTableViewController.delegate = self
         updateFoodDetailTableViewController.dismissDelegate = self
@@ -493,6 +497,7 @@ extension DiaryViewController: AddFoodDetailViewControllerDelegate {
 
 extension DiaryViewController: UpdateFoodDetailViewControllerDelegate {
     func updateFoodDetailViewController(_ viewController: UpdateFoodDetailViewController, didUpdateFood food: FoodEntry) {
+        print("timmy diary")
         guard let meal = food.meal,
               let section = mealPlan.meals.firstIndex(of: meal)
         else { return }

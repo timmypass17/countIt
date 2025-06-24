@@ -73,7 +73,7 @@ class FoodEntryTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func update(_ foodEntry: FoodEntry) {
+    func  update(_ foodEntry: FoodEntry) {
         titleLabel.text = foodEntry.foodInfo?.name
         descriptionLabel.text = foodEntry.description()
         caloriesLabel.text = "\(Int(foodEntry.getNutrientAmount(.calories, quantity: Int(foodEntry.quantity))))"
