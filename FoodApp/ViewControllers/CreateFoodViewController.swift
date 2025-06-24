@@ -80,7 +80,12 @@ class CreateFoodViewController: UIViewController {
                 foodPortion.modifier = self.foodEntry.modifier
                 foodPortion.foodInfo = self.foodEntry.foodInfo
                 
-                self.foodService.addHistory(foodEntry: self.foodEntry, context: self.childContext)
+                // We just adding to history, (does not log to any meals)
+                let history = History(context: self.childContext)
+                history.fdcId = self.foodEntry.foodInfo!.fdcId
+                history.createdAt_ = .now
+                history.foodEntry = self.foodEntry
+
                 try self.childContext.save()
                 CoreDataStack.shared.saveContext()
             } catch {

@@ -110,9 +110,7 @@ class ResultTableViewCell: UITableViewCell {
     
     func update(with foodItem: FoodItem) {
         titleLabel.text = foodItem.description
-
-        let foodPortion = foodItem.foodPortions[foodItem.foodPortions.count / 2]
-        descriptionLabel.text = foodItem.getFoodPortionDescription(foodPortion: foodPortion, numberOfServings: 1, options: FoodEntryOptions.allCases)
+        descriptionLabel.text = foodItem.getFoodPortionDescription(foodPortion: foodItem.selectedFoodPortion, numberOfServings: 1, options: FoodEntryOptions.allCases)
         
     }
     

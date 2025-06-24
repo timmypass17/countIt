@@ -13,15 +13,17 @@ protocol FoodItem: Codable {
     var fdcId: Int { get }
     var description: String { get }
     var dataType: DataType { get }
+    var selectedFoodPortion: FoodPortion { get set }
     var foodNutrients: [FoodNutrient] { get }
     var foodPortions: [FoodPortion] { get }
     var brandName: String? { get }
+    var ingredients: [FoodItem] { get }
     
 //    var foodInputs: [FDCFoodInput]    - not really possible with fdcapi
     func getFoodPortionDescription(foodPortion: FoodPortion, numberOfServings: Int, options: [FoodEntryOptions]) -> String
     func getServingSizeFormatted(foodPortion: FoodPortion, numberOfServings: Int) -> String
     func getNutrientAmountPerServing(_ nutrientID: NutrientId, foodPortion: FoodPortion) -> Double
-    func getNutrientAmount(_ nutrientID: NutrientId, using foodPortion: FoodPortion, quantity: Int) -> Double
+    func getNutrientAmount(_ nutrientID: NutrientId, quantity: Int) -> Double
     func getFoodNutrient(_ id: NutrientId) -> FoodNutrient?
 }
 
@@ -37,19 +39,24 @@ extension FoodItem {
         return (nutrientPer100g * Double(foodPortion.gramWeight ?? 0)) / 100
     }
     
-    func getNutrientAmount(_ nutrientID: NutrientId, using foodPortion: FoodPortion, quantity: Int = 1) -> Double {
+    // TODO: Duplicate of foodEntry's getNutrientAmount
+    // food (may contain ingredients)
+    func getNutrientAmount(_ nutrientID: NutrientId, quantity: Int = 1) -> Double {
         let isCustom = fdcId < 0
         if isCustom {
-            return (foodNutrients[nutrientID]?.amount ?? 0) * Double(quantity)
+            let currentAmount = (foodNutrients[nutrientID]?.amount ?? 0) * Double(quantity)
+            var ingredientAmount = 0.0
+            for ingredient in ingredients {
+                ingredientAmount += ingredient.getNutrientAmount(nutrientID, quantity: quantity)
+            }
+            return currentAmount + ingredientAmount
         } else {
             guard let amountPer100g = foodNutrients[nutrientID]?.amount else { return 0 }
-            return (amountPer100g / 100) * Double(foodPortion.gramWeight ?? 0) * Double(quantity)
+            return (amountPer100g / 100) * Double(selectedFoodPortion.gramWeight ?? 0) * Double(quantity)
         }
     }
 
-    func getServingSizeFormatted(foodPortion: FoodPortion, numberOfServings: Int = 1) -> String {
-        print(foodPortion)
-        
+    func getServingSizeFormatted(foodPortion: FoodPortion, numberOfServings: Int = 1) -> String {        
         if foodPortion.gramWeight == nil {
             guard let amount = foodPortion.amount,
                   let modifier = foodPortion.modifier else { return "" }
@@ -123,12 +130,47 @@ enum AnyFoodItem: FoodItem {
         case .survey(let item): return item.foodNutrients
         }
     }
+    
+    var selectedFoodPortion: FoodPortion {
+        get {
+            switch self {
+            case .foundation(let item): return item.selectedFoodPortion
+            case .branded(let item): return item.selectedFoodPortion
+            case .survey(let item): return item.selectedFoodPortion
+            }
+        }
+        set {
+            self.setSelectedFoodPortion(newValue)
+        }
+    }
+
+    mutating func setSelectedFoodPortion(_ portion: FoodPortion) {
+        switch self {
+        case .foundation(var item):
+            item.selectedFoodPortion = portion
+            self = .foundation(item)
+        case .branded(var item):
+            item.selectedFoodPortion = portion
+            self = .branded(item)
+        case .survey(var item):
+            item.selectedFoodPortion = portion
+            self = .survey(item)
+        }
+    }
 
     var foodPortions: [FoodPortion] {
         switch self {
         case .foundation(let item): return item.foodPortions
         case .branded(let item): return item.foodPortions
         case .survey(let item): return item.foodPortions
+        }
+    }
+    
+    var ingredients: [FoodItem] {
+        switch self {
+        case .foundation(let item): return item.ingredients
+        case .branded(let item): return item.ingredients
+        case .survey(let item): return item.ingredients
         }
     }
     
@@ -142,6 +184,7 @@ enum AnyFoodItem: FoodItem {
             return item.getFoodPortionDescription(foodPortion: foodPortion, numberOfServings: numberOfServings, options: options)
         }
     }
+    
 }
 
 extension AnyFoodItem {

@@ -74,11 +74,6 @@ class FoodDetailTableViewController: UITableViewController {
             let foodNutrient = fdcFood.foodNutrients[nutrientId] ?? FoodNutrient.empty(nutrientId)
             minerals.append(foodNutrient)
         }
-        
-        print("fdcId: \(fdcFood.fdcId)")
-        for nutrient in fdcFood.foodNutrients {
-            print("\(nutrient.description) \(nutrient.amount ?? 0)")
-        }
 
         super.init(style: .insetGrouped)
     }
@@ -91,7 +86,7 @@ class FoodDetailTableViewController: UITableViewController {
         super.viewDidLoad()
 //        tableView.backgroundColor = .secondarySystemGroupedBackground
         tableView.backgroundColor = UIColor(hex: "#1c1c1e") // secondarySystemGroupedBackground is diff on modal
-        navigationItem.title = "\(fdcFood.description) \(fdcFood.fdcId)"
+        navigationItem.title = fdcFood.description
         navigationItem.leftBarButtonItem = UIBarButtonItem(systemItem: .cancel, primaryAction: cancelButtonTapped())
         tableView.register(SelectTableViewCell.self, forCellReuseIdentifier: SelectTableViewCell.reuseIdentifier)
         tableView.register(NutritionTableViewCell.self, forCellReuseIdentifier: NutritionTableViewCell.reuseIdentifier)
@@ -148,10 +143,10 @@ class FoodDetailTableViewController: UITableViewController {
             return UITableViewCell()
         case .charts:
             let cell = tableView.dequeueReusableCell(withIdentifier: MacrosView.reuseIdentifier, for: indexPath)
-            let calories = fdcFood.getNutrientAmount(.calories, using: selectedFoodPortion, quantity: numberOfServings)
-            let carbs = fdcFood.getNutrientAmount(.carbs, using: selectedFoodPortion, quantity: numberOfServings)
-            let protein = fdcFood.getNutrientAmount(.protein, using: selectedFoodPortion, quantity: numberOfServings)
-            let fats = fdcFood.getNutrientAmount(.fatTotal, using: selectedFoodPortion, quantity: numberOfServings)
+            let calories = fdcFood.getNutrientAmount(.calories, quantity: numberOfServings)
+            let carbs = fdcFood.getNutrientAmount(.carbs, quantity: numberOfServings)
+            let protein = fdcFood.getNutrientAmount(.protein, quantity: numberOfServings)
+            let fats = fdcFood.getNutrientAmount(.fatTotal, quantity: numberOfServings)
             let nutrients: [NutrientId: Double] = [
                 .calories: calories,
                 .carbs: carbs,
@@ -169,7 +164,11 @@ class FoodDetailTableViewController: UITableViewController {
             let cell = tableView.dequeueReusableCell(withIdentifier: NutritionTableViewCell.reuseIdentifier, for: indexPath) as! NutritionTableViewCell
             let nutrient = macronutrients[indexPath.row]
             let goal = meal?.mealPlan?.nutrientGoals[nutrient.nutrientId]?.value ?? 0
-            cell.update(with: nutrient, foodPortion: selectedFoodPortion, quantity: numberOfServings, goal: goal, isCustom: fdcFood.fdcId < 0)  // negative fdcId also means "custom"
+            cell.update(
+                nutrientId: nutrient.nutrientId!,
+                amount: fdcFood.getNutrientAmount(nutrient.nutrientId!, quantity: numberOfServings),
+                goal: goal
+            )
             cell.progressView.tintColor = .systemBlue
             cell.selectionStyle = .none
             cell.backgroundColor = UIColor(hex: "#252525")
@@ -178,7 +177,11 @@ class FoodDetailTableViewController: UITableViewController {
             let cell = tableView.dequeueReusableCell(withIdentifier: NutritionTableViewCell.reuseIdentifier, for: indexPath) as! NutritionTableViewCell
             let vitamin = vitamins[indexPath.row]
             let goal = meal?.mealPlan?.nutrientGoals[vitamin.nutrientId]?.value ?? 0
-            cell.update(with: vitamin, foodPortion: selectedFoodPortion, quantity: numberOfServings, goal: goal, isCustom: fdcFood.fdcId < 0)
+            cell.update(
+                nutrientId: vitamin.nutrientId!,
+                amount: fdcFood.getNutrientAmount(vitamin.nutrientId!, quantity: numberOfServings),
+                goal: goal
+            )
             cell.progressView.tintColor = .systemOrange
             cell.selectionStyle = .none
             cell.backgroundColor = UIColor(hex: "#252525")
@@ -187,7 +190,11 @@ class FoodDetailTableViewController: UITableViewController {
             let cell = tableView.dequeueReusableCell(withIdentifier: NutritionTableViewCell.reuseIdentifier, for: indexPath) as! NutritionTableViewCell
             let mineral = minerals[indexPath.row]
             let goal = meal?.mealPlan?.nutrientGoals[mineral.nutrientId]?.value ?? 0
-            cell.update(with: mineral, foodPortion: selectedFoodPortion, quantity: numberOfServings, goal: goal, isCustom: fdcFood.fdcId < 0)
+            cell.update(
+                nutrientId: mineral.nutrientId!,
+                amount: fdcFood.getNutrientAmount(mineral.nutrientId!, quantity: numberOfServings),
+                goal: goal
+            )
             cell.progressView.tintColor = .white
             cell.selectionStyle = .none
             cell.backgroundColor = UIColor(hex: "#252525")

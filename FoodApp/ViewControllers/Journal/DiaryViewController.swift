@@ -371,6 +371,9 @@ extension DiaryViewController: UITableViewDelegate {
         let foodEntry: FoodEntry = meal.foodEntries[indexPath.row]
         guard let fdcFood = foodEntry.convertToFDCFood() else { return }
         let selectedPortion = foodEntry.foodInfo?.convertToFoodPortions().first { $0.id == foodEntry.portionId }
+        fdcFood.ingredients.forEach {
+            print("timmy ingred: \($0.description) - \($0.foodPortions)")
+        }
         let updateFoodDetailTableViewController = UpdateFoodDetailViewController(foodEntry: foodEntry, fdcFood: fdcFood, meal: meal, foodService: foodService, selectedFoodPortion: selectedPortion, numberOfServings: Int(foodEntry.quantity))
         updateFoodDetailTableViewController.delegate = self
         updateFoodDetailTableViewController.dismissDelegate = self

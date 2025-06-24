@@ -11,7 +11,7 @@
         <attribute name="quantity" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <relationship name="foodInfo" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="FoodInfo" inverseName="foodEntries_" inverseEntity="FoodInfo"/>
         <relationship name="history" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="History" inverseName="foodEntry" inverseEntity="History"/>
-        <relationship name="ingredients_" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="FoodEntry" inverseName="parent" inverseEntity="FoodEntry"/>
+        <relationship name="ingredients_" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="FoodEntry" inverseName="parent" inverseEntity="FoodEntry"/>
         <relationship name="meal" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Meal" inverseName="foodEntries_" inverseEntity="Meal"/>
         <relationship name="parent" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="FoodEntry" inverseName="ingredients_" inverseEntity="FoodEntry"/>
     </entity>

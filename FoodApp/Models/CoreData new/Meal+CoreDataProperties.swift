@@ -44,7 +44,7 @@ extension Meal {
     }
     
     func nutrientAmount(_ nutrientId: NutrientId) -> Double {
-        return foodEntries.map { $0.getNutrientAmount(nutrientId) }.reduce(0, +)
+        return foodEntries.map { $0.getNutrientAmount(nutrientId, quantity: Int($0.quantity)) }.reduce(0, +)
     }
 }
 

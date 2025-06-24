@@ -76,6 +76,6 @@ class FoodEntryTableViewCell: UITableViewCell {
     func update(_ foodEntry: FoodEntry) {
         titleLabel.text = foodEntry.foodInfo?.name
         descriptionLabel.text = foodEntry.description()
-        caloriesLabel.text = "\(Int(foodEntry.getNutrientAmount(.calories)))"
+        caloriesLabel.text = "\(Int(foodEntry.getNutrientAmount(.calories, quantity: Int(foodEntry.quantity))))"
     }
 }

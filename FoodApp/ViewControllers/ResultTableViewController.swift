@@ -172,9 +172,8 @@ extension ResultsTableViewController: ResultTableViewCellDelegate {
             foodItem = moreResultsResponse.foods[indexPath.row]
         }
         
-        let foodPortion = foodItem.foodPortions[foodItem.foodPortions.count / 2]
         do {
-            try foodService.addFood(foodItem, with: foodPortion, quantity: 1, to: meal)
+            try foodService.addFood(foodItem, with: foodItem.selectedFoodPortion, quantity: 1, to: meal)
         } catch {
             print("Error adding food: \(error)")
         }

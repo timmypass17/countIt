@@ -14,6 +14,8 @@ struct FoundationFoodItem: FoodItem {
     var foodNutrients: [FoodNutrient]
     let foodPortions: [FoodPortion] // not in foundation
     let brandName: String? = "USDA"
+    let ingredients: [FoodItem] = []
+    var selectedFoodPortion: FoodPortion
     
     enum CodingKeys: String, CodingKey {
         case fdcId
@@ -58,6 +60,7 @@ struct FoundationFoodItem: FoodItem {
         foodPortions.append(FoodPortion.default100g)
         foodPortions.sort { $0.gramWeight ?? 0 < $1.gramWeight ?? 0 }
         self.foodPortions = foodPortions
+        self.selectedFoodPortion = foodPortions[foodPortions.count / 2]
     }
     
     func getFoodPortionDescription(foodPortion: FoodPortion, numberOfServings: Int = 1, options: [FoodEntryOptions] = FoodEntryOptions.allCases) -> String {

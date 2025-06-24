@@ -175,8 +175,13 @@ extension SearchFoodTableViewController: UITableViewDataSource {
 extension SearchFoodTableViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let history = fetchedResultsController.object(at: indexPath)
-        guard let food = history.foodEntry?.convertToFDCFood() else { return }
-        let addFoodDetailViewController = AddFoodDetailViewController(foodEntry: history.foodEntry, fdcFood: food, meal: meal, foodService: foodService)
+        guard let foodEntry = history.foodEntry,
+              var food = foodEntry.convertToFDCFood(),
+              let selectedFoodPortion = food.foodPortions.first(where: { $0.id == foodEntry.portionId })
+        else { return }
+        
+        food.selectedFoodPortion = selectedFoodPortion
+        let addFoodDetailViewController = AddFoodDetailViewController(foodEntry: history.foodEntry, fdcFood: food, meal: meal, foodService: foodService, selectedFoodPortion: food.selectedFoodPortion)
         addFoodDetailViewController.delegate = addFoodDelegate
         present(UINavigationController(rootViewController: addFoodDetailViewController), animated: true)
     }

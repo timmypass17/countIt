@@ -22,6 +22,8 @@ struct SurveyFoodItem: FoodItem {
     let foodPortions: [FoodPortion]
     let foodNutrients: [FoodNutrient]
     let brandName: String? = "USDA"
+    let ingredients: [FoodItem] = []
+    var selectedFoodPortion: FoodPortion
 
     enum CodingKeys: String, CodingKey {
         case fdcId
@@ -45,6 +47,7 @@ struct SurveyFoodItem: FoodItem {
             guard let nutrientId = NutrientId(rawValue: raw.nutrient.id) else { return nil }
             return FoodNutrient(nutrient: Nutrient(id: nutrientId, name: raw.nutrient.name, unitName: raw.nutrient.unitName, rank: 0), amount: raw.amount)
         }
+        self.selectedFoodPortion = foodPortions[foodPortions.count / 2]
     }
     
     

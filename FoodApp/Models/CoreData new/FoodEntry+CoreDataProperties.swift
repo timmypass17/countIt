@@ -46,28 +46,17 @@ extension FoodEntry {
     }
     
     // Ingredients can only be other FoodEntry, not recipe
-    func getNutrientAmount(_ nutrientID: NutrientId) -> Double {
-        print("timmy isRecipe: \(isRecipe), isCustom: \(isCustom), parent: \(parent == nil), ingredients: \(ingredients.count)")
-        if isRecipe && parent == nil {
-            print("timmy recipe \(nutrientID.shortDescription): \(foodInfo?.name)")
-            // Need to sum of ingredients
-            var amount = 0.0
+    func getNutrientAmount(_ nutrientID: NutrientId, quantity: Int = 1) -> Double {
+        if isCustom {
+            let currentAmount = (foodInfo?.nutrients[nutrientID]?.value ?? 0) * Double(quantity)
+            var ingredientAmount = 0.0
             for ingredient in ingredients {
-                amount += ingredient.getNutrientAmount(nutrientID)
-                print("timmy ingredients \(nutrientID.shortDescription): \(ingredient.foodInfo?.name) \(ingredient.getNutrientAmount(nutrientID))")
+                ingredientAmount += ingredient.getNutrientAmount(nutrientID, quantity: quantity)
             }
-            return amount
-        } else if isCustom {
-            print("timmy custom \(nutrientID.shortDescription): \(foodInfo?.name)")
-            return foodInfo?.nutrients[nutrientID]?.value ?? 0
+            return currentAmount + ingredientAmount
         } else {
-            print("timmy usda api \(nutrientID.shortDescription): \(foodInfo?.name)")
-            // Values stored per 100g (e.g. USDA API)
             guard let amountPer100g = foodInfo?.nutrients[nutrientID]?.value else { return 0 }
-            let totalGrams = Double(gramWeight ?? 0) * Double(quantity)
-            let nutrientPerGram = amountPer100g / 100
-            let totalNutrientAmount = nutrientPerGram * totalGrams
-            return totalNutrientAmount
+            return (amountPer100g / 100) * Double(gramWeight ?? 0) * Double(quantity)
         }
     }
     
@@ -78,14 +67,15 @@ extension FoodEntry {
             return nil
         }
         
-              
         let food: CDFoodItem = CDFoodItem(
             fdcId: Int(fdcId),
             description: name,
-            dataType: .foundation, // TODO: Don't think this matters
+            dataType: .foundation,
             foodNutrients: foodInfo?.convertToFoodNutrients() ?? [],
             foodPortions: foodInfo?.convertToFoodPortions() ?? [],
-            brandName: foodInfo?.brandName_
+            brandName: foodInfo?.brandName_,
+            ingredients: ingredients.compactMap { $0.convertToFDCFood() as? CDFoodItem },
+            selectedFoodPortion: FoodPortion(id: Int(portionId), amount: amount, gramWeight: gramWeight, modifier: modifier, portionDescription: nil)
         )
 
         return food

@@ -14,13 +14,15 @@ struct BrandedFoodItem: FoodItem {
     let dataType: DataType
     let description: String
     let gtinUpc: String // barcode
-    let ingredients: String
     let householdServingFullText: String // "2 Tbsp"
     let servingSize: Int    // 32.0
     let servingSizeUnit: String // "g"
     let brandedFoodCategory: String // "Popcorn, Peanuts, Seeds & Related Snacks"
     let foodNutrients: [FoodNutrient]
     let foodPortions: [FoodPortion] // branded fod has none
+    let ingredients: [FoodItem] = []
+    var selectedFoodPortion: FoodPortion
+
 //    let labelNutrients unnecessary
     
     enum CodingKeys: String, CodingKey {
@@ -30,7 +32,6 @@ struct BrandedFoodItem: FoodItem {
         case description
         case gtinUpc
         case householdServingFullText
-        case ingredients
         case servingSize
         case servingSizeUnit
         case brandedFoodCategory
@@ -46,7 +47,6 @@ struct BrandedFoodItem: FoodItem {
         self.description = try container.decode(String.self, forKey: .description).firstUppercased
         self.gtinUpc = try container.decode(String.self, forKey: .gtinUpc)
         self.householdServingFullText = try container.decode(String.self, forKey: .householdServingFullText)
-        self.ingredients = try container.decode(String.self, forKey: .ingredients)
         self.servingSize = try container.decodeIfPresent(Int.self, forKey: .servingSize) ?? 1
         self.servingSizeUnit = try container.decode(String.self, forKey: .servingSizeUnit)
         self.brandedFoodCategory = try container.decode(String.self, forKey: .brandedFoodCategory)
@@ -56,7 +56,8 @@ struct BrandedFoodItem: FoodItem {
         foodPortions.append(FoodPortion(id: 1, gramWeight: Double(servingSize)))
         foodPortions.sort { $0.gramWeight ?? 0 < $1.gramWeight ?? 0 }
         self.foodPortions = foodPortions
-        
+        self.selectedFoodPortion = foodPortions[foodPortions.count / 2]
+
         let rawNutrients = try container.decode([RawFoodNutrient].self, forKey: .foodNutrients)
         self.foodNutrients = rawNutrients.compactMap { raw in
             guard let nutrientId = NutrientId(rawValue: raw.nutrient.id) else { return nil }
