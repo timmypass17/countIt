@@ -45,20 +45,19 @@ extension FoodItem {
     func getNutrientAmount(_ nutrientID: NutrientId, quantity: Int = 1) -> Double {
         let isCustom = fdcId < 0
         if isCustom {
-            let currentAmount = (foodNutrients[nutrientID]?.amount ?? 0) * Double(quantity)
-            if nutrientID == .calories {
-                print("timmy custom: \(currentAmount)")
+            let isRecipe = ingredients.count > 0
+            if isRecipe {
+                var ingredientAmount = 0.0
+                for ingredient in ingredients {
+                    ingredientAmount += ingredient.getNutrientAmount(nutrientID, quantity: Int(ingredient.quantity))
+                }
+                return (ingredientAmount) * Double(quantity)
+            } else {
+                let ingredientAmount = (foodNutrients[nutrientID]?.amount ?? 0) * Double(quantity)
+                return ingredientAmount
             }
-            var ingredientAmount = 0.0
-            for ingredient in ingredients {
-                ingredientAmount += ingredient.getNutrientAmount(nutrientID, quantity: ingredient.quantity)
-            }
-            return currentAmount + ingredientAmount
         } else {
             guard let amountPer100g = foodNutrients[nutrientID]?.amount else { return 0 }
-            if nutrientID == .calories {
-                print("timmy fdc: \((amountPer100g / 100) * Double(selectedFoodPortion.gramWeight ?? 0) * Double(quantity)), quantity: \(quantity)")
-            }
             return (amountPer100g / 100) * Double(selectedFoodPortion.gramWeight ?? 0) * Double(quantity)
         }
     }
