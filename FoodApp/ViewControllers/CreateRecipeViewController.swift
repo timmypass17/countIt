@@ -150,7 +150,12 @@ extension CreateRecipeViewController: UITableViewDelegate {
         let isAddFoodButton = indexPath.row == foodEntry.ingredients.count
         if isAddFoodButton {
             tableView.deselectRow(at: indexPath, animated: true)
-            let searchFoodTableViewController = SearchFoodTableViewController(foodService: foodService)
+            let searchFoodTableViewController = SearchFoodTableViewController(
+                foodService: foodService,
+                visibleTabs: [.all, .myFoods],
+                visibleButtonTypes: [.barcode, .quickAdd, .addFood]
+            )
+            searchFoodTableViewController.title = "Add Ingredient"
             searchFoodTableViewController.addFoodDelegate = self
 //            searchFoodTableViewController.quickAddDelegate = self
 //            searchFoodTableViewController.resultDelegate = self

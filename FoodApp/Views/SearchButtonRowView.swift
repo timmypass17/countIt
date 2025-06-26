@@ -13,7 +13,7 @@ protocol SearchButtonRowViewDelegate: AnyObject {
 
 class SearchButtonRowView: UIView {
     
-    enum SearchButtonType: Int {
+    enum SearchButtonType: Int, CaseIterable {
         case barcode, quickAdd, addRecipe, addFood
     }
 
@@ -26,29 +26,23 @@ class SearchButtonRowView: UIView {
         return stackView
     }()
     
-    let searchButtonsView: [SearchButtonView] = {
-        var buttons: [SearchButtonView] = []
-        let barcodeButton = SearchButtonView(title: "Barcode", image: UIImage(systemName: "barcode.viewfinder"))
-        let quickAddButton = SearchButtonView(title: "Quick Add", image: UIImage(systemName: "flame"))
-        let addRecipe = SearchButtonView(title: "Add Recipe", image: UIImage(systemName: "plus"))
-        let addFood = SearchButtonView(title: "Add Food", image: UIImage(systemName: "plus"))
-        
-        buttons.append(barcodeButton)
-        buttons.append(quickAddButton)
-        buttons.append(addRecipe)
-        buttons.append(addFood)
-
-        return buttons
-    }()
+    var searchButtonsView: [SearchButtonView] = []
     
     weak var delegate: SearchButtonRowViewDelegate?
+    private var visibleButtonTypes: [SearchButtonType]
+
+    init(visibleButtonTypes: [SearchButtonType] = SearchButtonType.allCases) {
+        self.visibleButtonTypes = visibleButtonTypes
+        super.init(frame: .zero)
+        setup()
+    }
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        
-        for view in searchButtonsView {
-            view.addTarget(self, action: #selector(didTapSearchButton), for: .touchUpInside)
-            container.addArrangedSubview(view)
+    func setup() {
+        for buttonType in visibleButtonTypes {
+            let button = makeButton(for: buttonType)
+            button.addTarget(self, action: #selector(didTapSearchButton), for: .touchUpInside)
+            searchButtonsView.append(button)
+            container.addArrangedSubview(button)
         }
         
         addSubview(container)
@@ -58,7 +52,19 @@ class SearchButtonRowView: UIView {
             container.leadingAnchor.constraint(equalTo: layoutMarginsGuide.leadingAnchor),
             container.trailingAnchor.constraint(equalTo: layoutMarginsGuide.trailingAnchor)
         ])
-        
+    }
+    
+    private func makeButton(for buttonType: SearchButtonType) -> SearchButtonView {
+        switch buttonType {
+        case .barcode:
+            return SearchButtonView(title: "Barcode", image: UIImage(systemName: "barcode.viewfinder"))
+        case .quickAdd:
+            return SearchButtonView(title: "Quick Add", image: UIImage(systemName: "flame"))
+        case .addRecipe:
+            return SearchButtonView(title: "Add Recipe", image: UIImage(systemName: "plus"))
+        case .addFood:
+            return SearchButtonView(title: "Add Food", image: UIImage(systemName: "plus"))
+        }
     }
     
     required init?(coder: NSCoder) {
@@ -66,10 +72,8 @@ class SearchButtonRowView: UIView {
     }
     
     @objc func didTapSearchButton(_ sender: SearchButtonView) {
-        guard let index = searchButtonsView.firstIndex(where: { $0 == sender }),
-              let type = SearchButtonType(rawValue: index)
-        else { return }
-        
+        guard let index = searchButtonsView.firstIndex(where: { $0 == sender }) else { return }
+        let type = visibleButtonTypes[index]
         delegate?.searchButtonRowView(self, didTapButton: type)
     }
 }

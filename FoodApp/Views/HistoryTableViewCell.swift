@@ -89,7 +89,7 @@ class HistoryTableViewCell: UITableViewCell {
         labelContainer.addArrangedSubview(descriptionLabel)
         
         container.addArrangedSubview(labelContainer)
-        container.addArrangedSubview(deleteButton)
+//        container.addArrangedSubview(deleteButton)
         
         contentView.addSubview(container)
         
@@ -109,18 +109,6 @@ class HistoryTableViewCell: UITableViewCell {
         let foodEntry = history.foodEntry
         titleLabel.text = foodEntry?.foodInfo?.name
         descriptionLabel.text = foodEntry?.description()
-//        let totalGramWeight = (foodEntry?.gramWeight ?? 0) * Double(foodEntry?.quantity ?? 0)
-//    
-//        if foodEntry?.gramWeight == nil {
-////            foodEntry
-////            descriptionLabel.text =
-//        }
-//        
-//        if let modifer = foodEntry?.modifier {
-//            descriptionLabel.text = "\(foodEntry?.quantity ?? 0) \(modifer) (\(totalGramWeight.trimmed) g), \(foodEntry?.foodInfo?.brandName_ ?? "NA")"
-//        } else {
-//            descriptionLabel.text = "\(totalGramWeight.trimmed) g, \(foodEntry?.foodInfo?.brandName_ ?? "NA")"
-//        }
         
         if foodEntry?.isRecipe == true {
             checkmarkImageView.tintColor = .systemYellow

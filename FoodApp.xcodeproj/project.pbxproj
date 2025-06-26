@@ -31,6 +31,7 @@
 		3242C8E22DF0C22C00F05FF8 /* CDFoodItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3242C8E02DF0C22C00F05FF8 /* CDFoodItem.swift */; };
 		3242C8E42DF0D7E700F05FF8 /* UpdateFoodDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3242C8E32DF0D7E700F05FF8 /* UpdateFoodDetailViewController.swift */; };
 		3242C8E62DF0D82300F05FF8 /* AddFoodDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3242C8E52DF0D82300F05FF8 /* AddFoodDetailViewController.swift */; };
+		3249A9562E0DFB7C0064E79F /* SearchIngredientViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3249A9552E0DFB7C0064E79F /* SearchIngredientViewController.swift */; };
 		324AB9372BA6B27900CECA72 /* CoreDataStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 324AB9362BA6B27900CECA72 /* CoreDataStack.swift */; };
 		32515EC62DD3D4FD00594145 /* FoodAPIRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32515EC52DD3D4FD00594145 /* FoodAPIRequest.swift */; };
 		325463BE2DD0114100BEDCE0 /* HeightCmPickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 325463BD2DD0114100BEDCE0 /* HeightCmPickerViewController.swift */; };
@@ -258,6 +259,7 @@
 		3242C8E02DF0C22C00F05FF8 /* CDFoodItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CDFoodItem.swift; sourceTree = "<group>"; };
 		3242C8E32DF0D7E700F05FF8 /* UpdateFoodDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateFoodDetailViewController.swift; sourceTree = "<group>"; };
 		3242C8E52DF0D82300F05FF8 /* AddFoodDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddFoodDetailViewController.swift; sourceTree = "<group>"; };
+		3249A9552E0DFB7C0064E79F /* SearchIngredientViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchIngredientViewController.swift; sourceTree = "<group>"; };
 		324AB9362BA6B27900CECA72 /* CoreDataStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataStack.swift; sourceTree = "<group>"; };
 		32515EC52DD3D4FD00594145 /* FoodAPIRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodAPIRequest.swift; sourceTree = "<group>"; };
 		325463BD2DD0114100BEDCE0 /* HeightCmPickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeightCmPickerViewController.swift; sourceTree = "<group>"; };
@@ -638,6 +640,7 @@
 				3242C8E52DF0D82300F05FF8 /* AddFoodDetailViewController.swift */,
 				32762B842E010FDE001BB96F /* CreateFoodViewController.swift */,
 				326DB7D02E08C3C000849E3F /* CreateRecipeViewController.swift */,
+				3249A9552E0DFB7C0064E79F /* SearchIngredientViewController.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -1090,6 +1093,7 @@
 				32BD0C792DD198EF0098253F /* UserNutrientGoal+CoreDataClass.swift in Sources */,
 				32BD0C7A2DD198EF0098253F /* UserNutrientGoal+CoreDataProperties.swift in Sources */,
 				32F51A7D2B92D5280080CC09 /* ResultTableViewController.swift in Sources */,
+				3249A9562E0DFB7C0064E79F /* SearchIngredientViewController.swift in Sources */,
 				32BD0C7F2DD19B150098253F /* UserProfile+CoreDataClass.swift in Sources */,
 				32BD0C802DD19B150098253F /* UserProfile+CoreDataProperties.swift in Sources */,
 				325463C52DD0409600BEDCE0 /* UserProfile.swift in Sources */,

@@ -17,6 +17,18 @@ class SearchFoodTableViewController: UIViewController {
         return tableView
     }()
     
+    private var contentUnavailableView: UIContentUnavailableView = {
+        var configuration = UIContentUnavailableConfiguration.empty()
+        configuration.text = "No Workouts Yet"
+        configuration.secondaryText = "Your workouts will appear here once you add them."
+        configuration.image = UIImage(systemName: "dumbbell")
+
+        let view = UIContentUnavailableView(configuration: configuration)
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.isHidden = true
+        return view
+    }()
+    
     var history: [FoodEntry] = []
     var myRecipes: [FoodEntry] = []
     var myFoods: [FoodEntry] = []
@@ -25,10 +37,11 @@ class SearchFoodTableViewController: UIViewController {
     var searchController: UISearchController!
     private var resultsTableController: ResultsTableViewController!
     var fetchedResultsController: NSFetchedResultsController<History>! // source of truth
-//    var foodFRC: NSFetchedResultsController<FoodEntry>?
 
     var meal: Meal?
     let foodService: FoodService
+    let visibleTabs: [SearchTabView.TabItem]
+    let visibleButtonTypes: [SearchButtonRowView.SearchButtonType]
     var searchTask: Task<Void, Never>? = nil
     var debounceTimer: Timer?
     
@@ -41,10 +54,17 @@ class SearchFoodTableViewController: UIViewController {
         DataScannerViewController.isAvailable
     }
     
-    init(foodService: FoodService, meal: Meal? = nil) {
+    init(
+        foodService: FoodService,
+        meal: Meal? = nil,
+        visibleTabs: [SearchTabView.TabItem] = SearchTabView.TabItem.allCases,
+        visibleButtonTypes: [SearchButtonRowView.SearchButtonType] = SearchButtonRowView.SearchButtonType.allCases
+    ) {
         self.history = []
         self.foodService = foodService
         self.meal = meal
+        self.visibleTabs = visibleTabs
+        self.visibleButtonTypes = visibleButtonTypes
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -58,18 +78,19 @@ class SearchFoodTableViewController: UIViewController {
         tableView.dataSource = self
         tableView.delegate = self
 
-        let searchTabView = SearchTabView()
+        let searchTabView = SearchTabView(visibleTabs: visibleTabs)
         searchTabView.translatesAutoresizingMaskIntoConstraints = false
         searchTabView.delegate = self
         
-        let searchButtonRowView = SearchButtonRowView()
+        let searchButtonRowView = SearchButtonRowView(visibleButtonTypes: visibleButtonTypes)
         searchButtonRowView.translatesAutoresizingMaskIntoConstraints = false
         searchButtonRowView.delegate = self
         
         view.addSubview(searchTabView)
         view.addSubview(searchButtonRowView)
         view.addSubview(tableView)
-        
+        view.addSubview(contentUnavailableView)
+
         NSLayoutConstraint.activate([
             searchTabView.topAnchor.constraint(equalTo: view.topAnchor),
             searchTabView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
@@ -82,7 +103,12 @@ class SearchFoodTableViewController: UIViewController {
             tableView.topAnchor.constraint(equalTo: searchButtonRowView.bottomAnchor),
             tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            
+            contentUnavailableView.topAnchor.constraint(equalTo: searchButtonRowView.bottomAnchor),
+            contentUnavailableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            contentUnavailableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            contentUnavailableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
         ])
         
         tableView.register(HistoryTableViewCell.self, forCellReuseIdentifier: HistoryTableViewCell.reuseIdentifier)
@@ -100,7 +126,8 @@ class SearchFoodTableViewController: UIViewController {
         searchController = UISearchController(searchResultsController: resultsTableController)
         searchController.searchBar.delegate = self
         searchController.searchBar.autocapitalizationType = .none
-        
+        searchController.searchBar.placeholder = "Search foods"
+//        searchController.searchBar.
         // Place the search bar in the navigation bar.
         navigationItem.searchController = searchController
         
@@ -146,6 +173,29 @@ class SearchFoodTableViewController: UIViewController {
         }
     }
     
+    func updateUnavailableView() {
+        switch selectedTab {
+        case .all:
+            updateUnavailableView(text: "No Foods Yet", secondaryText: "Foods and recipes you add will appear here", image: UIImage(systemName: "tray"))
+        case .myRecipes:
+            updateUnavailableView(text: "No Recipes Yet", secondaryText: "Create custom recipes by combining foods", image: UIImage(systemName: "book"))
+        case .myFoods:
+            updateUnavailableView(text: "No Foods Yet", secondaryText: "Create your own custom food", image: UIImage(systemName: "fork.knife"))
+        }
+    }
+    
+    func updateUnavailableView(text: String, secondaryText: String? = nil, image: UIImage? = nil) {
+        var config = UIContentUnavailableConfiguration.empty()
+        config.text = text
+        config.secondaryText = secondaryText
+        config.image = image
+
+        contentUnavailableView.configuration = config
+        
+//        UIView.transition(with: contentUnavailableView, duration: 0.25, options: .transitionCrossDissolve) {
+            self.contentUnavailableView.isHidden = !(self.fetchedResultsController.fetchedObjects?.isEmpty ?? true)
+//        }
+    }
 }
 
 extension SearchFoodTableViewController: UITableViewDataSource {
@@ -167,6 +217,7 @@ extension SearchFoodTableViewController: UITableViewDataSource {
         let history = fetchedResultsController.object(at: indexPath)
         cell.update(history: history)
         cell.backgroundColor = UIColor(hex: "#252525")
+        cell.accessoryType = .disclosureIndicator
         return cell
     }
     
@@ -187,7 +238,24 @@ extension SearchFoodTableViewController: UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return "Recently Added"
+        guard (fetchedResultsController.fetchedObjects?.count ?? 0) > 0 else { return nil }
+        
+        switch selectedTab {
+        case .all:
+            return "Recently Added"
+        case .myRecipes:
+            return "My Recipes"
+        case .myFoods:
+            return "My Foods"
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        if editingStyle == .delete {
+            let history = fetchedResultsController.object(at: indexPath)
+            CoreDataStack.shared.context.delete(history)
+            CoreDataStack.shared.saveContext()
+        }
     }
 }
 
@@ -198,6 +266,7 @@ extension SearchFoodTableViewController: NSFetchedResultsControllerDelegate {
     
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<any NSFetchRequestResult>) {
         tableView.endUpdates()
+        updateUnavailableView()
     }
     
     // Find out when the fetched results controller adds, removes, moves, or updates a fetched object.
@@ -266,10 +335,10 @@ extension SearchFoodTableViewController: SearchTitleViewDelegate {
 
 extension SearchFoodTableViewController: HistoryTableViewCellDelegate {
     func historyTableViewCell(_ cell: HistoryTableViewCell, didSelectDeleteButton: Bool) {
-        guard let indexPath = tableView.indexPath(for: cell) else { return }
-        let history = fetchedResultsController.object(at: indexPath)
-        CoreDataStack.shared.context.delete(history)
-        CoreDataStack.shared.saveContext()
+//        guard let indexPath = tableView.indexPath(for: cell) else { return }
+//        let history = fetchedResultsController.object(at: indexPath)
+//        CoreDataStack.shared.context.delete(history)
+//        CoreDataStack.shared.saveContext()
     }
 }
 
@@ -349,7 +418,17 @@ extension SearchFoodTableViewController: SearchTabViewDelegate {
 
         switch tab {
         case .all:
-            request.predicate = nil
+            let excludesMyRecipes = !visibleTabs.contains(.myRecipes)
+
+            if excludesMyRecipes {
+                // Show only custom foods, not recipes
+                request.predicate = NSPredicate(
+                    format: "foodEntry.isRecipe == %@", NSNumber(value: false)
+                )
+            } else {
+                // Show all food entries
+                request.predicate = nil
+            }
         case .myRecipes:
             request.predicate = NSPredicate(format: "foodEntry.isRecipe == %@ AND foodEntry.isCustom == %@",
                                             NSNumber(value: true),  NSNumber(value: true))
@@ -368,6 +447,7 @@ extension SearchFoodTableViewController: SearchTabViewDelegate {
 
         do {
             try fetchedResultsController.performFetch()
+            updateUnavailableView()
             tableView.reloadData()
         } catch {
             print("Fetch failed: \(error)")
