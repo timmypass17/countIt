@@ -127,7 +127,7 @@ class SearchFoodTableViewController: UIViewController {
         searchController.searchBar.delegate = self
         searchController.searchBar.autocapitalizationType = .none
         searchController.searchBar.placeholder = "Search foods"
-//        searchController.searchBar.
+
         // Place the search bar in the navigation bar.
         navigationItem.searchController = searchController
         
@@ -242,7 +242,7 @@ extension SearchFoodTableViewController: UITableViewDelegate {
         
         switch selectedTab {
         case .all:
-            return "Recently Added"
+            return "My Collection"
         case .myRecipes:
             return "My Recipes"
         case .myFoods:
@@ -311,7 +311,10 @@ extension SearchFoodTableViewController: UISearchBarDelegate {
         searchTask = Task {
             do {
                 resultsTableController.spinner.startAnimating()
+                // TODO: searching egg doesnt work
                 resultsTableController.searchResponse = try await foodService.getFoods(query: searchBar.text!, dataTypes: [.foundation, .branded, .survey], pageSize: 10, pageNumber: 1)
+                resultsTableController.contentUnavailableView.isHidden = !(fetchedResultsController.fetchedObjects?.isEmpty ?? true)
+
 //                async let bestMatchFoodItems: FoodSearchResponse = try await foodService.getFoods(query: searchBar.text!, dataTypes: ResultsTableViewController.Section.bestMatch.dataTypes, pageSize: 3, pageNumber: 1)
 //                async let moreResultsFoodItems: FoodSearchResponse = try await foodService.getFoods(query: searchBar.text!, dataTypes: ResultsTableViewController.Section.moreResults.dataTypes, pageSize: 8, pageNumber: 1)
 //                resultsTableController.bestMatchResponse = try await bestMatchFoodItems

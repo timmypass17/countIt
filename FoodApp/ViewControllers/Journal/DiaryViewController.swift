@@ -71,7 +71,7 @@ class DiaryViewController: UIViewController {
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
         ])
         
-        let mealPlanDateView = MealPlanDateView()
+        let mealPlanDateView = MealPlanDateView(date: mealPlan.date)
         mealPlanDateView.delegate = self
         navigationItem.titleView = mealPlanDateView
         
@@ -88,7 +88,6 @@ class DiaryViewController: UIViewController {
         addMealButton.setTitle("Add Meal", for: .normal)
         footerView.addSubview(addMealButton)
         addMealButton.translatesAutoresizingMaskIntoConstraints = false
-//        tableView.tableFooterView = footerView
         
         NSLayoutConstraint.activate([
             addMealButton.topAnchor.constraint(equalTo: footerView.layoutMarginsGuide.topAnchor),

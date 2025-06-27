@@ -17,6 +17,7 @@ protocol FoodDetailTableViewControllerHistoryDelegate: AnyObject {
 }
 
 
+// TODO: Make title have badge icon
 class FoodDetailTableViewController: UITableViewController {
 
     var fdcFood: FoodItem

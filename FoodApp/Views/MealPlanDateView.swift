@@ -15,16 +15,17 @@ protocol MealPlanDateViewDelegate: AnyObject {
 class MealPlanDateView: UIView {
     
     var selectedDate: Date {
-        return Calendar.current.startOfDay(for: datePicker.date)
+        didSet {
+            updateDateText()
+        }
     }
     
     weak var delegate: MealPlanDateViewDelegate?
     
-    var datePicker: UIDatePicker = {
-        let picker = UIDatePicker()
-        picker.datePickerMode = .date
-        picker.preferredDatePickerStyle = .compact
-        return picker
+    var dateButton: UIButton = {
+        let button = UIButton()
+        button.setTitle("Today", for: .normal)
+        return button
     }()
     
     var previousButton: UIButton = {
@@ -50,22 +51,24 @@ class MealPlanDateView: UIView {
         return stackView
     }()
     
-    init() {
+    init(date: Date) {
+        self.selectedDate = date
+//        datePicker.addAction(datePickerValueChanged(), for: .valueChanged)
         super.init(frame: .zero)
-        datePicker.addAction(datePickerValueChanged(), for: .valueChanged)
         previousButton.addAction(didTapPreviousButton(), for: .touchUpInside)
         nextButton.addAction(didTapNextButton(), for: .touchUpInside)
 
         container.addArrangedSubview(previousButton)
-        container.addArrangedSubview(datePicker)
+//        container.addArrangedSubview(datePicker)
+        container.addArrangedSubview(dateButton)
         container.addArrangedSubview(nextButton)
         self.addSubview(container)
         
         NSLayoutConstraint.activate([
-            container.topAnchor.constraint(equalTo: self.topAnchor),
-            container.bottomAnchor.constraint(equalTo: self.bottomAnchor),
-            container.leadingAnchor.constraint(equalTo: self.leadingAnchor),
-            container.trailingAnchor.constraint(equalTo: self.trailingAnchor),
+            container.topAnchor.constraint(equalTo: topAnchor),
+            container.bottomAnchor.constraint(equalTo: bottomAnchor),
+            container.leadingAnchor.constraint(equalTo: leadingAnchor),
+            container.trailingAnchor.constraint(equalTo: trailingAnchor),
         ])
     }
     
@@ -81,7 +84,8 @@ class MealPlanDateView: UIView {
     
     func didTapNextButton() -> UIAction {
         return UIAction { [self] _ in
-            datePicker.date = Calendar.current.date(byAdding: .day, value: 1, to: selectedDate)!
+            selectedDate = Calendar.current.date(byAdding: .day, value: 1, to: selectedDate)!
+            
             delegate?.mealPlanDateViewDelegate(self, datePickerValueChanged: selectedDate)
             let generator = UIImpactFeedbackGenerator(style: .medium)
             generator.impactOccurred()
@@ -90,10 +94,22 @@ class MealPlanDateView: UIView {
     
     func didTapPreviousButton() -> UIAction {
         return UIAction { [self] _ in
-            datePicker.date = Calendar.current.date(byAdding: .day, value: -1, to: selectedDate)!
+            selectedDate = Calendar.current.date(byAdding: .day, value: -1, to: selectedDate)!
             delegate?.mealPlanDateViewDelegate(self, datePickerValueChanged: selectedDate)
             let generator = UIImpactFeedbackGenerator(style: .medium)
             generator.impactOccurred()
+        }
+    }
+    
+    func updateDateText() {
+        if Calendar.current.isDateInToday(selectedDate) {
+            dateButton.setTitle("Today", for: .normal)
+        } else if Calendar.current.isDateInTomorrow(selectedDate) {
+            dateButton.setTitle("Tomorrow", for: .normal)
+        } else if Calendar.current.isDateInYesterday(selectedDate) {
+            dateButton.setTitle("Yesterday", for: .normal)
+        } else {
+            dateButton.setTitle(selectedDate.formatted(date: .abbreviated, time: .omitted), for: .normal)
         }
     }
 }
