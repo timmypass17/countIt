@@ -9,8 +9,9 @@ import UIKit
 
 class ResultsTableViewController: UITableViewController {
     
-    var bestMatchResponse: FoodSearchResponse = FoodSearchResponse(totalHits: 0, currentPage: 1, totalPages: 0, foodParts: [])
-    var moreResultsResponse: FoodSearchResponse = FoodSearchResponse(totalHits: 0, currentPage: 1, totalPages: 0, foodParts: [])
+    var searchResponse: FoodSearchResponse = FoodSearchResponse(totalHits: 0, currentPage: 1, totalPages: 0, foodParts: [])
+//    var bestMatchResponse: FoodSearchResponse = FoodSearchResponse(totalHits: 0, currentPage: 1, totalPages: 0, foodParts: [])
+//    var moreResultsResponse: FoodSearchResponse = FoodSearchResponse(totalHits: 0, currentPage: 1, totalPages: 0, foodParts: [])
     let meal: Meal?
     let foodService: FoodService
     var query: String?
@@ -62,6 +63,7 @@ class ResultsTableViewController: UITableViewController {
         super.viewDidLoad()
         tableView.register(ResultTableViewCell.self, forCellReuseIdentifier: ResultTableViewCell.reuseIdentifier)
         tableView.register(ResultsHeaderView.self, forHeaderFooterViewReuseIdentifier: ResultsHeaderView.reuseIdentifier)
+        tableView.backgroundColor = UIColor(hex: "#1c1c1e")
         view.addSubview(spinner)
         
         NSLayoutConstraint.activate([
@@ -73,45 +75,51 @@ class ResultsTableViewController: UITableViewController {
     // MARK: - UITableViewDataSource
     
     override func numberOfSections(in tableView: UITableView) -> Int {
-        return Section.allCases.count
+        return 1
+//        return Section.allCases.count
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        guard let section = Section(rawValue: section) else { return 0 }
-        switch section {
-        case .bestMatch:
-            return bestMatchResponse.foods.count
-        case .moreResults:
-            return moreResultsResponse.foods.count
-        }
+        return searchResponse.foods.count
+//        guard let section = Section(rawValue: section) else { return 0 }
+//        switch section {
+//        case .bestMatch:
+//            return bestMatchResponse.foods.count
+//        case .moreResults:
+//            return moreResultsResponse.foods.count
+//        }
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let section = Section(rawValue: indexPath.section) else { return UITableViewCell() }
         let cell = tableView.dequeueReusableCell(withIdentifier: ResultTableViewCell.reuseIdentifier, for: indexPath) as! ResultTableViewCell
-        let foodItem: FoodItem
-        switch section {
-        case .bestMatch:
-            foodItem = bestMatchResponse.foods[indexPath.row]
-        case .moreResults:
-            foodItem = moreResultsResponse.foods[indexPath.row]
-        }
+        let foodItem = searchResponse.foods[indexPath.row]
+//        let foodItem: FoodItem
+//        switch section {
+//        case .bestMatch:
+//            foodItem = bestMatchResponse.foods[indexPath.row]
+//        case .moreResults:
+//            foodItem = moreResultsResponse.foods[indexPath.row]
+//        }
         cell.delegate = self
         cell.update(with: foodItem)
+        cell.backgroundColor = UIColor(hex: "#252525")
+
         return cell
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard let section = Section(rawValue: indexPath.section) else { return }
-        let foodItem: FoodItem
-        switch section {
-        case .bestMatch:
-            foodItem = bestMatchResponse.foods[indexPath.row]
-        case .moreResults:
-            foodItem = moreResultsResponse.foods[indexPath.row]
-        }
+        let foodItem = searchResponse.foods[indexPath.row]
+//        let foodItem: FoodItem
+//        switch section {
+//        case .bestMatch:
+//            foodItem = bestMatchResponse.foods[indexPath.row]
+//        case .moreResults:
+//            foodItem = moreResultsResponse.foods[indexPath.row]
+//        }
         
-        let addFoodDetailViewController = AddFoodDetailViewController(fdcFood: foodItem, meal: meal, foodService: foodService)
+        let addFoodDetailViewController = AddFoodDetailViewController(fdcFood: foodItem, meal: meal, foodService: foodService, selectedFoodPortion: foodItem.selectedFoodPortion)
         addFoodDetailViewController.delegate = addFoodDelegate
         addFoodDetailViewController.dismissDelegate = self
         addFoodDetailViewController.historyDelegate = historyDelegate
@@ -124,12 +132,13 @@ class ResultsTableViewController: UITableViewController {
         let headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: ResultsHeaderView.reuseIdentifier) as! ResultsHeaderView
         headerView.delegate = self
         headerView.section = section
-        switch section {
-        case .bestMatch:
-            headerView.update(title: "Best Match (\(bestMatchResponse.totalHits))")
-        case .moreResults:
-            headerView.update(title: "More Results (\(moreResultsResponse.totalHits))")
-        }
+        headerView.update(title: "Results (\(searchResponse.totalHits))")
+//        switch section {
+//        case .bestMatch:
+//            headerView.update(title: "Best Match (\(bestMatchResponse.totalHits))")
+//        case .moreResults:
+//            headerView.update(title: "More Results (\(moreResultsResponse.totalHits))")
+//        }
         return headerView
     }
     
@@ -164,14 +173,16 @@ extension ResultsTableViewController: ResultTableViewCellDelegate {
               let section = Section(rawValue: indexPath.section)
         else { return }
         
-        let foodItem: FoodItem
-        switch section {
-        case .bestMatch:
-            foodItem = bestMatchResponse.foods[indexPath.row]
-        case .moreResults:
-            foodItem = moreResultsResponse.foods[indexPath.row]
-        }
-        
+//        let foodItem: FoodItem
+        let foodItem = searchResponse.foods[indexPath.row]
+
+//        switch section {
+//        case .bestMatch:
+//            foodItem = bestMatchResponse.foods[indexPath.row]
+//        case .moreResults:
+//            foodItem = moreResultsResponse.foods[indexPath.row]
+//        }
+//        
         do {
             try foodService.addFood(foodItem, with: foodItem.selectedFoodPortion, quantity: 1, to: meal)
         } catch {

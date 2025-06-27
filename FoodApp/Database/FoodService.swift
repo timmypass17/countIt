@@ -551,27 +551,35 @@ class FoodService: FoodServiceProtocol {
         var searchResultResponse = try await sendRequest(abridgedRequest)
         let fdcIds = searchResultResponse.foodParts.map { $0.fdcId }
         // Note: Need another api call to get portions
+//        print("Timmy got response")
+        let detailedFoods = try await getFoods(fdcIds: fdcIds, dataTypes: dataTypes)
+
+        // Preserve original order
+        let foodDict = Dictionary(uniqueKeysWithValues: detailedFoods.map { ($0.fdcId, $0) })
+        let sortedFoods = fdcIds.compactMap { foodDict[$0] }
+
+        searchResultResponse.foods.append(contentsOf: sortedFoods)
         
-        let foods: [FoodItem] = try await withThrowingTaskGroup(of: FoodItem.self) { group in
-            var foodDict: [Int: FoodItem] = [:]
-            
-            for id in fdcIds {
-                group.addTask {
-                    let food = try await self.getFood(fdcId: id)
-                    return food
-                }
-            }
-            
-            for try await food in group {
-                foodDict[food.fdcId] = food
-            }
-            
-            // Sort by original order of fdcIds
-            let sortedFoods = fdcIds.compactMap { foodDict[$0] }
-            return sortedFoods
-        }
-    
-        searchResultResponse.foods.append(contentsOf: foods)
+//        let foods: [FoodItem] = try await withThrowingTaskGroup(of: FoodItem.self) { group in
+//            var foodDict: [Int: FoodItem] = [:]
+//            
+//            for id in fdcIds {
+//                group.addTask {
+//                    let food = try await self.getFood(fdcId: id)
+//                    return food
+//                }
+//            }
+//            
+//            for try await food in group {
+//                foodDict[food.fdcId] = food
+//            }
+//            
+//            // Sort by original order of fdcIds
+//            let sortedFoods = fdcIds.compactMap { foodDict[$0] }
+//            return sortedFoods
+//        }
+//    
+//        searchResultResponse.foods.append(contentsOf: foods)
         return searchResultResponse
     }
     
@@ -584,7 +592,6 @@ class FoodService: FoodServiceProtocol {
 //    }
     
     func getFoods(fdcIds: [Int], dataTypes: [DataType]) async throws -> [FoodItem] {
-        print("timmy: \(fdcIds)")
         let request = FoodListAPIRequest(fdcIds: fdcIds)
         let searchResult = try await sendRequest(request)
         return searchResult

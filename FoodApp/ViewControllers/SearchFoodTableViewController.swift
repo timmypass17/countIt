@@ -311,10 +311,11 @@ extension SearchFoodTableViewController: UISearchBarDelegate {
         searchTask = Task {
             do {
                 resultsTableController.spinner.startAnimating()
-                async let bestMatchFoodItems: FoodSearchResponse = try await foodService.getFoods(query: searchBar.text!, dataTypes: ResultsTableViewController.Section.bestMatch.dataTypes, pageSize: 3, pageNumber: 1)
-                async let moreResultsFoodItems: FoodSearchResponse = try await foodService.getFoods(query: searchBar.text!, dataTypes: ResultsTableViewController.Section.moreResults.dataTypes, pageSize: 8, pageNumber: 1)
-                resultsTableController.bestMatchResponse = try await bestMatchFoodItems
-                resultsTableController.moreResultsResponse = try await moreResultsFoodItems
+                resultsTableController.searchResponse = try await foodService.getFoods(query: searchBar.text!, dataTypes: [.foundation, .branded, .survey], pageSize: 10, pageNumber: 1)
+//                async let bestMatchFoodItems: FoodSearchResponse = try await foodService.getFoods(query: searchBar.text!, dataTypes: ResultsTableViewController.Section.bestMatch.dataTypes, pageSize: 3, pageNumber: 1)
+//                async let moreResultsFoodItems: FoodSearchResponse = try await foodService.getFoods(query: searchBar.text!, dataTypes: ResultsTableViewController.Section.moreResults.dataTypes, pageSize: 8, pageNumber: 1)
+//                resultsTableController.bestMatchResponse = try await bestMatchFoodItems
+//                resultsTableController.moreResultsResponse = try await moreResultsFoodItems
                 resultsTableController.query = searchBar.text!
                 resultsTableController.tableView.reloadData()
             } catch {

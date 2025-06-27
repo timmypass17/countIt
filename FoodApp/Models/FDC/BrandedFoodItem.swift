@@ -48,7 +48,8 @@ struct BrandedFoodItem: FoodItem {
         self.description = try container.decode(String.self, forKey: .description).firstUppercased
         self.gtinUpc = try container.decode(String.self, forKey: .gtinUpc)
         self.householdServingFullText = try container.decode(String.self, forKey: .householdServingFullText)
-        self.servingSize = try container.decodeIfPresent(Int.self, forKey: .servingSize) ?? 1
+        let servingSize = try container.decodeIfPresent(Int.self, forKey: .servingSize) ?? 1
+        self.servingSize = servingSize
         self.servingSizeUnit = try container.decode(String.self, forKey: .servingSizeUnit)
         self.brandedFoodCategory = try container.decode(String.self, forKey: .brandedFoodCategory)
 //        var foodPortions = try container.decode([FoodPortion].self, forKey: .foodPortions)
@@ -57,7 +58,13 @@ struct BrandedFoodItem: FoodItem {
         foodPortions.append(FoodPortion(id: 1, gramWeight: Double(servingSize)))
         foodPortions.sort { $0.gramWeight ?? 0 < $1.gramWeight ?? 0 }
         self.foodPortions = foodPortions
-        self.selectedFoodPortion = foodPortions[foodPortions.count / 2]
+        
+        // Prefer serving size on product
+        if let foodPortion = foodPortions.first(where: { $0.gramWeight == Double(servingSize) }) {
+            self.selectedFoodPortion = foodPortion
+        } else {
+            self.selectedFoodPortion = foodPortions[foodPortions.count / 2]
+        }
 
         let rawNutrients = try container.decode([RawFoodNutrient].self, forKey: .foodNutrients)
         self.foodNutrients = rawNutrients.compactMap { raw in
