@@ -107,7 +107,7 @@ class OnboardingPageViewController: UIPageViewController {
         let foodService = FoodService()
         let diaryViewController = DiaryViewController(userProfile: userProfile, foodService: foodService)
         let searchViewController = SearchFoodTableViewController(foodService: foodService)
-        let progressViewController = ProgressViewController()
+        let progressViewController = ProgressViewController(foodService: foodService, userProfile: userProfile)
         let settingsViewController = SettingsViewController(userProfile: userProfile)
 
         diaryViewController.delegate = searchViewController

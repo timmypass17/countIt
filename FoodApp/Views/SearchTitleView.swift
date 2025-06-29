@@ -42,7 +42,7 @@ class SearchTitleView: UIView {
             actions.append(didTapMenuOption(for: meal))
         }
         
-        mealButton.menu = UIMenu(title: "Meal Type", options: .singleSelection, children: actions)
+        mealButton.menu = UIMenu(title: getMealButtonTitle(date: selectedMeal.mealPlan?.date), options: .singleSelection, children: actions)
         
         addSubview(mealButton)
         
@@ -55,6 +55,19 @@ class SearchTitleView: UIView {
         ])
         
         updateUI()
+    }
+    
+    func getMealButtonTitle(date: Date?) -> String {
+        guard let date else { return "" }
+        if Calendar.current.isDateInToday(date) {
+            return "Today"
+        } else if Calendar.current.isDateInTomorrow(date) {
+            return "Tomorrow"
+        } else if Calendar.current.isDateInYesterday(date) {
+            return "Yesterday"
+        } else {
+            return date.formatted(date: .abbreviated, time: .omitted)
+        }
     }
     
     required init?(coder: NSCoder) {

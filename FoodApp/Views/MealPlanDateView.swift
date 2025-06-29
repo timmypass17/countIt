@@ -9,7 +9,7 @@ import UIKit
 
 protocol MealPlanDateViewDelegate: AnyObject {
     func mealPlanDateViewDelegate(_ sender: MealPlanDateView, datePickerValueChanged date: Date)
-
+    func mealPlanDateViewDelegate(_ sender: MealPlanDateView, didTapDateButton date: Date)
 }
 
 class MealPlanDateView: UIView {
@@ -22,9 +22,10 @@ class MealPlanDateView: UIView {
     
     weak var delegate: MealPlanDateViewDelegate?
     
-    var dateButton: UIButton = {
+    lazy var dateButton: UIButton = {
         let button = UIButton()
         button.setTitle("Today", for: .normal)
+        button.addAction(didTapDateButton(), for: .touchUpInside)
         return button
     }()
     
@@ -74,6 +75,12 @@ class MealPlanDateView: UIView {
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    func didTapDateButton() -> UIAction {
+        return UIAction { _ in
+            self.delegate?.mealPlanDateViewDelegate(self, didTapDateButton: self.selectedDate)
+        }
     }
     
     func datePickerValueChanged() -> UIAction {

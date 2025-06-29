@@ -39,6 +39,10 @@ extension UserNutrientGoal {
     
 }
 
-extension UserNutrientGoal : Identifiable {
+extension UserNutrientGoal: Identifiable {
 
+}
+
+extension UserNutrientGoal: NutrientIdentifiable {
+    
 }

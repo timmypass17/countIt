@@ -25,11 +25,14 @@ class DiaryViewController: UIViewController {
         return tableView
     }()
     
+    var mealPlanDateView: MealPlanDateView? = nil
+    
     var userProfile: UserProfile
     var mealPlan: MealPlan!
     let foodService: FoodService
     let goalIndexPath = IndexPath(row: 0, section: 0)
     weak var delegate: DiaryViewControllerDelegate?
+    
     
     enum Section: Int, CaseIterable {
         case goal
@@ -71,8 +74,8 @@ class DiaryViewController: UIViewController {
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
         ])
         
-        let mealPlanDateView = MealPlanDateView(date: mealPlan.date)
-        mealPlanDateView.delegate = self
+        mealPlanDateView = MealPlanDateView(date: mealPlan.date)
+        mealPlanDateView?.delegate = self
         navigationItem.titleView = mealPlanDateView
         
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: CaloriesConsumedView.reuseIdentifier)
@@ -125,8 +128,7 @@ class DiaryViewController: UIViewController {
 //        navigationItem.leftBarButtonItem = optionsButton
 //        navigationItem.rightBarButtonItem = profileBarButton
         
-        navigationItem.rightBarButtonItem = optionsButton
-
+        navigationItem.rightBarButtonItem = optionsButton        
         tableView.reloadData()
         
         NotificationCenter.default.addObserver(self, selector: #selector(reloadTableData), name: .reloadDiary, object: nil)
@@ -516,7 +518,26 @@ extension DiaryViewController: FoodDetailTableViewControllerDismissDelegate {
 }
 
 extension DiaryViewController: MealPlanDateViewDelegate {
+    func mealPlanDateViewDelegate(_ sender: MealPlanDateView, didTapDateButton date: Date) {
+        let mealPlanDatePickerViewController = MealPlanDatePickerViewController(date: date)
+        mealPlanDatePickerViewController.delegate = self
+        let navigationController = UINavigationController(rootViewController: mealPlanDatePickerViewController)
+        if let sheet = navigationController.sheetPresentationController {
+            let height = UIScreen.main.bounds.height * 0.6
+            sheet.detents = [
+                .custom { _ in height }
+            ]
+            sheet.prefersGrabberVisible = true
+            sheet.preferredCornerRadius = 20
+        }
+        self.present(navigationController, animated: true)
+    }
+    
     func mealPlanDateViewDelegate(_ sender: MealPlanDateView, datePickerValueChanged date: Date) {
+        handleDatePickerValueChanged(date: date)
+    }
+    
+    func handleDatePickerValueChanged(date: Date) {
         let oldDate = mealPlan.date
         // When moving between dates, clean up empty meals
         if self.mealPlan.isEmpty {
@@ -538,11 +559,13 @@ extension DiaryViewController: MealPlanDateViewDelegate {
             }
         }
         
+        mealPlanDateView?.selectedDate = date
         updateUI()
         animateTableChange(direction: date > oldDate ? .left : .right)
         
         // Update search controller's meal
         delegate?.diaryViewController(self, mealPlanChanged: self.mealPlan)
+        
     }
     
     enum TableAnimationDirection {
@@ -558,6 +581,12 @@ extension DiaryViewController: MealPlanDateViewDelegate {
         tableView.layer.add(transition, forKey: kCATransition)
 
         tableView.reloadData()
+    }
+}
+
+extension DiaryViewController: MealPlanDatePickerViewControllerDelegate {
+    func mealPlanDatePickerViewControllerDelegate(_ viewController: MealPlanDatePickerViewController, didSelectDate date: Date) {
+        handleDatePickerValueChanged(date: date)
     }
 }
 

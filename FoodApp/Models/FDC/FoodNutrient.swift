@@ -138,7 +138,6 @@ enum NutrientId: Int, Codable, CaseIterable {
     case zinc = 1095
     
     case water = 1051
-    
     case caffeine = 1057
     
     //    case chromium = 1096  // might not exist?
@@ -333,6 +332,46 @@ enum NutrientId: Int, Codable, CaseIterable {
         }
     }
     
+    var progressColor: Color {
+            switch self {
+            // 🔥 Energy
+            case .calories, .fallbackCalories:
+                return .blue
+
+            // 🍞 Carbs & Sugars
+            case .carbs, .sugarTotal, .sugarAdded:
+                return .yellow
+            case .fiber:
+                return .brown
+
+            // 🥑 Fats
+            case .fatTotal, .fatMono, .fatPoly, .fatSaturated, .cholesterol:
+                return .green
+
+            // 💪 Protein
+            case .protein:
+                return .pink
+
+            // 🍏 Vitamins
+            case .vitaminA, .vitaminB1, .vitaminB2, .vitaminB3, .vitaminB6, .vitaminB7, .vitaminB12, .vitaminC, .vitaminD, .vitaminE, .vitaminK, .folate:
+                return .green
+
+            // 🦴 Minerals
+            case .calcium, .iron, .magnesium, .phosphorus, .potassium, .sodium, .zinc, .copper, .iodine, .manganese, .selenium:
+                return .blue
+
+            // 💧 Water & hydration
+            case .water:
+                return .cyan
+
+            // ☕ Caffeine
+            case .caffeine:
+                return .red
+
+            // fallback (shouldn't happen with exhaustive switch)
+            }
+        }
+    
     // Lighter
 //    var color: Color {
 //        switch self {
@@ -391,6 +430,123 @@ enum NutrientId: Int, Codable, CaseIterable {
             return true
         default:
             return false
+        }
+    }
+    
+    static var allProgress: [NutrientId] {
+        [
+            .calories, .carbs, .protein, .fatTotal, .water, .caffeine,
+            .fiber, .sugarTotal, .sugarAdded,
+            .fatMono, .fatPoly, .fatSaturated, .cholesterol,
+            .vitaminA, .vitaminB1, .vitaminB2, .vitaminB3, .vitaminB6, .vitaminB7, .vitaminB12,
+            .vitaminC, .vitaminD, .vitaminE, .vitaminK, .folate,
+            .calcium, .iron, .magnesium, .phosphorus, .potassium, .sodium, .zinc,
+            .copper, .iodine, .manganese, .selenium
+        ]
+    }
+    
+    var symbol: String {
+        switch self {
+        case .calories, .fallbackCalories:
+            return "flame.fill"
+        case .carbs, .fiber:
+            return "laurel.trailing"
+        case .sugarTotal, .sugarAdded:
+            return "cube.fill"
+        case .protein:
+            return "fish.fill"
+        case .fatTotal, .fatMono, .fatPoly, .fatSaturated, .cholesterol:
+            return "drop.fill"
+        
+        case .water:
+            return "drop.circle.fill"
+        case .caffeine:
+            return "cup.and.saucer.fill"
+
+        case .vitaminA, .vitaminB1, .vitaminB2, .vitaminB3, .vitaminB6, .vitaminB7, .vitaminB12,
+             .vitaminC, .vitaminD, .vitaminE, .vitaminK, .folate:
+            return "leaf.fill"
+
+        case .calcium, .iron, .magnesium, .phosphorus, .potassium, .sodium, .zinc,
+             .copper, .iodine, .manganese, .selenium:
+            return "circle.grid.cross.fill"
+        }
+    }
+    
+    var footerText: String {
+        switch self {
+        case .calories, .fallbackCalories:
+            return "Energy your body uses—measured in calories." // :contentReference[oaicite:1]{index=1}
+        case .carbs:
+            return "Your body's main fuel; includes sugars and starches." // :contentReference[oaicite:2]{index=2}
+        case .fiber:
+            return "A type of carb that aids digestion and supports gut health." // :contentReference[oaicite:3]{index=3}
+        case .sugarTotal:
+            return "All sugar—natural and added—found in your food/drinks."
+        case .sugarAdded:
+            return "Extra sugar added during processing or cooking." // :contentReference[oaicite:4]{index=4}
+        case .protein:
+            return "Builds and repairs muscle, tissue, and enzymes." // :contentReference[oaicite:5]{index=5}
+        case .fatTotal:
+            return "All fats—from healthy to less healthy types."
+        case .fatMono:
+            return "Heart‑healthy monounsaturated fats (like in olive oil)." // :contentReference[oaicite:6]{index=6}
+        case .fatPoly:
+            return "Polyunsaturated fats, including omega‑3s and omega‑6s." // :contentReference[oaicite:7]{index=7}
+        case .fatSaturated:
+            return "Solid at room temp—too much may raise LDL (‘bad’) cholesterol." // :contentReference[oaicite:8]{index=8}
+        case .cholesterol:
+            return "Waxy molecule in food/body; too much may affect heart health."
+        case .water:
+            return "Keeps you hydrated—essential for all body functions." // :contentReference[oaicite:9]{index=9}
+        case .caffeine:
+            return "Stimulates alertness—found in coffee, tea, energy drinks."
+        case .vitaminA:
+            return "Supports good vision, skin health, and immunity." // :contentReference[oaicite:10]{index=10}
+        case .vitaminB1:
+            return "Helps turn carbs into energy and supports nerves."
+        case .vitaminB2:
+            return "Aids energy production and keeps cells healthy."
+        case .vitaminB3:
+            return "Helps nourish the skin and convert food into energy."
+        case .vitaminB6:
+            return "Important for brain health and helping nerves work right."
+        case .vitaminB7:
+            return "Assists in metabolism; often linked to healthy hair & nails."
+        case .vitaminB12:
+            return "Needed for making red blood cells and healthy nerves."
+        case .vitaminC:
+            return "Boosts immunity and helps your body heal." // :contentReference[oaicite:11]{index=11}
+        case .vitaminD:
+            return "Helps your body use calcium to build strong bones." // :contentReference[oaicite:12]{index=12}
+        case .vitaminE:
+            return "Acts as an antioxidant, protecting your cells." // :contentReference[oaicite:13]{index=13}
+        case .vitaminK:
+            return "Needed for normal blood clotting and bone health." // :contentReference[oaicite:14]{index=14}
+        case .folate:
+            return "Supports new cell growth—especially important in pregnancy." // :contentReference[oaicite:15]{index=15}
+        case .calcium:
+            return "Strengthens bones and helps muscles contract." // :contentReference[oaicite:16]{index=16}
+        case .iron:
+            return "Helps carry oxygen in your blood." // :contentReference[oaicite:17]{index=17}
+        case .magnesium:
+            return "Supports muscles, nerves, and energy production." // :contentReference[oaicite:18]{index=18}
+        case .phosphorus:
+            return "Works with calcium to build strong bones and teeth." // :contentReference[oaicite:19]{index=19}
+        case .potassium:
+            return "Helps control fluids, muscle contractions, and blood pressure." // :contentReference[oaicite:20]{index=20}
+        case .sodium:
+            return "Balances fluids and affects your blood pressure." // :contentReference[oaicite:21]{index=21}
+        case .zinc:
+            return "Supports the immune system and helps healing." // :contentReference[oaicite:22]{index=22}
+        case .copper:
+            return "Helps your body use iron and make energy."
+        case .iodine:
+            return "Essential for making thyroid hormones." // :contentReference[oaicite:23]{index=23}
+        case .manganese:
+            return "Plays a role in metabolism and bone formation." // :contentReference[oaicite:24]{index=24}
+        case .selenium:
+            return "Protects cells and supports thyroid and immunity." // :contentReference[oaicite:25]{index=25}
         }
     }
 }

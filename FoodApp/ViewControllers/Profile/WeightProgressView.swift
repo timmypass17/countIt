@@ -13,7 +13,7 @@ struct WeightProgressView: View {
     @FetchRequest(sortDescriptors: [SortDescriptor(\.date_, order: .reverse)])
     private var userWeights: FetchedResults<UserWeight>
 
-    @State private var selectedFilter: SelectedFilter = .all
+    @State private var selectedFilter: SelectedFilter = .week
     
     var filteredUserWeights: [UserWeight] {
         switch selectedFilter {
@@ -39,7 +39,12 @@ struct WeightProgressView: View {
             VStack(alignment: .leading) {
                 FilterSegmentedView(selectedFilter: $selectedFilter)
                 
-                ProgressHeaderView(filteredData: filteredUserWeights)
+                ProgressHeaderView(
+                    title: "Current Weight",
+                    unit: "lbs",
+                    amount: filteredUserWeights.last?.getWeight(.pounds),
+                    startDate: filteredUserWeights.last?.date_ ?? Date(),
+                    endDate: filteredUserWeights.first?.date_ ?? Date())
 
                 ProgressChartView(filteredData: filteredUserWeights)
                 
@@ -51,7 +56,7 @@ struct WeightProgressView: View {
             .padding([.horizontal, .bottom])
             .animation(.default, value: userWeights.count) // animation trigger when value changes
         }
-        .navigationTitle("Weight")
+        .navigationTitle("Current Weight")
     }
 }
 
@@ -69,24 +74,29 @@ struct FilterSegmentedView: View {
 }
 
 struct ProgressHeaderView: View {
-    var filteredData: [UserWeight]
+//    var filteredData: [UserWeight]
+    var title: String
+    var unit: String
+    var amount: Double?
+    var startDate: Date
+    var endDate: Date
     
     var dateRangeString: String {
-        let startDate = filteredData.last?.date_ ?? Date()
-        let endDate = filteredData.first?.date_ ?? Date()
+//        let startDate = filteredData.last?.date_ ?? Date()
+//        let endDate = filteredData.first?.date_ ?? Date()
         return "\(formatDateMonthDayYear(startDate)) - \(formatDateMonthDayYear(endDate))"
     }
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            Text("Current Weight")
+            Text(title)
                 .foregroundColor(.secondary)
                 .font(.subheadline)
             
             HStack(alignment: .firstTextBaseline, spacing: 4) {
-                Text("\(filteredData.last?.getWeight(.pounds).trimmed ?? "-")")
+                Text("\(amount?.trimmed ?? "-")")
                     .font(.title)
-                Text("lbs")
+                Text(unit)
                     .foregroundColor(.secondary)
             }
             
@@ -165,7 +175,6 @@ struct ProgressDetailViewCell: View {
 
 struct ProgressChartView: View {
     var filteredData: [UserWeight]
-
     
     var body: some View {
         Chart(filteredData) { userWeight in
@@ -182,12 +191,19 @@ struct ProgressChartView: View {
 }
 
 
+func formatDateMonthDayYear(_ date: Date) -> String {
+    let dateFormatter = DateFormatter()
+    dateFormatter.dateFormat = "MMM d, yyyy"
+    return dateFormatter.string(from: date)
+}
+
+
 enum SelectedFilter: String, CaseIterable, Identifiable {
-    case all
     case week
     case month
     case sixMonth
     case year
+    case all
     var id: Self { self }
     
     var description: String {
@@ -204,10 +220,4 @@ enum SelectedFilter: String, CaseIterable, Identifiable {
             return "Year"
         }
     }
-}
-
-func formatDateMonthDayYear(_ date: Date) -> String {
-    let dateFormatter = DateFormatter()
-    dateFormatter.dateFormat = "MMM d, yyyy"
-    return dateFormatter.string(from: date)
 }

@@ -95,7 +95,7 @@ extension LoginViewController: ASAuthorizationControllerDelegate {
         let dashboardViewController = DashboardViewController()
         let diaryViewController = DiaryViewController(userProfile: userProfile, foodService: foodService)
         let entryViewController = EntryViewController()
-        let progressViewController = ProgressViewController()
+        let progressViewController = ProgressViewController(foodService: foodService, userProfile: userProfile)
         let settingsViewController = SettingsViewController(userProfile: userProfile)
 
         let tabBarController = UITabBarController()
