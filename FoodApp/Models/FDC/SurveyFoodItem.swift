@@ -44,10 +44,39 @@ struct SurveyFoodItem: FoodItem {
         foodPortions.sort { $0.gramWeight ?? 0 < $1.gramWeight ?? 0 }
         self.foodPortions = foodPortions
         let rawNutrients = try container.decode([RawFoodNutrient].self, forKey: .foodNutrients)
-        self.foodNutrients = rawNutrients.compactMap { raw in
-            guard let nutrientId = NutrientId(rawValue: raw.nutrient.id) else { return nil }
-            return FoodNutrient(nutrient: Nutrient(id: nutrientId, name: raw.nutrient.name, unitName: raw.nutrient.unitName, rank: 0), amount: raw.amount)
+//        self.foodNutrients = rawNutrients.compactMap { raw in
+//            guard let rawNutrient = raw.nutrient,
+//                  let nutrientId = NutrientId(rawValue: rawNutrient.id) else { return nil }
+//            return FoodNutrient(nutrient: Nutrient(id: nutrientId, name: rawNutrient.name, unitName: rawNutrient.unitName, rank: 0), amount: raw.amount)
+//        }
+        var foodNutrients: [FoodNutrient] = []
+        for nutrientId in NutrientId.allCases {
+            if let rawNutrient = rawNutrients.first(where: {
+                guard let raw = $0.nutrient else { return false }
+                return NutrientId(rawValue: raw.id) == nutrientId
+            }) {
+                // Nutrient exists
+                let nutrient = FoodNutrient(nutrient: Nutrient(id: nutrientId, name: nutrientId.description, unitName: nutrientId.unitName, rank: 0), amount: Double(rawNutrient.amount))
+                foodNutrients.append(nutrient)
+            } else {
+                // Add placeholder
+                let empty = FoodNutrient(nutrient: Nutrient(id: nutrientId, name: nutrientId.description, unitName: nutrientId.unitName, rank: 0), amount: 0)
+                foodNutrients.append(empty)
+            }
         }
+
+        // Edge case: Calories is missing, fallback on other calories
+        if let caloriesIndex = foodNutrients.firstIndex(where: { $0.nutrientId == .calories }) {
+            let calories = foodNutrients[caloriesIndex]
+            if calories.amount == 0 {
+                // Fall back on other calories
+                if let fallbackCalories = foodNutrients.first(where: { $0.nutrientId == .fallbackCalories }) {
+                    foodNutrients[caloriesIndex].amount = fallbackCalories.amount
+                }
+            }
+        }
+
+        self.foodNutrients = foodNutrients
         self.selectedFoodPortion = foodPortions[foodPortions.count / 2]
     }
     

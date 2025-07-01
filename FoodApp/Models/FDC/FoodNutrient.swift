@@ -13,7 +13,7 @@ struct FoodNutrient: Codable {
     var nutrient: Nutrient?
     var amount: Double?   // 590
     
-    init(nutrient: Nutrient, amount: Double?) {
+    init(nutrient: Nutrient?, amount: Double?) {
         self.nutrient = nutrient
         self.amount = amount
     }
@@ -50,7 +50,7 @@ extension FoodNutrient {
 struct RawFoodNutrient: Codable {
     let amount: Double
     let unitName: String
-    let nutrient: RawNutrient
+    let nutrient: RawNutrient?
     
     enum CodingKeys: CodingKey {
         case amount
@@ -62,7 +62,7 @@ struct RawFoodNutrient: Codable {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.amount = try container.decodeIfPresent(Double.self, forKey: .amount) ?? 0
         self.unitName = try container.decodeIfPresent(String.self, forKey: .unitName) ?? ""
-        self.nutrient = try container.decode(RawNutrient.self, forKey: .nutrient)
+        self.nutrient = try container.decodeIfPresent(RawNutrient.self, forKey: .nutrient)
     }
 }
 

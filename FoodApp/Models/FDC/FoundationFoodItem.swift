@@ -34,7 +34,10 @@ struct FoundationFoodItem: FoodItem {
         let rawNutrients = try container.decode([RawFoodNutrient].self, forKey: .foodNutrients)
         var foodNutrients: [FoodNutrient] = []
         for nutrientId in NutrientId.allCases {
-            if let rawNutrient = rawNutrients.first(where: { NutrientId(rawValue: $0.nutrient.id) == nutrientId }) {
+            if let rawNutrient = rawNutrients.first(where: {
+                guard let raw = $0.nutrient else { return false }
+                return NutrientId(rawValue: raw.id) == nutrientId
+            }) {
                 // Nutrient exists
                 let nutrient = FoodNutrient(nutrient: Nutrient(id: nutrientId, name: nutrientId.description, unitName: nutrientId.unitName, rank: 0), amount: Double(rawNutrient.amount))
                 foodNutrients.append(nutrient)
