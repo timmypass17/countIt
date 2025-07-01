@@ -87,7 +87,6 @@ extension ProgressViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: ProgressTableViewCell.reuseIdentifier, for: indexPath) as! ProgressTableViewCell
         let nutrientId = nutrientIds[indexPath.section]
-        let recentAmount = mealPlans.last??.nutrientAmount(nutrientId) ?? 0
 
         // TODO: Pass in last 7 days value
         let calendar = Calendar.current
@@ -108,6 +107,10 @@ extension ProgressViewController: UITableViewDataSource {
                 amount: amount
             )
         }
+        
+        let date = Date() // or your target date
+        let zeroBasedWeekday = (calendar.component(.weekday, from: date) - 1) % 7 // 0=Sunday, 1=Monday, ..., 6=Saturday
+        let recentAmount = mealPlans[zeroBasedWeekday]?.nutrientAmount(nutrientId) ?? -1
 
         cell.update(title: nutrientId.description, date: .now, amount: recentAmount, unit: nutrientId.unitName, data: data, goal: userProfile.userNutrientGoals[nutrientId]?.value ?? 0, color: nutrientId.progressColor, icon: nutrientId.symbol)
         return cell

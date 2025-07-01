@@ -236,12 +236,27 @@ class FoodService: FoodServiceProtocol {
                 foodCopy.index = food.index
                 foodCopy.quantity = food.quantity
                 foodCopy.gramWeight = food.gramWeight
+                foodCopy.portionId = food.portionId
                 foodCopy.modifier = food.modifier
                 foodCopy.amount = food.amount
                 foodCopy.isCustom = food.isCustom
                 foodCopy.isRecipe = food.isRecipe
                 foodCopy.foodInfo = food.foodInfo
                 foodCopy.meal = mealCopy
+                
+                for ingredient in food.ingredients {
+                    let ingredientCopy = FoodEntry(context: context)
+                    ingredientCopy.index = ingredient.index
+                    ingredientCopy.quantity = ingredient.quantity
+                    ingredientCopy.gramWeight = ingredient.gramWeight
+                    ingredientCopy.portionId = ingredient.portionId
+                    ingredientCopy.modifier = ingredient.modifier
+                    ingredientCopy.amount = ingredient.amount
+                    ingredientCopy.isCustom = ingredient.isCustom
+                    ingredientCopy.isRecipe = ingredient.isRecipe
+                    ingredientCopy.foodInfo = ingredient.foodInfo
+                    ingredientCopy.parent = foodCopy
+                }
             }
         }
         

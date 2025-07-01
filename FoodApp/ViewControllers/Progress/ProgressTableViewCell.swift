@@ -34,22 +34,30 @@ class ProgressTableViewCell: UITableViewCell {
     
     let amountLabel: UILabel = {
         let label = UILabel()
-        label.font = .boldSystemFont(ofSize: 30)
+        label.font = .systemFont(ofSize: UIFont.preferredFont(forTextStyle: .title1).pointSize, weight: .semibold)
         label.setContentHuggingPriority(.required, for: .horizontal)
+        label.adjustsFontSizeToFitWidth = true
+        label.minimumScaleFactor = 0.5
+        label.lineBreakMode = .byTruncatingTail
+        label.numberOfLines = 1
         return label
     }()
     
-    let unitLabel: UILabel = {
-        let label = UILabel()
-        label.textColor = .secondaryLabel
-        label.font = .preferredFont(forTextStyle: .caption1)
-        return label
-    }()
+//    let unitLabel: UILabel = {
+//        let label = UILabel()
+//        label.textColor = .secondaryLabel
+//        label.font = .preferredFont(forTextStyle: .caption1)
+//        return label
+//    }()
     
     let goalLabel: UILabel = {
         let label = UILabel()
         label.textColor = .secondaryLabel
-        label.font = .preferredFont(forTextStyle: .caption1)
+        label.font = .systemFont(ofSize: UIFont.preferredFont(forTextStyle: .title3).pointSize)
+        label.adjustsFontSizeToFitWidth = true
+        label.minimumScaleFactor = 0.5
+        label.lineBreakMode = .byTruncatingTail
+        label.numberOfLines = 1
         return label
     }()
     
@@ -75,12 +83,12 @@ class ProgressTableViewCell: UITableViewCell {
         return stackView
     }()
     
-    let unitContainer: UIStackView = {
-        let stackView = UIStackView()
-        stackView.axis = .vertical
-        return stackView
-    }()
-    
+//    let unitContainer: UIStackView = {
+//        let stackView = UIStackView()
+//        stackView.axis = .horizontal
+//        return stackView
+//    }()
+//    
     let container: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .horizontal
@@ -100,11 +108,11 @@ class ProgressTableViewCell: UITableViewCell {
         hostingController.view.backgroundColor = .clear
         
 
-        unitContainer.addArrangedSubview(unitLabel)
-        unitContainer.addArrangedSubview(goalLabel)
+//        unitContainer.addArrangedSubview(unitLabel)
+//        unitContainer.addArrangedSubview(goalLabel)
 
         amountContainer.addArrangedSubview(amountLabel)
-        amountContainer.addArrangedSubview(unitContainer)
+        amountContainer.addArrangedSubview(goalLabel)
         amountContainer.addArrangedSubview(UIView())
 
         titleContainer.addArrangedSubview(symbolImageView)
@@ -141,8 +149,8 @@ class ProgressTableViewCell: UITableViewCell {
         symbolImageView.image = UIImage(systemName: icon)
         symbolImageView.tintColor = UIColor(color)
         amountLabel.text = amount.trimmed
-        unitLabel.text = unit
-        goalLabel.text = "/\(goal.trimmed)"
+//        unitLabel.text = unit
+        goalLabel.text = "/ \(goal.trimmed) \(unit)"
         
         hostingController.rootView.data = data
         hostingController.rootView.goal = goal

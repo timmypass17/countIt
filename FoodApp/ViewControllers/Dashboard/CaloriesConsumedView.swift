@@ -58,9 +58,19 @@ struct CaloriesConsumedView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            Text("Calories Consumed")
-                .foregroundStyle(.secondary)
-                .padding(.bottom, 12)
+            HStack {
+                Image(systemName: NutrientId.calories.symbol)
+                    .foregroundStyle(NutrientId.calories.progressColor)
+
+                Text("Calories Consumed")
+                    .foregroundColor(.secondary)
+                    .font(.subheadline)
+            }
+            .padding(.bottom, 12)
+
+//            Text("Calories Consumed")
+//                .foregroundStyle(.secondary)
+//                .padding(.bottom, 12)
 
             HStack(alignment: .lastTextBaseline) {
                 Text("\(caloriesConsumed)")

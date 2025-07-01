@@ -160,7 +160,6 @@ class DiaryViewController: UIViewController {
         guard let mealHeaderView = tableView.headerView(forSection: section) as? MealHeaderView,
               let mealPlan
         else { return }
-        print("timmy reload header: \(section)")
         let meal = mealPlan.meals[section - 2]
         mealHeaderView.update(with: meal)
     }
@@ -238,7 +237,13 @@ class DiaryViewController: UIViewController {
     
     func copyLatestAction() -> UIAction {
         if let previousMealPlan = foodService.getPreviousMealPlan(for: mealPlan.date) {
-            let copyAction = UIAction(title: "\(previousMealPlan.date.formatted(date: .abbreviated, time: .omitted))", image: UIImage(systemName: "clock.arrow.circlepath")) { [self] action in
+            let title: String
+            if Calendar.current.isDateInYesterday(previousMealPlan.date) {
+                title = "Yesterday"
+            } else {
+                title = previousMealPlan.date.formatted(date: .abbreviated, time: .omitted)
+            }
+            let copyAction = UIAction(title: "\(title)", image: UIImage(systemName: "clock.arrow.circlepath")) { [self] action in
                 do {
                     print("timmy copying meal plan")
                     let mealPlan = try foodService.copyMeals(from: previousMealPlan, to: mealPlan)
