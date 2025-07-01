@@ -40,6 +40,8 @@
 		325463C02DD03FF400BEDCE0 /* OnboardingPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 325463BF2DD03FF400BEDCE0 /* OnboardingPageViewController.swift */; };
 		325463C42DD0409600BEDCE0 /* UserProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 325463C32DD0409600BEDCE0 /* UserProfile.swift */; };
 		325463C52DD0409600BEDCE0 /* UserProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 325463C32DD0409600BEDCE0 /* UserProfile.swift */; };
+		3259E3B22E145EEF00F90965 /* UpdateNutrientViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3259E3B12E145EEF00F90965 /* UpdateNutrientViewController.swift */; };
+		3259E3B42E1464E800F90965 /* UpdateNutrientTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3259E3B32E1464E800F90965 /* UpdateNutrientTableViewCell.swift */; };
 		3262F83C2DFCC2DC006CB8A4 /* UserWeight+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3262F83A2DFCC2DC006CB8A4 /* UserWeight+CoreDataClass.swift */; };
 		3262F83D2DFCC2DC006CB8A4 /* UserWeight+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3262F83B2DFCC2DC006CB8A4 /* UserWeight+CoreDataProperties.swift */; };
 		3262F83E2DFCC2EB006CB8A4 /* UserWeight+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3262F83A2DFCC2DC006CB8A4 /* UserWeight+CoreDataClass.swift */; };
@@ -271,6 +273,8 @@
 		325463BD2DD0114100BEDCE0 /* HeightCmPickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeightCmPickerViewController.swift; sourceTree = "<group>"; };
 		325463BF2DD03FF400BEDCE0 /* OnboardingPageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingPageViewController.swift; sourceTree = "<group>"; };
 		325463C32DD0409600BEDCE0 /* UserProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfile.swift; sourceTree = "<group>"; };
+		3259E3B12E145EEF00F90965 /* UpdateNutrientViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateNutrientViewController.swift; sourceTree = "<group>"; };
+		3259E3B32E1464E800F90965 /* UpdateNutrientTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateNutrientTableViewCell.swift; sourceTree = "<group>"; };
 		3262F83A2DFCC2DC006CB8A4 /* UserWeight+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserWeight+CoreDataClass.swift"; sourceTree = "<group>"; };
 		3262F83B2DFCC2DC006CB8A4 /* UserWeight+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserWeight+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		3262F8422DFCE66A006CB8A4 /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
@@ -508,6 +512,8 @@
 				3249ACC02E0F6F280064E79F /* ProgressTableViewCell.swift */,
 				328AB7E82E10661900A6EBFA /* WeeklyNutrientChartView.swift */,
 				328AB8042E10B27400A6EBFA /* ProgressDetailView.swift */,
+				3259E3B12E145EEF00F90965 /* UpdateNutrientViewController.swift */,
+				3259E3B32E1464E800F90965 /* UpdateNutrientTableViewCell.swift */,
 			);
 			path = Progress;
 			sourceTree = "<group>";
@@ -1091,6 +1097,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				328AB7E92E10661900A6EBFA /* WeeklyNutrientChartView.swift in Sources */,
+				3259E3B22E145EEF00F90965 /* UpdateNutrientViewController.swift in Sources */,
+				3259E3B42E1464E800F90965 /* UpdateNutrientTableViewCell.swift in Sources */,
 				323FB7712DCAE65B00A71C53 /* ProgressViewController.swift in Sources */,
 				328FA9532B954664002A6FB6 /* FoodDetailTableViewController.swift in Sources */,
 				32762A8C2DFF5322001BB96F /* FoodEntry+CoreDataProperties.swift in Sources */,

@@ -12,27 +12,23 @@ struct ProgressDetailView: View {
 
     @FetchRequest(sortDescriptors: [SortDescriptor(\.date_, order: .reverse)])
     private var mealPlans: FetchedResults<MealPlan>
-
-    @FetchRequest(sortDescriptors: [])
-    private var userProfiles: FetchedResults<UserProfile>
+    
     @State private var selectedFilter: SelectedFilter = .week
+    @State var isPresentingEditSheet = false
+    
+    // Don't pass UserProfile, updating relationship doesn't trigger ui uipdates, pass UserNutrientGoal directly
+    // works - userNutrientGoal.value = amount
+    // does not work - userProfile.nutrientGoals[nutrientId].value = amount
+    @StateObject var userNutrientGoal: UserNutrientGoal
 
-    var userProfile: UserProfile? {
-        userProfiles.first
-    }
-    
-    var goal: Double {
-        return userProfile?.userNutrientGoals[nutrientId]?.value ?? 0
-    }
-    
     var latestMealPlan: MealPlan? {
         mealPlans.first
     }
     
-    
     let nutrientId: NutrientId
     
-    init(nutrientId: NutrientId) {
+    init(userNutrientGoal: UserNutrientGoal, nutrientId: NutrientId) {
+        self._userNutrientGoal = StateObject(wrappedValue: userNutrientGoal)
         self.nutrientId = nutrientId
     }
     
@@ -78,7 +74,7 @@ struct ProgressDetailView: View {
                         Text("\(filteredMealPlan.first?.nutrientAmount(nutrientId).trimmed ?? "-")")
                             .font(.title)
                             .fontWeight(.semibold)
-                        Text("/ \(goal.trimmed) \(nutrientId.unitName)")
+                        Text("/ \(userNutrientGoal.value.trimmed) \(nutrientId.unitName)")
                             .foregroundColor(.secondary)
                             .font(.title2)
                     }
@@ -97,25 +93,22 @@ struct ProgressDetailView: View {
                         y: .value("Amount", item.amount)
                     )
                     
-                    RuleMark(y: .value("Goal", goal))
+                    RuleMark(y: .value("Goal", userNutrientGoal.value))
                         .lineStyle(StrokeStyle(lineWidth: 1, dash: [5]))
                         .foregroundStyle(.gray)
                         .annotation(position: .top, alignment: .leading) {
-                            Text("Goal: \(goal.trimmed) \(nutrientId.unitName)")
+                            Text("Goal: \(userNutrientGoal.value.trimmed) \(nutrientId.unitName)")
                                 .font(.caption)
                                 .foregroundColor(.gray)
                         }
                 }
-                .chartYScale(domain: 0...(goal * 1.25))
+                .chartYScale(domain: 0...(max(userNutrientGoal.value, filteredMealPlan.max { $0.nutrientAmount(nutrientId) < $1.nutrientAmount(nutrientId) }?.nutrientAmount(nutrientId) ?? userNutrientGoal.value) * 1.25))
                 .frame(height: 300)
                 .foregroundStyle(nutrientId.progressColor)
                 .padding()
                 .background(Color(UIColor(hex: "#252525")), in: RoundedRectangle(cornerRadius: 8))
                 .padding(.bottom, 12)
-                
-//                Divider()
-//                    .padding(.bottom, 12)
-                
+
                 NutrientProgressListView(filteredData: filteredData, nutrientId: nutrientId)
             }
             .padding([.horizontal, .bottom])
@@ -125,9 +118,15 @@ struct ProgressDetailView: View {
         .background(Color(UIColor(hex: "#1c1c1e")))
         .toolbar {
             ToolbarItem {
-                Button("Edit") {
-                    
+                Button("Set Goal") {
+                    isPresentingEditSheet.toggle()
                 }
+            }
+        }
+        .sheet(isPresented: $isPresentingEditSheet) {
+            UpdateNutrientView(primaryText: nutrientId.shortDescription, initialAmount: userNutrientGoal.value, unit: nutrientId.unitName) { amount in
+                userNutrientGoal.value = amount
+                CoreDataStack.shared.saveContext()
             }
         }
     }
@@ -197,52 +196,3 @@ struct NutrientProgressListCell: View {
         }
     }
 }
-//
-//struct ProgressChartView: View {
-//    var filteredData: [UserWeight]
-//
-//    
-//    var body: some View {
-//        Chart(filteredData) { userWeight in
-//            LineMark(
-//                x: .value("Date", userWeight.date_ ?? Date(), unit: .day),
-//                y: .value("Weight", userWeight.weightInKg)
-//            )
-//            .symbol(Circle().strokeBorder(lineWidth: 2))
-//            .symbolSize(CGSize(width: 6, height: 6))
-//        }
-//        .chartYScale(domain: .automatic(includesZero: false))
-//        .frame(height: 300)
-//    }
-//}
-//
-//
-//enum SelectedFilter: String, CaseIterable, Identifiable {
-//    case all
-//    case week
-//    case month
-//    case sixMonth
-//    case year
-//    var id: Self { self }
-//    
-//    var description: String {
-//        switch self {
-//        case .all:
-//            return "All"
-//        case .week:
-//            return "Week"
-//        case .month:
-//            return "Month"
-//        case .sixMonth:
-//            return "6m"
-//        case .year:
-//            return "Year"
-//        }
-//    }
-//}
-//
-//func formatDateMonthDayYear(_ date: Date) -> String {
-//    let dateFormatter = DateFormatter()
-//    dateFormatter.dateFormat = "MMM d, yyyy"
-//    return dateFormatter.string(from: date)
-//}

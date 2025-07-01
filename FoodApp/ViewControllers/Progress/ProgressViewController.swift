@@ -137,9 +137,11 @@ extension ProgressViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let nutrientId = nutrientIds[indexPath.section]
-        let progressView = ProgressDetailView(nutrientId: nutrientId)
+        guard let userNutrientGoal = userProfile.userNutrientGoals[nutrientId] else { return }
+        let progressView = ProgressDetailView(userNutrientGoal: userNutrientGoal, nutrientId: nutrientId)
         let hostingController = UIHostingController(rootView: progressView
-            .environment(\.managedObjectContext, CoreDataStack.shared.persistentContainer.viewContext))
+            .environment(\.managedObjectContext, CoreDataStack.shared.context))
         navigationController?.pushViewController(hostingController, animated: true)
     }
 }
+
