@@ -9,6 +9,7 @@ import UIKit
 
 extension Notification.Name {
     static let userInfoUpdated = Notification.Name("userInfoUpdated")
+    static let mealPlanUpdated = Notification.Name("mealPlanUpdated")
     static let onboardingBackButton = Notification.Name("onboardingBack")
     static let reloadDiary = Notification.Name("reloadDiary")
 }

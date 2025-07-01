@@ -127,6 +127,7 @@ struct ProgressDetailView: View {
             UpdateNutrientView(primaryText: nutrientId.shortDescription, initialAmount: userNutrientGoal.value, unit: nutrientId.unitName) { amount in
                 userNutrientGoal.value = amount
                 CoreDataStack.shared.saveContext()
+                NotificationCenter.default.post(name: .mealPlanUpdated, object: nil)
             }
         }
     }

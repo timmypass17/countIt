@@ -67,8 +67,8 @@ extension FoodItem {
             guard let amount = foodPortion.amount,
                   let modifier = foodPortion.modifier else { return "" }
             
-            let servings = Int(amount * Double(numberOfServings))
-            return  "\(servings) \(modifier)"
+            let servings = amount * Double(numberOfServings)
+            return  "\(servings.trimmed) \(modifier)"
         }
         
         if foodPortion.modifier == "Quick Add" {
@@ -78,8 +78,8 @@ extension FoodItem {
         let gramWeight = Int(foodPortion.gramWeight ?? 0 * Double(numberOfServings))
         if let amount = foodPortion.amount,
            let modifier = foodPortion.modifier {
-            let servings = Int(amount * Double(numberOfServings))
-            return "\(servings) \(modifier) (\(gramWeight) g)"
+            let servings = amount * Double(numberOfServings)
+            return "\(servings.trimmed) \(modifier) (\(gramWeight) g)"
         } else if let portionDescription = foodPortion.portionDescription {
             return "\(portionDescription) (\(gramWeight) g)"
         } else {

@@ -26,14 +26,14 @@ class ProgressViewController: UIViewController {
         self.foodService = foodService
         self.userProfile = userProfile
         super.init(nibName: nil, bundle: nil)
-        getCurrentWeekMealPlans()
+        loadCurrentWeekMealPlans()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func getCurrentWeekMealPlans() {
+    func loadCurrentWeekMealPlans() {
         var mealPlans: [MealPlan?] = []
 
         let calendar = Calendar.current
@@ -59,6 +59,8 @@ class ProgressViewController: UIViewController {
         tableView.register(ProgressTableViewCell.self, forCellReuseIdentifier: ProgressTableViewCell.reuseIdentifier)
         tableView.dataSource = self
         tableView.delegate = self
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(handleMealPlanUpdated), name: .mealPlanUpdated, object: nil)
 
         navigationItem.title = "Goals"
         
@@ -72,6 +74,11 @@ class ProgressViewController: UIViewController {
         ])
         
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Edit", primaryAction: nil)
+    }
+    
+    @objc func handleMealPlanUpdated() {
+        loadCurrentWeekMealPlans()
+        tableView.reloadData()
     }
 }
 
@@ -88,7 +95,6 @@ extension ProgressViewController: UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(withIdentifier: ProgressTableViewCell.reuseIdentifier, for: indexPath) as! ProgressTableViewCell
         let nutrientId = nutrientIds[indexPath.section]
 
-        // TODO: Pass in last 7 days value
         let calendar = Calendar.current
         let today = calendar.startOfDay(for: .now)
 

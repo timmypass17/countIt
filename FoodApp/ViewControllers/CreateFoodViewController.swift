@@ -49,6 +49,12 @@ class CreateFoodViewController: UIViewController {
     
     let foodService = FoodService()
     
+    lazy var saveButton: UIBarButtonItem = {
+        let button = UIBarButtonItem(title: "Save", primaryAction: didTapSaveButton())
+        button.isEnabled = false
+        return button
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         title = "Create Food"
@@ -66,7 +72,17 @@ class CreateFoodViewController: UIViewController {
         ])
         
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Cancel", primaryAction: nil)
-        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Save", primaryAction: didTapSaveButton())
+        navigationItem.rightBarButtonItem = saveButton
+    }
+    
+    func updateSaveButton() {
+        let isFormComplete =
+        foodEntry.foodInfo?.name_ != nil &&
+        foodEntry.amount != nil &&
+        foodEntry.modifier != nil &&
+        foodEntry.foodInfo?.nutrients[.calories]?.value != nil
+        
+        saveButton.isEnabled = isFormComplete
     }
     
     func didTapSaveButton() -> UIAction {
@@ -88,6 +104,7 @@ class CreateFoodViewController: UIViewController {
 
                 try self.childContext.save()
                 CoreDataStack.shared.saveContext()
+                self.dismiss(animated: true)
             } catch {
                 print("Error saving food entry")
             }
@@ -123,6 +140,7 @@ extension CreateFoodViewController: UITableViewDataSource {
                 let cell = tableView.dequeueReusableCell(withIdentifier: CreateFoodInfoTableViewCell.reuseIdentifier, for: indexPath) as! CreateFoodInfoTableViewCell
                 cell.update(title: "Name", description: "Required*", placeholderText: "e.g. Peanut Butter") { name in
                     self.foodEntry.foodInfo?.name = name ?? ""
+                    self.updateSaveButton()
                 }
                 return cell
             } else if indexPath.row == 1 {
@@ -137,16 +155,19 @@ extension CreateFoodViewController: UITableViewDataSource {
                     guard let servingSize else {
                         self.foodEntry.amount = nil
                         self.foodEntry.modifier = nil
+                        self.updateSaveButton()
                         return
                     }
                     let (amount, modifier) = self.extractAmountAndUnit(from: servingSize)
                     guard let amount else {
                         self.foodEntry.amount = nil
                         self.foodEntry.modifier = nil
+                        self.updateSaveButton()
                         return
                     }
                     self.foodEntry.amount = amount
                     self.foodEntry.modifier = modifier
+                    self.updateSaveButton()
                 }
                 return cell
             } else if indexPath.row == 3 {
@@ -171,10 +192,12 @@ extension CreateFoodViewController: UITableViewDataSource {
                 placeholder: nutrientId.isRequired ? "Required" : "Optional") { valueText in
                     guard let valueText, let value = Double(valueText) else {
                         self.foodEntry.foodInfo?.nutrients[nutrientId]?.value = nil
+                        self.updateSaveButton()
                         return
                     }
                     
                     self.foodEntry.foodInfo?.nutrients[nutrientId]?.value = value
+                    self.updateSaveButton()
                 }
             return cell
         case .vitamins:
@@ -213,14 +236,14 @@ extension CreateFoodViewController: UITableViewDataSource {
         return UITableViewCell()
     }
     
-    func extractAmountAndUnit(from string: String) -> (amount: Double?, unit: String) {
+    func extractAmountAndUnit(from string: String) -> (amount: Double?, unit: String?) {
         let scanner = Scanner(string: string)
         var number: Double = 0.0
 
-        // Scan a double (e.g., 1.5)
         let foundNumber = scanner.scanDouble(&number)
-        let unit = string[scanner.currentIndex...].trimmingCharacters(in: .whitespaces)
-
+        let remaining = string[scanner.currentIndex...].trimmingCharacters(in: .whitespaces)
+        
+        let unit = remaining.isEmpty ? nil : remaining
         return (foundNumber ? number : nil, unit)
     }
 }

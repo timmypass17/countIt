@@ -48,6 +48,12 @@ class CreateRecipeViewController: UIViewController {
     var childContext: NSManagedObjectContext = CoreDataStack.shared.childContext()
     let foodService = FoodService()
     
+    lazy var saveButton: UIBarButtonItem = {
+        let button = UIBarButtonItem(title: "Save", primaryAction: didTapSaveButton())
+        button.isEnabled = false
+        return button
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         title = "Create Recipe"
@@ -67,7 +73,7 @@ class CreateRecipeViewController: UIViewController {
         ])
         
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Cancel", primaryAction: nil)
-        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Save", primaryAction: didTapSaveButton())
+        navigationItem.rightBarButtonItem = saveButton
     }
     
     func didTapSaveButton() -> UIAction {
@@ -88,10 +94,19 @@ class CreateRecipeViewController: UIViewController {
 
                 try self.childContext.save()
                 CoreDataStack.shared.saveContext()
+                self.dismiss(animated: true)
             } catch {
                 print("Error saving food entry")
             }
         }
+    }
+    
+    func updateSaveButton() {
+        let isFormComplete =
+        foodEntry.foodInfo?.name_ != nil &&
+        foodEntry.ingredients.count > 0
+        
+        saveButton.isEnabled = isFormComplete
     }
 }
 
@@ -117,6 +132,7 @@ extension CreateRecipeViewController: UITableViewDataSource {
             let cell = tableView.dequeueReusableCell(withIdentifier: CreateFoodInfoTableViewCell.reuseIdentifier, for: indexPath) as! CreateFoodInfoTableViewCell
             cell.update(title: "Name", description: "Required*", placeholderText: "e.g. Protein Smoothie") { name in
                 self.foodEntry.foodInfo?.name = name ?? ""
+                self.updateSaveButton()
             }
             return cell
         case .ingredients:
@@ -131,6 +147,40 @@ extension CreateRecipeViewController: UITableViewDataSource {
                 cell.accessoryType = .disclosureIndicator
                 return cell
             }
+        }
+    }
+    
+    func tableView(_ tableView: UITableView,
+                   commit editingStyle: UITableViewCell.EditingStyle,
+                   forRowAt indexPath: IndexPath) {
+        guard editingStyle == .delete else { return }
+
+        guard let section = Section(rawValue: indexPath.section),
+              section == .ingredients,
+              indexPath.row < foodEntry.ingredients.count else { return }
+
+        // Remove the ingredient from the Core Data relationship
+        let foodToDelete = foodEntry.ingredients[indexPath.row]
+        foodEntry.removeFromIngredients_(foodToDelete)
+        childContext.delete(foodToDelete)
+
+        // Reindex remaining ingredients
+        for (i, ingredient) in foodEntry.ingredients.enumerated() {
+            ingredient.index = Int16(i)
+        }
+
+        tableView.deleteRows(at: [indexPath], with: .automatic)
+        updateSaveButton()
+    }
+    
+    func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+        guard let section = Section(rawValue: indexPath.section) else { return false }
+
+        switch section {
+        case .name:
+            return false
+        case .ingredients:
+            return indexPath.row < foodEntry.ingredients.count
         }
     }
 }
@@ -175,5 +225,6 @@ extension CreateRecipeViewController: AddFoodDetailViewControllerDelegate {
         foodEntry.addToIngredients_(foodInChildContext)
         let indexPath = IndexPath(row: Int(foodInChildContext.index), section: 1)
         tableView.insertRows(at: [indexPath], with: .automatic)
+        self.updateSaveButton()
     }
 }
