@@ -15,7 +15,7 @@ struct BrandedFoodItem: FoodItem {
     let description: String
     let gtinUpc: String // barcode
     let householdServingFullText: String // "2 Tbsp"
-    let servingSize: Int    // 32.0
+    let servingSize: Double    // 32.0, 0.25
     let servingSizeUnit: String // "g"
     let brandedFoodCategory: String // "Popcorn, Peanuts, Seeds & Related Snacks"
     let foodNutrients: [FoodNutrient]
@@ -48,7 +48,7 @@ struct BrandedFoodItem: FoodItem {
         self.description = try container.decode(String.self, forKey: .description).firstUppercased
         self.gtinUpc = try container.decode(String.self, forKey: .gtinUpc)
         self.householdServingFullText = try container.decode(String.self, forKey: .householdServingFullText)
-        let servingSize = try container.decodeIfPresent(Int.self, forKey: .servingSize) ?? 1
+        let servingSize = try container.decodeIfPresent(Double.self, forKey: .servingSize) ?? 1
         self.servingSize = servingSize
         self.servingSizeUnit = try container.decode(String.self, forKey: .servingSizeUnit)
         self.brandedFoodCategory = try container.decode(String.self, forKey: .brandedFoodCategory)
