@@ -24,6 +24,7 @@ class FoodDetailTableViewController: UITableViewController {
     var foodEntry: FoodEntry?
     var fdcFoodAdditional: FoodItem?
     let meal: Meal?
+    let userProfile: UserProfile
 //    var selectedFoodPortion: FoodPortion    // never optional (always have atleast 100g)
     let foodService: FoodService
     let state: State
@@ -58,10 +59,18 @@ class FoodDetailTableViewController: UITableViewController {
         case add, edit
     }
     
-    init(foodEntry: FoodEntry? = nil, fdcFood: FoodItem, meal: Meal?, foodService: FoodService, selectedFoodPortion: FoodPortion? = nil, numberOfServings: Int = 1, state: State = .add) {
+    init(foodEntry: FoodEntry? = nil,
+         fdcFood: FoodItem, meal: Meal?,
+         userProfile: UserProfile,
+         foodService: FoodService,
+         selectedFoodPortion: FoodPortion? = nil,
+         numberOfServings: Int = 1,
+         state: State = .add
+    ) {
         self.foodEntry = foodEntry
         self.fdcFood = fdcFood
         self.meal = meal
+        self.userProfile = userProfile
         self.foodService = foodService
         self.fdcFood.quantity = numberOfServings
         self.state = state
@@ -167,7 +176,7 @@ class FoodDetailTableViewController: UITableViewController {
             ]
 
             cell.contentConfiguration = UIHostingConfiguration {    // tableView.reloadData() or use swiftui state mangement
-                MacrosView(mealPlan: meal?.mealPlan, nutrients: nutrients)
+                MacrosView(mealPlan: meal?.mealPlan, userProfile: userProfile, nutrients: nutrients)
             }
             cell.backgroundColor = UIColor(hex: "#252525")
             cell.selectionStyle = .none
@@ -183,7 +192,14 @@ class FoodDetailTableViewController: UITableViewController {
         case .macros:
             let cell = tableView.dequeueReusableCell(withIdentifier: NutritionTableViewCell.reuseIdentifier, for: indexPath) as! NutritionTableViewCell
             let nutrient = macronutrients[indexPath.row]
-            let goal = meal?.mealPlan?.nutrientGoals[nutrient.nutrientId]?.value ?? 0
+            let goal: Double
+            if let meal {
+                // Use meal's goal
+                goal = meal.mealPlan?.nutrientGoals[nutrient.nutrientId]?.value ?? 0
+            } else {
+                // Fallback on user's goal
+                goal = userProfile.userNutrientGoals[nutrient.nutrientId]?.value ?? 0
+            }
             cell.update(
                 nutrientId: nutrient.nutrientId!,
                 amount: fdcFood.getNutrientAmount(nutrient.nutrientId!, quantity: fdcFood.quantity),
@@ -196,7 +212,14 @@ class FoodDetailTableViewController: UITableViewController {
         case .vitamins:
             let cell = tableView.dequeueReusableCell(withIdentifier: NutritionTableViewCell.reuseIdentifier, for: indexPath) as! NutritionTableViewCell
             let vitamin = vitamins[indexPath.row]
-            let goal = meal?.mealPlan?.nutrientGoals[vitamin.nutrientId]?.value ?? 0
+            let goal: Double
+            if let meal {
+                // Use meal's goal
+                goal = meal.mealPlan?.nutrientGoals[vitamin.nutrientId]?.value ?? 0
+            } else {
+                // Fallback on user's goal
+                goal = userProfile.userNutrientGoals[vitamin.nutrientId]?.value ?? 0
+            }
             cell.update(
                 nutrientId: vitamin.nutrientId!,
                 amount: fdcFood.getNutrientAmount(vitamin.nutrientId!, quantity: fdcFood.quantity),
@@ -209,7 +232,14 @@ class FoodDetailTableViewController: UITableViewController {
         case .minerals:
             let cell = tableView.dequeueReusableCell(withIdentifier: NutritionTableViewCell.reuseIdentifier, for: indexPath) as! NutritionTableViewCell
             let mineral = minerals[indexPath.row]
-            let goal = meal?.mealPlan?.nutrientGoals[mineral.nutrientId]?.value ?? 0
+            let goal: Double
+            if let meal {
+                // Use meal's goal
+                goal = meal.mealPlan?.nutrientGoals[mineral.nutrientId]?.value ?? 0
+            } else {
+                // Fallback on user's goal
+                goal = userProfile.userNutrientGoals[mineral.nutrientId]?.value ?? 0
+            }
             cell.update(
                 nutrientId: mineral.nutrientId!,
                 amount: fdcFood.getNutrientAmount(mineral.nutrientId!, quantity: fdcFood.quantity),
@@ -269,6 +299,7 @@ class FoodDetailTableViewController: UITableViewController {
                 foodEntry: ingredientEntry,
                 fdcFood: fdcIngredient,
                 meal: meal,
+                userProfile: userProfile,
                 foodService: foodService,
                 selectedFoodPortion: fdcIngredient.selectedFoodPortion,
                 numberOfServings: Int(ingredientEntry.quantity)

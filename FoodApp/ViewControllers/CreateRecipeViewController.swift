@@ -8,6 +8,7 @@
 import UIKit
 import CoreData
 
+// TODO: Unsaved ingredients are unexepctly being saved if user discards recipe midway and saves something else later
 class CreateRecipeViewController: UIViewController {
 
     let tableView: UITableView = {
@@ -22,7 +23,7 @@ class CreateRecipeViewController: UIViewController {
     }
     
     lazy var foodEntry: FoodEntry = {
-        var foodEntry = FoodEntry(context: childContext)
+        var foodEntry = FoodEntry(context: recipeContext)
         foodEntry.quantity = 1
         foodEntry.gramWeight = nil
         foodEntry.amount = 1
@@ -31,13 +32,13 @@ class CreateRecipeViewController: UIViewController {
         foodEntry.isCustom = true
         foodEntry.isRecipe = true
         
-        let foodInfo = FoodInfo(context: childContext)
+        let foodInfo = FoodInfo(context: recipeContext)
         foodInfo.fdcId = Int64.random(in: Int64.min..<0)    // negative means user generated
         foodInfo.brandName_ = nil
         foodEntry.foodInfo = foodInfo
         
         for nutrientId in NutrientId.allCases {
-            let foodInfoNutrient = FoodInfoNutrient(context: childContext)
+            let foodInfoNutrient = FoodInfoNutrient(context: recipeContext)
             foodInfoNutrient.nutrientId = nutrientId
             foodInfo.addToNutrients_(foodInfoNutrient)
         }
@@ -45,14 +46,35 @@ class CreateRecipeViewController: UIViewController {
         return foodEntry
     }()
     
-    var childContext: NSManagedObjectContext = CoreDataStack.shared.childContext()
+    var recipeContext: NSManagedObjectContext = CoreDataStack.shared.childContext()
     let foodService = FoodService()
+    
+    lazy var cancelButton: UIBarButtonItem = {
+        let button = UIBarButtonItem(title: "Cancel", primaryAction: didTapCancelButton())
+        return button
+    }()
     
     lazy var saveButton: UIBarButtonItem = {
         let button = UIBarButtonItem(title: "Save", primaryAction: didTapSaveButton())
         button.isEnabled = false
         return button
     }()
+    
+    let userProfile: UserProfile
+    
+    init(userProfile: UserProfile) {
+        self.userProfile = userProfile
+        super.init(nibName: nil, bundle: nil)
+        print("timmy init CreateRecipeViewController")
+    }
+    
+    deinit {
+        print("timmy deinit CreateRecipeViewController")
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -72,14 +94,15 @@ class CreateRecipeViewController: UIViewController {
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
         ])
         
-        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Cancel", primaryAction: nil)
+        navigationItem.leftBarButtonItem = cancelButton
         navigationItem.rightBarButtonItem = saveButton
     }
     
     func didTapSaveButton() -> UIAction {
-        return UIAction { _ in
+        return UIAction { [weak self] _ in
+            guard let self else { return }
             do {
-                let foodPortion = FoodInfoPortion(context: self.childContext)
+                let foodPortion = FoodInfoPortion(context: self.recipeContext)
                 foodPortion.id = self.foodEntry.portionId
                 foodPortion.gramWeight = self.foodEntry.gramWeight
                 foodPortion.amount = self.foodEntry.amount
@@ -87,17 +110,24 @@ class CreateRecipeViewController: UIViewController {
                 foodPortion.foodInfo = self.foodEntry.foodInfo
                 
                 // We just adding to history, (does not log to any meals)
-                let history = History(context: self.childContext)
+                let history = History(context: self.recipeContext)
                 history.fdcId = self.foodEntry.foodInfo!.fdcId
                 history.createdAt_ = .now
                 history.foodEntry = self.foodEntry
 
-                try self.childContext.save()
+                try self.recipeContext.save()
                 CoreDataStack.shared.saveContext()
                 self.dismiss(animated: true)
             } catch {
                 print("Error saving food entry")
             }
+        }
+    }
+    
+    func didTapCancelButton() -> UIAction {
+        return UIAction { [weak self] _ in
+            guard let self else { return }
+            self.dismiss(animated: true)
         }
     }
     
@@ -130,7 +160,8 @@ extension CreateRecipeViewController: UITableViewDataSource {
         switch section {
         case .name:
             let cell = tableView.dequeueReusableCell(withIdentifier: CreateFoodInfoTableViewCell.reuseIdentifier, for: indexPath) as! CreateFoodInfoTableViewCell
-            cell.update(title: "Name", description: "Required*", placeholderText: "e.g. Protein Smoothie") { name in
+            cell.update(title: "Name", description: "Required*", placeholderText: "e.g. Protein Smoothie") { [weak self] name in
+                guard let self else { return }
                 self.foodEntry.foodInfo?.name = name ?? ""
                 self.updateSaveButton()
             }
@@ -162,7 +193,7 @@ extension CreateRecipeViewController: UITableViewDataSource {
         // Remove the ingredient from the Core Data relationship
         let foodToDelete = foodEntry.ingredients[indexPath.row]
         foodEntry.removeFromIngredients_(foodToDelete)
-        childContext.delete(foodToDelete)
+        recipeContext.delete(foodToDelete)
 
         // Reindex remaining ingredients
         for (i, ingredient) in foodEntry.ingredients.enumerated() {
@@ -202,6 +233,8 @@ extension CreateRecipeViewController: UITableViewDelegate {
             tableView.deselectRow(at: indexPath, animated: true)
             let searchFoodTableViewController = SearchFoodTableViewController(
                 foodService: foodService,
+                foodEntry: foodEntry,
+                userProfile: userProfile,
                 visibleTabs: [.all, .myFoods],
                 visibleButtonTypes: [.barcode, .quickAdd, .addFood]
             )
@@ -212,18 +245,45 @@ extension CreateRecipeViewController: UITableViewDelegate {
             navigationController?.pushViewController(searchFoodTableViewController, animated: true)
             return
         }
+        
+        let foodEntry: FoodEntry = foodEntry.ingredients[indexPath.row]
+        guard let fdcFood = foodEntry.convertToFDCFood() else { return }
+        let selectedPortion = foodEntry.foodInfo?.convertToFoodPortions().first { $0.id == foodEntry.portionId }
+        
+        let updateFoodDetailTableViewController = UpdateFoodDetailViewController(foodEntry: foodEntry, fdcFood: fdcFood, meal: nil, userProfile: userProfile, foodService: foodService, selectedFoodPortion: selectedPortion, numberOfServings: Int(foodEntry.quantity))
+        updateFoodDetailTableViewController.delegate = self
+        updateFoodDetailTableViewController.dismissDelegate = self
+        present(UINavigationController(rootViewController: updateFoodDetailTableViewController), animated: true)
     }
 }
 
+extension CreateRecipeViewController: UpdateFoodDetailViewControllerDelegate {
+    func updateFoodDetailViewController(_ viewController: UpdateFoodDetailViewController, didUpdateFood food: FoodEntry) {
+        
+    }
+
+}
+
+extension CreateRecipeViewController: FoodDetailTableViewControllerDismissDelegate {
+    func foodDetailTableViewController(_ tableViewController: FoodDetailTableViewController, didDismiss: Bool) {
+        if let indexPath = tableView.indexPathForSelectedRow {
+            tableView.deselectRow(at: indexPath, animated: true)
+        }
+    }
+}
+
+
 extension CreateRecipeViewController: AddFoodDetailViewControllerDelegate {
     func addFoodDetailViewController(_ tableViewController: AddFoodDetailViewController, didAddFood food: FoodEntry) {
-        let foodID = food.objectID
-        let foodInChildContext = childContext.object(with: foodID) as! FoodEntry
-                
-        foodInChildContext.index = Int16(foodEntry.ingredients.count)   // setting relationship does change size of relationship
-        foodInChildContext.parent = foodEntry
-        foodEntry.addToIngredients_(foodInChildContext)
-        let indexPath = IndexPath(row: Int(foodInChildContext.index), section: 1)
+//        try? food.managedObjectContext?.save()
+//
+//        let foodID = food.objectID
+//        let foodInChildContext = recipeContext.object(with: foodID) as! FoodEntry
+        
+        food.index = Int16(foodEntry.ingredients.count)   // setting relationship does change size of relationship
+        food.parent = foodEntry
+        foodEntry.addToIngredients_(food)
+        let indexPath = IndexPath(row: Int(food.index), section: 1)
         tableView.insertRows(at: [indexPath], with: .automatic)
         self.updateSaveButton()
     }

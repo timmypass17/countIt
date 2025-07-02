@@ -313,7 +313,7 @@ extension DiaryViewController: UITableViewDataSource {
             let cell = tableView.dequeueReusableCell(withIdentifier: MacrosView.reuseIdentifier, for: indexPath)
             
             cell.contentConfiguration = UIHostingConfiguration {
-                MacrosView(mealPlan: mealPlan)  // uses coredata fetch, updated automatically when core data changes
+                MacrosView(mealPlan: mealPlan, userProfile: userProfile)  // uses coredata fetch, updated automatically when core data changes
                     .environment(\.managedObjectContext, CoreDataStack.shared.context)
             }
             cell.backgroundColor = UIColor(hex: "#252525")
@@ -372,7 +372,7 @@ extension DiaryViewController: UITableViewDelegate {
         if isAddFoodButton {
             tableView.deselectRow(at: indexPath, animated: true)
             let meal = mealPlan.meals[indexPath.section - 2]
-            let searchFoodTableViewController = SearchFoodTableViewController(foodService: foodService, meal: meal)
+            let searchFoodTableViewController = SearchFoodTableViewController(foodService: foodService, meal: meal, userProfile: userProfile)
             searchFoodTableViewController.addFoodDelegate = self
             searchFoodTableViewController.quickAddDelegate = self
             searchFoodTableViewController.resultDelegate = self
@@ -384,7 +384,7 @@ extension DiaryViewController: UITableViewDelegate {
         guard let fdcFood = foodEntry.convertToFDCFood() else { return }
         let selectedPortion = foodEntry.foodInfo?.convertToFoodPortions().first { $0.id == foodEntry.portionId }
         
-        let updateFoodDetailTableViewController = UpdateFoodDetailViewController(foodEntry: foodEntry, fdcFood: fdcFood, meal: meal, foodService: foodService, selectedFoodPortion: selectedPortion, numberOfServings: Int(foodEntry.quantity))
+        let updateFoodDetailTableViewController = UpdateFoodDetailViewController(foodEntry: foodEntry, fdcFood: fdcFood, meal: meal, userProfile: userProfile, foodService: foodService, selectedFoodPortion: selectedPortion, numberOfServings: Int(foodEntry.quantity))
         updateFoodDetailTableViewController.delegate = self
         updateFoodDetailTableViewController.dismissDelegate = self
         present(UINavigationController(rootViewController: updateFoodDetailTableViewController), animated: true)
@@ -492,8 +492,15 @@ extension DiaryViewController: UITableViewDelegate {
 
 extension DiaryViewController: AddFoodDetailViewControllerDelegate {
     func addFoodDetailViewController(_ tableViewController: AddFoodDetailViewController, didAddFood food: FoodEntry) {
+        do {
+            try food.managedObjectContext?.save()
+            CoreDataStack.shared.saveContext()
+        } catch {
+            print("Error saving food: \(error)")
+        }
         guard let meal = food.meal,
-              let section = mealPlan.meals.firstIndex(of: meal)
+              // Have to compare objectID (doing $0 == meal fails across diff context, need to use objectID)
+              let section = mealPlan.meals.firstIndex(where: { $0.objectID == meal.objectID })
         else { return }
         let indexPath = IndexPath(row: Int(food.index), section: section + 2)
         tableView.insertRows(at: [indexPath], with: .automatic)
@@ -503,7 +510,6 @@ extension DiaryViewController: AddFoodDetailViewControllerDelegate {
 
 extension DiaryViewController: UpdateFoodDetailViewControllerDelegate {
     func updateFoodDetailViewController(_ viewController: UpdateFoodDetailViewController, didUpdateFood food: FoodEntry) {
-        print("timmy diary")
         guard let meal = food.meal,
               let section = mealPlan.meals.firstIndex(of: meal)
         else { return }

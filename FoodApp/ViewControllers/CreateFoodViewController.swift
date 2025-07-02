@@ -49,6 +49,11 @@ class CreateFoodViewController: UIViewController {
     
     let foodService = FoodService()
     
+    lazy var cancelButton: UIBarButtonItem = {
+        let button = UIBarButtonItem(title: "Cancel", primaryAction: didTapCancelButton())
+        return button
+    }()
+    
     lazy var saveButton: UIBarButtonItem = {
         let button = UIBarButtonItem(title: "Save", primaryAction: didTapSaveButton())
         button.isEnabled = false
@@ -71,7 +76,7 @@ class CreateFoodViewController: UIViewController {
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
         ])
         
-        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Cancel", primaryAction: nil)
+        navigationItem.leftBarButtonItem = cancelButton
         navigationItem.rightBarButtonItem = saveButton
     }
     
@@ -83,6 +88,12 @@ class CreateFoodViewController: UIViewController {
         foodEntry.foodInfo?.nutrients[.calories]?.value != nil
         
         saveButton.isEnabled = isFormComplete
+    }
+    
+    func didTapCancelButton() -> UIAction {
+        return UIAction { _ in
+            self.dismiss(animated: true)
+        }
     }
     
     func didTapSaveButton() -> UIAction {

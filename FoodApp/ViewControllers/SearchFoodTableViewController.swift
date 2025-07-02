@@ -39,6 +39,8 @@ class SearchFoodTableViewController: UIViewController {
     var fetchedResultsController: NSFetchedResultsController<History>! // source of truth
 
     var meal: Meal?
+    var foodEntry: FoodEntry?
+    let userProfile: UserProfile
     let foodService: FoodService
     let visibleTabs: [SearchTabView.TabItem]
     let visibleButtonTypes: [SearchButtonRowView.SearchButtonType]
@@ -54,18 +56,27 @@ class SearchFoodTableViewController: UIViewController {
         DataScannerViewController.isAvailable
     }
     
+    // TODO: UserProfile
     init(
         foodService: FoodService,
         meal: Meal? = nil,
+        foodEntry: FoodEntry? = nil,    // create recipe
+        userProfile: UserProfile,
         visibleTabs: [SearchTabView.TabItem] = SearchTabView.TabItem.allCases,
         visibleButtonTypes: [SearchButtonRowView.SearchButtonType] = SearchButtonRowView.SearchButtonType.allCases
     ) {
         self.history = []
         self.foodService = foodService
         self.meal = meal
+        self.foodEntry = foodEntry
+        self.userProfile = userProfile
         self.visibleTabs = visibleTabs
         self.visibleButtonTypes = visibleButtonTypes
         super.init(nibName: nil, bundle: nil)
+    }
+    
+    deinit {
+        print("timmy deinit SearchFoodTableViewController")
     }
     
     required init?(coder: NSCoder) {
@@ -119,7 +130,7 @@ class SearchFoodTableViewController: UIViewController {
         }
         tableView.backgroundColor = UIColor(hex: "#1c1c1e")
         
-        resultsTableController = ResultsTableViewController(meal: meal, foodService: foodService)
+        resultsTableController = ResultsTableViewController(meal: meal, foodEntry: foodEntry, userProfile: userProfile, foodService: foodService)
         resultsTableController.addFoodDelegate = addFoodDelegate
         resultsTableController.resultDelegate = resultDelegate
         
@@ -232,8 +243,9 @@ extension SearchFoodTableViewController: UITableViewDelegate {
         else { return }
         
         food.selectedFoodPortion = selectedFoodPortion
-        let addFoodDetailViewController = AddFoodDetailViewController(foodEntry: history.foodEntry, fdcFood: food, meal: meal, foodService: foodService, selectedFoodPortion: food.selectedFoodPortion)
+        let addFoodDetailViewController = AddFoodDetailViewController(foodEntry: history.foodEntry, fdcFood: food, meal: meal, userProfile: userProfile, foodService: foodService, selectedFoodPortion: food.selectedFoodPortion)
         addFoodDetailViewController.delegate = addFoodDelegate
+        addFoodDetailViewController.dismissDelegate = self
         present(UINavigationController(rootViewController: addFoodDetailViewController), animated: true)
     }
     
@@ -255,6 +267,14 @@ extension SearchFoodTableViewController: UITableViewDelegate {
             let history = fetchedResultsController.object(at: indexPath)
             CoreDataStack.shared.context.delete(history)
             CoreDataStack.shared.saveContext()
+        }
+    }
+}
+
+extension SearchFoodTableViewController: FoodDetailTableViewControllerDismissDelegate {
+    func foodDetailTableViewController(_ tableViewController: FoodDetailTableViewController, didDismiss: Bool) {
+        if let indexPath = tableView.indexPathForSelectedRow {
+            tableView.deselectRow(at: indexPath, animated: true)
         }
     }
 }
@@ -419,7 +439,8 @@ extension SearchFoodTableViewController: SearchTabViewDelegate {
     func updateFetchedResultsController(for tab: SearchTabView.TabItem) {
         let request: NSFetchRequest<History> = History.fetchRequest()
         request.sortDescriptors = [NSSortDescriptor(keyPath: \History.createdAt_, ascending: false)]
-
+//        request.includesPendingChanges = false
+        
         switch tab {
         case .all:
             let excludesMyRecipes = !visibleTabs.contains(.myRecipes)
@@ -467,7 +488,7 @@ extension SearchFoodTableViewController: SearchButtonRowViewDelegate {
         case .quickAdd:
             return
         case .addRecipe:
-            let createRecipeViewController = CreateRecipeViewController()
+            let createRecipeViewController = CreateRecipeViewController(userProfile: userProfile)
             present(UINavigationController(rootViewController: createRecipeViewController), animated: true)
             return
         case .addFood:

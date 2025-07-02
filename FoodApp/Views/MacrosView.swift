@@ -14,13 +14,16 @@ struct MacrosView: View {
     @FetchRequest
     var meals: FetchedResults<Meal>
     
+    var userProfile: UserProfile
+    
     var mealPlan: MealPlan?
     var nutrients: [NutrientId: Double]?
 
     let nutrientIds: [NutrientId] = [.calories, .carbs, .protein, .fatTotal]
     
-    init(mealPlan: MealPlan?, nutrients: [NutrientId: Double]? = nil) {
+    init(mealPlan: MealPlan?, userProfile: UserProfile, nutrients: [NutrientId: Double]? = nil) {
         self.nutrients = nutrients
+        self.userProfile = userProfile
         if let mealPlan {
             self.mealPlan = mealPlan
             _meals = FetchRequest(fetchRequest: Meal.fetchMeals(for: mealPlan))
@@ -34,8 +37,8 @@ struct MacrosView: View {
             GridRow {
                 ForEach(nutrientIds, id: \.rawValue) { nutrientId in
                     let consumed = nutrients?[nutrientId] ?? Double((getNutrientConsumed(nutrientId)))
-                    let goal = Float(mealPlan?.nutrientGoals[nutrientId]?.value ?? 0)
-                    
+                    let goal = mealPlan?.nutrientGoals[nutrientId]?.value ??
+                               userProfile.userNutrientGoals[nutrientId]?.value ?? 0
                     CircularProgressView(
                         title: nutrientId.shortDescription,
                         current: Float(consumed),

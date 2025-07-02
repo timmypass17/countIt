@@ -331,11 +331,9 @@ class FoodService: FoodServiceProtocol {
     }
     
     // TODO: Maybe add one with fdcFood and one that takes in a foodEntry (from history?)?
-    func addFood(_ fdcFood: FoodItem, foodEntry: FoodEntry? = nil, with portion: FoodPortion, quantity: Int, to meal: Meal? = nil) throws -> FoodEntry {
+    func addFood(_ fdcFood: FoodItem, foodEntry: FoodEntry? = nil, with portion: FoodPortion, quantity: Int, to meal: Meal? = nil, context: NSManagedObjectContext) throws -> FoodEntry {
         let food = FoodEntry(context: context)
-        if let meal {
-            food.index = Int16(meal.foodEntries.count)
-        }
+
         food.quantity = Int16(quantity)
         if let gramWeight = portion.gramWeight {
             food.gramWeight = gramWeight
@@ -364,24 +362,28 @@ class FoodService: FoodServiceProtocol {
             }
         }
         
-        food.meal = meal
         
-        if let foodInfo = getFoodInfo(fdcId: fdcFood.fdcId) {
+        if let meal,
+           let mealInChildContext = try context.existingObject(with: meal.objectID) as? Meal {
+            food.index = Int16(mealInChildContext.foodEntries.count)
+            food.meal = mealInChildContext
+        }
+        
+        if let foodInfo = getFoodInfo(fdcId: fdcFood.fdcId, context: context) {
             food.foodInfo = foodInfo
         } else {
-            let foodInfo = createFoodInfo(fdcFood)
+            let foodInfo = createFoodInfo(fdcFood, context: context)
             food.foodInfo = foodInfo
             
             // Add nutrients relationship to foodInfo
             for nutrientId in NutrientId.allCases {
-                let foodInfoNutrient = createFoodInfoNutrients(fdcFood, nutrientId: nutrientId)
-                print("\(nutrientId.description) \(foodInfoNutrient.value)")
+                let foodInfoNutrient = createFoodInfoNutrients(fdcFood, nutrientId: nutrientId, context: context)
                 foodInfo.addToNutrients_(foodInfoNutrient)
             }
             
             // Add portion relationship
             for (index, fdcPortion) in fdcFood.foodPortions.enumerated() {
-                let portion = createFoodInfoPortion(fdcPortion)
+                let portion = createFoodInfoPortion(fdcPortion, context: context)
                 foodInfo.addToPortions_(portion)
             }
         }
@@ -405,10 +407,7 @@ class FoodService: FoodServiceProtocol {
         
         
         // Add copy to history
-        updateFoodHistoryIfNeeded(food: food)
-        
-        try context.save()
-        
+        updateFoodHistoryIfNeeded(food: food, context: context)
         return food
     }
         
@@ -479,7 +478,7 @@ class FoodService: FoodServiceProtocol {
     }
 
     
-    func updateFood(_ foodEntry: FoodEntry, foodPortion: FoodPortion, quantity: Int) throws -> FoodEntry {
+    func updateFood(_ foodEntry: FoodEntry, foodPortion: FoodPortion, quantity: Int, context: NSManagedObjectContext = CoreDataStack.shared.context) throws -> FoodEntry {
         foodEntry.quantity = Int16(quantity)
         foodEntry.amount = foodPortion.amount
         foodEntry.gramWeight = foodPortion.gramWeight
@@ -496,8 +495,7 @@ class FoodService: FoodServiceProtocol {
         try context.save()
     }
     
-    func createFoodInfo(_ fdcFood: FoodItem) -> FoodInfo {
-        print("timmy food info: \(fdcFood.description)")
+    func createFoodInfo(_ fdcFood: FoodItem, context: NSManagedObjectContext) -> FoodInfo {
         let foodInfo = FoodInfo(context: context)
         foodInfo.fdcId = Int64(fdcFood.fdcId)
         foodInfo.name = fdcFood.description
@@ -505,14 +503,14 @@ class FoodService: FoodServiceProtocol {
         return foodInfo
     }
     
-    func createFoodInfoNutrients(_ fdcFood: FoodItem, nutrientId: NutrientId) -> FoodInfoNutrient {
+    func createFoodInfoNutrients(_ fdcFood: FoodItem, nutrientId: NutrientId, context: NSManagedObjectContext) -> FoodInfoNutrient {
         let foodInfoNutrient = FoodInfoNutrient(context: context)
         foodInfoNutrient.nutrientId = nutrientId
         foodInfoNutrient.value = Double(fdcFood.foodNutrients[nutrientId]?.amount ?? 0)
         return foodInfoNutrient
     }
     
-    func createFoodInfoPortion(_ foodPortion: FoodPortion) -> FoodInfoPortion {
+    func createFoodInfoPortion(_ foodPortion: FoodPortion, context: NSManagedObjectContext) -> FoodInfoPortion {
         let foodInfoPortion = FoodInfoPortion(context: context)
         foodInfoPortion.id = Int32(foodPortion.id)
         if let gramWeight = foodPortion.gramWeight {
@@ -548,7 +546,7 @@ class FoodService: FoodServiceProtocol {
         return (quantity, modifier)
     }
     
-    func getFoodInfo(fdcId: Int) -> FoodInfo? {
+    func getFoodInfo(fdcId: Int, context: NSManagedObjectContext) -> FoodInfo? {
         let fetchRequest: NSFetchRequest<FoodInfo> = FoodInfo.fetchRequest()
         fetchRequest.fetchLimit = 1
         fetchRequest.predicate = NSPredicate(format: "fdcId == %d", fdcId)

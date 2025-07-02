@@ -13,6 +13,8 @@ class ResultsTableViewController: UIViewController {
 //    var bestMatchResponse: FoodSearchResponse = FoodSearchResponse(totalHits: 0, currentPage: 1, totalPages: 0, foodParts: [])
 //    var moreResultsResponse: FoodSearchResponse = FoodSearchResponse(totalHits: 0, currentPage: 1, totalPages: 0, foodParts: [])
     let meal: Meal?
+    let foodEntry: FoodEntry?
+    let userProfile: UserProfile
     let foodService: FoodService
     var query: String?
     
@@ -63,8 +65,10 @@ class ResultsTableViewController: UIViewController {
         return view
     }()
     
-    init(meal: Meal?, foodService: FoodService) {
+    init(meal: Meal?, foodEntry: FoodEntry?, userProfile: UserProfile, foodService: FoodService) {
         self.meal = meal
+        self.foodEntry = foodEntry
+        self.userProfile = userProfile
         self.foodService = foodService
         super.init(nibName: nil, bundle: nil)
     }
@@ -143,7 +147,7 @@ extension ResultsTableViewController: ResultTableViewCellDelegate {
 //        }
 //        
         do {
-            try foodService.addFood(foodItem, with: foodItem.selectedFoodPortion, quantity: 1, to: meal)
+            try foodService.addFood(foodItem, with: foodItem.selectedFoodPortion, quantity: 1, to: meal, context: CoreDataStack.shared.childContext())
         } catch {
             print("Error adding food: \(error)")
         }
@@ -203,7 +207,7 @@ extension ResultsTableViewController: UITableViewDelegate {
 //            foodItem = moreResultsResponse.foods[indexPath.row]
 //        }
         
-        let addFoodDetailViewController = AddFoodDetailViewController(fdcFood: foodItem, meal: meal, foodService: foodService, selectedFoodPortion: foodItem.selectedFoodPortion)
+        let addFoodDetailViewController = AddFoodDetailViewController(foodEntry: foodEntry, fdcFood: foodItem, meal: meal, userProfile: userProfile, foodService: foodService, selectedFoodPortion: foodItem.selectedFoodPortion)
         addFoodDetailViewController.delegate = addFoodDelegate
         addFoodDetailViewController.dismissDelegate = self
         addFoodDetailViewController.historyDelegate = historyDelegate

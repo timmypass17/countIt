@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import CoreData
 
 protocol AddFoodDetailViewControllerDelegate: AnyObject {
     func addFoodDetailViewController(_ tableViewController: AddFoodDetailViewController, didAddFood food: FoodEntry)
@@ -35,7 +36,19 @@ class AddFoodDetailViewController: FoodDetailTableViewController {
     func didTapAddButton() -> UIAction {
         return UIAction { [self] _ in
             do {
-                let food = try foodService.addFood(fdcFood, foodEntry: foodEntry, with: fdcFood.selectedFoodPortion, quantity: fdcFood.quantity, to: meal)
+                let foodContext: NSManagedObjectContext?
+                if let foodEntry { // recipe
+                    print("timmy using foodEntry's context: \(foodEntry.managedObjectContext)")
+                    foodContext = foodEntry.managedObjectContext
+                } else {
+                    let childContext = CoreDataStack.shared.childContext()
+                    print("timmy creating new context: \(childContext)")
+                    foodContext = childContext
+                }
+                guard let foodContext else { return }
+                let food = try foodService.addFood(fdcFood, foodEntry: foodEntry, with: fdcFood.selectedFoodPortion, quantity: fdcFood.quantity, to: meal, context: foodContext)
+//                try foodContext.save()
+//                CoreDataStack.shared.saveContext()
                 self.delegate?.addFoodDetailViewController(self, didAddFood: food)
             } catch {
                 print("Error adding food: \(error)")

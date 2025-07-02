@@ -45,7 +45,6 @@ class CoreDataStack {
 
 extension CoreDataStack {
     func saveContext () {
-        print(#function)
         if context.hasChanges {
             do {
                 try context.save()

@@ -23,9 +23,11 @@ class UpdateFoodDetailViewController: FoodDetailTableViewController {
     
     func updateButtonTapped() -> UIAction {
         return UIAction { [self] _ in
-            guard let foodEntry else { return }
+            guard let foodEntry,
+                  let context = foodEntry.managedObjectContext
+            else { return }
             do {
-                let updatedFood = try foodService.updateFood(foodEntry, foodPortion: fdcFood.selectedFoodPortion, quantity: fdcFood.quantity)
+                let updatedFood = try foodService.updateFood(foodEntry, foodPortion: fdcFood.selectedFoodPortion, quantity: fdcFood.quantity, context: context)
                 delegate?.updateFoodDetailViewController(self, didUpdateFood: updatedFood)
                 NotificationCenter.default.post(name: .reloadDiary, object: nil)    // propogate changes from ingredient change
 
