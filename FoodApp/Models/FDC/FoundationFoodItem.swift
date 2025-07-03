@@ -65,6 +65,7 @@ struct FoundationFoodItem: FoodItem {
         foodPortions.sort { $0.gramWeight ?? 0 < $1.gramWeight ?? 0 }
         self.foodPortions = foodPortions
         self.selectedFoodPortion = foodPortions[foodPortions.count / 2]
+//        print("timmy decode selectedFoodPortion: \(selectedFoodPortion)")
     }
     
     func getFoodPortionDescription(foodPortion: FoodPortion, numberOfServings: Int = 1, options: [FoodEntryOptions] = FoodEntryOptions.allCases) -> String {

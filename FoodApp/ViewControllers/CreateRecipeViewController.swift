@@ -22,7 +22,7 @@ class CreateRecipeViewController: UIViewController {
         case name, ingredients
     }
     
-    lazy var foodEntry: FoodEntry = {
+    lazy var recipeEntry: FoodEntry = {
         var foodEntry = FoodEntry(context: recipeContext)
         foodEntry.quantity = 1
         foodEntry.gramWeight = nil
@@ -65,11 +65,11 @@ class CreateRecipeViewController: UIViewController {
     init(userProfile: UserProfile) {
         self.userProfile = userProfile
         super.init(nibName: nil, bundle: nil)
-        print("timmy init CreateRecipeViewController")
+//        print("timmy init CreateRecipeViewController")
     }
     
     deinit {
-        print("timmy deinit CreateRecipeViewController")
+//        print("timmy deinit CreateRecipeViewController")
     }
     
     required init?(coder: NSCoder) {
@@ -103,17 +103,28 @@ class CreateRecipeViewController: UIViewController {
             guard let self else { return }
             do {
                 let foodPortion = FoodInfoPortion(context: self.recipeContext)
-                foodPortion.id = self.foodEntry.portionId
-                foodPortion.gramWeight = self.foodEntry.gramWeight
-                foodPortion.amount = self.foodEntry.amount
-                foodPortion.modifier = self.foodEntry.modifier
-                foodPortion.foodInfo = self.foodEntry.foodInfo
+                foodPortion.id = self.recipeEntry.portionId
+                foodPortion.gramWeight = self.recipeEntry.gramWeight
+                foodPortion.amount = self.recipeEntry.amount
+                foodPortion.modifier = self.recipeEntry.modifier
+                foodPortion.foodInfo = self.recipeEntry.foodInfo
                 
                 // We just adding to history, (does not log to any meals)
                 let history = History(context: self.recipeContext)
-                history.fdcId = self.foodEntry.foodInfo!.fdcId
+                history.fdcId = self.recipeEntry.foodInfo!.fdcId
                 history.createdAt_ = .now
-                history.foodEntry = self.foodEntry
+                history.foodEntry = self.recipeEntry
+                
+//                // Update ingredients
+//                for ingredient in foodEntry.ingredients {
+//                    guard let fdcId = ingredient.foodInfo?.fdcId else { continue }
+//                    if fdcId < 0 {
+//                        ingredient.isCustom = true
+//                    } else {
+//                        ingredient.isCustom = true
+//                    }
+//                    ingredient.is
+//                }
 
                 try self.recipeContext.save()
                 CoreDataStack.shared.saveContext()
@@ -133,8 +144,8 @@ class CreateRecipeViewController: UIViewController {
     
     func updateSaveButton() {
         let isFormComplete =
-        foodEntry.foodInfo?.name_ != nil &&
-        foodEntry.ingredients.count > 0
+        recipeEntry.foodInfo?.name_ != nil &&
+        recipeEntry.ingredients.count > 0
         
         saveButton.isEnabled = isFormComplete
     }
@@ -151,7 +162,7 @@ extension CreateRecipeViewController: UITableViewDataSource {
         case .name:
             return 1
         case .ingredients:
-            return 1 + foodEntry.ingredients.count
+            return 1 + recipeEntry.ingredients.count
         }
     }
     
@@ -162,16 +173,16 @@ extension CreateRecipeViewController: UITableViewDataSource {
             let cell = tableView.dequeueReusableCell(withIdentifier: CreateFoodInfoTableViewCell.reuseIdentifier, for: indexPath) as! CreateFoodInfoTableViewCell
             cell.update(title: "Name", description: "Required*", placeholderText: "e.g. Protein Smoothie") { [weak self] name in
                 guard let self else { return }
-                self.foodEntry.foodInfo?.name = name ?? ""
+                self.recipeEntry.foodInfo?.name = name ?? ""
                 self.updateSaveButton()
             }
             return cell
         case .ingredients:
-            if indexPath.row == foodEntry.ingredients.count {
+            if indexPath.row == recipeEntry.ingredients.count {
                 let cell = tableView.dequeueReusableCell(withIdentifier: AddItemTableViewCell.reuseIdentifier, for: indexPath) as! AddItemTableViewCell
                 return cell
             } else {
-                let food = foodEntry.ingredients[indexPath.row]
+                let food = recipeEntry.ingredients[indexPath.row]
                 let cell = tableView.dequeueReusableCell(withIdentifier: FoodEntryTableViewCell.reuseIdentifier, for: indexPath) as! FoodEntryTableViewCell
                 cell.backgroundColor = UIColor(hex: "#252525")
                 cell.update(food)
@@ -188,15 +199,15 @@ extension CreateRecipeViewController: UITableViewDataSource {
 
         guard let section = Section(rawValue: indexPath.section),
               section == .ingredients,
-              indexPath.row < foodEntry.ingredients.count else { return }
+              indexPath.row < recipeEntry.ingredients.count else { return }
 
         // Remove the ingredient from the Core Data relationship
-        let foodToDelete = foodEntry.ingredients[indexPath.row]
-        foodEntry.removeFromIngredients_(foodToDelete)
+        let foodToDelete = recipeEntry.ingredients[indexPath.row]
+        recipeEntry.removeFromIngredients_(foodToDelete)
         recipeContext.delete(foodToDelete)
 
         // Reindex remaining ingredients
-        for (i, ingredient) in foodEntry.ingredients.enumerated() {
+        for (i, ingredient) in recipeEntry.ingredients.enumerated() {
             ingredient.index = Int16(i)
         }
 
@@ -211,7 +222,7 @@ extension CreateRecipeViewController: UITableViewDataSource {
         case .name:
             return false
         case .ingredients:
-            return indexPath.row < foodEntry.ingredients.count
+            return indexPath.row < recipeEntry.ingredients.count
         }
     }
 }
@@ -228,25 +239,23 @@ extension CreateRecipeViewController: UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let isAddFoodButton = indexPath.row == foodEntry.ingredients.count
+        let isAddFoodButton = indexPath.row == recipeEntry.ingredients.count
         if isAddFoodButton {
             tableView.deselectRow(at: indexPath, animated: true)
-            let searchFoodTableViewController = SearchFoodTableViewController(
+            let searchIngredientViewController = SearchIngredientViewController(
+                recipeEntry: recipeEntry,
                 foodService: foodService,
-                foodEntry: foodEntry,
-                userProfile: userProfile,
-                visibleTabs: [.all, .myFoods],
-                visibleButtonTypes: [.barcode, .quickAdd, .addFood]
+                userProfile: userProfile
             )
-            searchFoodTableViewController.title = "Add Ingredient"
-            searchFoodTableViewController.addFoodDelegate = self
+//            searchIngredientViewController.title = "Add Ingredient"
+            searchIngredientViewController.addFoodDelegate = self
 //            searchFoodTableViewController.quickAddDelegate = self
 //            searchFoodTableViewController.resultDelegate = self
-            navigationController?.pushViewController(searchFoodTableViewController, animated: true)
+            navigationController?.pushViewController(searchIngredientViewController, animated: true)
             return
         }
         
-        let foodEntry: FoodEntry = foodEntry.ingredients[indexPath.row]
+        let foodEntry: FoodEntry = recipeEntry.ingredients[indexPath.row]
         guard let fdcFood = foodEntry.convertToFDCFood() else { return }
         let selectedPortion = foodEntry.foodInfo?.convertToFoodPortions().first { $0.id == foodEntry.portionId }
         
@@ -274,16 +283,19 @@ extension CreateRecipeViewController: FoodDetailTableViewControllerDismissDelega
 
 
 extension CreateRecipeViewController: AddFoodDetailViewControllerDelegate {
-    func addFoodDetailViewController(_ tableViewController: AddFoodDetailViewController, didAddFood food: FoodEntry) {
-//        try? food.managedObjectContext?.save()
-//
-//        let foodID = food.objectID
-//        let foodInChildContext = recipeContext.object(with: foodID) as! FoodEntry
+    func addFoodDetailViewController(_ tableViewController: FoodDetailTableViewController, didAddFood food: FoodEntry) {
+        // Adds an ingredient
+        // Ingreident may be added from main context (e.g. "My Colleciton", search)
+        // existingObject doesn't work for some reason
+        guard let ingredient = recipeContext.object(with: food.objectID) as? FoodEntry else {
+            print("timmy fail to get ingredient")
+            return
+        }
         
-        food.index = Int16(foodEntry.ingredients.count)   // setting relationship does change size of relationship
-        food.parent = foodEntry
-        foodEntry.addToIngredients_(food)
-        let indexPath = IndexPath(row: Int(food.index), section: 1)
+        ingredient.index = Int16(recipeEntry.ingredients.count)   // setting relationship does change size of relationship
+        ingredient.parent = recipeEntry
+        recipeEntry.addToIngredients_(ingredient)
+        let indexPath = IndexPath(row: Int(ingredient.index), section: 1)
         tableView.insertRows(at: [indexPath], with: .automatic)
         self.updateSaveButton()
     }

@@ -101,7 +101,7 @@ class DiaryViewController: UIViewController {
         
         updateUI()
         
-        self.delegate?.diaryViewController(self, mealPlanChanged: self.mealPlan)
+        self.delegate?.diaryViewController(self, mealPlanChanged: self.mealPlan)    // updates mealPlan title for search
     }
     
     override func setEditing(_ editing: Bool, animated: Bool) {
@@ -372,7 +372,9 @@ extension DiaryViewController: UITableViewDelegate {
         if isAddFoodButton {
             tableView.deselectRow(at: indexPath, animated: true)
             let meal = mealPlan.meals[indexPath.section - 2]
-            let searchFoodTableViewController = SearchFoodTableViewController(foodService: foodService, meal: meal, userProfile: userProfile)
+            let searchFoodTableViewController = SearchFoodViewController(meal: meal, foodService: foodService, userProfile: userProfile)
+
+//            let searchFoodTableViewController = SearchItemTableViewController(foodService: foodService, meal: meal, userProfile: userProfile)
             searchFoodTableViewController.addFoodDelegate = self
             searchFoodTableViewController.quickAddDelegate = self
             searchFoodTableViewController.resultDelegate = self
@@ -491,7 +493,7 @@ extension DiaryViewController: UITableViewDelegate {
 }
 
 extension DiaryViewController: AddFoodDetailViewControllerDelegate {
-    func addFoodDetailViewController(_ tableViewController: AddFoodDetailViewController, didAddFood food: FoodEntry) {
+    func addFoodDetailViewController(_ tableViewController: FoodDetailTableViewController, didAddFood food: FoodEntry) {
         do {
             try food.managedObjectContext?.save()
             CoreDataStack.shared.saveContext()

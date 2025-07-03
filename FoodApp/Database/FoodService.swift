@@ -407,9 +407,10 @@ class FoodService: FoodServiceProtocol {
         
         
         // Add copy to history
-        updateFoodHistoryIfNeeded(food: food, context: context)
+//        updateFoodHistoryIfNeeded(food: food, context: context)
         return food
     }
+    
         
     func getFoodHistory(fdcId: Int) -> History? {
         let request: NSFetchRequest<History> = History.fetchRequest()
@@ -476,7 +477,83 @@ class FoodService: FoodServiceProtocol {
         }
         history.foodEntry = foodEntryCopy
     }
-
+    
+    // Saves fdcFood to main context
+    func addHistoryIfNeeded(fdcFood: FoodItem, context: NSManagedObjectContext) {
+        guard getFoodHistory(fdcId: Int(fdcFood.fdcId)) == nil else { return }
+        
+        let history = History(context: context)
+        history.fdcId = Int64(fdcFood.fdcId)
+        history.createdAt_ = .now
+        
+        // Make copy of food entry (to fix bug where deleting foodEntry deletes history)
+        let foodEntryCopy = FoodEntry(context: context)
+        foodEntryCopy.amount = fdcFood.selectedFoodPortion.amount
+        foodEntryCopy.gramWeight = fdcFood.selectedFoodPortion.gramWeight
+        foodEntryCopy.index = 0    // doesn't matter
+        foodEntryCopy.modifier = fdcFood.selectedFoodPortion.modifier
+        foodEntryCopy.portionId = Int32(fdcFood.selectedFoodPortion.id)
+        foodEntryCopy.quantity = Int16(fdcFood.quantity)
+        
+        if let foodInfo = getFoodInfo(fdcId: fdcFood.fdcId, context: context) {
+            print("timmy found existing food info")
+            foodEntryCopy.foodInfo = foodInfo
+        } else {
+            print("timmy creating new food info")
+            let foodInfo = createFoodInfo(fdcFood, context: context)
+            foodEntryCopy.foodInfo = foodInfo
+            
+            // Add nutrients relationship to foodInfo
+            for nutrientId in NutrientId.allCases {
+                let foodInfoNutrient = createFoodInfoNutrients(fdcFood, nutrientId: nutrientId, context: context)
+                foodInfo.addToNutrients_(foodInfoNutrient)
+            }
+            
+            // Add portion relationship
+            for (index, fdcPortion) in fdcFood.foodPortions.enumerated() {
+                let portion = createFoodInfoPortion(fdcPortion, context: context)
+                foodInfo.addToPortions_(portion)
+            }
+        }
+        
+        foodEntryCopy.isCustom = fdcFood.fdcId < 0
+        foodEntryCopy.isRecipe = fdcFood.ingredients.count > 0
+        
+        // TODO: Copy ingredients
+        for (i, ingredient) in fdcFood.ingredients.enumerated() {
+            let ingredientCopy = FoodEntry(context: context)
+            ingredientCopy.amount = ingredient.selectedFoodPortion.amount
+            ingredientCopy.gramWeight = ingredient.selectedFoodPortion.gramWeight
+            ingredientCopy.index = Int16(i)   // doesn't matter
+            ingredientCopy.modifier = ingredient.selectedFoodPortion.modifier
+            ingredientCopy.portionId = Int32(ingredient.selectedFoodPortion.id)
+            ingredientCopy.quantity = Int16(ingredient.quantity)
+            
+            if let ingredientFoodInfo = getFoodInfo(fdcId: ingredient.fdcId, context: context) {
+                ingredientCopy.foodInfo = ingredientFoodInfo
+            } else {
+                let ingredientFoodInfo = createFoodInfo(fdcFood, context: context)
+                ingredientCopy.foodInfo = ingredientFoodInfo
+                
+                // Add nutrients relationship to foodInfo
+                for nutrientId in NutrientId.allCases {
+                    let foodInfoNutrient = createFoodInfoNutrients(fdcFood, nutrientId: nutrientId, context: context)
+                    ingredientFoodInfo.addToNutrients_(foodInfoNutrient)
+                }
+                
+                // Add portion relationship
+                for (index, fdcPortion) in fdcFood.foodPortions.enumerated() {
+                    let portion = createFoodInfoPortion(fdcPortion, context: context)
+                    ingredientFoodInfo.addToPortions_(portion)
+                }
+            }
+            ingredientCopy.isCustom = ingredient.fdcId < 0
+            ingredientCopy.isRecipe = false
+            ingredientCopy.parent = foodEntryCopy   // updates ingredients aswell
+        }
+        history.foodEntry = foodEntryCopy
+//        CoreDataStack.shared.saveContext()
+    }
     
     func updateFood(_ foodEntry: FoodEntry, foodPortion: FoodPortion, quantity: Int, context: NSManagedObjectContext = CoreDataStack.shared.context) throws -> FoodEntry {
         foodEntry.quantity = Int16(quantity)
@@ -531,19 +608,6 @@ class FoodService: FoodServiceProtocol {
             }
         }
         return foodInfoPortion
-    }
-    
-    func extractQuantityAndModifier(from string: String) -> (Double, String)? {
-        let components: [Substring] = string.split(separator: " ")
-        guard let quantityString = components.first,
-              let quantity = Double(quantityString),
-              components.count > 1
-        else {
-            return nil
-        }
-        let modifier = String(components[1])
-        
-        return (quantity, modifier)
     }
     
     func getFoodInfo(fdcId: Int, context: NSManagedObjectContext) -> FoodInfo? {

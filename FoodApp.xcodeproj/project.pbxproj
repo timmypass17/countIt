@@ -20,6 +20,8 @@
 		32267A722DF397B2001B9CFC /* History+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32267A6F2DF397AA001B9CFC /* History+CoreDataClass.swift */; };
 		32267A732DF397B2001B9CFC /* History+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32267A6F2DF397AA001B9CFC /* History+CoreDataClass.swift */; };
 		32267A742DF397B2001B9CFC /* History+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32267A702DF397AA001B9CFC /* History+CoreDataProperties.swift */; };
+		322AB8EB2E170EEC003B74AC /* AddIngredientViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 322AB8EA2E170EEC003B74AC /* AddIngredientViewController.swift */; };
+		322AB8ED2E170F80003B74AC /* IngredientsResultViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 322AB8EC2E170F80003B74AC /* IngredientsResultViewController.swift */; };
 		323FB6B42DC95E3600A71C53 /* ResultsPaginatedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 323FB6B32DC95E3600A71C53 /* ResultsPaginatedViewController.swift */; };
 		323FB7662DCADDD000A71C53 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 323FB7652DCADDD000A71C53 /* SettingsViewController.swift */; };
 		323FB76E2DCAE64400A71C53 /* DashboardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 323FB76D2DCAE64400A71C53 /* DashboardViewController.swift */; };
@@ -42,6 +44,7 @@
 		325463C52DD0409600BEDCE0 /* UserProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 325463C32DD0409600BEDCE0 /* UserProfile.swift */; };
 		3259E3B22E145EEF00F90965 /* UpdateNutrientViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3259E3B12E145EEF00F90965 /* UpdateNutrientViewController.swift */; };
 		3259E3B42E1464E800F90965 /* UpdateNutrientTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3259E3B32E1464E800F90965 /* UpdateNutrientTableViewCell.swift */; };
+		3259E77F2E163F6400F90965 /* SearchFoodViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3259E77E2E163F6400F90965 /* SearchFoodViewController.swift */; };
 		3262F83C2DFCC2DC006CB8A4 /* UserWeight+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3262F83A2DFCC2DC006CB8A4 /* UserWeight+CoreDataClass.swift */; };
 		3262F83D2DFCC2DC006CB8A4 /* UserWeight+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3262F83B2DFCC2DC006CB8A4 /* UserWeight+CoreDataProperties.swift */; };
 		3262F83E2DFCC2EB006CB8A4 /* UserWeight+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3262F83A2DFCC2DC006CB8A4 /* UserWeight+CoreDataClass.swift */; };
@@ -203,7 +206,7 @@
 		32F51A572B92C1AA0080CC09 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 32F51A552B92C1AA0080CC09 /* LaunchScreen.storyboard */; };
 		32F51A6C2B92C1AA0080CC09 /* FoodAppUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32F51A6B2B92C1AA0080CC09 /* FoodAppUITests.swift */; };
 		32F51A6E2B92C1AA0080CC09 /* FoodAppUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32F51A6D2B92C1AA0080CC09 /* FoodAppUITestsLaunchTests.swift */; };
-		32F51A7B2B92C3150080CC09 /* SearchFoodTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32F51A7A2B92C3150080CC09 /* SearchFoodTableViewController.swift */; };
+		32F51A7B2B92C3150080CC09 /* SearchItemTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32F51A7A2B92C3150080CC09 /* SearchItemTableViewController.swift */; };
 		32F51A7D2B92D5280080CC09 /* ResultTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32F51A7C2B92D5280080CC09 /* ResultTableViewController.swift */; };
 /* End PBXBuildFile section */
 
@@ -255,6 +258,8 @@
 		320EE1DA2DCEAE6400D6B07D /* MacrosSplitViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacrosSplitViewController.swift; sourceTree = "<group>"; };
 		32267A6F2DF397AA001B9CFC /* History+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "History+CoreDataClass.swift"; sourceTree = "<group>"; };
 		32267A702DF397AA001B9CFC /* History+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "History+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		322AB8EA2E170EEC003B74AC /* AddIngredientViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddIngredientViewController.swift; sourceTree = "<group>"; };
+		322AB8EC2E170F80003B74AC /* IngredientsResultViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IngredientsResultViewController.swift; sourceTree = "<group>"; };
 		323FB6B32DC95E3600A71C53 /* ResultsPaginatedViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultsPaginatedViewController.swift; sourceTree = "<group>"; };
 		323FB7652DCADDD000A71C53 /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		323FB76D2DCAE64400A71C53 /* DashboardViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardViewController.swift; sourceTree = "<group>"; };
@@ -275,6 +280,7 @@
 		325463C32DD0409600BEDCE0 /* UserProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfile.swift; sourceTree = "<group>"; };
 		3259E3B12E145EEF00F90965 /* UpdateNutrientViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateNutrientViewController.swift; sourceTree = "<group>"; };
 		3259E3B32E1464E800F90965 /* UpdateNutrientTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateNutrientTableViewCell.swift; sourceTree = "<group>"; };
+		3259E77E2E163F6400F90965 /* SearchFoodViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchFoodViewController.swift; sourceTree = "<group>"; };
 		3262F83A2DFCC2DC006CB8A4 /* UserWeight+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserWeight+CoreDataClass.swift"; sourceTree = "<group>"; };
 		3262F83B2DFCC2DC006CB8A4 /* UserWeight+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserWeight+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		3262F8422DFCE66A006CB8A4 /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
@@ -409,7 +415,7 @@
 		32F51A672B92C1AA0080CC09 /* FoodAppUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FoodAppUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		32F51A6B2B92C1AA0080CC09 /* FoodAppUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodAppUITests.swift; sourceTree = "<group>"; };
 		32F51A6D2B92C1AA0080CC09 /* FoodAppUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodAppUITestsLaunchTests.swift; sourceTree = "<group>"; };
-		32F51A7A2B92C3150080CC09 /* SearchFoodTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchFoodTableViewController.swift; sourceTree = "<group>"; };
+		32F51A7A2B92C3150080CC09 /* SearchItemTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchItemTableViewController.swift; sourceTree = "<group>"; };
 		32F51A7C2B92D5280080CC09 /* ResultTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultTableViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -642,7 +648,7 @@
 				323FB76C2DCAE23E00A71C53 /* Dashboard */,
 				323FB7642DCADDBD00A71C53 /* Settings */,
 				323FB6B52DCAD92500A71C53 /* Journal */,
-				32F51A7A2B92C3150080CC09 /* SearchFoodTableViewController.swift */,
+				32F51A7A2B92C3150080CC09 /* SearchItemTableViewController.swift */,
 				32F51A7C2B92D5280080CC09 /* ResultTableViewController.swift */,
 				328FA9522B954664002A6FB6 /* FoodDetailTableViewController.swift */,
 				328FA95A2B97C924002A6FB6 /* ServingSizeTableViewController.swift */,
@@ -659,6 +665,9 @@
 				326DB7D02E08C3C000849E3F /* CreateRecipeViewController.swift */,
 				3249A9552E0DFB7C0064E79F /* SearchIngredientViewController.swift */,
 				3249A9572E0E567D0064E79F /* MealPlanDatePickerViewController.swift */,
+				3259E77E2E163F6400F90965 /* SearchFoodViewController.swift */,
+				322AB8EA2E170EEC003B74AC /* AddIngredientViewController.swift */,
+				322AB8EC2E170F80003B74AC /* IngredientsResultViewController.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -1118,6 +1127,7 @@
 				32BD0C7F2DD19B150098253F /* UserProfile+CoreDataClass.swift in Sources */,
 				32BD0C802DD19B150098253F /* UserProfile+CoreDataProperties.swift in Sources */,
 				325463C52DD0409600BEDCE0 /* UserProfile.swift in Sources */,
+				3259E77F2E163F6400F90965 /* SearchFoodViewController.swift in Sources */,
 				328FA9692B9BE560002A6FB6 /* Settings.swift in Sources */,
 				323FB6B42DC95E3600A71C53 /* ResultsPaginatedViewController.swift in Sources */,
 				326DB7D12E08C3C000849E3F /* CreateRecipeViewController.swift in Sources */,
@@ -1137,6 +1147,8 @@
 				32A292482DDDA69D004272A7 /* FoodInfoPortion+CoreDataProperties.swift in Sources */,
 				323FB7662DCADDD000A71C53 /* SettingsViewController.swift in Sources */,
 				32762A862DFF4D4C001BB96F /* FoodInfo+CoreDataClass.swift in Sources */,
+				322AB8ED2E170F80003B74AC /* IngredientsResultViewController.swift in Sources */,
+				322AB8EB2E170EEC003B74AC /* AddIngredientViewController.swift in Sources */,
 				32762A872DFF4D4C001BB96F /* FoodInfo+CoreDataProperties.swift in Sources */,
 				320E6C352DC4336700ABD356 /* MealPlan+CoreDataProperties.swift in Sources */,
 				3249A9582E0E567D0064E79F /* MealPlanDatePickerViewController.swift in Sources */,
@@ -1168,7 +1180,7 @@
 				324AB9372BA6B27900CECA72 /* CoreDataStack.swift in Sources */,
 				3290A2A42DD286D3008A4320 /* LoginViewController.swift in Sources */,
 				3242C8E12DF0C22C00F05FF8 /* CDFoodItem.swift in Sources */,
-				32F51A7B2B92C3150080CC09 /* SearchFoodTableViewController.swift in Sources */,
+				32F51A7B2B92C3150080CC09 /* SearchItemTableViewController.swift in Sources */,
 				325463BE2DD0114100BEDCE0 /* HeightCmPickerViewController.swift in Sources */,
 				32762A802DFF4D07001BB96F /* Meal+CoreDataClass.swift in Sources */,
 				32762A812DFF4D07001BB96F /* Meal+CoreDataProperties.swift in Sources */,

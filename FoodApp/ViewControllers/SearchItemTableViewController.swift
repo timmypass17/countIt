@@ -9,8 +9,8 @@ import UIKit
 import VisionKit
 import CoreData
 
-class SearchFoodTableViewController: UIViewController {
-
+class SearchItemTableViewController: UIViewController {
+    
     let tableView: UITableView = {
         let tableView = UITableView(frame: .zero, style: .insetGrouped)
         tableView.translatesAutoresizingMaskIntoConstraints = false
@@ -35,11 +35,11 @@ class SearchFoodTableViewController: UIViewController {
     var selectedTab: SearchTabView.TabItem = .all
     
     var searchController: UISearchController!
-    private var resultsTableController: ResultsTableViewController!
+    var resultsTableController: ResultsTableViewController!
     var fetchedResultsController: NSFetchedResultsController<History>! // source of truth
 
-    var meal: Meal?
-    var foodEntry: FoodEntry?
+//    var meal: Meal?   addFood
+//    var foodEntry: FoodEntry?
     let userProfile: UserProfile
     let foodService: FoodService
     let visibleTabs: [SearchTabView.TabItem]
@@ -56,28 +56,41 @@ class SearchFoodTableViewController: UIViewController {
         DataScannerViewController.isAvailable
     }
     
-    // TODO: UserProfile
     init(
         foodService: FoodService,
-        meal: Meal? = nil,
-        foodEntry: FoodEntry? = nil,    // create recipe
         userProfile: UserProfile,
-        visibleTabs: [SearchTabView.TabItem] = SearchTabView.TabItem.allCases,
-        visibleButtonTypes: [SearchButtonRowView.SearchButtonType] = SearchButtonRowView.SearchButtonType.allCases
+        visibleTabs: [SearchTabView.TabItem],
+        visibleButtonTypes: [SearchButtonRowView.SearchButtonType]
     ) {
-        self.history = []
         self.foodService = foodService
-        self.meal = meal
-        self.foodEntry = foodEntry
         self.userProfile = userProfile
         self.visibleTabs = visibleTabs
         self.visibleButtonTypes = visibleButtonTypes
         super.init(nibName: nil, bundle: nil)
     }
     
-    deinit {
-        print("timmy deinit SearchFoodTableViewController")
-    }
+    // TODO: UserProfile
+//    init(
+//        foodService: FoodService,
+//        meal: Meal? = nil,
+//        foodEntry: FoodEntry? = nil,    // create recipe
+//        userProfile: UserProfile,
+//        visibleTabs: [SearchTabView.TabItem] = SearchTabView.TabItem.allCases,
+//        visibleButtonTypes: [SearchButtonRowView.SearchButtonType] = SearchButtonRowView.SearchButtonType.allCases
+//    ) {
+//        self.history = []
+//        self.foodService = foodService
+//        self.meal = meal
+//        self.foodEntry = foodEntry
+//        self.userProfile = userProfile
+//        self.visibleTabs = visibleTabs
+//        self.visibleButtonTypes = visibleButtonTypes
+//        super.init(nibName: nil, bundle: nil)
+//    }
+//    
+//    deinit {
+//        print("timmy deinit SearchFoodTableViewController")
+//    }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -123,21 +136,21 @@ class SearchFoodTableViewController: UIViewController {
         ])
         
         tableView.register(HistoryTableViewCell.self, forCellReuseIdentifier: HistoryTableViewCell.reuseIdentifier)
-        if let meal, let meals = meal.mealPlan?.meals {
-            let titleView = SearchTitleView(selectedMeal: meal, meals: meals)
-            titleView.delegate = self
-            navigationItem.titleView = titleView
-        }
+//        if let meal, let meals = meal.mealPlan?.meals {
+//            let titleView = SearchTitleView(selectedMeal: meal, meals: meals)
+//            titleView.delegate = self
+//            navigationItem.titleView = titleView
+//        }
         tableView.backgroundColor = UIColor(hex: "#1c1c1e")
-        
-        resultsTableController = ResultsTableViewController(meal: meal, foodEntry: foodEntry, userProfile: userProfile, foodService: foodService)
-        resultsTableController.addFoodDelegate = addFoodDelegate
-        resultsTableController.resultDelegate = resultDelegate
-        
-        searchController = UISearchController(searchResultsController: resultsTableController)
-        searchController.searchBar.delegate = self
-        searchController.searchBar.autocapitalizationType = .none
-        searchController.searchBar.placeholder = "Search foods"
+//        
+//        resultsTableController = ResultsTableViewController(meal: meal, foodEntry: foodEntry, userProfile: userProfile, foodService: foodService)
+//        resultsTableController.addFoodDelegate = addFoodDelegate
+//        resultsTableController.resultDelegate = resultDelegate
+//        
+//        searchController = UISearchController(searchResultsController: resultsTableController)
+//        searchController.searchBar.delegate = self
+//        searchController.searchBar.autocapitalizationType = .none
+//        searchController.searchBar.placeholder = "Search foods"
 
         // Place the search bar in the navigation bar.
         navigationItem.searchController = searchController
@@ -177,10 +190,10 @@ class SearchFoodTableViewController: UIViewController {
     
     func didTapQuickAddButton() -> UIAction {
         return UIAction { [self] _ in
-            guard let meal else { return }
-            let quickAddTableViewController = QuickAddTableViewController(meal: meal)
-            quickAddTableViewController.delegate = quickAddDelegate
-            present(UINavigationController(rootViewController: quickAddTableViewController), animated: true)
+//            guard let meal else { return }
+//            let quickAddTableViewController = QuickAddTableViewController(meal: meal)
+//            quickAddTableViewController.delegate = quickAddDelegate
+//            present(UINavigationController(rootViewController: quickAddTableViewController), animated: true)
         }
     }
     
@@ -209,7 +222,7 @@ class SearchFoodTableViewController: UIViewController {
     }
 }
 
-extension SearchFoodTableViewController: UITableViewDataSource {
+extension SearchItemTableViewController: UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
         return fetchedResultsController.sections?.count ?? 0
     }
@@ -234,7 +247,7 @@ extension SearchFoodTableViewController: UITableViewDataSource {
     
 }
 
-extension SearchFoodTableViewController: UITableViewDelegate {
+extension SearchItemTableViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let history = fetchedResultsController.object(at: indexPath)
         guard let foodEntry = history.foodEntry,
@@ -243,10 +256,10 @@ extension SearchFoodTableViewController: UITableViewDelegate {
         else { return }
         
         food.selectedFoodPortion = selectedFoodPortion
-        let addFoodDetailViewController = AddFoodDetailViewController(foodEntry: history.foodEntry, fdcFood: food, meal: meal, userProfile: userProfile, foodService: foodService, selectedFoodPortion: food.selectedFoodPortion)
-        addFoodDetailViewController.delegate = addFoodDelegate
-        addFoodDetailViewController.dismissDelegate = self
-        present(UINavigationController(rootViewController: addFoodDetailViewController), animated: true)
+//        let addFoodDetailViewController = AddFoodDetailViewController(foodEntry: history.foodEntry, fdcFood: food, meal: meal, userProfile: userProfile, foodService: foodService, selectedFoodPortion: food.selectedFoodPortion)
+//        addFoodDetailViewController.delegate = addFoodDelegate
+//        addFoodDetailViewController.dismissDelegate = self
+//        present(UINavigationController(rootViewController: addFoodDetailViewController), animated: true)
     }
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
@@ -271,7 +284,7 @@ extension SearchFoodTableViewController: UITableViewDelegate {
     }
 }
 
-extension SearchFoodTableViewController: FoodDetailTableViewControllerDismissDelegate {
+extension SearchItemTableViewController: FoodDetailTableViewControllerDismissDelegate {
     func foodDetailTableViewController(_ tableViewController: FoodDetailTableViewController, didDismiss: Bool) {
         if let indexPath = tableView.indexPathForSelectedRow {
             tableView.deselectRow(at: indexPath, animated: true)
@@ -279,7 +292,7 @@ extension SearchFoodTableViewController: FoodDetailTableViewControllerDismissDel
     }
 }
 
-extension SearchFoodTableViewController: NSFetchedResultsControllerDelegate {
+extension SearchItemTableViewController: NSFetchedResultsControllerDelegate {
     func controllerWillChangeContent(_ controller: NSFetchedResultsController<any NSFetchRequestResult>) {
         tableView.beginUpdates()
     }
@@ -324,7 +337,7 @@ extension SearchFoodTableViewController: NSFetchedResultsControllerDelegate {
 
 // MARK: - UISearchBarDelegate
 
-extension SearchFoodTableViewController: UISearchBarDelegate {
+extension SearchItemTableViewController: UISearchBarDelegate {
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         searchTask?.cancel()
@@ -351,13 +364,13 @@ extension SearchFoodTableViewController: UISearchBarDelegate {
     
 }
 
-extension SearchFoodTableViewController: SearchTitleViewDelegate {
-    func searchTitleView(_ sender: SearchTitleView, didSelectMeal meal: Meal) {
-        self.meal = meal
-    }
-}
+//extension SearchItemTableViewController: SearchTitleViewDelegate {
+//    func searchTitleView(_ sender: SearchTitleView, didSelectMeal meal: Meal) {
+////        self.meal = meal
+//    }
+//}
 
-extension SearchFoodTableViewController: HistoryTableViewCellDelegate {
+extension SearchItemTableViewController: HistoryTableViewCellDelegate {
     func historyTableViewCell(_ cell: HistoryTableViewCell, didSelectDeleteButton: Bool) {
 //        guard let indexPath = tableView.indexPath(for: cell) else { return }
 //        let history = fetchedResultsController.object(at: indexPath)
@@ -366,7 +379,7 @@ extension SearchFoodTableViewController: HistoryTableViewCellDelegate {
     }
 }
 
-extension SearchFoodTableViewController: DataScannerViewControllerDelegate {
+extension SearchItemTableViewController: DataScannerViewControllerDelegate {
     func dataScanner(_ dataScanner: DataScannerViewController, becameUnavailableWithError error: DataScannerViewController.ScanningUnavailable) {
         // Implement this delegate method to disable or remove the data-scanning controls in your interface.
         // For example, the scanner calls this method when users tap Don’t Allow the first time the system prompt appears, as described in Provide a reason for using the camera.
@@ -417,19 +430,19 @@ extension SearchFoodTableViewController: DataScannerViewControllerDelegate {
     }
 }
 
-extension SearchFoodTableViewController: DiaryViewControllerDelegate {
-    func diaryViewController(_ viewController: DiaryViewController, mealPlanChanged mealPlan: MealPlan) {
-        guard let meal = mealPlan.meals.first else { return }
-        self.meal = meal
+//extension SearchItemTableViewController: DiaryViewControllerDelegate {
+//    func diaryViewController(_ viewController: DiaryViewController, mealPlanChanged mealPlan: MealPlan) {
+////        guard let meal = mealPlan.meals.first else { return }
+////        self.meal = meal
+////
+////        let titleView = SearchTitleView(selectedMeal: meal, meals: mealPlan.meals)
+////        titleView.delegate = self
+////        navigationItem.titleView = titleView
+//    }
+//    
+//}
 
-        let titleView = SearchTitleView(selectedMeal: meal, meals: mealPlan.meals)
-        titleView.delegate = self
-        navigationItem.titleView = titleView
-    }
-    
-}
-
-extension SearchFoodTableViewController: SearchTabViewDelegate {
+extension SearchItemTableViewController: SearchTabViewDelegate {
     
     func searchTabView(_ sender: SearchTabView, didSelectTab tab: SearchTabView.TabItem) {
         self.selectedTab = tab
@@ -439,7 +452,6 @@ extension SearchFoodTableViewController: SearchTabViewDelegate {
     func updateFetchedResultsController(for tab: SearchTabView.TabItem) {
         let request: NSFetchRequest<History> = History.fetchRequest()
         request.sortDescriptors = [NSSortDescriptor(keyPath: \History.createdAt_, ascending: false)]
-//        request.includesPendingChanges = false
         
         switch tab {
         case .all:
@@ -480,7 +492,7 @@ extension SearchFoodTableViewController: SearchTabViewDelegate {
     }
 }
 
-extension SearchFoodTableViewController: SearchButtonRowViewDelegate {
+extension SearchItemTableViewController: SearchButtonRowViewDelegate {
     func searchButtonRowView(_ sender: SearchButtonRowView, didTapButton type: SearchButtonRowView.SearchButtonType) {
         switch type {
         case .barcode:

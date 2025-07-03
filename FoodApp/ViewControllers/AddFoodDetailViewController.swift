@@ -9,9 +9,10 @@ import UIKit
 import CoreData
 
 protocol AddFoodDetailViewControllerDelegate: AnyObject {
-    func addFoodDetailViewController(_ tableViewController: AddFoodDetailViewController, didAddFood food: FoodEntry)
+    func addFoodDetailViewController(_ tableViewController: FoodDetailTableViewController, didAddFood food: FoodEntry)
 }
 
+// TODO: Make a AddIngredientDetailViewController: FoodDetailTableViewController with addIngredientDelegate
 class AddFoodDetailViewController: FoodDetailTableViewController {
 
     weak var delegate: AddFoodDetailViewControllerDelegate?
@@ -33,20 +34,13 @@ class AddFoodDetailViewController: FoodDetailTableViewController {
     }
     */
 
+    // TODO: This add button should do something
     func didTapAddButton() -> UIAction {
         return UIAction { [self] _ in
             do {
-                let foodContext: NSManagedObjectContext?
-                if let foodEntry { // recipe
-                    print("timmy using foodEntry's context: \(foodEntry.managedObjectContext)")
-                    foodContext = foodEntry.managedObjectContext
-                } else {
-                    let childContext = CoreDataStack.shared.childContext()
-                    print("timmy creating new context: \(childContext)")
-                    foodContext = childContext
-                }
-                guard let foodContext else { return }
-                let food = try foodService.addFood(fdcFood, foodEntry: foodEntry, with: fdcFood.selectedFoodPortion, quantity: fdcFood.quantity, to: meal, context: foodContext)
+                // Add to main directly
+                let food = try foodService.addFood(fdcFood, foodEntry: foodEntry, with: fdcFood.selectedFoodPortion, quantity: fdcFood.quantity, to: meal, context: CoreDataStack.shared.context)
+                foodService.addHistoryIfNeeded(fdcFood: fdcFood, context: CoreDataStack.shared.context)
 //                try foodContext.save()
 //                CoreDataStack.shared.saveContext()
                 self.delegate?.addFoodDetailViewController(self, didAddFood: food)

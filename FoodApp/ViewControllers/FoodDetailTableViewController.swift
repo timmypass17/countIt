@@ -16,7 +16,6 @@ protocol FoodDetailTableViewControllerHistoryDelegate: AnyObject {
     func foodDetailTableViewController(_ tableViewController: FoodDetailTableViewController, didUpdateHistoryWithFood food: FoodEntry)
 }
 
-
 // TODO: Make title have badge icon
 class FoodDetailTableViewController: UITableViewController {
 

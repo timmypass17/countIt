@@ -12,6 +12,7 @@ class ResultsTableViewController: UIViewController {
     var searchResponse: FoodSearchResponse = FoodSearchResponse(totalHits: 0, currentPage: 1, totalPages: 0, foodParts: [])
 //    var bestMatchResponse: FoodSearchResponse = FoodSearchResponse(totalHits: 0, currentPage: 1, totalPages: 0, foodParts: [])
 //    var moreResultsResponse: FoodSearchResponse = FoodSearchResponse(totalHits: 0, currentPage: 1, totalPages: 0, foodParts: [])
+    
     let meal: Meal?
     let foodEntry: FoodEntry?
     let userProfile: UserProfile

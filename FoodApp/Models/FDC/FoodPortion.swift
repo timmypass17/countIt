@@ -12,9 +12,9 @@ import Foundation
 struct FoodPortion: Codable {
     var id: Int
     var gramWeight: Double?
-    var amount: Double? // foundation 1.00 -> used like 1.00 and "banana" (modifier). amount + modifier
+    var amount: Double? // part of modifier, foundation 1.00 -> used like 1.00 and "banana" (modifier). amount + modifier
     var modifier: String?    // foundation "tbsp"
-    var portionDescription: String? // survey "1 tbsp"
+    var portionDescription: String? // survey "1 tbsp". never use this, just extract into amount and modifier
     
     init(id: Int, amount: Double? = nil, gramWeight: Double?, modifier: String? = nil, portionDescription: String? = nil) {
         self.id = id
@@ -39,11 +39,40 @@ struct FoodPortion: Codable {
         self.gramWeight = try container.decode(Double.self, forKey: .gramWeight)
         self.modifier = try container.decodeIfPresent(String.self, forKey: .modifier)?.lowercased()
         let portionDescription = try container.decodeIfPresent(String.self, forKey: .portionDescription)
-        if let portionDescription, portionDescription != "Quantity not specified" {
-            self.portionDescription = portionDescription.lowercased()
+        
+        
+        // extract "banana" from "1 banana"
+        // TODO: Use foodPortion.csv to get modifier instead of extracting
+        if let portionDescription {
+            let parts = extractQuantityAndModifier(from: portionDescription)
+            if let quantity = parts?.0,
+               let modifier = parts?.1 {
+                self.amount = quantity
+                self.modifier = modifier
+            }
         }
+        
+        
+//        if let portionDescription, portionDescription != "Quantity not specified" {
+//            self.portionDescription = portionDescription.lowercased()
+//        }
     }
 }
+
+func extractQuantityAndModifier(from string: String) -> (Double, String)? {
+    let components: [Substring] = string.split(separator: " ")
+    guard let quantityString = components.first,
+          let quantity = Double(quantityString),
+          components.count > 1
+    else {
+        return nil
+    }
+    let modifier = String(components[1])
+    
+    return (quantity, modifier)
+}
+
+
 
 extension FoodPortion {
     static let default100g = FoodPortion(id: 0, gramWeight: 100)
