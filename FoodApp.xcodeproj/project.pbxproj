@@ -167,6 +167,7 @@
 		32BD0C822DD19E440098253F /* UserProfile+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32BD0C7E2DD19B150098253F /* UserProfile+CoreDataProperties.swift */; };
 		32BD0C832DD19FF00098253F /* UserNutrientGoal+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32BD0C762DD198EF0098253F /* UserNutrientGoal+CoreDataProperties.swift */; };
 		32BD0C842DD19FF00098253F /* UserNutrientGoal+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32BD0C752DD198EF0098253F /* UserNutrientGoal+CoreDataClass.swift */; };
+		32C276842E18603400637863 /* FoodResultsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32C276832E18603400637863 /* FoodResultsViewController.swift */; };
 		32C386472DC54F650018D282 /* FoodAppTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32C386462DC54F650018D282 /* FoodAppTests.swift */; };
 		32C3864B2DC55E150018D282 /* FDCFoodInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32C3864A2DC55E150018D282 /* FDCFoodInput.swift */; };
 		32C3864C2DC55E150018D282 /* FDCFoodInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32C3864A2DC55E150018D282 /* FDCFoodInput.swift */; };
@@ -384,6 +385,7 @@
 		32BD0C762DD198EF0098253F /* UserNutrientGoal+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserNutrientGoal+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		32BD0C7D2DD19B150098253F /* UserProfile+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserProfile+CoreDataClass.swift"; sourceTree = "<group>"; };
 		32BD0C7E2DD19B150098253F /* UserProfile+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserProfile+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		32C276832E18603400637863 /* FoodResultsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodResultsViewController.swift; sourceTree = "<group>"; };
 		32C386462DC54F650018D282 /* FoodAppTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodAppTests.swift; sourceTree = "<group>"; };
 		32C3864A2DC55E150018D282 /* FDCFoodInput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FDCFoodInput.swift; sourceTree = "<group>"; };
 		32C3864F2DC5AF7E0018D282 /* SurveyFoodItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SurveyFoodItem.swift; sourceTree = "<group>"; };
@@ -668,6 +670,7 @@
 				3259E77E2E163F6400F90965 /* SearchFoodViewController.swift */,
 				322AB8EA2E170EEC003B74AC /* AddIngredientViewController.swift */,
 				322AB8EC2E170F80003B74AC /* IngredientsResultViewController.swift */,
+				32C276832E18603400637863 /* FoodResultsViewController.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -1160,6 +1163,7 @@
 				326FB8E32DDC4FF40015500E /* CaloriesConsumedView.swift in Sources */,
 				329C1C022DDA76F200087FEF /* Utility.swift in Sources */,
 				328FA9552B954714002A6FB6 /* FoodItem.swift in Sources */,
+				32C276842E18603400637863 /* FoodResultsViewController.swift in Sources */,
 				3262F8432DFCE66A006CB8A4 /* ProfileViewController.swift in Sources */,
 				328FA9612B994271002A6FB6 /* FoodPortion.swift in Sources */,
 				323FB9A32DCAF4C600A71C53 /* OnboardingViewController.swift in Sources */,

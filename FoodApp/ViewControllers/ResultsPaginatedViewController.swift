@@ -7,7 +7,6 @@
 
 import UIKit
 
-// TODO: Add a show more button instead of auto fetch paging
 // Don’t need explicit DispatchQueue.main.async calls, updates UI on main thread (if u try to update ui from background thread like making network request, app can crash)
 @MainActor
 class ResultsPaginatedViewController: UIViewController {
@@ -74,9 +73,9 @@ class ResultsPaginatedViewController: UIViewController {
     var foodService: FoodService
     let userProfile: UserProfile
     let dataTypes: [DataType] = [.foundation, .branded]
-    weak var addFoodDelegate: AddFoodDetailViewControllerDelegate?
     private var currentLoadTask: Task<Void, Never>?
-    
+    weak var addFoodDelegate: AddFoodDetailViewControllerDelegate?
+
     init(foodService: FoodService, userProfile: UserProfile) {
         self.foodService = foodService
         self.userProfile = userProfile
@@ -232,21 +231,21 @@ extension ResultsPaginatedViewController: UITableViewDataSource {
 }
 
 extension ResultsPaginatedViewController: UITableViewDelegate {
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if foodResponse.currentPage < foodResponse.totalPages && indexPath.row == foodResponse.foods.count {
-            didTapLoadMoreButton()
-            return
-        }
-                
-        let foodItem = foodResponse.foods[indexPath.row]
-        // TODO: Make food and recipe version
-        let addFoodDetailViewController = AddFoodDetailViewController(foodEntry: nil, fdcFood: foodItem, meal: nil, userProfile: userProfile, foodService: foodService, selectedFoodPortion: foodItem.selectedFoodPortion)
+//    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+//        if foodResponse.currentPage < foodResponse.totalPages && indexPath.row == foodResponse.foods.count {
+//            didTapLoadMoreButton()
+//            return
+//        }
+//                
+//        let foodItem = foodResponse.foods[indexPath.row]
+//        // TODO: Make food and recipe version
+//        let addFoodDetailViewController = AddFoodDetailViewController(foodEntry: nil, fdcFood: foodItem, meal: nil, userProfile: userProfile, foodService: foodService, selectedFoodPortion: foodItem.selectedFoodPortion)
 //        addFoodDetailViewController.delegate = addFoodDelegate
-//        addFoodDetailViewController.dismissDelegate = self
-//        addFoodDetailViewController.historyDelegate = historyDelegate
-
-        present(UINavigationController(rootViewController: addFoodDetailViewController), animated: true)
-    }
+////        addFoodDetailViewController.dismissDelegate = self
+////        addFoodDetailViewController.historyDelegate = historyDelegate
+//
+//        present(UINavigationController(rootViewController: addFoodDetailViewController), animated: true)
+//    }
     
     func didTapLoadMoreButton() {
         guard let query else { return }

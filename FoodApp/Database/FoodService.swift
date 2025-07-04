@@ -332,6 +332,7 @@ class FoodService: FoodServiceProtocol {
     
     // TODO: Maybe add one with fdcFood and one that takes in a foodEntry (from history?)?
     func addFood(_ fdcFood: FoodItem, foodEntry: FoodEntry? = nil, with portion: FoodPortion, quantity: Int, to meal: Meal? = nil, context: NSManagedObjectContext) throws -> FoodEntry {
+        
         let food = FoodEntry(context: context)
 
         food.quantity = Int16(quantity)

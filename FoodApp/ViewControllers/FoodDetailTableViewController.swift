@@ -303,7 +303,7 @@ class FoodDetailTableViewController: UITableViewController {
                 selectedFoodPortion: fdcIngredient.selectedFoodPortion,
                 numberOfServings: Int(ingredientEntry.quantity)
             )
-            updateFoodDetailViewController.delegate = self
+            updateFoodDetailViewController.updateDelegate = self
             updateFoodDetailViewController.dismissDelegate = self
             present(UINavigationController(rootViewController: updateFoodDetailViewController), animated: true)
             

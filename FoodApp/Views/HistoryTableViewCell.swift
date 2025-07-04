@@ -110,13 +110,20 @@ class HistoryTableViewCell: UITableViewCell {
         titleLabel.text = foodEntry?.foodInfo?.name
         descriptionLabel.text = foodEntry?.description()
         
+        let sealColor: UIColor
         if foodEntry?.isRecipe == true {
-            checkmarkImageView.tintColor = .systemYellow
+            sealColor = .systemOrange
         } else if foodEntry?.isCustom == true {
-            checkmarkImageView.tintColor = .systemGreen
+            sealColor = .systemGreen
         } else {
-            checkmarkImageView.tintColor = .systemBlue
+            sealColor = .systemBlue
         }
+        
+        let image = UIImage(
+            systemName: "checkmark.seal.fill",
+            withConfiguration: UIImage.SymbolConfiguration(paletteColors: [.white, sealColor])
+        )
+        checkmarkImageView.image = image
     }
     
     func deleteButtonTapped() -> UIAction {

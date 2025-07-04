@@ -14,9 +14,9 @@ protocol AddFoodDetailViewControllerDelegate: AnyObject {
 
 // TODO: Make a AddIngredientDetailViewController: FoodDetailTableViewController with addIngredientDelegate
 class AddFoodDetailViewController: FoodDetailTableViewController {
-
-    weak var delegate: AddFoodDetailViewControllerDelegate?
     
+    weak var delegate: AddFoodDetailViewControllerDelegate?
+
     override func viewDidLoad() {
         super.viewDidLoad()
 //        print("timmy ingredients count: \(foodEntry?.ingredients.map { $0.foodInfo?.name ?? "" })")

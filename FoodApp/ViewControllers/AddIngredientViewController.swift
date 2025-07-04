@@ -13,10 +13,10 @@ class AddIngredientViewController: FoodDetailTableViewController {
 
     weak var delegate: AddFoodDetailViewControllerDelegate?
     
-    init(recipeEntry: FoodEntry, fdcFood: FoodItem, userProfile: UserProfile, foodService: FoodService) {
+    init(recipeEntry: FoodEntry, foodEntry: FoodEntry?, fdcFood: FoodItem, userProfile: UserProfile, foodService: FoodService) {
         print("timmy: \(fdcFood.selectedFoodPortion)")
         self.recipeEntry = recipeEntry
-        super.init(fdcFood: fdcFood, meal: nil, userProfile: userProfile, foodService: foodService)
+        super.init(foodEntry: foodEntry, fdcFood: fdcFood, meal: nil, userProfile: userProfile, foodService: foodService)
     }
     
     @MainActor required init?(coder: NSCoder) {

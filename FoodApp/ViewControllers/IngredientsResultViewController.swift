@@ -30,14 +30,14 @@ class IngredientsResultViewController: ResultsPaginatedViewController {
 
 extension IngredientsResultViewController {
     
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if foodResponse.currentPage < foodResponse.totalPages && indexPath.row == foodResponse.foods.count {
             didTapLoadMoreButton()
             return
         }
                 
         let foodItem = foodResponse.foods[indexPath.row]
-        let addIngredientDetailViewController = AddIngredientViewController(recipeEntry: recipeEntry, fdcFood: foodItem, userProfile: userProfile, foodService: foodService)
+        let addIngredientDetailViewController = AddIngredientViewController(recipeEntry: recipeEntry, foodEntry: nil, fdcFood: foodItem, userProfile: userProfile, foodService: foodService)
         addIngredientDetailViewController.delegate = addFoodDelegate
 //        addIngredientDetailViewController.dismissDelegate = self
 //        addIngredientDetailViewController.historyDelegate = historyDelegate

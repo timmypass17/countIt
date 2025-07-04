@@ -373,8 +373,6 @@ extension DiaryViewController: UITableViewDelegate {
             tableView.deselectRow(at: indexPath, animated: true)
             let meal = mealPlan.meals[indexPath.section - 2]
             let searchFoodTableViewController = SearchFoodViewController(meal: meal, foodService: foodService, userProfile: userProfile)
-
-//            let searchFoodTableViewController = SearchItemTableViewController(foodService: foodService, meal: meal, userProfile: userProfile)
             searchFoodTableViewController.addFoodDelegate = self
             searchFoodTableViewController.quickAddDelegate = self
             searchFoodTableViewController.resultDelegate = self
@@ -387,7 +385,7 @@ extension DiaryViewController: UITableViewDelegate {
         let selectedPortion = foodEntry.foodInfo?.convertToFoodPortions().first { $0.id == foodEntry.portionId }
         
         let updateFoodDetailTableViewController = UpdateFoodDetailViewController(foodEntry: foodEntry, fdcFood: fdcFood, meal: meal, userProfile: userProfile, foodService: foodService, selectedFoodPortion: selectedPortion, numberOfServings: Int(foodEntry.quantity))
-        updateFoodDetailTableViewController.delegate = self
+        updateFoodDetailTableViewController.updateDelegate = self
         updateFoodDetailTableViewController.dismissDelegate = self
         present(UINavigationController(rootViewController: updateFoodDetailTableViewController), animated: true)
     }
@@ -494,16 +492,21 @@ extension DiaryViewController: UITableViewDelegate {
 
 extension DiaryViewController: AddFoodDetailViewControllerDelegate {
     func addFoodDetailViewController(_ tableViewController: FoodDetailTableViewController, didAddFood food: FoodEntry) {
+        print("timmy add food")
         do {
             try food.managedObjectContext?.save()
             CoreDataStack.shared.saveContext()
         } catch {
             print("Error saving food: \(error)")
         }
+        
+        print("timmy \(food.meal)")
+        print("timmy \(mealPlan.meals.firstIndex(where: { $0.objectID == food.meal?.objectID }))")
         guard let meal = food.meal,
               // Have to compare objectID (doing $0 == meal fails across diff context, need to use objectID)
               let section = mealPlan.meals.firstIndex(where: { $0.objectID == meal.objectID })
         else { return }
+        print("timmy add food 2")
         let indexPath = IndexPath(row: Int(food.index), section: section + 2)
         tableView.insertRows(at: [indexPath], with: .automatic)
         reloadTableViewHeader(section: section + 2)

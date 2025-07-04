@@ -8,11 +8,12 @@
 import UIKit
 
 class SearchFoodViewController: SearchItemTableViewController {
-        
+    
+    // Initally meal can mealplan not loaded yet
     var meal: Meal?
     
     init(
-        meal: Meal? = nil,
+        meal: Meal?,
         foodService: FoodService,
         userProfile: UserProfile
     ) {
@@ -24,8 +25,9 @@ class SearchFoodViewController: SearchItemTableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         // TODO: Change result to foodResults and ingredientResults?
-        resultsPaginatedViewController = ResultsPaginatedViewController(foodService: foodService, userProfile: userProfile)
-//        resultsPaginatedViewController.addFoodDelegate = addFoodDelegate
+        let foodResultsViewController = FoodResultsViewController(meal: meal, foodService: foodService, userProfile: userProfile)
+        foodResultsViewController.addFoodDelegate = addFoodDelegate
+        resultsPaginatedViewController = foodResultsViewController
 //        resultsPaginatedViewController.resultDelegate = resultDelegate
         
         searchController = UISearchController(searchResultsController: resultsPaginatedViewController)
@@ -45,7 +47,9 @@ class SearchFoodViewController: SearchItemTableViewController {
     @MainActor required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+}
+
+extension SearchFoodViewController {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let history = fetchedResultsController.object(at: indexPath)
         guard let foodEntry = history.foodEntry,
@@ -59,7 +63,6 @@ class SearchFoodViewController: SearchItemTableViewController {
         addFoodDetailViewController.dismissDelegate = self
         present(UINavigationController(rootViewController: addFoodDetailViewController), animated: true)
     }
-    
 }
 
 extension SearchFoodViewController: SearchTitleViewDelegate {

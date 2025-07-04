@@ -13,7 +13,7 @@ protocol UpdateFoodDetailViewControllerDelegate: AnyObject {
 
 class UpdateFoodDetailViewController: FoodDetailTableViewController {
 
-    weak var delegate: UpdateFoodDetailViewControllerDelegate?
+    weak var updateDelegate: UpdateFoodDetailViewControllerDelegate?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -28,7 +28,7 @@ class UpdateFoodDetailViewController: FoodDetailTableViewController {
             else { return }
             do {
                 let updatedFood = try foodService.updateFood(foodEntry, foodPortion: fdcFood.selectedFoodPortion, quantity: fdcFood.quantity, context: context)
-                delegate?.updateFoodDetailViewController(self, didUpdateFood: updatedFood)
+                updateDelegate?.updateFoodDetailViewController(self, didUpdateFood: updatedFood)
                 NotificationCenter.default.post(name: .reloadDiary, object: nil)    // propogate changes from ingredient change
 
             } catch {

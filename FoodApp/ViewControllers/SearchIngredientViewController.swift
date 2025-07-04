@@ -42,3 +42,19 @@ class SearchIngredientViewController: SearchItemTableViewController {
     
     
 }
+
+extension SearchIngredientViewController {
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let history = fetchedResultsController.object(at: indexPath)
+        guard let foodEntry = history.foodEntry,
+              var food = foodEntry.convertToFDCFood(),
+              let selectedFoodPortion = food.foodPortions.first(where: { $0.id == foodEntry.portionId })
+        else { return }
+        
+        food.selectedFoodPortion = selectedFoodPortion
+        let addIngredientDetailViewController = AddIngredientViewController(recipeEntry: recipeEntry, foodEntry: foodEntry, fdcFood: food, userProfile: userProfile, foodService: foodService)
+        addIngredientDetailViewController.delegate = addFoodDelegate
+        addIngredientDetailViewController.dismissDelegate = self
+        present(UINavigationController(rootViewController: addIngredientDetailViewController), animated: true)
+    }
+}

@@ -260,7 +260,7 @@ extension CreateRecipeViewController: UITableViewDelegate {
         let selectedPortion = foodEntry.foodInfo?.convertToFoodPortions().first { $0.id == foodEntry.portionId }
         
         let updateFoodDetailTableViewController = UpdateFoodDetailViewController(foodEntry: foodEntry, fdcFood: fdcFood, meal: nil, userProfile: userProfile, foodService: foodService, selectedFoodPortion: selectedPortion, numberOfServings: Int(foodEntry.quantity))
-        updateFoodDetailTableViewController.delegate = self
+        updateFoodDetailTableViewController.updateDelegate = self
         updateFoodDetailTableViewController.dismissDelegate = self
         present(UINavigationController(rootViewController: updateFoodDetailTableViewController), animated: true)
     }
@@ -291,7 +291,7 @@ extension CreateRecipeViewController: AddFoodDetailViewControllerDelegate {
             print("timmy fail to get ingredient")
             return
         }
-        
+        print("timmy add ingredient")
         ingredient.index = Int16(recipeEntry.ingredients.count)   // setting relationship does change size of relationship
         ingredient.parent = recipeEntry
         recipeEntry.addToIngredients_(ingredient)
