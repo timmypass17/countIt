@@ -24,10 +24,8 @@ class FoodDetailTableViewController: UITableViewController {
     var fdcFoodAdditional: FoodItem?
     let meal: Meal?
     let userProfile: UserProfile
-//    var selectedFoodPortion: FoodPortion    // never optional (always have atleast 100g)
     let foodService: FoodService
-    let state: State
-//    weak var delegate: FoodDetailViewControllerDelegate?
+
     weak var dismissDelegate: FoodDetailTableViewControllerDismissDelegate?
     weak var historyDelegate: FoodDetailTableViewControllerHistoryDelegate?
     var macronutrients: [FoodNutrient] = []
@@ -53,31 +51,25 @@ class FoodDetailTableViewController: UITableViewController {
         }
         return sections
     }
-    
-    enum State {
-        case add, edit
-    }
-    
+
     init(foodEntry: FoodEntry? = nil,
-         fdcFood: FoodItem, meal: Meal?,
+         fdcFood: FoodItem,
+         meal: Meal? = nil, // to populate goals via meal.mealPlan.nutrientGoals.. (addFood
          userProfile: UserProfile,
-         foodService: FoodService,
-         selectedFoodPortion: FoodPortion? = nil,
-         numberOfServings: Int = 1,
-         state: State = .add
+         foodService: FoodService
     ) {
         self.foodEntry = foodEntry
         self.fdcFood = fdcFood
         self.meal = meal
         self.userProfile = userProfile
         self.foodService = foodService
-        self.fdcFood.quantity = numberOfServings
-        self.state = state
-        if let selectedFoodPortion {
-            self.fdcFood.selectedFoodPortion = selectedFoodPortion
-        } else {
-            self.fdcFood.selectedFoodPortion = fdcFood.foodPortions[fdcFood.foodPortions.count / 2]
-        }
+        
+//        self.fdcFood.quantity = numberOfServings
+//        if let selectedFoodPortion {
+//            self.fdcFood.selectedFoodPortion = selectedFoodPortion
+//        } else {
+//            self.fdcFood.selectedFoodPortion = fdcFood.foodPortions[fdcFood.foodPortions.count / 2]
+//        }
         
         for nutrientId in NutrientId.macronutrients {
             let foodNutrient = fdcFood.foodNutrients[nutrientId] ?? FoodNutrient.empty(nutrientId)
@@ -299,9 +291,9 @@ class FoodDetailTableViewController: UITableViewController {
                 fdcFood: fdcIngredient,
                 meal: meal,
                 userProfile: userProfile,
-                foodService: foodService,
-                selectedFoodPortion: fdcIngredient.selectedFoodPortion,
-                numberOfServings: Int(ingredientEntry.quantity)
+                foodService: foodService
+//                selectedFoodPortion: fdcIngredient.selectedFoodPortion,
+//                numberOfServings: Int(ingredientEntry.quantity)
             )
             updateFoodDetailViewController.updateDelegate = self
             updateFoodDetailViewController.dismissDelegate = self

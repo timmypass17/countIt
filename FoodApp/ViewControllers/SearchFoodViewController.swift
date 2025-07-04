@@ -58,7 +58,7 @@ extension SearchFoodViewController {
         else { return }
         
         food.selectedFoodPortion = selectedFoodPortion
-        let addFoodDetailViewController = AddFoodDetailViewController(foodEntry: history.foodEntry, fdcFood: food, meal: meal, userProfile: userProfile, foodService: foodService, selectedFoodPortion: food.selectedFoodPortion)
+        let addFoodDetailViewController = AddFoodDetailViewController(foodEntry: history.foodEntry, fdcFood: food, meal: meal, userProfile: userProfile, foodService: foodService)
         addFoodDetailViewController.delegate = addFoodDelegate
         addFoodDetailViewController.dismissDelegate = self
         present(UINavigationController(rootViewController: addFoodDetailViewController), animated: true)

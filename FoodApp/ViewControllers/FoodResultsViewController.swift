@@ -33,7 +33,7 @@ class FoodResultsViewController: ResultsPaginatedViewController {
         }
 
         let foodItem = foodResponse.foods[indexPath.row]
-        let addFoodDetailViewController = AddFoodDetailViewController(foodEntry: nil, fdcFood: foodItem, meal: meal, userProfile: userProfile, foodService: foodService, selectedFoodPortion: foodItem.selectedFoodPortion)
+        let addFoodDetailViewController = AddFoodDetailViewController(foodEntry: nil, fdcFood: foodItem, meal: meal, userProfile: userProfile, foodService: foodService)
         addFoodDetailViewController.delegate = addFoodDelegate
 //        addFoodDetailViewController.dismissDelegate = self
 //        addFoodDetailViewController.historyDelegate = historyDelegate

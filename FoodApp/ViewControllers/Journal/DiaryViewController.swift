@@ -130,12 +130,6 @@ class DiaryViewController: UIViewController {
         
         navigationItem.rightBarButtonItem = optionsButton        
         tableView.reloadData()
-        
-        NotificationCenter.default.addObserver(self, selector: #selector(reloadTableData), name: .reloadDiary, object: nil)
-    }
-    
-    @objc func reloadTableData() {
-        tableView.reloadData()
     }
     
     func didTapProfileButton() -> UIAction {
@@ -382,9 +376,8 @@ extension DiaryViewController: UITableViewDelegate {
         
         let foodEntry: FoodEntry = meal.foodEntries[indexPath.row]
         guard let fdcFood = foodEntry.convertToFDCFood() else { return }
-        let selectedPortion = foodEntry.foodInfo?.convertToFoodPortions().first { $0.id == foodEntry.portionId }
         
-        let updateFoodDetailTableViewController = UpdateFoodDetailViewController(foodEntry: foodEntry, fdcFood: fdcFood, meal: meal, userProfile: userProfile, foodService: foodService, selectedFoodPortion: selectedPortion, numberOfServings: Int(foodEntry.quantity))
+        let updateFoodDetailTableViewController = UpdateFoodDetailViewController(foodEntry: foodEntry, fdcFood: fdcFood, meal: meal, userProfile: userProfile, foodService: foodService)
         updateFoodDetailTableViewController.updateDelegate = self
         updateFoodDetailTableViewController.dismissDelegate = self
         present(UINavigationController(rootViewController: updateFoodDetailTableViewController), animated: true)

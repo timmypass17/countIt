@@ -20,7 +20,6 @@ protocol FoodItem: Codable {
     var brandName: String? { get }
     var ingredients: [FoodItem] { get }
     
-//    var foodInputs: [FDCFoodInput]    - not really possible with fdcapi
     func getFoodPortionDescription(foodPortion: FoodPortion, numberOfServings: Int, options: [FoodEntryOptions]) -> String
     func getServingSizeFormatted(foodPortion: FoodPortion, numberOfServings: Int) -> String
     func getNutrientAmountPerServing(_ nutrientID: NutrientId, foodPortion: FoodPortion) -> Double

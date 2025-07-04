@@ -259,7 +259,7 @@ extension CreateRecipeViewController: UITableViewDelegate {
         guard let fdcFood = foodEntry.convertToFDCFood() else { return }
         let selectedPortion = foodEntry.foodInfo?.convertToFoodPortions().first { $0.id == foodEntry.portionId }
         
-        let updateFoodDetailTableViewController = UpdateFoodDetailViewController(foodEntry: foodEntry, fdcFood: fdcFood, meal: nil, userProfile: userProfile, foodService: foodService, selectedFoodPortion: selectedPortion, numberOfServings: Int(foodEntry.quantity))
+        let updateFoodDetailTableViewController = UpdateFoodDetailViewController(foodEntry: foodEntry, fdcFood: fdcFood, meal: nil, userProfile: userProfile, foodService: foodService)
         updateFoodDetailTableViewController.updateDelegate = self
         updateFoodDetailTableViewController.dismissDelegate = self
         present(UINavigationController(rootViewController: updateFoodDetailTableViewController), animated: true)
@@ -268,7 +268,7 @@ extension CreateRecipeViewController: UITableViewDelegate {
 
 extension CreateRecipeViewController: UpdateFoodDetailViewControllerDelegate {
     func updateFoodDetailViewController(_ viewController: UpdateFoodDetailViewController, didUpdateFood food: FoodEntry) {
-        
+        tableView.reloadRows(at: [IndexPath(row: Int(food.index), section: Section.ingredients.rawValue)], with: .automatic)
     }
 
 }

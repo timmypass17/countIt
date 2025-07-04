@@ -63,8 +63,7 @@ extension FoodInfo {
                 id: Int(portion.id),
                 amount: portion.amount,
                 gramWeight: portion.gramWeight,
-                modifier: portion.modifier,
-                portionDescription: nil)
+                modifier: portion.modifier)
         }
     }
 }

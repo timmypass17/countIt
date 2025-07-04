@@ -29,8 +29,6 @@ class UpdateFoodDetailViewController: FoodDetailTableViewController {
             do {
                 let updatedFood = try foodService.updateFood(foodEntry, foodPortion: fdcFood.selectedFoodPortion, quantity: fdcFood.quantity, context: context)
                 updateDelegate?.updateFoodDetailViewController(self, didUpdateFood: updatedFood)
-                NotificationCenter.default.post(name: .reloadDiary, object: nil)    // propogate changes from ingredient change
-
             } catch {
                 print("Error updating food: \(error)")
             }

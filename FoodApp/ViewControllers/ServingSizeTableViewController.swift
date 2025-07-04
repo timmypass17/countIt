@@ -120,7 +120,7 @@ class ServingSizeTableViewController: UITableViewController {
             guard let gramString = alert.textFields?.first?.text,
                   let gramWeight = Float(gramString)
             else { return }
-            let customServingSize = FoodPortion(id: -1, gramWeight: Double(gramWeight), modifier: "", portionDescription: "")
+            let customServingSize = FoodPortion(id: -1, gramWeight: Double(gramWeight), modifier: nil)
             // TODO: Fix custom measurement
 //            self.delegate?.selectTableViewController(self, didSelectMeasurement: customServingSize)
 //            self.navigationController?.dismiss(animated: true)

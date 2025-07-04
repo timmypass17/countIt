@@ -84,7 +84,7 @@ extension FoodEntry {
             foodPortions: foodInfo?.convertToFoodPortions() ?? [],
             brandName: foodInfo?.brandName_,
             ingredients: ingredients.compactMap { $0.convertToFDCFood() as? CDFoodItem },
-            selectedFoodPortion: FoodPortion(id: Int(portionId), amount: amount, gramWeight: gramWeight, modifier: modifier, portionDescription: nil),
+            selectedFoodPortion: FoodPortion(id: Int(portionId), amount: amount, gramWeight: gramWeight, modifier: modifier),
             quantity: Int(quantity)
         )
 

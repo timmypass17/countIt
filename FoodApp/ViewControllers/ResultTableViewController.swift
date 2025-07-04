@@ -199,7 +199,7 @@ extension ResultsTableViewController: UITableViewDelegate {
         guard let section = Section(rawValue: indexPath.section) else { return }
         
         let foodItem = searchResponse.foods[indexPath.row]
-        let addFoodDetailViewController = AddFoodDetailViewController(foodEntry: foodEntry, fdcFood: foodItem, meal: meal, userProfile: userProfile, foodService: foodService, selectedFoodPortion: foodItem.selectedFoodPortion)
+        let addFoodDetailViewController = AddFoodDetailViewController(foodEntry: foodEntry, fdcFood: foodItem, meal: meal, userProfile: userProfile, foodService: foodService)
         addFoodDetailViewController.delegate = addFoodDelegate
         addFoodDetailViewController.dismissDelegate = self
         addFoodDetailViewController.historyDelegate = historyDelegate

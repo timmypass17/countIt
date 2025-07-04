@@ -14,14 +14,13 @@ struct FoodPortion: Codable {
     var gramWeight: Double?
     var amount: Double? // part of modifier, foundation 1.00 -> used like 1.00 and "banana" (modifier). amount + modifier
     var modifier: String?    // foundation "tbsp"
-    var portionDescription: String? // survey "1 tbsp". never use this, just extract into amount and modifier
+    var portionDescription: String? = nil // survey "1 tbsp". never use this, just extract into amount and modifier
     
-    init(id: Int, amount: Double? = nil, gramWeight: Double?, modifier: String? = nil, portionDescription: String? = nil) {
+    init(id: Int, amount: Double? = nil, gramWeight: Double?, modifier: String? = nil) {
         self.id = id
         self.amount = amount
         self.gramWeight = gramWeight
         self.modifier = modifier
-        self.portionDescription = portionDescription
     }
     
     enum CodingKeys: CodingKey {
