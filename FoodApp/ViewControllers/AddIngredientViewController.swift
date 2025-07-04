@@ -12,6 +12,7 @@ class AddIngredientViewController: FoodDetailTableViewController {
     let recipeEntry: FoodEntry
 
     weak var delegate: AddFoodDetailViewControllerDelegate?
+    
     init(recipeEntry: FoodEntry, fdcFood: FoodItem, userProfile: UserProfile, foodService: FoodService) {
         print("timmy: \(fdcFood.selectedFoodPortion)")
         self.recipeEntry = recipeEntry

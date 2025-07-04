@@ -24,11 +24,11 @@ class SearchFoodViewController: SearchItemTableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         // TODO: Change result to foodResults and ingredientResults?
-        resultsTableController = ResultsTableViewController(meal: meal, foodEntry: nil, userProfile: userProfile, foodService: foodService)
-        resultsTableController.addFoodDelegate = addFoodDelegate
-        resultsTableController.resultDelegate = resultDelegate
+        resultsPaginatedViewController = ResultsPaginatedViewController(foodService: foodService, userProfile: userProfile)
+//        resultsPaginatedViewController.addFoodDelegate = addFoodDelegate
+//        resultsPaginatedViewController.resultDelegate = resultDelegate
         
-        searchController = UISearchController(searchResultsController: resultsTableController)
+        searchController = UISearchController(searchResultsController: resultsPaginatedViewController)
         searchController.searchBar.delegate = self
         searchController.searchBar.autocapitalizationType = .none
         searchController.searchBar.placeholder = "Search food"

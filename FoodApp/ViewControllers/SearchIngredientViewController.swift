@@ -24,11 +24,11 @@ class SearchIngredientViewController: SearchItemTableViewController {
         super.viewDidLoad()
         title = "Add Ingredient"
         
-        resultsTableController = IngredientsResultViewController(recipeEntry: recipeEntry, userProfile: userProfile, foodService: foodService)
-        resultsTableController.addFoodDelegate = addFoodDelegate
-        resultsTableController.resultDelegate = resultDelegate
-        
-        searchController = UISearchController(searchResultsController: resultsTableController)
+        resultsPaginatedViewController = IngredientsResultViewController(recipeEntry: recipeEntry, userProfile: userProfile, foodService: foodService)
+        resultsPaginatedViewController.addFoodDelegate = addFoodDelegate
+//        resultsPaginatedViewController.resultDelegate = resultDelegate
+//        
+        searchController = UISearchController(searchResultsController: resultsPaginatedViewController)
         searchController.searchBar.delegate = self
         searchController.searchBar.autocapitalizationType = .none
         searchController.searchBar.placeholder = "Search ingredients"

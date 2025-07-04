@@ -10,9 +10,7 @@ import UIKit
 class ResultsTableViewController: UIViewController {
     
     var searchResponse: FoodSearchResponse = FoodSearchResponse(totalHits: 0, currentPage: 1, totalPages: 0, foodParts: [])
-//    var bestMatchResponse: FoodSearchResponse = FoodSearchResponse(totalHits: 0, currentPage: 1, totalPages: 0, foodParts: [])
-//    var moreResultsResponse: FoodSearchResponse = FoodSearchResponse(totalHits: 0, currentPage: 1, totalPages: 0, foodParts: [])
-    
+
     let meal: Meal?
     let foodEntry: FoodEntry?
     let userProfile: UserProfile
@@ -56,13 +54,12 @@ class ResultsTableViewController: UIViewController {
     
     var contentUnavailableView: UIContentUnavailableView = {
         var configuration = UIContentUnavailableConfiguration.empty()
-        configuration.text = "No Foods Yet"
-        configuration.secondaryText = "Your foods will appear here once you add or search for them."
-        configuration.image = UIImage(systemName: "fork.knife")
+        configuration.text = "No Foods Found"
+        configuration.secondaryText = "Start by searching for a food above to see results here."
+        configuration.image = UIImage(systemName: "magnifyingglass")
         
         let view = UIContentUnavailableView(configuration: configuration)
         view.translatesAutoresizingMaskIntoConstraints = false
-//        view.isHidden = true
         return view
     }()
     
@@ -109,6 +106,7 @@ class ResultsTableViewController: UIViewController {
             contentUnavailableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
         ])
     }
+    
 }
 
 extension ResultsTableViewController: FoodDetailTableViewControllerDismissDelegate {
@@ -122,10 +120,10 @@ extension ResultsTableViewController: FoodDetailTableViewControllerDismissDelega
 extension ResultsTableViewController: ResultsHeaderViewDelegate {
 
     func resultsHeaderView(_ sender: ResultsHeaderView, didTapInSection section: Section) {
-        guard let query else { return }
-        let resultsPaginatedViewController = ResultsPaginatedViewController(query: query, section: section)
-        resultsPaginatedViewController.foodService = foodService
-        present(UINavigationController(rootViewController: resultsPaginatedViewController), animated: true)
+//        guard let query else { return }
+//        let resultsPaginatedViewController = ResultsPaginatedViewController(query: query, section: section)
+//        resultsPaginatedViewController.foodService = foodService
+//        present(UINavigationController(rootViewController: resultsPaginatedViewController), animated: true)
     }
     
 }
@@ -199,15 +197,8 @@ extension ResultsTableViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard let section = Section(rawValue: indexPath.section) else { return }
-        let foodItem = searchResponse.foods[indexPath.row]
-//        let foodItem: FoodItem
-//        switch section {
-//        case .bestMatch:
-//            foodItem = bestMatchResponse.foods[indexPath.row]
-//        case .moreResults:
-//            foodItem = moreResultsResponse.foods[indexPath.row]
-//        }
         
+        let foodItem = searchResponse.foods[indexPath.row]
         let addFoodDetailViewController = AddFoodDetailViewController(foodEntry: foodEntry, fdcFood: foodItem, meal: meal, userProfile: userProfile, foodService: foodService, selectedFoodPortion: foodItem.selectedFoodPortion)
         addFoodDetailViewController.delegate = addFoodDelegate
         addFoodDetailViewController.dismissDelegate = self
@@ -216,19 +207,9 @@ extension ResultsTableViewController: UITableViewDelegate {
         present(UINavigationController(rootViewController: addFoodDetailViewController), animated: true)
     }
     
-    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        guard let section = Section(rawValue: section) else { return nil }
-        let headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: ResultsHeaderView.reuseIdentifier) as! ResultsHeaderView
-        headerView.delegate = self
-        headerView.section = section
-        headerView.update(title: "Results (\(searchResponse.totalHits))")
-//        switch section {
-//        case .bestMatch:
-//            headerView.update(title: "Best Match (\(bestMatchResponse.totalHits))")
-//        case .moreResults:
-//            headerView.update(title: "More Results (\(moreResultsResponse.totalHits))")
-//        }
-        return headerView
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        guard searchResponse.foods.count > 0 else { return nil }
+        return "Results (\(searchResponse.totalHits))"
     }
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {

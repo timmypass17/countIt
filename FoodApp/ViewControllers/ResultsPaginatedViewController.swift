@@ -7,21 +7,40 @@
 
 import UIKit
 
+// TODO: Add a show more button instead of auto fetch paging
 // Don’t need explicit DispatchQueue.main.async calls, updates UI on main thread (if u try to update ui from background thread like making network request, app can crash)
 @MainActor
 class ResultsPaginatedViewController: UIViewController {
     
     let tableView: UITableView = {
-        let tableView = UITableView(frame: .zero, style: .plain)
+        let tableView = UITableView(frame: .zero, style: .insetGrouped)
         tableView.translatesAutoresizingMaskIntoConstraints = false
+        tableView.backgroundColor = UIColor(hex: "#1c1c1e")
         return tableView
     }()
     
-    private let spinner: UIActivityIndicatorView = {
+    var spinner: UIActivityIndicatorView = {
         let spinner = UIActivityIndicatorView(style: .medium)
         spinner.hidesWhenStopped = true
-        spinner.frame = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 44)
+        spinner.translatesAutoresizingMaskIntoConstraints = false
         return spinner
+    }()
+    
+    var loadMoreSpinner: UIActivityIndicatorView = {
+        let spinner = UIActivityIndicatorView(style: .medium)
+        spinner.hidesWhenStopped = true
+        return spinner
+    }()
+    
+    var contentUnavailableView: UIContentUnavailableView = {
+        var configuration = UIContentUnavailableConfiguration.empty()
+        configuration.text = "No Foods Found"
+        configuration.secondaryText = "Start by searching for a food above to see results here."
+        configuration.image = UIImage(systemName: "magnifyingglass")
+        
+        let view = UIContentUnavailableView(configuration: configuration)
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
     }()
     
     var foodResponse = FoodSearchResponse(
@@ -40,14 +59,27 @@ class ResultsPaginatedViewController: UIViewController {
             }
         }
     }
-
-    let query: String
-    var section: ResultsTableViewController.Section
-    var foodService: FoodService!
     
-    init(query: String, section: ResultsTableViewController.Section) {
-        self.query = query
-        self.section = section
+    var isLoadingMore = false {
+        didSet {
+            if self.isLoadingMore {
+                self.loadMoreSpinner.startAnimating()
+            } else  {
+                self.loadMoreSpinner.stopAnimating()
+            }
+        }
+    }
+
+    var query: String?
+    var foodService: FoodService
+    let userProfile: UserProfile
+    let dataTypes: [DataType] = [.foundation, .branded]
+    weak var addFoodDelegate: AddFoodDetailViewControllerDelegate?
+    private var currentLoadTask: Task<Void, Never>?
+    
+    init(foodService: FoodService, userProfile: UserProfile) {
+        self.foodService = foodService
+        self.userProfile = userProfile
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -57,65 +89,100 @@ class ResultsPaginatedViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        title = "\(section.description) for \"\(query)\""
         tableView.dataSource = self
-        tableView.tableFooterView = spinner
-        tableView.prefetchDataSource = self
+        tableView.delegate = self
+        
+        tableView.tableFooterView = loadMoreSpinner
         tableView.register(ResultTableViewCell.self, forCellReuseIdentifier: ResultTableViewCell.reuseIdentifier)
-        
+        tableView.register(LoadMoreTableViewCell.self, forCellReuseIdentifier: LoadMoreTableViewCell.reuseIdentifier)
+
         view.addSubview(tableView)
-        
+        view.addSubview(contentUnavailableView)
+        view.addSubview(spinner)
+
         NSLayoutConstraint.activate([
             tableView.topAnchor.constraint(equalTo: view.topAnchor),
             tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            
+            contentUnavailableView.topAnchor.constraint(equalTo: view.topAnchor),
+            contentUnavailableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            contentUnavailableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            contentUnavailableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            
+            spinner.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            spinner.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 10),
         ])
 
         navigationItem.leftBarButtonItem = UIBarButtonItem(systemItem: .cancel, primaryAction: didTapCancelButton())
-        Task {
-            await loadFood()
-        }
     }
     
     // MARK: - Data Fetching
-    func loadFood() async {
-        let isInitialLoad = foodResponse.currentPage == 1
-        guard !isLoading, isInitialLoad || foodResponse.currentPage <= foodResponse.totalPages else { return }
-        
-        isLoading = true
+    func loadFood(query: String) async {
+        currentLoadTask?.cancel() // cancel any existing task
+        currentLoadTask = Task {
+            self.isLoading = true
+            defer { self.isLoading = false }
 
-        defer {
-            isLoading = false
-        }
-        
-        do {
-            let response = try await foodService.getFoods(
-                query: query,
-                dataTypes: section.dataTypes,
-                pageSize: 20,
-                pageNumber: foodResponse.currentPage
-            )
-            
-            let start = foodResponse.foods.count
-            let newItems = response.foods
-            let end = start + newItems.count
-            
-            foodResponse.foods.append(contentsOf: newItems)
-            foodResponse.currentPage += 1
-            foodResponse.totalPages  = response.totalPages
-            
-            let paths = (start..<end).map { IndexPath(row: $0, section: 0) }
-            
-            if isInitialLoad {
-                print("reloadData")
-                tableView.reloadData()
-            } else {
-                print("insert Rows")
-                tableView.insertRows(at: paths, with: .automatic)
+            do {
+                self.query = query
+                self.foodResponse = try await foodService.getFoods(
+                    query: query,
+                    dataTypes: dataTypes,
+                    pageSize: 8,
+                    pageNumber: 1
+                )
+                self.foodResponse.currentPage += 1
+            } catch is CancellationError {
+                print("Initial load canceled")
+                return
+            } catch {
+                self.foodResponse = FoodSearchResponse(totalHits: 0, currentPage: 1, totalPages: 0, foodParts: [])
+                print("Error loading food:", error)
             }
-        } catch {
-            print("Error loading food:", error)
+
+            self.contentUnavailableView.isHidden = self.foodResponse.foods.count > 0
+            self.tableView.reloadData()
+        }
+    }
+        
+    // MARK: - Data Fetching
+    func loadMoreFood(query: String) {
+        guard !isLoadingMore,
+              foodResponse.currentPage <= foodResponse.totalPages else { return }
+
+        currentLoadTask?.cancel() // cancel existing load
+        currentLoadTask = Task {
+            self.isLoadingMore = true
+            defer { self.isLoadingMore = false }
+            
+            do {
+                let response = try await foodService.getFoods(
+                    query: query,
+                    dataTypes: dataTypes,
+                    pageSize: 8,
+                    pageNumber: foodResponse.currentPage
+                )
+                
+                let start = self.foodResponse.foods.count
+                let newItems = response.foods
+                let end = start + newItems.count
+                
+                self.foodResponse.foods.append(contentsOf: newItems)
+                self.foodResponse.currentPage += 1
+                
+                let paths = (start..<end).map { IndexPath(row: $0, section: 0) }
+                
+                self.contentUnavailableView.isHidden = self.foodResponse.foods.count > 0
+                self.tableView.insertRows(at: paths, with: .automatic)
+
+            } catch is CancellationError {
+                print("Load more canceled")
+                return
+            } catch {
+                print("Error loading more food:", error)
+            }
         }
     }
     
@@ -134,21 +201,55 @@ extension ResultsPaginatedViewController: UITableViewDataSource {
     }
     
     func tableView(_ tv: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return foodResponse.foods.count
+        if foodResponse.currentPage < foodResponse.totalPages {
+            return foodResponse.foods.count + 1
+        } else {
+            return foodResponse.foods.count
+        }
     }
     
-    func tableView(_ tv: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tv.dequeueReusableCell(withIdentifier: ResultTableViewCell.reuseIdentifier, for: indexPath) as! ResultTableViewCell
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        if foodResponse.currentPage < foodResponse.totalPages && indexPath.row == foodResponse.foods.count {
+            let cell = tableView.dequeueReusableCell(withIdentifier: LoadMoreTableViewCell.reuseIdentifier, for: indexPath) as! LoadMoreTableViewCell
+            return cell
+        }
+        
+        let cell = tableView.dequeueReusableCell(withIdentifier: ResultTableViewCell.reuseIdentifier, for: indexPath) as! ResultTableViewCell
         let item = foodResponse.foods[indexPath.row]
         cell.update(with: item)
+        cell.backgroundColor = UIColor(hex: "#252525")
         return cell
     }
+    
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        guard let query else { return nil }
+        if foodResponse.foods.count == 0 {
+            return "No results for “\(query)”"
+        }
+        return "Results for \"\(query)\" (\(foodResponse.totalHits))"
+    }
+    
 }
 
-extension ResultsPaginatedViewController: UITableViewDataSourcePrefetching {
-    func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath]) {
-        if indexPaths.contains(where: { $0.row >= foodResponse.foods.count - 3 }) {
-            Task { await loadFood() }
+extension ResultsPaginatedViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        if foodResponse.currentPage < foodResponse.totalPages && indexPath.row == foodResponse.foods.count {
+            didTapLoadMoreButton()
+            return
         }
+                
+        let foodItem = foodResponse.foods[indexPath.row]
+        // TODO: Make food and recipe version
+        let addFoodDetailViewController = AddFoodDetailViewController(foodEntry: nil, fdcFood: foodItem, meal: nil, userProfile: userProfile, foodService: foodService, selectedFoodPortion: foodItem.selectedFoodPortion)
+//        addFoodDetailViewController.delegate = addFoodDelegate
+//        addFoodDetailViewController.dismissDelegate = self
+//        addFoodDetailViewController.historyDelegate = historyDelegate
+
+        present(UINavigationController(rootViewController: addFoodDetailViewController), animated: true)
+    }
+    
+    func didTapLoadMoreButton() {
+        guard let query else { return }
+        loadMoreFood(query: query)
     }
 }

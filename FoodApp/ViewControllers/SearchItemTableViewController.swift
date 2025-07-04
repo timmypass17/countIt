@@ -19,10 +19,6 @@ class SearchItemTableViewController: UIViewController {
     
     private var contentUnavailableView: UIContentUnavailableView = {
         var configuration = UIContentUnavailableConfiguration.empty()
-        configuration.text = "No Workouts Yet"
-        configuration.secondaryText = "Your workouts will appear here once you add them."
-        configuration.image = UIImage(systemName: "dumbbell")
-
         let view = UIContentUnavailableView(configuration: configuration)
         view.translatesAutoresizingMaskIntoConstraints = false
         view.isHidden = true
@@ -36,6 +32,7 @@ class SearchItemTableViewController: UIViewController {
     
     var searchController: UISearchController!
     var resultsTableController: ResultsTableViewController!
+    var resultsPaginatedViewController: ResultsPaginatedViewController!
     var fetchedResultsController: NSFetchedResultsController<History>! // source of truth
 
 //    var meal: Meal?   addFood
@@ -213,12 +210,10 @@ class SearchItemTableViewController: UIViewController {
         config.text = text
         config.secondaryText = secondaryText
         config.image = image
-
+        
         contentUnavailableView.configuration = config
         
-//        UIView.transition(with: contentUnavailableView, duration: 0.25, options: .transitionCrossDissolve) {
-            self.contentUnavailableView.isHidden = !(self.fetchedResultsController.fetchedObjects?.isEmpty ?? true)
-//        }
+        self.contentUnavailableView.isHidden = !(self.fetchedResultsController.fetchedObjects?.isEmpty ?? true)
     }
 }
 
@@ -343,21 +338,18 @@ extension SearchItemTableViewController: UISearchBarDelegate {
         searchTask?.cancel()
         searchTask = Task {
             do {
-                resultsTableController.spinner.startAnimating()
+                await resultsPaginatedViewController.loadFood(query: searchBar.text!)
+                
+//                resultsTableController.spinner.startAnimating()
                 // TODO: searching egg doesnt work
-                resultsTableController.searchResponse = try await foodService.getFoods(query: searchBar.text!, dataTypes: [.foundation, .branded, .survey], pageSize: 10, pageNumber: 1)
-                resultsTableController.contentUnavailableView.isHidden = !(fetchedResultsController.fetchedObjects?.isEmpty ?? true)
-
-//                async let bestMatchFoodItems: FoodSearchResponse = try await foodService.getFoods(query: searchBar.text!, dataTypes: ResultsTableViewController.Section.bestMatch.dataTypes, pageSize: 3, pageNumber: 1)
-//                async let moreResultsFoodItems: FoodSearchResponse = try await foodService.getFoods(query: searchBar.text!, dataTypes: ResultsTableViewController.Section.moreResults.dataTypes, pageSize: 8, pageNumber: 1)
-//                resultsTableController.bestMatchResponse = try await bestMatchFoodItems
-//                resultsTableController.moreResultsResponse = try await moreResultsFoodItems
-                resultsTableController.query = searchBar.text!
-                resultsTableController.tableView.reloadData()
+//                resultsTableController.searchResponse = try await foodService.getFoods(query: searchBar.text!, dataTypes: [.foundation, .branded, .survey], pageSize: 10, pageNumber: 1)
+//                resultsTableController.contentUnavailableView.isHidden = resultsTableController.searchResponse.foods.count > 0
+//                resultsTableController.query = searchBar.text!
+//                resultsTableController.tableView.reloadData()
             } catch {
                 print("Error searching foods: \(error)")
             }
-            resultsTableController.spinner.stopAnimating()
+//            resultsTableController.spinner.stopAnimating()
         }
         searchBar.resignFirstResponder()
     }

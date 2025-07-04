@@ -624,6 +624,7 @@ class FoodService: FoodServiceProtocol {
     }
     
     func getFoods(query: String, dataTypes: [DataType], pageSize: Int, pageNumber: Int) async throws -> FoodSearchResponse {
+        print("timmy query getFoods: \(query)")
         let abridgedRequest = FoodsSearchAPIRequest(query: query, dataTypes: dataTypes, pageSize: pageSize, pageNumber: pageNumber)
         var searchResultResponse = try await sendRequest(abridgedRequest)
         let fdcIds = searchResultResponse.foodParts.map { $0.fdcId }

@@ -7,13 +7,13 @@
 
 import UIKit
 
-class IngredientsResultViewController: ResultsTableViewController {
+class IngredientsResultViewController: ResultsPaginatedViewController {
 
     let recipeEntry: FoodEntry
     
     init(recipeEntry: FoodEntry, userProfile: UserProfile, foodService: FoodService) {
         self.recipeEntry = recipeEntry
-        super.init(meal: nil, foodEntry: recipeEntry, userProfile: userProfile, foodService: foodService)
+        super.init(foodService: foodService, userProfile: userProfile)
     }
     
     @MainActor required init?(coder: NSCoder) {
@@ -31,13 +31,17 @@ class IngredientsResultViewController: ResultsTableViewController {
 extension IngredientsResultViewController {
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        guard let section = Section(rawValue: indexPath.section) else { return }
-        let foodItem = searchResponse.foods[indexPath.row]
-        let addFoodDetailViewController = AddIngredientViewController(recipeEntry: recipeEntry, fdcFood: foodItem, userProfile: userProfile, foodService: foodService)
-        addFoodDetailViewController.delegate = addFoodDelegate
-        addFoodDetailViewController.dismissDelegate = self
-        addFoodDetailViewController.historyDelegate = historyDelegate
+        if foodResponse.currentPage < foodResponse.totalPages && indexPath.row == foodResponse.foods.count {
+            didTapLoadMoreButton()
+            return
+        }
+                
+        let foodItem = foodResponse.foods[indexPath.row]
+        let addIngredientDetailViewController = AddIngredientViewController(recipeEntry: recipeEntry, fdcFood: foodItem, userProfile: userProfile, foodService: foodService)
+        addIngredientDetailViewController.delegate = addFoodDelegate
+//        addIngredientDetailViewController.dismissDelegate = self
+//        addIngredientDetailViewController.historyDelegate = historyDelegate
 
-        present(UINavigationController(rootViewController: addFoodDetailViewController), animated: true)
+        present(UINavigationController(rootViewController: addIngredientDetailViewController), animated: true)
     }
 }

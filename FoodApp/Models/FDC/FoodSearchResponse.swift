@@ -8,7 +8,7 @@
 import Foundation
 
 struct FoodSearchResponse: Decodable {
-    let totalHits: Int
+    var totalHits: Int
     var currentPage: Int
     var totalPages: Int
     var foodParts: [SearchResultFood]
