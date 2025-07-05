@@ -11,6 +11,8 @@ import Foundation
 import CoreData
 import UIKit
 
+let apiKey = "tbRKfhWJR3T2FFbwOiEShaXHrTljAGkVa232iZPx"
+
 protocol APIRequest {
     associatedtype Response
     

@@ -94,11 +94,6 @@ struct BrandedFoodItem: FoodItem {
         }
 
         self.foodNutrients = foodNutrients
-//        self.foodNutrients = rawNutrients.compactMap { raw in
-//            guard let rawNutrient = raw.nutrient,
-//                  let nutrientId = NutrientId(rawValue: rawNutrient.id) else { return nil }
-//            return FoodNutrient(nutrient: Nutrient(id: nutrientId, name: rawNutrient.name, unitName: rawNutrient.unitName, rank: 0), amount: raw.amount)
-//        }
     }
     
     func getFoodPortionDescription(foodPortion: FoodPortion, numberOfServings: Int = 1, options: [FoodEntryOptions] = FoodEntryOptions.allCases) -> String {

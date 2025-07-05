@@ -83,16 +83,6 @@ struct MeasureUnit: Codable, Equatable {
     let abbreviation: String
 }
 
-extension FoodPortion {
-//    func getServingSizeFormatted() -> String {
-//        if let amount = amount {
-//            return "\(Int(amount)) \(modifier) (\(Int(gramWeight)) g)"
-//        } else {
-//            return "\(Int(gramWeight)) g"
-//        }
-//    }
-}
-
 extension FoodPortion: Comparable {
     public static func < (lhs: FoodPortion, rhs: FoodPortion) -> Bool {
         return lhs.gramWeight ?? 0 < rhs.gramWeight ?? 0

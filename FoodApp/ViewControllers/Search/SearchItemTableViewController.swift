@@ -31,7 +31,6 @@ class SearchItemTableViewController: UIViewController {
     var selectedTab: SearchTabView.TabItem = .all
     
     var searchController: UISearchController!
-    var resultsTableController: ResultsTableViewController!
     var resultsPaginatedViewController: ResultsPaginatedViewController!
     var fetchedResultsController: NSFetchedResultsController<History>! // source of truth
 

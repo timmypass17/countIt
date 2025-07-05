@@ -175,31 +175,31 @@ class DiaryViewController: UIViewController {
     }
     
     private func showMealAlert() {
-        let alert = UIAlertController(title: "Add Meal", message: "Enter name for meal", preferredStyle: .alert)
-
-        alert.addTextField { textField in
-            textField.placeholder = "e.g. Breakfast"
-            let textChangedAction = UIAction { _ in
-                alert.actions[1].isEnabled = textField.text!.count > 0
-            }
-            textField.addAction(textChangedAction, for: .allEditingEvents)
-        }
-        
-        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
-        alert.addAction(UIAlertAction(title: "Save", style: .default, handler: { [self] _ in
-            guard let mealName = alert.textFields?.first?.text else { return }
-            
-            do {
-                let section = mealPlan.meals.count + 2
-                try CoreDataStack.shared.addMeal(mealName: mealName, to: mealPlan)
-                tableView.insertSections(IndexSet(integer: section), with: .automatic)
-            } catch {
-                print("Error adding meal: \(error)")
-            }
-        }))
-
-        // show the alert
-        self.present(alert, animated: true, completion: nil)
+//        let alert = UIAlertController(title: "Add Meal", message: "Enter name for meal", preferredStyle: .alert)
+//
+//        alert.addTextField { textField in
+//            textField.placeholder = "e.g. Breakfast"
+//            let textChangedAction = UIAction { _ in
+//                alert.actions[1].isEnabled = textField.text!.count > 0
+//            }
+//            textField.addAction(textChangedAction, for: .allEditingEvents)
+//        }
+//        
+//        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+//        alert.addAction(UIAlertAction(title: "Save", style: .default, handler: { [self] _ in
+//            guard let mealName = alert.textFields?.first?.text else { return }
+//            
+//            do {
+//                let section = mealPlan.meals.count + 2
+//                try CoreDataStack.shared.addMeal(mealName: mealName, to: mealPlan)
+//                tableView.insertSections(IndexSet(integer: section), with: .automatic)
+//            } catch {
+//                print("Error adding meal: \(error)")
+//            }
+//        }))
+//
+//        // show the alert
+//        self.present(alert, animated: true, completion: nil)
     }
     
     func editFoodsAction() -> UIAction {
@@ -485,7 +485,6 @@ extension DiaryViewController: UITableViewDelegate {
 
 extension DiaryViewController: AddFoodDetailViewControllerDelegate {
     func addFoodDetailViewController(_ tableViewController: FoodDetailTableViewController, didAddFood food: FoodEntry) {
-        print("timmy add food")
         do {
             try food.managedObjectContext?.save()
             CoreDataStack.shared.saveContext()
@@ -493,13 +492,10 @@ extension DiaryViewController: AddFoodDetailViewControllerDelegate {
             print("Error saving food: \(error)")
         }
         
-        print("timmy \(food.meal)")
-        print("timmy \(mealPlan.meals.firstIndex(where: { $0.objectID == food.meal?.objectID }))")
         guard let meal = food.meal,
               // Have to compare objectID (doing $0 == meal fails across diff context, need to use objectID)
               let section = mealPlan.meals.firstIndex(where: { $0.objectID == meal.objectID })
         else { return }
-        print("timmy add food 2")
         let indexPath = IndexPath(row: Int(food.index), section: section + 2)
         tableView.insertRows(at: [indexPath], with: .automatic)
         reloadTableViewHeader(section: section + 2)
