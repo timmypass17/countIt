@@ -513,8 +513,8 @@ extension DiaryViewController: UpdateFoodDetailViewControllerDelegate {
     }
 }
 
-extension DiaryViewController: FoodDetailTableViewControllerDismissDelegate {
-    func foodDetailTableViewController(_ tableViewController: FoodDetailTableViewController, didDismiss: Bool) {
+extension DiaryViewController: ViewControllerDismissDelegate {
+    func viewControllerDidDismiss(_ viewController: UIViewController) {
         if let indexPath = tableView.indexPathForSelectedRow {
             tableView.deselectRow(at: indexPath, animated: true)
         }

@@ -39,8 +39,7 @@ extension IngredientsResultViewController {
         let foodItem = foodResponse.foods[indexPath.row]
         let addIngredientDetailViewController = AddIngredientViewController(recipeEntry: recipeEntry, foodEntry: nil, fdcFood: foodItem, userProfile: userProfile, foodService: foodService)
         addIngredientDetailViewController.delegate = addFoodDelegate
-//        addIngredientDetailViewController.dismissDelegate = self
-//        addIngredientDetailViewController.historyDelegate = historyDelegate
+        addIngredientDetailViewController.dismissDelegate = self
 
         present(UINavigationController(rootViewController: addIngredientDetailViewController), animated: true)
     }

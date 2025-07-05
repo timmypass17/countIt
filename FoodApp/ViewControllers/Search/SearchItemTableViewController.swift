@@ -278,8 +278,8 @@ extension SearchItemTableViewController: UITableViewDelegate {
     }
 }
 
-extension SearchItemTableViewController: FoodDetailTableViewControllerDismissDelegate {
-    func foodDetailTableViewController(_ tableViewController: FoodDetailTableViewController, didDismiss: Bool) {
+extension SearchItemTableViewController: ViewControllerDismissDelegate {
+    func viewControllerDidDismiss(_ viewController: UIViewController) {
         if let indexPath = tableView.indexPathForSelectedRow {
             tableView.deselectRow(at: indexPath, animated: true)
         }

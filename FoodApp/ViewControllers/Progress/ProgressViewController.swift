@@ -76,6 +76,12 @@ class ProgressViewController: UIViewController {
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Edit", primaryAction: nil)
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        if let indexPath = tableView.indexPathForSelectedRow {
+            tableView.deselectRow(at: indexPath, animated: true)
+        }
+    }
+    
     @objc func handleMealPlanUpdated() {
         loadCurrentWeekMealPlans()
         tableView.reloadData()

@@ -8,8 +8,8 @@
 import UIKit
 import SwiftUI
 
-protocol FoodDetailTableViewControllerDismissDelegate: AnyObject {
-    func foodDetailTableViewController(_ tableViewController: FoodDetailTableViewController, didDismiss: Bool)
+protocol ViewControllerDismissDelegate: AnyObject {
+    func viewControllerDidDismiss(_ viewController: UIViewController)
 }
 
 protocol FoodDetailTableViewControllerHistoryDelegate: AnyObject {
@@ -26,8 +26,8 @@ class FoodDetailTableViewController: UITableViewController {
     let userProfile: UserProfile
     let foodService: FoodService
 
-    weak var dismissDelegate: FoodDetailTableViewControllerDismissDelegate?
     weak var historyDelegate: FoodDetailTableViewControllerHistoryDelegate?
+    weak var dismissDelegate: ViewControllerDismissDelegate?
     var macronutrients: [FoodNutrient] = []
     var vitamins: [FoodNutrient] = []
     var minerals: [FoodNutrient] = []
@@ -261,7 +261,7 @@ class FoodDetailTableViewController: UITableViewController {
     
     override func viewWillDisappear(_ animated: Bool) {
         if navigationController?.isBeingDismissed ?? isBeingDismissed {
-            dismissDelegate?.foodDetailTableViewController(self, didDismiss: true)
+            dismissDelegate?.viewControllerDidDismiss(self)
         }
     }
     
@@ -339,8 +339,8 @@ extension FoodDetailTableViewController: UpdateFoodDetailViewControllerDelegate 
     }
 }
 
-extension FoodDetailTableViewController: FoodDetailTableViewControllerDismissDelegate {
-    func foodDetailTableViewController(_ tableViewController: FoodDetailTableViewController, didDismiss: Bool) {
+extension FoodDetailTableViewController: ViewControllerDismissDelegate {
+    func viewControllerDidDismiss(_ viewController: UIViewController) {
         if let indexPath = tableView.indexPathForSelectedRow {
             tableView.deselectRow(at: indexPath, animated: true)
         }

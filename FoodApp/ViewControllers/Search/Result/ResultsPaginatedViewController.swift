@@ -252,3 +252,11 @@ extension ResultsPaginatedViewController: UITableViewDelegate {
         loadMoreFood(query: query)
     }
 }
+
+extension ResultsPaginatedViewController: ViewControllerDismissDelegate {
+    func viewControllerDidDismiss(_ viewController: UIViewController) {
+        if let indexPath = tableView.indexPathForSelectedRow {
+            tableView.deselectRow(at: indexPath, animated: true)
+        }
+    }
+}

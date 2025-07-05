@@ -193,6 +193,7 @@ struct NutrientProgressListCell: View {
             .padding()
             
             Divider()
+                .padding(.horizontal)
 //                .opacity(i < filteredData.count - 1 ? 1 : 0)
         }
     }
