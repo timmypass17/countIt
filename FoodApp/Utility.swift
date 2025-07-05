@@ -61,3 +61,16 @@ extension Double {
     }
     
 }
+
+func extractQuantityAndModifier(from string: String) -> (Double, String)? {
+    let components: [Substring] = string.split(separator: " ")
+    guard let quantityString = components.first,
+          let quantity = Double(quantityString),
+          components.count > 1
+    else {
+        return nil
+    }
+    let modifier = String(components[1]).lowercased()
+    
+    return (quantity, modifier)
+}

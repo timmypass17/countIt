@@ -47,15 +47,21 @@ struct BrandedFoodItem: FoodItem {
         self.dataType = try container.decode(DataType.self, forKey: .dataType)
         self.description = try container.decode(String.self, forKey: .description).firstUppercased
         self.gtinUpc = try container.decode(String.self, forKey: .gtinUpc)
-        self.householdServingFullText = try container.decode(String.self, forKey: .householdServingFullText)
+        let householdServingFullText = try container.decode(String.self, forKey: .householdServingFullText)
+        self.householdServingFullText = householdServingFullText
         let servingSize = try container.decodeIfPresent(Double.self, forKey: .servingSize) ?? 1
         self.servingSize = servingSize
         self.servingSizeUnit = try container.decode(String.self, forKey: .servingSizeUnit)
         self.brandedFoodCategory = try container.decode(String.self, forKey: .brandedFoodCategory)
-//        var foodPortions = try container.decode([FoodPortion].self, forKey: .foodPortions)
+
         var foodPortions: [FoodPortion] = []
         foodPortions.append(FoodPortion.default100g)
-        foodPortions.append(FoodPortion(id: 1, gramWeight: Double(servingSize)))
+        
+        if let (quantity, modifier) = extractQuantityAndModifier(from: householdServingFullText) {
+            foodPortions.append(FoodPortion(id: 1, amount: quantity, gramWeight: servingSize, modifier: modifier))
+        } else {
+            foodPortions.append(FoodPortion(id: 1, gramWeight: servingSize))
+        }
         foodPortions.sort { $0.gramWeight ?? 0 < $1.gramWeight ?? 0 }
         self.foodPortions = foodPortions
         
