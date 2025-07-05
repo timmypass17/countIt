@@ -50,7 +50,7 @@ class UpdateNutrientViewController: UIViewController {
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
         ])
         
-        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Cancel", primaryAction: nil)
+        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Cancel", primaryAction: didTapCancelButton())
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Save", primaryAction: didTapSave())
     }
     
@@ -58,6 +58,13 @@ class UpdateNutrientViewController: UIViewController {
         return UIAction { _ in
             guard let amount = self.amount else { return }
             self.didTapSaveGoal(amount)
+            self.dismiss(animated: true, completion: nil)
+        }
+    }
+    
+    func didTapCancelButton() -> UIAction {
+        return UIAction { _ in
+            self.dismiss(animated: true, completion: nil)
         }
     }
 }
@@ -75,9 +82,11 @@ extension UpdateNutrientViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: UpdateNutrientTableViewCell.reuseIdentifier, for: indexPath) as! UpdateNutrientTableViewCell
         cell.update(primaryText: primaryText, amount: amount, initialAmount: initialAmount, unit: unit)
+        cell.selectionStyle = .none
         cell.delegate = self
         return cell
     }
+    
 }
 
 extension UpdateNutrientViewController: UpdateNutrientTableViewCellDelegate {

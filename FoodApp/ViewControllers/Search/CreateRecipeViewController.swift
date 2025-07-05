@@ -144,7 +144,7 @@ class CreateRecipeViewController: UIViewController {
     
     func updateSaveButton() {
         let isFormComplete =
-        recipeEntry.foodInfo?.name_ != nil &&
+        recipeEntry.foodInfo?.name != "" &&
         recipeEntry.ingredients.count > 0
         
         saveButton.isEnabled = isFormComplete
@@ -176,6 +176,7 @@ extension CreateRecipeViewController: UITableViewDataSource {
                 self.recipeEntry.foodInfo?.name = name ?? ""
                 self.updateSaveButton()
             }
+            cell.selectionStyle = .none // don't show highlight
             return cell
         case .ingredients:
             if indexPath.row == recipeEntry.ingredients.count {
@@ -239,6 +240,9 @@ extension CreateRecipeViewController: UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        guard let section = Section(rawValue: indexPath.section),
+              section == .ingredients
+        else { return }
         let isAddFoodButton = indexPath.row == recipeEntry.ingredients.count
         if isAddFoodButton {
             tableView.deselectRow(at: indexPath, animated: true)
@@ -263,6 +267,17 @@ extension CreateRecipeViewController: UITableViewDelegate {
         updateFoodDetailTableViewController.updateDelegate = self
         updateFoodDetailTableViewController.dismissDelegate = self
         present(UINavigationController(rootViewController: updateFoodDetailTableViewController), animated: true)
+    }
+    
+    // conditionally allow or prevent selection
+    func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
+        guard let section = Section(rawValue: indexPath.section) else { return nil }
+        switch section {
+        case .name:
+            return nil
+        case .ingredients:
+            return indexPath
+        }
     }
 }
 

@@ -82,7 +82,7 @@ class CreateFoodViewController: UIViewController {
     
     func updateSaveButton() {
         let isFormComplete =
-        foodEntry.foodInfo?.name_ != nil &&
+        foodEntry.foodInfo?.name != "" &&
         foodEntry.amount != nil &&
         foodEntry.modifier != nil &&
         foodEntry.foodInfo?.nutrients[.calories]?.value != nil
@@ -153,12 +153,14 @@ extension CreateFoodViewController: UITableViewDataSource {
                     self.foodEntry.foodInfo?.name = name ?? ""
                     self.updateSaveButton()
                 }
+                cell.selectionStyle = .none
                 return cell
             } else if indexPath.row == 1 {
                 let cell = tableView.dequeueReusableCell(withIdentifier: CreateFoodInfoTableViewCell.reuseIdentifier, for: indexPath) as! CreateFoodInfoTableViewCell
                 cell.update(title: "Brand Name", description: "Optional", placeholderText: "e.g. Skippy") { brandName in
                     self.foodEntry.foodInfo?.brandName_ = brandName
                 }
+                cell.selectionStyle = .none
                 return cell
             } else if indexPath.row == 2 {
                 let cell = tableView.dequeueReusableCell(withIdentifier: CreateFoodInfoTableViewCell.reuseIdentifier, for: indexPath) as! CreateFoodInfoTableViewCell
@@ -180,6 +182,7 @@ extension CreateFoodViewController: UITableViewDataSource {
                     self.foodEntry.modifier = modifier
                     self.updateSaveButton()
                 }
+                cell.selectionStyle = .none
                 return cell
             } else if indexPath.row == 3 {
                 let cell = tableView.dequeueReusableCell(withIdentifier: NutritionTextFieldTableViewCell.reuseIdentifier, for: indexPath) as! NutritionTextFieldTableViewCell
@@ -191,6 +194,7 @@ extension CreateFoodViewController: UITableViewDataSource {
 
                     self.foodEntry.gramWeight = Double(gramWeight)
                 }
+                cell.selectionStyle = .none
                 return cell
             }
         case .macro:
@@ -210,6 +214,7 @@ extension CreateFoodViewController: UITableViewDataSource {
                     self.foodEntry.foodInfo?.nutrients[nutrientId]?.value = value
                     self.updateSaveButton()
                 }
+            cell.selectionStyle = .none
             return cell
         case .vitamins:
             let cell = tableView.dequeueReusableCell(withIdentifier: NutritionTextFieldTableViewCell.reuseIdentifier, for: indexPath) as! NutritionTextFieldTableViewCell
@@ -226,6 +231,7 @@ extension CreateFoodViewController: UITableViewDataSource {
                     
                     self.foodEntry.foodInfo?.nutrients[nutrientId]?.value = value
                 }
+            cell.selectionStyle = .none
             return cell
         case .minerals:
             let cell = tableView.dequeueReusableCell(withIdentifier: NutritionTextFieldTableViewCell.reuseIdentifier, for: indexPath) as! NutritionTextFieldTableViewCell
@@ -242,6 +248,7 @@ extension CreateFoodViewController: UITableViewDataSource {
                     
                     self.foodEntry.foodInfo?.nutrients[nutrientId]?.value = value
                 }
+            cell.selectionStyle = .none
             return cell
         }
         return UITableViewCell()
