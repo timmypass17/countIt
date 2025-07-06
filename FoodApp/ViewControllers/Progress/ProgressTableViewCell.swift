@@ -135,7 +135,7 @@ class ProgressTableViewCell: UITableViewCell {
             
         ])
         
-        backgroundColor = UIColor(hex: "#252525")
+        backgroundColor = .cellBackground
         accessoryType = .disclosureIndicator
     }
     

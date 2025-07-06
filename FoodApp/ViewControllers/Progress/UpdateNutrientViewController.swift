@@ -17,6 +17,8 @@ class UpdateNutrientViewController: UIViewController {
         return tableView
     }()
     
+    lazy var saveButton: UIBarButtonItem = UIBarButtonItem(title: "Save", primaryAction: didTapSave())
+    
     let primaryText: String
     let initialAmount: Double
     var amount: Double?
@@ -38,7 +40,7 @@ class UpdateNutrientViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        title = "Set \(primaryText) Goal"
+//        title = "Set \(primaryText) Goal"
         tableView.register(UpdateNutrientTableViewCell.self, forCellReuseIdentifier: UpdateNutrientTableViewCell.reuseIdentifier)
         tableView.dataSource = self
 
@@ -51,7 +53,7 @@ class UpdateNutrientViewController: UIViewController {
         ])
         
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Cancel", primaryAction: didTapCancelButton())
-        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Save", primaryAction: didTapSave())
+        navigationItem.rightBarButtonItem = saveButton
     }
     
     func didTapSave() -> UIAction {
@@ -66,6 +68,11 @@ class UpdateNutrientViewController: UIViewController {
         return UIAction { _ in
             self.dismiss(animated: true, completion: nil)
         }
+    }
+    
+    func updateSaveButton() {
+        let isFormComplete = amount != nil
+        saveButton.isEnabled = isFormComplete
     }
 }
 
@@ -93,10 +100,12 @@ extension UpdateNutrientViewController: UpdateNutrientTableViewCellDelegate {
     func updateNutrientTableViewCell(_ sender: UpdateNutrientTableViewCell, amountTextValueChanged amountText: String?) {
         guard let amountText else {
             amount = nil
+            updateSaveButton()
             return
         }
         
         amount = Double(amountText)
+        updateSaveButton()
     }
 }
 
@@ -108,6 +117,8 @@ struct UpdateNutrientView: UIViewControllerRepresentable {
 
     func makeUIViewController(context: Context) -> UINavigationController {
         let viewController = UpdateNutrientViewController(primaryText: primaryText, initialAmount: initialAmount, unit: unit, didTapSaveGoal: didTapSaveGoal)
+        viewController.title = "Set \(primaryText) Goal"
+
         return UINavigationController(rootViewController: viewController)
     }
 

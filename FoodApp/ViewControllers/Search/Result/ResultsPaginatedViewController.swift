@@ -14,7 +14,7 @@ class ResultsPaginatedViewController: UIViewController {
     let tableView: UITableView = {
         let tableView = UITableView(frame: .zero, style: .insetGrouped)
         tableView.translatesAutoresizingMaskIntoConstraints = false
-        tableView.backgroundColor = UIColor(hex: "#1c1c1e")
+        tableView.backgroundColor = .background
         return tableView
     }()
     
@@ -216,7 +216,6 @@ extension ResultsPaginatedViewController: UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(withIdentifier: ResultTableViewCell.reuseIdentifier, for: indexPath) as! ResultTableViewCell
         let item = foodResponse.foods[indexPath.row]
         cell.update(with: item)
-        cell.backgroundColor = UIColor(hex: "#252525")
         return cell
     }
     

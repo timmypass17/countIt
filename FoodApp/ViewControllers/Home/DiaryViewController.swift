@@ -19,8 +19,7 @@ class DiaryViewController: UIViewController {
     
     let tableView: UITableView = {
         let tableView = UITableView(frame: .zero, style: .insetGrouped)
-        tableView.backgroundColor = .secondarySystemGroupedBackground// UIColor(hex: "#202020")
-//        tableView.backgroundColor = UIColor(hex: "#202020")
+        tableView.backgroundColor = .background
         tableView.translatesAutoresizingMaskIntoConstraints = false
         return tableView
     }()
@@ -299,7 +298,8 @@ extension DiaryViewController: UITableViewDataSource {
                 CaloriesConsumedView(mealPlan: mealPlan)
                     .environment(\.managedObjectContext, CoreDataStack.shared.context)
             }
-            cell.backgroundColor = UIColor(hex: "#252525")
+            cell.backgroundColor = .cellBackground
+            cell.selectionStyle = .none
             return cell
         }
         
@@ -310,8 +310,8 @@ extension DiaryViewController: UITableViewDataSource {
                 MacrosView(mealPlan: mealPlan, userProfile: userProfile)  // uses coredata fetch, updated automatically when core data changes
                     .environment(\.managedObjectContext, CoreDataStack.shared.context)
             }
-            cell.backgroundColor = UIColor(hex: "#252525")
-            
+            cell.backgroundColor = .cellBackground
+            cell.selectionStyle = .none
             return cell
         }
         
@@ -319,14 +319,11 @@ extension DiaryViewController: UITableViewDataSource {
         if indexPath.row == meal.foodEntries.count {
             // Add Button
             let cell = tableView.dequeueReusableCell(withIdentifier: AddItemTableViewCell.reuseIdentifier, for: indexPath) as! AddItemTableViewCell
-            cell.backgroundColor = UIColor(hex: "#252525")
-
             return cell
         }
         
         let foodEntry = meal.foodEntries[indexPath.row]
         let cell = tableView.dequeueReusableCell(withIdentifier: FoodEntryTableViewCell.reuseIdentifier, for: indexPath) as! FoodEntryTableViewCell
-        cell.backgroundColor = UIColor(hex: "#252525")
         cell.update(foodEntry)
         cell.accessoryType = .disclosureIndicator
         return cell

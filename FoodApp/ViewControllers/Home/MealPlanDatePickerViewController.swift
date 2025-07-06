@@ -27,7 +27,7 @@ class MealPlanDatePickerViewController: UIViewController {
     
     init(date: Date) {
         super.init(nibName: nil, bundle: nil)
-        view.backgroundColor = UIColor(hex: "#1c1c1e")
+        view.backgroundColor = .background
         title = "Select a Date"
         datePicker.date = date
 

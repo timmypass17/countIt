@@ -106,7 +106,7 @@ struct ProgressDetailView: View {
                 .frame(height: 300)
                 .foregroundStyle(nutrientId.progressColor)
                 .padding()
-                .background(Color(UIColor(hex: "#252525")), in: RoundedRectangle(cornerRadius: 8))
+                .background(Color("cellBackground"), in: RoundedRectangle(cornerRadius: 8))
                 .padding(.bottom, 12)
 
                 NutrientProgressListView(filteredData: filteredData, nutrientId: nutrientId)
@@ -115,7 +115,7 @@ struct ProgressDetailView: View {
             .animation(.default, value: mealPlans.count) // animation trigger when value changes
         }
         .navigationTitle(nutrientId.description)
-        .background(Color(UIColor(hex: "#1c1c1e")))
+        .background(Color("background"))
         .toolbar {
             ToolbarItem {
                 Button("Set Goal") {
@@ -129,6 +129,7 @@ struct ProgressDetailView: View {
                 CoreDataStack.shared.saveContext()
                 NotificationCenter.default.post(name: .mealPlanUpdated, object: nil)
             }
+            .presentationDetents([.medium])
         }
     }
 }
@@ -158,7 +159,7 @@ struct NutrientProgressListView: View {
                     NutrientProgressListCell(item: item, nutrientId: nutrientId)
                 }
             }
-            .background(Color(UIColor(hex: "#252525")), in: RoundedRectangle(cornerRadius: 8))
+            .background(Color("cellBackground"), in: RoundedRectangle(cornerRadius: 8))
         }
     }
 }

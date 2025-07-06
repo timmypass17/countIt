@@ -40,7 +40,7 @@ class OnboardingCalculationViewController: UIViewController {
     let tableView: UITableView = {
         let tableView = UITableView(frame: .zero, style: .insetGrouped)
         tableView.translatesAutoresizingMaskIntoConstraints = false
-        tableView.backgroundColor = .charcoal
+        tableView.backgroundColor = .background
         return tableView
     }()
     
@@ -66,7 +66,7 @@ class OnboardingCalculationViewController: UIViewController {
         
         navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "chevron.left"), primaryAction: didTapBackButton())
         
-        view.backgroundColor = .charcoal
+        view.backgroundColor = .background
         
         titleContainer.addArrangedSubview(titleLabel)
         titleContainer.addArrangedSubview(descriptionLabel)

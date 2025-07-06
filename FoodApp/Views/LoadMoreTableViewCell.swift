@@ -20,7 +20,7 @@ class LoadMoreTableViewCell: UITableViewCell {
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        backgroundColor = UIColor(hex: "#252525")
+        backgroundColor = .cellBackground
         
         contentView.addSubview(loadMoreLabel)
         NSLayoutConstraint.activate([

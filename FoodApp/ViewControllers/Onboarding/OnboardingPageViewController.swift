@@ -134,7 +134,7 @@ class OnboardingPageViewController: UIPageViewController {
         // Customize tab bar appearance
         let appearance = UITabBarAppearance()
         appearance.configureWithOpaqueBackground()
-        appearance.backgroundColor = UIColor(hex: "#191919")
+        appearance.backgroundColor = .background
 
         // Set selected and unselected icon colors
         appearance.stackedLayoutAppearance.selected.iconColor = .white

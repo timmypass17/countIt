@@ -16,6 +16,12 @@ class SettingsViewController: UIViewController {
         return tableView
     }()
     
+    lazy var moreButton: UIBarButtonItem = {
+        let button = UIBarButtonItem(image: UIImage(systemName: "ellipsis"), primaryAction: nil)
+        button.tintColor = .white
+        return button
+    }()
+    
     struct Section {
         var title: String
         var data: [Model]
@@ -45,50 +51,65 @@ class SettingsViewController: UIViewController {
                     image: UIImage(systemName: "person.fill")!,
                     text: "My Profile",
                     secondary: "",
-                    backgroundColor: .charcoal
-                ),
-                Model(
-                    image: UIImage(systemName: "book.pages.fill")!,
-                    text: "My Meals, Recipes & Foods",
-                    secondary: "",
-                    backgroundColor: .charcoal
-                ),
-                Model(
-                    image: UIImage(systemName: "chart.bar.fill")!,  // flag
-                    text: "Nutrition Goals",
-                    secondary: "",
-                    backgroundColor: .charcoal
+                    backgroundColor: .cellBackground
                 ),
                 Model(
                     image: UIImage(systemName: "figure")!,
                     text: "Weight",
                     secondary: "",
-                    backgroundColor: .charcoal
+                    backgroundColor: .cellBackground
                 ),
-//                Model(
-//                    image: UIImage(systemName: "ruler.fill")!,
-//                    text: "Units",
-//                    secondary: "",
-//                    backgroundColor: .charcoal
-//                ),
                 Model(
                     image: UIImage(systemName: "fork.knife")!,
                     text: "Meal Types",
                     secondary: "",
-                    backgroundColor: .charcoal
+                    backgroundColor: .cellBackground
+                ),
+                Model(
+                    image: UIImage(systemName: "moon.fill")!,
+                    text: "Theme",
+                    secondary: "",
+                    backgroundColor: .cellBackground
                 )
-//                Model(
-//                    image: UIImage(systemName: "person.fill")!,
-//                    text: "Sign Out",
-//                    secondary: "",
-//                    backgroundColor: .charcoal
-//                ),
-//                Model(
-//                    image: UIImage(systemName: "person.fill")!,
-//                    text: "Delete Account",
-//                    secondary: "",
-//                    backgroundColor: .charcoal
-//                )
+            ]
+        ),
+        Section(
+            title: "",
+            data: [
+                Model(
+                    image: UIImage(systemName: "moon.fill")!,
+                    text: "Theme",
+                    secondary: "",
+                    backgroundColor: .cellBackground
+                ),
+            ]
+        ),
+        Section(
+            title: "",
+            data: [
+                Model(
+                    image: UIImage(systemName: "envelope.fill")!,
+                    text: "Contact Us",
+                    secondary: "",
+                    backgroundColor: .cellBackground
+                ),
+                Model(
+                    image: UIImage(systemName: "ant.fill")!,
+                    text: "Bug Report",
+                    secondary: "",
+                    backgroundColor: .cellBackground
+                )
+            ]
+        ),
+        Section(
+            title: "",
+            data: [
+                Model(
+                    image: UIImage(systemName: "shield.fill")!,
+                    text: "Privacy Policy",
+                    secondary: "",
+                    backgroundColor: .cellBackground
+                )
             ]
         )
     ]
@@ -109,6 +130,7 @@ class SettingsViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        tableView.backgroundColor = .background
         navigationItem.title = "Profile"
         navigationController?.navigationBar.prefersLargeTitles = false
         tableView.dataSource = self
@@ -123,6 +145,8 @@ class SettingsViewController: UIViewController {
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
         ])
+        
+        navigationItem.rightBarButtonItem = moreButton
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -162,12 +186,8 @@ extension SettingsViewController: UITableViewDelegate {
             let profileViewController = ProfileViewController(userProfile: userProfile)
             navigationController?.pushViewController(profileViewController, animated: true)
         }
-        if indexPath == IndexPath(row: 2, section: 0) {
-            let goalsViewController = GoalsViewController(userProfile: userProfile)
-            navigationController?.pushViewController(goalsViewController, animated: true)
-        }
-        
-        if indexPath == IndexPath(row: 3, section: 0) {
+
+        if indexPath == IndexPath(row: 1, section: 0) {
             let context = CoreDataStack.shared.persistentContainer.viewContext
             let weightProgressView = WeightProgressView()
             let hostingController = UIHostingController(rootView: weightProgressView

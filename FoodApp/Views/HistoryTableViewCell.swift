@@ -78,6 +78,8 @@ class HistoryTableViewCell: UITableViewCell {
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
+        backgroundColor = .cellBackground
+
         deleteButton.addAction(deleteButtonTapped(), for: .touchUpInside)
         
         titleContainer.addArrangedSubview(titleLabel)

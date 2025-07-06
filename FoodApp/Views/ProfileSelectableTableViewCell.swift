@@ -25,12 +25,14 @@ class ProfileSelectableTableViewCell: UITableViewCell {
     let descriptionLabel: UILabel = {
         let label = UILabel()
         label.textColor = .secondaryLabel
+        label.textAlignment = .right
         return label
     }()
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        
+        backgroundColor = .cellBackground
+
         container.addArrangedSubview(titleLabel)
         container.addArrangedSubview(descriptionLabel)
         contentView.addSubview(container)

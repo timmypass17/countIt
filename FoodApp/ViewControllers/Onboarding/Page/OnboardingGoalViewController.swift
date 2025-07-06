@@ -45,7 +45,7 @@ class OnboardingGoalViewController: UIViewController {
     let tableView: UITableView = {
         let tableView = UITableView(frame: .zero, style: .insetGrouped)
         tableView.translatesAutoresizingMaskIntoConstraints = false
-        tableView.backgroundColor = .charcoal
+        tableView.backgroundColor = .background
         return tableView
     }()
     
@@ -76,7 +76,7 @@ class OnboardingGoalViewController: UIViewController {
         tableView.register(MenuPickerTableViewCell<WeeklyWeightGoal>.self, forCellReuseIdentifier: MenuPickerTableViewCell<WeeklyWeightGoal>.reuseIdentifier)
         tableView.register(UnitPreferenceFooterView.self, forHeaderFooterViewReuseIdentifier: UnitPreferenceFooterView.reuseIdentifier)
         
-        view.backgroundColor = .charcoal
+        view.backgroundColor = .background
         
         titleContainer.addArrangedSubview(titleLabel)
         titleContainer.addArrangedSubview(descriptionLabel)

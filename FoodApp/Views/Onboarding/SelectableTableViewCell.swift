@@ -28,6 +28,7 @@ class SelectableTableViewCell: UITableViewCell {
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
+        backgroundColor = .cellBackground
         
         container.addArrangedSubview(titleLabel)
         contentView.addSubview(container)

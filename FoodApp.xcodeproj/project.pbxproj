@@ -141,7 +141,6 @@
 		3290A3602DD2E139008A4320 /* NutrientGoal+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3290A35C2DD2CCE2008A4320 /* NutrientGoal+CoreDataClass.swift */; };
 		3290A3612DD2E139008A4320 /* NutrientGoal+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3290A35D2DD2CCE2008A4320 /* NutrientGoal+CoreDataProperties.swift */; };
 		3296C9B62BB0F21A00EC7770 /* EditGoalTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3296C9B52BB0F21A00EC7770 /* EditGoalTableViewController.swift */; };
-		3297EC532DF8DC800062B83F /* GoalsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3297EC522DF8DC800062B83F /* GoalsViewController.swift */; };
 		329C1C022DDA76F200087FEF /* Utility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 329C1C012DDA76F200087FEF /* Utility.swift */; };
 		329C1C032DDA76F700087FEF /* Utility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 329C1C012DDA76F200087FEF /* Utility.swift */; };
 		32A292472DDDA69D004272A7 /* FoodInfoPortion+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32A292452DDDA673004272A7 /* FoodInfoPortion+CoreDataClass.swift */; };
@@ -355,7 +354,6 @@
 		3290A35C2DD2CCE2008A4320 /* NutrientGoal+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NutrientGoal+CoreDataClass.swift"; sourceTree = "<group>"; };
 		3290A35D2DD2CCE2008A4320 /* NutrientGoal+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NutrientGoal+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		3296C9B52BB0F21A00EC7770 /* EditGoalTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditGoalTableViewController.swift; sourceTree = "<group>"; };
-		3297EC522DF8DC800062B83F /* GoalsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoalsViewController.swift; sourceTree = "<group>"; };
 		329C1C012DDA76F200087FEF /* Utility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utility.swift; sourceTree = "<group>"; };
 		32A292452DDDA673004272A7 /* FoodInfoPortion+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FoodInfoPortion+CoreDataClass.swift"; sourceTree = "<group>"; };
 		32A292462DDDA673004272A7 /* FoodInfoPortion+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FoodInfoPortion+CoreDataProperties.swift"; sourceTree = "<group>"; };
@@ -469,6 +467,7 @@
 		323FB7642DCADDBD00A71C53 /* Settings */ = {
 			isa = PBXGroup;
 			children = (
+				3297EC512DF8DC720062B83F /* Profile */,
 				320B31DB2DFBD33E00F95406 /* Parts */,
 				323FB7652DCADDD000A71C53 /* SettingsViewController.swift */,
 			);
@@ -609,7 +608,6 @@
 			children = (
 				32C276DA2E18923400637863 /* FoodDetail */,
 				32C276D82E18922000637863 /* Search */,
-				3297EC512DF8DC720062B83F /* Profile */,
 				323FB9A12DCAF27400A71C53 /* Onboarding */,
 				323FB76F2DCAE64D00A71C53 /* Progress */,
 				323FB76C2DCAE23E00A71C53 /* Home */,
@@ -632,7 +630,6 @@
 		3297EC512DF8DC720062B83F /* Profile */ = {
 			isa = PBXGroup;
 			children = (
-				3297EC522DF8DC800062B83F /* GoalsViewController.swift */,
 				3262F8422DFCE66A006CB8A4 /* ProfileViewController.swift */,
 				3262F89B2DFCFE20006CB8A4 /* WeightProgressView.swift */,
 			);
@@ -1127,7 +1124,6 @@
 				32515EC62DD3D4FD00594145 /* FoodAPIRequest.swift in Sources */,
 				32762B852E010FDE001BB96F /* CreateFoodViewController.swift in Sources */,
 				32C386512DC5AF7E0018D282 /* SurveyFoodItem.swift in Sources */,
-				3297EC532DF8DC800062B83F /* GoalsViewController.swift in Sources */,
 				32A292472DDDA69D004272A7 /* FoodInfoPortion+CoreDataClass.swift in Sources */,
 				32A292482DDDA69D004272A7 /* FoodInfoPortion+CoreDataProperties.swift in Sources */,
 				323FB7662DCADDD000A71C53 /* SettingsViewController.swift in Sources */,

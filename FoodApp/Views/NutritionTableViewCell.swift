@@ -59,7 +59,8 @@ class NutritionTableViewCell: UITableViewCell {
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-
+        backgroundColor = .cellBackground
+        
         hstack.addArrangedSubview(nameLabel)
         hstack.addArrangedSubview(amountLabel)
         hstack.addArrangedSubview(percentLabel)

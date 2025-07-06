@@ -13,7 +13,7 @@ class CreateRecipeViewController: UIViewController {
 
     let tableView: UITableView = {
         let tableView = UITableView(frame: .zero, style: .insetGrouped)
-        tableView.backgroundColor = UIColor(hex: "#1c1c1e")
+        tableView.backgroundColor = .background
         tableView.translatesAutoresizingMaskIntoConstraints = false
         return tableView
     }()
@@ -185,7 +185,6 @@ extension CreateRecipeViewController: UITableViewDataSource {
             } else {
                 let food = recipeEntry.ingredients[indexPath.row]
                 let cell = tableView.dequeueReusableCell(withIdentifier: FoodEntryTableViewCell.reuseIdentifier, for: indexPath) as! FoodEntryTableViewCell
-                cell.backgroundColor = UIColor(hex: "#252525")
                 cell.update(food)
                 cell.accessoryType = .disclosureIndicator
                 return cell

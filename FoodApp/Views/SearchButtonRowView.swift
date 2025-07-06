@@ -123,7 +123,7 @@ class SearchButtonView: UIControl {
             container.trailingAnchor.constraint(equalTo: layoutMarginsGuide.trailingAnchor)
         ])
         
-        backgroundColor = UIColor(hex: "#252525")
+        backgroundColor = .cellBackground
         layer.cornerRadius = 8
         clipsToBounds = true
         isUserInteractionEnabled = true

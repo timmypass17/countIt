@@ -29,7 +29,7 @@ class OnboardingViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .charcoal
+        view.backgroundColor = .background
         
         addChild(pageViewController)
         view.addSubview(pageViewController.view)

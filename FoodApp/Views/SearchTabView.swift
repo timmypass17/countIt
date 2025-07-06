@@ -42,7 +42,7 @@ class SearchTabView: UIView {
     }
     
     private func setup() {
-        backgroundColor = UIColor(hex: "#1c1c1e")
+        backgroundColor = .background
 
         addSubview(container)
         addSubview(underlineView)

@@ -94,7 +94,7 @@ class SearchItemTableViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = UIColor(hex: "#1c1c1e")
+        view.backgroundColor = .background
         tableView.dataSource = self
         tableView.delegate = self
 
@@ -137,7 +137,7 @@ class SearchItemTableViewController: UIViewController {
 //            titleView.delegate = self
 //            navigationItem.titleView = titleView
 //        }
-        tableView.backgroundColor = UIColor(hex: "#1c1c1e")
+        tableView.backgroundColor = .background
 //        
 //        resultsTableController = ResultsTableViewController(meal: meal, foodEntry: foodEntry, userProfile: userProfile, foodService: foodService)
 //        resultsTableController.addFoodDelegate = addFoodDelegate
@@ -234,7 +234,6 @@ extension SearchItemTableViewController: UITableViewDataSource {
         cell.delegate = self
         let history = fetchedResultsController.object(at: indexPath)
         cell.update(history: history)
-        cell.backgroundColor = UIColor(hex: "#252525")
         cell.accessoryType = .disclosureIndicator
         return cell
     }

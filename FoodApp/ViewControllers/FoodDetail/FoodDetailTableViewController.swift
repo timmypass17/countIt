@@ -96,7 +96,7 @@ class FoodDetailTableViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 //        tableView.backgroundColor = .secondarySystemGroupedBackground
-        tableView.backgroundColor = UIColor(hex: "#1c1c1e") // secondarySystemGroupedBackground is diff on modal
+        tableView.backgroundColor = .background
         navigationItem.title = fdcFood.description
         navigationItem.leftBarButtonItem = UIBarButtonItem(systemItem: .cancel, primaryAction: cancelButtonTapped())
         tableView.register(SelectTableViewCell.self, forCellReuseIdentifier: SelectTableViewCell.reuseIdentifier)
@@ -138,7 +138,6 @@ class FoodDetailTableViewController: UITableViewController {
                     secondaryText: fdcFood.getServingSizeFormatted(foodPortion: fdcFood.selectedFoodPortion),
                     image: UIImage(systemName: "square.and.pencil"),
                     bgColor: UIColor.systemBlue)
-                cell.backgroundColor = UIColor(hex: "#252525")
                 return cell
             } else if indexPath == quantityIndexPath {
                 let cell = tableView.dequeueReusableCell(withIdentifier: SelectTableViewCell.reuseIdentifier, for: indexPath) as! SelectTableViewCell
@@ -147,7 +146,6 @@ class FoodDetailTableViewController: UITableViewController {
                     secondaryText: "\(fdcFood.quantity)",
                     image: UIImage(systemName: "number"),
                     bgColor: UIColor.systemBlue)
-                cell.backgroundColor = UIColor(hex: "#252525")
                 return cell
             }
             
@@ -168,7 +166,7 @@ class FoodDetailTableViewController: UITableViewController {
             cell.contentConfiguration = UIHostingConfiguration {    // tableView.reloadData() or use swiftui state mangement
                 MacrosView(mealPlan: meal?.mealPlan, userProfile: userProfile, nutrients: nutrients)
             }
-            cell.backgroundColor = UIColor(hex: "#252525")
+            cell.backgroundColor = .cellBackground
             cell.selectionStyle = .none
             return cell
         case .ingredients:
@@ -176,7 +174,6 @@ class FoodDetailTableViewController: UITableViewController {
             let cell = tableView.dequeueReusableCell(withIdentifier: FoodEntryTableViewCell.reuseIdentifier, for: indexPath) as! FoodEntryTableViewCell
             let ingredientEntry = foodEntry.ingredients[indexPath.row]
             cell.update(ingredientEntry)
-            cell.backgroundColor = UIColor(hex: "#252525")
             cell.accessoryType = .disclosureIndicator
             return cell
         case .macros:
@@ -197,7 +194,6 @@ class FoodDetailTableViewController: UITableViewController {
             )
             cell.progressView.tintColor = .systemBlue
             cell.selectionStyle = .none
-            cell.backgroundColor = UIColor(hex: "#252525")
             return cell
         case .vitamins:
             let cell = tableView.dequeueReusableCell(withIdentifier: NutritionTableViewCell.reuseIdentifier, for: indexPath) as! NutritionTableViewCell
@@ -217,7 +213,6 @@ class FoodDetailTableViewController: UITableViewController {
             )
             cell.progressView.tintColor = .systemOrange
             cell.selectionStyle = .none
-            cell.backgroundColor = UIColor(hex: "#252525")
             return cell
         case .minerals:
             let cell = tableView.dequeueReusableCell(withIdentifier: NutritionTableViewCell.reuseIdentifier, for: indexPath) as! NutritionTableViewCell
@@ -237,7 +232,6 @@ class FoodDetailTableViewController: UITableViewController {
             )
             cell.progressView.tintColor = .white
             cell.selectionStyle = .none
-            cell.backgroundColor = UIColor(hex: "#252525")
             return cell
         }
     }
