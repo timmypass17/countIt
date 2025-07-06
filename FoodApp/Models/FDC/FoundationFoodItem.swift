@@ -64,7 +64,12 @@ struct FoundationFoodItem: FoodItem {
         foodPortions.append(FoodPortion.default100g)
         foodPortions.sort { $0.gramWeight ?? 0 < $1.gramWeight ?? 0 }
         self.foodPortions = foodPortions
-        self.selectedFoodPortion = foodPortions[foodPortions.count / 2]
+        
+        var portionIndex = foodPortions.count / 2
+        if foodPortions[portionIndex] == .default100g {
+            portionIndex = (((portionIndex - 1) + foodPortions.count)  % foodPortions.count) % foodPortions.count
+        }
+        self.selectedFoodPortion = foodPortions[portionIndex]
 //        print("timmy decode selectedFoodPortion: \(selectedFoodPortion)")
     }
     

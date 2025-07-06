@@ -30,13 +30,3 @@ import AuthenticationServices
         // Use this method to release any resources that were specific to the discarded scenes, as they will not return.
     }
 }
-
-extension UIViewController {
-    
-    func showLoginViewController() {
-        let loginViewController = LoginViewController()
-        loginViewController.modalPresentationStyle = .formSheet
-        loginViewController.isModalInPresentation = true
-        self.present(loginViewController, animated: true, completion: nil)
-    }
-}

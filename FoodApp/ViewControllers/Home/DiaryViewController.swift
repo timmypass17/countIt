@@ -385,24 +385,29 @@ extension DiaryViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
-            let meal = mealPlan.meals[indexPath.section - 2]
-            do {
-                let foodToDelete: FoodEntry = meal.foodEntries.remove(at: indexPath.row)
-                try foodService.deleteFood(foodToDelete)
-                tableView.deleteRows(at: [indexPath], with: .automatic)
-                
-                for (index, food) in meal.foodEntries.enumerated() {
-                    food.index = Int16(index)
-                }
-                
-                CoreDataStack.shared.saveContext()
-                let indexPaths = meal.foodEntries.map { IndexPath(row: Int($0.index), section: indexPath.section) }
-                tableView.reloadRows(at: indexPaths, with: .automatic)
-                
-                reloadTableViewHeader(section: indexPath.section)
-            } catch {
-                print("Error deleting food: \(error)")
+            deleteFoodEntry(forRowAt: indexPath)
+        }
+    }
+    
+    func deleteFoodEntry(forRowAt indexPath: IndexPath) {
+        let meal = mealPlan.meals[indexPath.section - 2]
+        do {
+            let foodToDelete: FoodEntry = meal.foodEntries.remove(at: indexPath.row)
+            try foodService.deleteFood(foodToDelete)
+            tableView.deleteRows(at: [indexPath], with: .automatic)
+            
+            for (index, food) in meal.foodEntries.enumerated() {
+                food.index = Int16(index)
             }
+            
+            CoreDataStack.shared.saveContext()
+            let indexPaths = meal.foodEntries.map { IndexPath(row: Int($0.index), section: indexPath.section) }
+            tableView.reloadRows(at: indexPaths, with: .automatic)
+            
+            reloadTableViewHeader(section: indexPath.section)
+            NotificationCenter.default.post(name: .mealPlanUpdated, object: nil, userInfo: nil)
+        } catch {
+            print("Error deleting food: \(error)")
         }
     }
     
@@ -484,19 +489,20 @@ extension DiaryViewController: UITableViewDelegate {
 }
 
 extension DiaryViewController: AddFoodDetailViewControllerDelegate {
-    func addFoodDetailViewController(_ tableViewController: FoodDetailTableViewController, didAddFood food: FoodEntry) {
+    func addFoodDetailViewController(_ tableViewController: FoodDetailTableViewController, didAddFood foodEntry: FoodEntry) {
         do {
-            try food.managedObjectContext?.save()
+            try foodEntry.managedObjectContext?.save()
             CoreDataStack.shared.saveContext()
+            NotificationCenter.default.post(name: .mealPlanUpdated, object: nil, userInfo: nil)
         } catch {
             print("Error saving food: \(error)")
         }
         
-        guard let meal = food.meal,
+        guard let meal = foodEntry.meal,
               // Have to compare objectID (doing $0 == meal fails across diff context, need to use objectID)
               let section = mealPlan.meals.firstIndex(where: { $0.objectID == meal.objectID })
         else { return }
-        let indexPath = IndexPath(row: Int(food.index), section: section + 2)
+        let indexPath = IndexPath(row: Int(foodEntry.index), section: section + 2)
         tableView.insertRows(at: [indexPath], with: .automatic)
         reloadTableViewHeader(section: section + 2)
     }
@@ -510,6 +516,7 @@ extension DiaryViewController: UpdateFoodDetailViewControllerDelegate {
         let indexPath = IndexPath(row: Int(food.index), section: section + 2)
         tableView.reloadRows(at: [indexPath, IndexPath(row: 0, section: 0), IndexPath(row: 0, section: 1)], with: .automatic)
         reloadTableViewHeader(section: section + 2)
+        NotificationCenter.default.post(name: .mealPlanUpdated, object: nil, userInfo: nil)
     }
 }
 

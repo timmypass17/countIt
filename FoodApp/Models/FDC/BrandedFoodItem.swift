@@ -55,7 +55,7 @@ struct BrandedFoodItem: FoodItem {
         self.brandedFoodCategory = try container.decode(String.self, forKey: .brandedFoodCategory)
 
         var foodPortions: [FoodPortion] = []
-        foodPortions.append(FoodPortion.default100g)
+        foodPortions.append(.default100g)
         
         if let (quantity, modifier) = extractQuantityAndModifier(from: householdServingFullText) {
             foodPortions.append(FoodPortion(id: 1, amount: quantity, gramWeight: servingSize, modifier: modifier))
@@ -65,12 +65,13 @@ struct BrandedFoodItem: FoodItem {
         foodPortions.sort { $0.gramWeight ?? 0 < $1.gramWeight ?? 0 }
         self.foodPortions = foodPortions
         
-        // Prefer serving size on product
+        // Prefer serving size on product (BrandedFood only have 1 portion)
         if let foodPortion = foodPortions.first(where: { $0.gramWeight == Double(servingSize) }) {
             self.selectedFoodPortion = foodPortion
         } else {
-            self.selectedFoodPortion = foodPortions[foodPortions.count / 2]
+            self.selectedFoodPortion = .default100g
         }
+        
         var foodNutrients: [FoodNutrient] = []
         let rawNutrients = try container.decode([RawFoodNutrient].self, forKey: .foodNutrients)
         for nutrientId in NutrientId.allCases {
@@ -79,10 +80,12 @@ struct BrandedFoodItem: FoodItem {
                 return NutrientId(rawValue: raw.id) == nutrientId
             }) {
                 // Nutrient exists
-                let nutrient = FoodNutrient(nutrient: Nutrient(id: nutrientId, name: nutrientId.description, unitName: nutrientId.unitName, rank: 0), amount: Double(rawNutrient.amount))
+                print("\(nutrientId.description) exist \(Double(rawNutrient.amount))")
+                let nutrient = FoodNutrient(nutrient: Nutrient(id: nutrientId, name: nutrientId.description, unitName: nutrientId.unitName, rank: 0), amount: rawNutrient.amount)
                 foodNutrients.append(nutrient)
             } else {
                 // Add placeholder
+                print("\(nutrientId.description) doesn't exist")
                 let empty = FoodNutrient(nutrient: Nutrient(id: nutrientId, name: nutrientId.description, unitName: nutrientId.unitName, rank: 0), amount: 0)
                 foodNutrients.append(empty)
             }

@@ -124,7 +124,7 @@ enum NutrientId: Int, Codable, CaseIterable {
     case vitaminB12 = 1178
     case vitaminC = 1162
     case vitaminD = 1114
-    case vitaminE = 1109
+    case vitaminE = 1109 // Vitamin E (alpha-tocopherol)
     case vitaminK = 1185
     case folate = 1177
     

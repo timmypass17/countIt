@@ -39,7 +39,6 @@ struct FoodPortion: Codable {
         self.modifier = try container.decodeIfPresent(String.self, forKey: .modifier)?.lowercased()
         let portionDescription = try container.decodeIfPresent(String.self, forKey: .portionDescription)
         
-        
         // extract "banana" from "1 banana"
         // TODO: Use foodPortion.csv to get modifier instead of extracting
         if let portionDescription {

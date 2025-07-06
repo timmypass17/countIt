@@ -26,22 +26,22 @@ struct CaloriesConsumedView: View {
         Color(hex: "#FF6B6B"), // Red
         Color(hex: "#29CC7A")  // Green
     ]
-
+    
     init(mealPlan: MealPlan) {
         self.mealPlan = mealPlan
         _meals = FetchRequest(fetchRequest: Meal.fetchMeals(for: mealPlan))
     }
-
-    var caloriesRemaining: Int {
+    
+    var caloriesRemaining: Double {
         return caloriesGoal - caloriesConsumed
     }
 
-    var caloriesGoal: Int {
-        return Int(mealPlan.nutrientGoals[.calories]?.value ?? 0)
+    var caloriesGoal: Double {
+        return mealPlan.nutrientGoals[.calories]?.value ?? 0
     }
 
-    var caloriesConsumed: Int {
-        return Int(mealPlan.nutrientAmount(.calories))
+    var caloriesConsumed: Double {
+        return mealPlan.nutrientAmount(.calories)
     }
 
     // Sorted meals by index
@@ -67,18 +67,14 @@ struct CaloriesConsumedView: View {
                     .font(.subheadline)
             }
             .padding(.bottom, 12)
-
-//            Text("Calories Consumed")
-//                .foregroundStyle(.secondary)
-//                .padding(.bottom, 12)
-
+            
             HStack(alignment: .lastTextBaseline) {
-                Text("\(caloriesConsumed)")
+                Text("\(Int(caloriesConsumed))")
                     .font(.system(size: 42, weight: .semibold))
                 VStack(alignment: .leading) {
                     Text("cal")
                         .bold()
-                    Text("/ \(caloriesGoal)")
+                    Text("/ \(Int(caloriesGoal))")
                         .bold()
                         .foregroundStyle(.secondary)
                 }
@@ -88,19 +84,22 @@ struct CaloriesConsumedView: View {
             Chart {
                 ForEach(sortedMeals, id: \.self) { meal in
                     BarMark(
-                        x: .value("Amount", meal.nutrientAmount(.calories)),
+                        x: .value("Amount", min(meal.nutrientAmount(.calories), caloriesGoal)),
                         y: .value("Type", "Calories")
                     )
                     .foregroundStyle(by: .value("Meal", meal.name))
                     .cornerRadius(4)
                 }
-
-                BarMark(
-                    x: .value("Goal", caloriesRemaining),
-                    y: .value("Type", "Calories")
-                )
-                .foregroundStyle(Color.gray.opacity(0.2))
-                .cornerRadius(4)
+                
+                if caloriesConsumed < caloriesGoal {
+                    BarMark(
+                        xStart: .value("Amount", caloriesConsumed),
+                        xEnd: .value("Goal", caloriesGoal),
+                        y: .value("Type", "Calories")
+                    )
+                    .foregroundStyle(Color.gray.opacity(0.2))
+                    .cornerRadius(4)
+                }
             }
             .frame(height: 65)
             .chartXScale(domain: 0...caloriesGoal)
@@ -129,19 +128,3 @@ extension Color {
         self.init(red: r, green: g, blue: b)
     }
 }
-
-
-//var color: Color {
-//    switch self {
-//    case .calories:
-//        return Color(uiColor: UIColor(hex: "#0B6E99"))  // blue
-//    case .carbs:
-//        return Color(uiColor: UIColor(hex: "#DFAB01"))  // yellow
-//    case .protein:
-//        return Color(uiColor: UIColor(hex: "#E03E3E"))  // red/pink
-//    case .fatTotal:
-//        return Color(uiColor: UIColor(hex: "#0F7B6C"))  // green
-//    default:
-//        return .purple
-//    }
-//}

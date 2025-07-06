@@ -82,12 +82,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         }
     }
     
-    func showSignInWithApple() {
-        self.window?.rootViewController = UIViewController()
-        self.window?.makeKeyAndVisible()
-        self.window?.rootViewController?.showLoginViewController()
-    }
-    
     func showOnboarding() {
         window?.rootViewController = OnboardingViewController()
         window?.makeKeyAndVisible()

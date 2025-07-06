@@ -35,7 +35,7 @@ struct WeeklyNutrientChartView: View {
             ForEach(data) { item in
                 BarMark(
                     x: .value("Weekday", item.weekday),
-                    y: .value("Amount", item.amount),
+                    y: .value("Amount", min(item.amount, goal)),
                     width: .fixed(barWidth)
                 )
                 .foregroundStyle(color)
@@ -43,7 +43,7 @@ struct WeeklyNutrientChartView: View {
                 if item.amount < goal {
                     BarMark(
                         x: .value("Weekday", item.weekday),
-                        yStart: .value("Amount", item.amount),
+                        yStart: .value("Amount", min(item.amount, goal)),
                         yEnd: .value("Goal", goal),
                         width: .fixed(barWidth)
                     )

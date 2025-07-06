@@ -122,7 +122,7 @@ extension ProgressViewController: UITableViewDataSource {
         
         let date = Date() // or your target date
         let zeroBasedWeekday = (calendar.component(.weekday, from: date) - 1) % 7 // 0=Sunday, 1=Monday, ..., 6=Saturday
-        let recentAmount = mealPlans[zeroBasedWeekday]?.nutrientAmount(nutrientId) ?? -1
+        let recentAmount = mealPlans[zeroBasedWeekday]?.nutrientAmount(nutrientId) ?? 0
 
         cell.update(title: nutrientId.description, date: .now, amount: recentAmount, unit: nutrientId.unitName, data: data, goal: userProfile.userNutrientGoals[nutrientId]?.value ?? 0, color: nutrientId.progressColor, icon: nutrientId.symbol)
         return cell

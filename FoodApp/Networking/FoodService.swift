@@ -134,10 +134,6 @@ class FoodService: FoodServiceProtocol {
         return userNutrientGoal
     }
     
-    func signOut()  {
-        KeychainItem.deleteUserIdentifierFromKeychain()
-    }
-    
     // NSBatchDeleteRequest - deletes items efficiently without having to fetch them.
     // note: Ignore's deletion rules
     // https://www.avanderlee.com/swift/nsbatchdeleterequest-core-data/
