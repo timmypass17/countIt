@@ -12,8 +12,30 @@ struct WeightProgressView: View {
 
     @FetchRequest(sortDescriptors: [SortDescriptor(\.date_, order: .reverse)])
     private var userWeights: FetchedResults<UserWeight>
-
     @State private var selectedFilter: SelectedFilter = .week
+    @State var isPresentingEditSheet = false
+
+    let userProfile: UserProfile
+    let foodService: FoodService
+    
+    var currentWeight: Double {
+        switch userProfile.weightUnit {
+        case .pounds:
+//            print("Timmy weight \(userWeights.count): \(userWeights.last?.weightInKg)")
+            return convertKilogramsToPounds(userWeights.first?.weightInKg ?? -1)
+        case .kilograms:
+            return userWeights.first?.weightInKg ?? -1
+        }
+    }
+    
+    var goalWeight: Double {
+        return userProfile.goalWeight ?? 0
+    }
+    
+    init(userProfile: UserProfile, foodService: FoodService) {
+        self.userProfile = userProfile
+        self.foodService = foodService
+    }
     
     var filteredUserWeights: [UserWeight] {
         switch selectedFilter {
@@ -34,29 +56,100 @@ struct WeightProgressView: View {
         }
     }
     
+    var filteredData: [WeeklyData] {
+        return filteredUserWeights.compactMap {
+            guard let date = $0.date_ else { return nil }
+            let amount: Double
+            switch userProfile.weightUnit {
+            case .pounds:
+                amount = convertKilogramsToPounds($0.weightInKg ?? 0)
+            case .kilograms:
+                amount = $0.weightInKg ?? 0
+            }
+            return WeeklyData(date: date, amount: amount)
+        }
+    }
+    
     var body: some View {
         ScrollView {
             VStack(alignment: .leading) {
                 FilterSegmentedView(selectedFilter: $selectedFilter)
                 
-                ProgressHeaderView(
-                    title: "Current Weight",
-                    unit: "lbs",
-                    amount: filteredUserWeights.last?.getWeight(.pounds),
-                    startDate: filteredUserWeights.last?.date_ ?? Date(),
-                    endDate: filteredUserWeights.first?.date_ ?? Date())
+                VStack(alignment: .leading, spacing: 0) {
+                    HStack {
+                        Image(systemName: "figure")
+                            .foregroundStyle(.blue)
 
-                ProgressChartView(filteredData: filteredUserWeights)
+                        Text("Current Weight")
+                            .foregroundColor(.secondary)
+                            .font(.subheadline)
+                    }
+                    
+                    HStack(alignment: .firstTextBaseline, spacing: 4) {
+                        Text("\(currentWeight.trimmed)")
+                            .font(.title)
+                            .fontWeight(.semibold)
+                        Text("/ \(goalWeight.trimmed) \(userProfile.weightUnit.singularSymbol)")
+                            .foregroundColor(.secondary)
+                            .font(.title2)
+                    }
+                    
+                    Text("\(formatDateMonthDayYear(filteredUserWeights.last?.date_ ?? Date())) - \(formatDateMonthDayYear(filteredUserWeights.first?.date_ ?? Date()))")
+                        .foregroundColor(.secondary)
+                        .font(.subheadline)
+                        .padding(.top, 2)
+                }
+                .padding(.vertical, 8)
                 
-                Divider()
-                    .padding(.bottom, 12)
-                
-                ProgressListView(filteredData: filteredUserWeights)
+
+                Chart(filteredData) { item in
+                    LineMark(
+                        x: .value("Date", item.date, unit: .day),
+                        y: .value("Amount", item.amount)
+                    )
+                    
+                    RuleMark(y: .value("Goal", userProfile.goalWeight ?? 0))
+                        .lineStyle(StrokeStyle(lineWidth: 1, dash: [5]))
+                        .foregroundStyle(.gray)
+                        .annotation(position: .top, alignment: .leading) {
+                            Text("Goal: \(goalWeight.trimmed) \(userProfile.weightUnit.rawValue)")
+                                .font(.caption)
+                                .foregroundColor(.gray)
+                        }
+                }
+//                .chartYScale(domain: 0...(max(userProfile.goalWeight, filteredUserWeights.max { $0.weightInKg < $1.weightInKg } ) * 1.25))
+                .frame(height: 300)
+//                .foregroundStyle(nutrientId.progressColor)
+                .padding()
+                .background(Color("cellBackground"), in: RoundedRectangle(cornerRadius: 8))
+                .padding(.bottom, 12)
+
+                ProgressListView(filteredData: filteredData, unit: userProfile.weightUnit.singularSymbol)
             }
             .padding([.horizontal, .bottom])
-            .animation(.default, value: userWeights.count) // animation trigger when value changes
+            .animation(.default, value: filteredUserWeights.count) // animation trigger when value changes
         }
-        .navigationTitle("Current Weight")
+        .navigationTitle("Weight")
+        .background(Color("background"))
+        .toolbar {
+            ToolbarItem {
+                Button {
+                    isPresentingEditSheet.toggle()
+                } label: {
+                    Label("Add Weight", systemImage: "plus")
+                        .labelStyle(.iconOnly)
+                }
+            }
+        }
+        .sheet(isPresented: $isPresentingEditSheet) {
+            AddWeightView(userProfile: userProfile, foodService: foodService)
+//            UpdateNutrientView(primaryText: nutrientId.shortDescription, initialAmount: userNutrientGoal.value, unit: nutrientId.unitName) { amount in
+//                userNutrientGoal.value = amount
+//                CoreDataStack.shared.saveContext()
+//                NotificationCenter.default.post(name: .mealPlanUpdated, object: nil)
+//            }
+//            .presentationDetents([.medium])
+        }
     }
 }
 
@@ -111,7 +204,8 @@ struct ProgressHeaderView: View {
 struct ProgressListView: View {
     @Environment(\.colorScheme) var colorScheme
 
-    var filteredData: [UserWeight]
+    var filteredData: [WeeklyData]
+    var unit: String
 
     var body: some View {
         VStack(spacing: 0) {
@@ -128,20 +222,21 @@ struct ProgressListView: View {
             .padding(.horizontal, 12)
             
             LazyVStack(spacing: 0) {
-                ForEach(Array(filteredData.enumerated()), id: \.offset) { i, exercise in
-                    ProgressDetailViewCell(filteredData: filteredData, i: i, userWeight: exercise)
+                ForEach(Array(filteredData.enumerated()), id: \.offset) { i, userWeight in
+                    ProgressDetailViewCell(filteredData: filteredData, i: i, userWeight: userWeight, unit: unit)
                 }
             }
-            .background(Color(UIColor.secondarySystemBackground), in: RoundedRectangle(cornerRadius: 8))
+            .background(Color("cellBackground"), in: RoundedRectangle(cornerRadius: 8))
         }
     }
 }
 
 struct ProgressDetailViewCell: View {
     @Environment(\.colorScheme) var colorScheme
-    var filteredData: [UserWeight]
+    var filteredData: [WeeklyData]
     let i: Int
-    let userWeight: UserWeight
+    let userWeight: WeeklyData
+    let unit: String
     
     func weightStringFormat(weight: Float) -> String {
         let numberFormatter = NumberFormatter()
@@ -154,7 +249,7 @@ struct ProgressDetailViewCell: View {
         VStack(spacing: 0) {
             HStack {
                 VStack(alignment: .leading, spacing: 4) {
-                    Text("140 lbs")
+                    Text("\(userWeight.amount.trimmed) \(unit)")
                         .font(.headline)
                     
                     Text(Date().formatted(date: .abbreviated, time: .omitted))
@@ -180,7 +275,7 @@ struct ProgressChartView: View {
         Chart(filteredData) { userWeight in
             LineMark(
                 x: .value("Date", userWeight.date_ ?? Date(), unit: .day),
-                y: .value("Weight", userWeight.weightInKg)
+                y: .value("Weight", userWeight.weightInKg ?? 0)
             )
             .symbol(Circle().strokeBorder(lineWidth: 2))
             .symbolSize(CGSize(width: 6, height: 6))

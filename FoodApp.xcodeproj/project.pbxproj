@@ -22,6 +22,7 @@
 		32267A742DF397B2001B9CFC /* History+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32267A702DF397AA001B9CFC /* History+CoreDataProperties.swift */; };
 		322AB8EB2E170EEC003B74AC /* AddIngredientViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 322AB8EA2E170EEC003B74AC /* AddIngredientViewController.swift */; };
 		322AB8ED2E170F80003B74AC /* IngredientsResultViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 322AB8EC2E170F80003B74AC /* IngredientsResultViewController.swift */; };
+		3230A7822E1B18B7004C14F5 /* AddWeightViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3230A7812E1B18B7004C14F5 /* AddWeightViewController.swift */; };
 		323FB6B42DC95E3600A71C53 /* ResultsPaginatedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 323FB6B32DC95E3600A71C53 /* ResultsPaginatedViewController.swift */; };
 		323FB7662DCADDD000A71C53 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 323FB7652DCADDD000A71C53 /* SettingsViewController.swift */; };
 		323FB7712DCAE65B00A71C53 /* ProgressViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 323FB7702DCAE65B00A71C53 /* ProgressViewController.swift */; };
@@ -248,6 +249,7 @@
 		32267A702DF397AA001B9CFC /* History+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "History+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		322AB8EA2E170EEC003B74AC /* AddIngredientViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddIngredientViewController.swift; sourceTree = "<group>"; };
 		322AB8EC2E170F80003B74AC /* IngredientsResultViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IngredientsResultViewController.swift; sourceTree = "<group>"; };
+		3230A7812E1B18B7004C14F5 /* AddWeightViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddWeightViewController.swift; sourceTree = "<group>"; };
 		323FB6B32DC95E3600A71C53 /* ResultsPaginatedViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultsPaginatedViewController.swift; sourceTree = "<group>"; };
 		323FB7652DCADDD000A71C53 /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		323FB7702DCAE65B00A71C53 /* ProgressViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressViewController.swift; sourceTree = "<group>"; };
@@ -632,6 +634,7 @@
 			children = (
 				3262F8422DFCE66A006CB8A4 /* ProfileViewController.swift */,
 				3262F89B2DFCFE20006CB8A4 /* WeightProgressView.swift */,
+				3230A7812E1B18B7004C14F5 /* AddWeightViewController.swift */,
 			);
 			path = Profile;
 			sourceTree = "<group>";
@@ -1173,6 +1176,7 @@
 				328FA9652B9A2154002A6FB6 /* FoodSearchResponse.swift in Sources */,
 				32267A712DF397B2001B9CFC /* History+CoreDataProperties.swift in Sources */,
 				32267A722DF397B2001B9CFC /* History+CoreDataClass.swift in Sources */,
+				3230A7822E1B18B7004C14F5 /* AddWeightViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

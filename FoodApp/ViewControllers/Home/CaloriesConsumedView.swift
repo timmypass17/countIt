@@ -93,7 +93,7 @@ struct CaloriesConsumedView: View {
                 
                 if caloriesConsumed < caloriesGoal {
                     BarMark(
-                        xStart: .value("Amount", caloriesConsumed),
+                        xStart: .value("Amount", 0),
                         xEnd: .value("Goal", caloriesGoal),
                         y: .value("Type", "Calories")
                     )

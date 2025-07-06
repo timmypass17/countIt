@@ -66,7 +66,7 @@ class OnboardingUserViewController: UIViewController {
         tableView.delegate = self
         tableView.register(OnboardingSegmentedTableViewCell.self, forCellReuseIdentifier: OnboardingSegmentedTableViewCell.reuseIdentifier)
         tableView.register(HeightTableViewCell.self, forCellReuseIdentifier: HeightTableViewCell.reuseIdentifier)
-        tableView.register(DateOfBirthTableViewCell.self, forCellReuseIdentifier: DateOfBirthTableViewCell.reuseIdentifier)
+        tableView.register(DatePickerTableViewCell.self, forCellReuseIdentifier: DatePickerTableViewCell.reuseIdentifier)
         tableView.register(MenuPickerTableViewCell<ActivityLevel>.self, forCellReuseIdentifier: MenuPickerTableViewCell<ActivityLevel>.reuseIdentifier)
         tableView.register(HeightPreferenceFooterView.self, forHeaderFooterViewReuseIdentifier: HeightPreferenceFooterView.reuseIdentifier)
         
@@ -126,7 +126,7 @@ extension OnboardingUserViewController: UITableViewDataSource {
                 cell.update(title: "Height", heightCm: userProfile.heightCm, heightUnit: userProfile.heightUnit)
                 return cell
             } else if indexPath.row == 2 {
-                let cell = tableView.dequeueReusableCell(withIdentifier: DateOfBirthTableViewCell.reuseIdentifier) as! DateOfBirthTableViewCell
+                let cell = tableView.dequeueReusableCell(withIdentifier: DatePickerTableViewCell.reuseIdentifier) as! DatePickerTableViewCell
                 cell.delegate = self
                 cell.update(title: "Date of Birth", date: userProfile.dateOfBirth)
                 return cell
@@ -232,8 +232,8 @@ extension OnboardingUserViewController: OnboardingSegmentedTableViewCellDelegate
     }
 }
 
-extension OnboardingUserViewController: DateOfBirthTableViewCellDelegate {
-    func dateOfBirthTableViewCell(_ cell: DateOfBirthTableViewCell, didUpdateDateOfBirth date: Date) {
+extension OnboardingUserViewController: DatePickerTableViewCellDelegate {
+    func datePickerTableViewCell(_ cell: DatePickerTableViewCell, didUpdateDate date: Date) {
         userProfile.dateOfBirth = date
     }
 }

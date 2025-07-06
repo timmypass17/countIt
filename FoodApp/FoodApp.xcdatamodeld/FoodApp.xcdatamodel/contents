@@ -83,6 +83,6 @@
     </entity>
     <entity name="UserWeight" representedClassName="UserWeight" syncable="YES">
         <attribute name="date_" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
-        <attribute name="weightInKg" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="weightInKg_" optional="YES" attributeType="Double" usesScalarValueType="YES"/>
     </entity>
 </model>

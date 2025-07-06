@@ -64,12 +64,6 @@ class SettingsViewController: UIViewController {
                     text: "Meal Types",
                     secondary: "",
                     backgroundColor: .cellBackground
-                ),
-                Model(
-                    image: UIImage(systemName: "moon.fill")!,
-                    text: "Theme",
-                    secondary: "",
-                    backgroundColor: .cellBackground
                 )
             ]
         ),
@@ -188,8 +182,8 @@ extension SettingsViewController: UITableViewDelegate {
         }
 
         if indexPath == IndexPath(row: 1, section: 0) {
-            let context = CoreDataStack.shared.persistentContainer.viewContext
-            let weightProgressView = WeightProgressView()
+            let context = CoreDataStack.shared.context
+            let weightProgressView = WeightProgressView(userProfile: userProfile, foodService: foodService)
             let hostingController = UIHostingController(rootView: weightProgressView
                 .environment(\.managedObjectContext, context))
             navigationController?.pushViewController(hostingController, animated: true)

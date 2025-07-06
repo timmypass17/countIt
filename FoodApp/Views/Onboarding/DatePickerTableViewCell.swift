@@ -7,12 +7,12 @@
 
 import UIKit
 
-protocol DateOfBirthTableViewCellDelegate: AnyObject {
-    func dateOfBirthTableViewCell(_ cell: DateOfBirthTableViewCell, didUpdateDateOfBirth date: Date)
+protocol DatePickerTableViewCellDelegate: AnyObject {
+    func datePickerTableViewCell(_ cell: DatePickerTableViewCell, didUpdateDate date: Date)
 }
 
-class DateOfBirthTableViewCell: UITableViewCell {
-    static let reuseIdentifier = "DateOfBirthTableViewCell"
+class DatePickerTableViewCell: UITableViewCell {
+    static let reuseIdentifier = "DatePickerTableViewCell"
     
     let titleLabel: UILabel = {
         let label = UILabel()
@@ -38,7 +38,7 @@ class DateOfBirthTableViewCell: UITableViewCell {
         return stackView
     }()
     
-    weak var delegate: DateOfBirthTableViewCellDelegate?
+    weak var delegate: DatePickerTableViewCellDelegate?
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -67,7 +67,7 @@ class DateOfBirthTableViewCell: UITableViewCell {
     
     func datePickerValueChanged() -> UIAction {
         return UIAction { _ in
-            self.delegate?.dateOfBirthTableViewCell(self, didUpdateDateOfBirth: self.datePicker.date)
+            self.delegate?.datePickerTableViewCell(self, didUpdateDate: self.datePicker.date)
         }
     }
 }

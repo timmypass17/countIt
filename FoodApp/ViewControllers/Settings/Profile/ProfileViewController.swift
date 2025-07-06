@@ -51,7 +51,7 @@ class ProfileViewController: UIViewController {
         tableView.backgroundColor = .background
         tableView.register(OnboardingSegmentedTableViewCell.self, forCellReuseIdentifier: OnboardingSegmentedTableViewCell.reuseIdentifier)
         tableView.register(HeightTableViewCell.self, forCellReuseIdentifier: HeightTableViewCell.reuseIdentifier)
-        tableView.register(DateOfBirthTableViewCell.self, forCellReuseIdentifier: DateOfBirthTableViewCell.reuseIdentifier)
+        tableView.register(DatePickerTableViewCell.self, forCellReuseIdentifier: DatePickerTableViewCell.reuseIdentifier)
         tableView.register(HeightPreferenceFooterView.self, forHeaderFooterViewReuseIdentifier: HeightPreferenceFooterView.reuseIdentifier)
         tableView.register(ProfileSelectableTableViewCell.self, forCellReuseIdentifier: ProfileSelectableTableViewCell.reuseIdentifier)
         tableView.register(DeleteAccountTableViewCell.self, forCellReuseIdentifier: DeleteAccountTableViewCell.reuseIdentifier)
@@ -134,7 +134,7 @@ extension ProfileViewController: UITableViewDataSource {
                 cell.update(title: "Height", heightCm: userProfile.heightCm, heightUnit: userProfile.heightUnit)
                 return cell
             } else if indexPath.row == 2 {
-                let cell = tableView.dequeueReusableCell(withIdentifier: DateOfBirthTableViewCell.reuseIdentifier) as! DateOfBirthTableViewCell
+                let cell = tableView.dequeueReusableCell(withIdentifier: DatePickerTableViewCell.reuseIdentifier) as! DatePickerTableViewCell
                 cell.delegate = self
                 cell.update(title: "Date of Birth", date: userProfile.dateOfBirth)
                 return cell
@@ -145,7 +145,7 @@ extension ProfileViewController: UITableViewDataSource {
             if indexPath.row == 0 {
                 let cell = tableView.dequeueReusableCell(withIdentifier: ProfileSelectableTableViewCell.reuseIdentifier, for: indexPath) as! ProfileSelectableTableViewCell
                 let startingUserWeight = foodService.getStartingUserWeight()
-                let startWeight = startingUserWeight?.getWeight(userProfile.weightUnit).trimmed ?? ""
+                let startWeight = startingUserWeight?.getWeight(userProfile.weightUnit)?.trimmed ?? ""
                 cell.update(title: "Starting Weight", description: "\(startWeight) \(userProfile.weightUnit.pluralSymbol)")
                 cell.accessoryType = .disclosureIndicator
                 return cell
@@ -153,7 +153,7 @@ extension ProfileViewController: UITableViewDataSource {
             if indexPath.row == 1 {
                 let cell = tableView.dequeueReusableCell(withIdentifier: ProfileSelectableTableViewCell.reuseIdentifier, for: indexPath) as! ProfileSelectableTableViewCell
                 let currentUserWeight = foodService.getCurrentUserWeight()
-                let currentWeight = currentUserWeight?.getWeight(userProfile.weightUnit).trimmed ?? ""
+                let currentWeight = currentUserWeight?.getWeight(userProfile.weightUnit)?.trimmed ?? ""
                 cell.update(title: "Current Weight", description: "\(currentWeight) \(userProfile.weightUnit.pluralSymbol)")
                 cell.accessoryType = .disclosureIndicator
                 return cell
@@ -229,8 +229,8 @@ extension ProfileViewController: OnboardingSegmentedTableViewCellDelegate {
     }
 }
 
-extension ProfileViewController: DateOfBirthTableViewCellDelegate {
-    func dateOfBirthTableViewCell(_ cell: DateOfBirthTableViewCell, didUpdateDateOfBirth date: Date) {
+extension ProfileViewController: DatePickerTableViewCellDelegate {
+    func datePickerTableViewCell(_ cell: DatePickerTableViewCell, didUpdateDate date: Date) {
         userProfile.dateOfBirth = date
         CoreDataStack.shared.saveContext()
     }
@@ -251,7 +251,7 @@ extension ProfileViewController: UITableViewDelegate {
         case .goals:
             if indexPath.row == 0 {
                 let startingUserWeight = foodService.getStartingUserWeight()
-                let startWeight = startingUserWeight?.getWeight(userProfile.weightUnit).trimmed ?? ""
+                let startWeight = startingUserWeight?.getWeight(userProfile.weightUnit)?.trimmed ?? ""
                 let updateNutrientViewController = UpdateNutrientViewController(primaryText: "Starting Weight", initialAmount: Double(startWeight) ?? 0, unit: userProfile.weightUnit.singularSymbol) { newCurrentWeight in
                     switch self.userProfile.weightUnit {
                     case .pounds:
@@ -272,7 +272,7 @@ extension ProfileViewController: UITableViewDelegate {
                 present(vc, animated: true, completion: nil)
             } else if indexPath.row == 1 {
                 let currentUserWeight = foodService.getCurrentUserWeight()
-                let currentWeight = currentUserWeight?.getWeight(userProfile.weightUnit).trimmed ?? ""
+                let currentWeight = currentUserWeight?.getWeight(userProfile.weightUnit)?.trimmed ?? ""
                 let updateNutrientViewController = UpdateNutrientViewController(primaryText: "Latest Weight", initialAmount: Double(currentWeight) ?? 0, unit: userProfile.weightUnit.singularSymbol) { newCurrentWeight in
                     switch self.userProfile.weightUnit {
                     case .pounds:
