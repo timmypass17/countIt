@@ -89,6 +89,16 @@ class FoodService: FoodServiceProtocol {
         
         allGoals.forEach { $0.userProfile = userProfile }
         
+        let mealNames = ["Breakfast", "Lunch", "Dinner", "Snack"]
+        for (index, mealName) in mealNames.enumerated() {
+            let mealType = UserMealType(context: context)
+            mealType.name = mealName
+            mealType.index = Int16(index)
+            mealType.userProfile = userProfile
+        }
+        
+//        userProfile.userMealTypes =
+        
         try context.save()
         print("✅ User profile saved")
     }
@@ -265,11 +275,11 @@ class FoodService: FoodServiceProtocol {
         
         let mealNames: [String]
         
-        if let latestMealPlan = getPreviousMealPlan(for: date) {
-            print("timmy found latest meal plan and extracting meals: \(latestMealPlan.date.formatted(date: .abbreviated, time: .omitted))")
-            mealNames = latestMealPlan.meals.map { $0.name }
+        if userProfile.userMealTypes.count > 0 {
+            mealNames = userProfile.userMealTypes.compactMap { $0.name }
         } else {
-            print("timmy using default meal plan")
+            // Should never happen
+            fatalError("Missing user meal type")
             mealNames = ["Breakfast", "Lunch", "Dinner", "Snack"]
         }
         
@@ -279,10 +289,10 @@ class FoodService: FoodServiceProtocol {
         mealPlan.dateKey = formatDateAsDateKey(date)
         
         // TODO: Get previous meal names if possible
-        for (index, name) in mealNames.enumerated() {
+        for (index, mealName) in mealNames.enumerated() {
             let meal = Meal(context: context)
             meal.index = Int16(index)
-            meal.name = name
+            meal.name = mealName
             meal.mealPlan = mealPlan
             mealPlan.addToMeals_(meal)
         }

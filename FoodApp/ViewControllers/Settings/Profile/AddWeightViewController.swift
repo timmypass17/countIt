@@ -46,7 +46,7 @@ class AddWeightViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.register(DatePickerTableViewCell.self, forCellReuseIdentifier: DatePickerTableViewCell.reuseIdentifier)
-        tableView.register(UpdateNutrientTableViewCell.self, forCellReuseIdentifier: UpdateNutrientTableViewCell.reuseIdentifier)
+        tableView.register(TextFieldInputTableViewCell.self, forCellReuseIdentifier: TextFieldInputTableViewCell.reuseIdentifier)
         tableView.dataSource = self
         
         view.addSubview(tableView)
@@ -108,7 +108,7 @@ extension AddWeightViewController: UITableViewDataSource {
             cell.update(title: "Date", date: .now)
             return cell
         case .amount:
-            let cell = tableView.dequeueReusableCell(withIdentifier: UpdateNutrientTableViewCell.reuseIdentifier, for: indexPath) as! UpdateNutrientTableViewCell
+            let cell = tableView.dequeueReusableCell(withIdentifier: TextFieldInputTableViewCell.reuseIdentifier, for: indexPath) as! TextFieldInputTableViewCell
             cell.delegate = self
             let weight: Double?
             let currentWeight: Double
@@ -127,7 +127,7 @@ extension AddWeightViewController: UITableViewDataSource {
                 currentWeight = currentUserWeight?.weightInKg ?? 0
             }
             
-            cell.update(primaryText: "Weight", amount: weight, initialAmount: currentWeight, unit: userProfile.weightUnit.singularSymbol)
+            cell.update(title: "Weight", valueText: weight?.trimmed, placeholderText: currentWeight.trimmed, unit: userProfile.weightUnit.singularSymbol)
             
             return cell
         }
@@ -140,8 +140,8 @@ extension AddWeightViewController: DatePickerTableViewCellDelegate {
     }
 }
 
-extension AddWeightViewController: UpdateNutrientTableViewCellDelegate {
-    func updateNutrientTableViewCell(_ sender: UpdateNutrientTableViewCell, amountTextValueChanged amountText: String?) {
+extension AddWeightViewController: TextFieldInputTableViewCellDelegate {
+    func textFieldInputTableViewCell(_ sender: TextFieldInputTableViewCell, textDidChange amountText: String?) {
         guard let weightText = amountText,
               let weight = Double(weightText)
         else {

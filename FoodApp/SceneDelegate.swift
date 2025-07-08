@@ -20,10 +20,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
         if let userProfile = foodService.getUserProfile() {
             // Show main tab bar controller
-            print("timmy has signed in and created account")
             self.showMainApp(userProfile: userProfile)
         } else {
-            print("timmy has signed in but has not set up profile")
             // User may not have finished setting up profile
             self.showOnboarding()
         }

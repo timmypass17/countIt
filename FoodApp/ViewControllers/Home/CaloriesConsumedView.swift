@@ -101,7 +101,7 @@ struct CaloriesConsumedView: View {
                     .cornerRadius(4)
                 }
             }
-            .frame(height: 65)
+//            .frame(height: 65)
             .chartXScale(domain: 0...caloriesGoal)
             .chartYAxis(.hidden)
             .chartLegend(.visible)

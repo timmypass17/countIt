@@ -319,6 +319,7 @@ extension DiaryViewController: UITableViewDataSource {
         if indexPath.row == meal.foodEntries.count {
             // Add Button
             let cell = tableView.dequeueReusableCell(withIdentifier: AddItemTableViewCell.reuseIdentifier, for: indexPath) as! AddItemTableViewCell
+            cell.update(title: "Add Food")
             return cell
         }
         

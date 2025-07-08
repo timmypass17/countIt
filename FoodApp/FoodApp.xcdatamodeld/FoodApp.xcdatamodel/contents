@@ -57,6 +57,11 @@
         <attribute name="value" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <relationship name="mealPlan" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="MealPlan" inverseName="nutrientGoals_" inverseEntity="MealPlan"/>
     </entity>
+    <entity name="UserMealType" representedClassName="UserMealType" syncable="YES">
+        <attribute name="index" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="name_" optional="YES" attributeType="String"/>
+        <relationship name="userProfile" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="UserProfile" inverseName="userMealTypes_" inverseEntity="UserProfile"/>
+    </entity>
     <entity name="UserNutrientGoal" representedClassName="UserNutrientGoal" syncable="YES">
         <attribute name="nutrientId_" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="value" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
@@ -79,6 +84,7 @@
         <attribute name="weeklyGoal_" optional="YES" attributeType="String"/>
         <attribute name="weightGoal_" optional="YES" attributeType="String"/>
         <attribute name="weightUnit_" optional="YES" attributeType="String"/>
+        <relationship name="userMealTypes_" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="UserMealType" inverseName="userProfile" inverseEntity="UserMealType"/>
         <relationship name="userNutrientGoals_" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="UserNutrientGoal" inverseName="userProfile" inverseEntity="UserNutrientGoal"/>
     </entity>
     <entity name="UserWeight" representedClassName="UserWeight" syncable="YES">

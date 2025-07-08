@@ -179,14 +179,15 @@ extension SettingsViewController: UITableViewDelegate {
         if indexPath == IndexPath(row: 0, section: 0)  {
             let profileViewController = ProfileViewController(userProfile: userProfile)
             navigationController?.pushViewController(profileViewController, animated: true)
-        }
-
-        if indexPath == IndexPath(row: 1, section: 0) {
+        } else if indexPath == IndexPath(row: 1, section: 0) {
             let context = CoreDataStack.shared.context
             let weightProgressView = WeightProgressView(userProfile: userProfile, foodService: foodService)
             let hostingController = UIHostingController(rootView: weightProgressView
                 .environment(\.managedObjectContext, context))
             navigationController?.pushViewController(hostingController, animated: true)
+        } else if indexPath == IndexPath(row: 2, section: 0) {
+            let mealTypesViewController = MealTypesViewController(userProfile: userProfile)
+            navigationController?.pushViewController(mealTypesViewController, animated: true)
         }
     }
 }

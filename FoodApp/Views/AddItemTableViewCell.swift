@@ -21,7 +21,6 @@ class AddItemTableViewCell: UITableViewCell {
     
     var titleLabel: UILabel = {
         let label = UILabel()
-        label.text = "Add Food"
         label.textColor = .secondaryLabel
         return label
     }()
@@ -53,5 +52,9 @@ class AddItemTableViewCell: UITableViewCell {
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    func update(title: String) {
+        titleLabel.text = title
     }
 }

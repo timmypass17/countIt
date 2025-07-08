@@ -7,13 +7,13 @@
 
 import UIKit
 
-protocol UpdateNutrientTableViewCellDelegate: AnyObject {
-    func updateNutrientTableViewCell(_ sender: UpdateNutrientTableViewCell, amountTextValueChanged amountText: String?)
+protocol TextFieldInputTableViewCellDelegate: AnyObject {
+    func textFieldInputTableViewCell(_ sender: TextFieldInputTableViewCell, textDidChange text: String?)
 }
 
-class UpdateNutrientTableViewCell: UITableViewCell {
+class TextFieldInputTableViewCell: UITableViewCell {
     
-    static let reuseIdentifier = "UpdateNutrientTableViewCell"
+    static let reuseIdentifier = "TextFieldInputTableViewCell"
     
     let titleLabel: UILabel = {
         let label = UILabel()
@@ -41,10 +41,11 @@ class UpdateNutrientTableViewCell: UITableViewCell {
         return stackView
     }()
 
-    weak var delegate: UpdateNutrientTableViewCellDelegate?
+    weak var delegate: TextFieldInputTableViewCellDelegate?
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
+        backgroundColor = .cellBackground
         
         container.addArrangedSubview(titleLabel)
         container.addArrangedSubview(amountTextField)
@@ -64,20 +65,16 @@ class UpdateNutrientTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func update(primaryText: String, amount: Double?, initialAmount: Double, unit: String) {
-        titleLabel.text = primaryText
-        if let amount {
-            amountTextField.text = amount.trimmed
-        } else {
-            amountTextField.text = nil
-        }
-        amountTextField.placeholder = initialAmount.trimmed
+    func update(title: String, valueText: String?, placeholderText: String, unit: String) {
+        titleLabel.text = title
+        amountTextField.text = valueText
+        amountTextField.placeholder = placeholderText
         unitLabel.text = unit
     }
     
     func amountTextValueChanged() -> UIAction {
         return UIAction { _ in
-            self.delegate?.updateNutrientTableViewCell(self, amountTextValueChanged: self.amountTextField.text)
+            self.delegate?.textFieldInputTableViewCell(self, textDidChange: self.amountTextField.text)
         }
     }
 }

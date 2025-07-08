@@ -33,7 +33,8 @@ extension UserProfile {
     @NSManaged public var proteinGrams_: NSNumber?
     @NSManaged public var fatsGrams_: NSNumber?
     @NSManaged public var userNutrientGoals_: NSSet?
-    
+    @NSManaged public var userMealTypes_: NSSet?
+
     public override func awakeFromInsert() {
         super.awakeFromInsert()
         
@@ -54,6 +55,15 @@ extension UserProfile {
         }
         set {
             userNutrientGoals_ = NSSet(array: newValue)
+        }
+    }
+    
+    var userMealTypes: [UserMealType] {
+        get {
+            (userMealTypes_?.allObjects as? [UserMealType] ?? []).sorted { $0.index < $1.index }
+        }
+        set {
+            userMealTypes_ = NSSet(array: newValue)
         }
     }
     
@@ -270,6 +280,23 @@ extension UserProfile {
     @NSManaged public func removeFromUserNutrientGoals_(_ values: NSSet)
 
 }
+
+extension UserProfile {
+
+    @objc(addUserMealTypes_Object:)
+    @NSManaged public func addToUserMealTypes_(_ value: UserMealType)
+
+    @objc(removeUserMealTypes_Object:)
+    @NSManaged public func removeFromUserMealTypes_(_ value: UserMealType)
+
+    @objc(addUserMealTypes_:)
+    @NSManaged public func addToUserMealTypes_(_ values: NSSet)
+
+    @objc(removeUserMealTypes_:)
+    @NSManaged public func removeFromUserMealTypes_(_ values: NSSet)
+
+}
+
 
 extension UserProfile : Identifiable {
 

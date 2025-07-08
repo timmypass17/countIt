@@ -41,7 +41,7 @@ class UpdateNutrientViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 //        title = "Set \(primaryText) Goal"
-        tableView.register(UpdateNutrientTableViewCell.self, forCellReuseIdentifier: UpdateNutrientTableViewCell.reuseIdentifier)
+        tableView.register(TextFieldInputTableViewCell.self, forCellReuseIdentifier: TextFieldInputTableViewCell.reuseIdentifier)
         tableView.dataSource = self
 
         view.addSubview(tableView)
@@ -87,8 +87,8 @@ extension UpdateNutrientViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: UpdateNutrientTableViewCell.reuseIdentifier, for: indexPath) as! UpdateNutrientTableViewCell
-        cell.update(primaryText: primaryText, amount: amount, initialAmount: initialAmount, unit: unit)
+        let cell = tableView.dequeueReusableCell(withIdentifier: TextFieldInputTableViewCell.reuseIdentifier, for: indexPath) as! TextFieldInputTableViewCell
+        cell.update(title: primaryText, valueText: amount?.trimmed, placeholderText: initialAmount.trimmed, unit: unit)
         cell.selectionStyle = .none
         cell.delegate = self
         return cell
@@ -96,8 +96,8 @@ extension UpdateNutrientViewController: UITableViewDataSource {
     
 }
 
-extension UpdateNutrientViewController: UpdateNutrientTableViewCellDelegate {
-    func updateNutrientTableViewCell(_ sender: UpdateNutrientTableViewCell, amountTextValueChanged amountText: String?) {
+extension UpdateNutrientViewController: TextFieldInputTableViewCellDelegate {
+    func textFieldInputTableViewCell(_ sender: TextFieldInputTableViewCell, textDidChange amountText: String?) {
         guard let amountText else {
             amount = nil
             updateSaveButton()
