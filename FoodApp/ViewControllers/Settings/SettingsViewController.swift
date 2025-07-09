@@ -7,6 +7,7 @@
 
 import UIKit
 import SwiftUI
+import MessageUI
 
 class SettingsViewController: UIViewController {
     
@@ -188,65 +189,54 @@ extension SettingsViewController: UITableViewDelegate {
         } else if indexPath == IndexPath(row: 2, section: 0) {
             let mealTypesViewController = MealTypesViewController(userProfile: userProfile)
             navigationController?.pushViewController(mealTypesViewController, animated: true)
+        } else if indexPath == IndexPath(row: 0, section: 2) {
+            // Contact us
+            guard MFMailComposeViewController.canSendMail() else {
+                showMailErrorAlert()
+                return
+            }
+            
+            let mailComposer = MFMailComposeViewController()
+            mailComposer.mailComposeDelegate = self
+            mailComposer.setToRecipients([email])
+            mailComposer.setSubject("Contact Us")
+            
+            present(mailComposer, animated: true)
+        } else if indexPath == IndexPath(row: 1, section: 2) {
+            guard MFMailComposeViewController.canSendMail() else {
+                showMailErrorAlert()
+                return
+            }
+            
+            let mailComposer = MFMailComposeViewController()
+            mailComposer.mailComposeDelegate = self
+            
+            mailComposer.setToRecipients([email])
+            mailComposer.setSubject("Bug Report")
+            
+            present(mailComposer, animated: true)
+        } else if indexPath == IndexPath(row: 0, section: 3) {
+            let privacyTableViewController = PrivacyPolicyViewController(style: .insetGrouped)
+            navigationController?.pushViewController(privacyTableViewController, animated: true)
         }
     }
 }
 
-//extension SettingsViewController: WeightTableViewControllerDelegate {
-//    func weightTableViewController(_ viewController: WeightTableViewController, didSelectWeightType weightType: WeightType) {
-//        let weightIndexPath = SettingsTableViewController.weightIndexPath
-//        sections[weightIndexPath.section].data[weightIndexPath.row].secondary = weightType.fullDescription
-//        tableView.reloadRows(at: [weightIndexPath], with: .automatic)
-//    }
-//}
-//
-//extension SettingsViewController: ThemeTableViewControllerDelegate {
-//    func themeTableViewController(_ controller: ThemeTableViewController, didSelectTheme theme: UIUserInterfaceStyle) {
-//        let themeIndexPath = SettingsTableViewController.themeIndexpath
-//        sections[themeIndexPath.section].data[themeIndexPath.row].secondary = theme.description
-//        tableView.reloadRows(at: [themeIndexPath], with: .automatic)
-//    }
-//}
-//
-//extension SettingsViewController: AccentColorTableViewControllerDelegate {
-//    func accentColorTableViewController(_ controller: AccentColorTableViewController, didSelectAccentColor color: UIColor, colorName: String?) {
-//        let colorIndexPath = SettingsTableViewController.accentColorIndexpath
-//        for j in 0..<sections[0].data.count {
-//            sections[0].data[j].backgroundColor = color
-//        }
-//        sections[colorIndexPath.section].data[colorIndexPath.row].secondary = colorName ?? "Custom".localized
-//        
-//        tableView.reloadSections(IndexSet(integer: 0), with: .automatic)
-//        tableView.reloadRows(at: [colorIndexPath], with: .automatic)
-//    }
-//}
-//
-//extension SettingsViewController: MFMailComposeViewControllerDelegate {
-//    func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
-//        dismiss(animated: true)
-//        if let selectedIndexPath = tableView.indexPathForSelectedRow {
-//            tableView.deselectRow(at: selectedIndexPath, animated: true)
-//        }
-//    }
-//    
-//    func showMailErrorAlert() {
-//        let alert = UIAlertController(
-//            title: "No Email Account Found".localized,
-//            message: "There is no email account associated to this device. If you have any questions, please feel free to reach out to us at %@".localized(email),
-//            preferredStyle: .alert)
-//        
-//        alert.addAction(UIAlertAction(title: "OK".localized, style: .default, handler: { _ in }))
-//        self.present(alert, animated: true, completion: nil)
-//    }
-//}
-//
-//extension SettingsViewController: ToggleableSettingsTableViewCellDelegate {
-//    func toggleableSettingsTableViewCell(_ sender: ToggleableSettingsTableViewCell, toggleValueChanged: Bool) {
-//        guard let indexPath = tableView.indexPath(for: sender) else { return }
-//        if indexPath == SettingsTableViewController.showTimerIndexPath {
-//            Settings.shared.showTimer = toggleValueChanged
-//        } else if indexPath == SettingsTableViewController.hapticIndexPath {
-//            Settings.shared.enableHaptic = toggleValueChanged
-//        }
-//    }
-//}
+extension SettingsViewController: MFMailComposeViewControllerDelegate {
+    func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
+        dismiss(animated: true)
+        if let selectedIndexPath = tableView.indexPathForSelectedRow {
+            tableView.deselectRow(at: selectedIndexPath, animated: true)
+        }
+    }
+    
+    func showMailErrorAlert() {
+        let alert = UIAlertController(
+            title: "No Email Account Found",
+            message: "There is no email account associated to this device. If you have any questions, please feel free to reach out to us at \(email)",
+            preferredStyle: .alert)
+        
+        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { _ in }))
+        self.present(alert, animated: true, completion: nil)
+    }
+}

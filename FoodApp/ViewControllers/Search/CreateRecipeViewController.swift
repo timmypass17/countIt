@@ -181,6 +181,7 @@ extension CreateRecipeViewController: UITableViewDataSource {
         case .ingredients:
             if indexPath.row == recipeEntry.ingredients.count {
                 let cell = tableView.dequeueReusableCell(withIdentifier: AddItemTableViewCell.reuseIdentifier, for: indexPath) as! AddItemTableViewCell
+                cell.update(title: "Add Food")
                 return cell
             } else {
                 let food = recipeEntry.ingredients[indexPath.row]

@@ -36,6 +36,7 @@
 		3249A9582E0E567D0064E79F /* MealPlanDatePickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3249A9572E0E567D0064E79F /* MealPlanDatePickerViewController.swift */; };
 		3249ACC12E0F6F280064E79F /* ProgressTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3249ACC02E0F6F280064E79F /* ProgressTableViewCell.swift */; };
 		324AB9372BA6B27900CECA72 /* CoreDataStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 324AB9362BA6B27900CECA72 /* CoreDataStack.swift */; };
+		324E47BD2E1EFD0E0001F9E2 /* PrivacyPolicyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 324E47BC2E1EFD0E0001F9E2 /* PrivacyPolicyViewController.swift */; };
 		32515EC62DD3D4FD00594145 /* FoodAPIRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32515EC52DD3D4FD00594145 /* FoodAPIRequest.swift */; };
 		325463BE2DD0114100BEDCE0 /* HeightCmPickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 325463BD2DD0114100BEDCE0 /* HeightCmPickerViewController.swift */; };
 		325463C02DD03FF400BEDCE0 /* OnboardingPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 325463BF2DD03FF400BEDCE0 /* OnboardingPageViewController.swift */; };
@@ -268,6 +269,7 @@
 		3249A9572E0E567D0064E79F /* MealPlanDatePickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MealPlanDatePickerViewController.swift; sourceTree = "<group>"; };
 		3249ACC02E0F6F280064E79F /* ProgressTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressTableViewCell.swift; sourceTree = "<group>"; };
 		324AB9362BA6B27900CECA72 /* CoreDataStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataStack.swift; sourceTree = "<group>"; };
+		324E47BC2E1EFD0E0001F9E2 /* PrivacyPolicyViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivacyPolicyViewController.swift; sourceTree = "<group>"; };
 		32515EC52DD3D4FD00594145 /* FoodAPIRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodAPIRequest.swift; sourceTree = "<group>"; };
 		325463BD2DD0114100BEDCE0 /* HeightCmPickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeightCmPickerViewController.swift; sourceTree = "<group>"; };
 		325463BF2DD03FF400BEDCE0 /* OnboardingPageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingPageViewController.swift; sourceTree = "<group>"; };
@@ -484,6 +486,7 @@
 				323FB7652DCADDD000A71C53 /* SettingsViewController.swift */,
 				32D3F7532E1C88900012CD2B /* MealTypesViewController.swift */,
 				32D3F7572E1C92200012CD2B /* EditMealTypeViewController.swift */,
+				324E47BC2E1EFD0E0001F9E2 /* PrivacyPolicyViewController.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -1132,6 +1135,7 @@
 				3259E77F2E163F6400F90965 /* SearchFoodViewController.swift in Sources */,
 				328FA9692B9BE560002A6FB6 /* Settings.swift in Sources */,
 				323FB6B42DC95E3600A71C53 /* ResultsPaginatedViewController.swift in Sources */,
+				324E47BD2E1EFD0E0001F9E2 /* PrivacyPolicyViewController.swift in Sources */,
 				326DB7D12E08C3C000849E3F /* CreateRecipeViewController.swift in Sources */,
 				32C276DF2E18937200637863 /* FoodsSearchAPIRequest.swift in Sources */,
 				32B257602BBDD739003C7C7C /* QuickAddTableViewController.swift in Sources */,
