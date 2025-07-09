@@ -630,7 +630,7 @@ class FoodService: FoodServiceProtocol {
         }
     }
     
-    func getFoods(query: String, dataTypes: [DataType], pageSize: Int, pageNumber: Int) async throws -> FoodSearchResponse {
+    func getFoods(query: String, dataTypes: [DataType], pageSize: Int = 1, pageNumber: Int = 1) async throws -> FoodSearchResponse {
         print("timmy query getFoods: \(query)")
         let abridgedRequest = FoodsSearchAPIRequest(query: query, dataTypes: dataTypes, pageSize: pageSize, pageNumber: pageNumber)
         var searchResultResponse = try await sendRequest(abridgedRequest)

@@ -103,7 +103,7 @@ class SearchItemTableViewController: UIViewController {
         let searchTabView = SearchTabView(visibleTabs: visibleTabs)
         searchTabView.translatesAutoresizingMaskIntoConstraints = false
         searchTabView.delegate = self
-        
+        searchButtonRowView.delegate = self
         searchButtonRowView.translatesAutoresizingMaskIntoConstraints = false
         
         view.addSubview(searchTabView)
@@ -132,21 +132,7 @@ class SearchItemTableViewController: UIViewController {
         ])
         
         tableView.register(HistoryTableViewCell.self, forCellReuseIdentifier: HistoryTableViewCell.reuseIdentifier)
-//        if let meal, let meals = meal.mealPlan?.meals {
-//            let titleView = SearchTitleView(selectedMeal: meal, meals: meals)
-//            titleView.delegate = self
-//            navigationItem.titleView = titleView
-//        }
         tableView.backgroundColor = .background
-//        
-//        resultsTableController = ResultsTableViewController(meal: meal, foodEntry: foodEntry, userProfile: userProfile, foodService: foodService)
-//        resultsTableController.addFoodDelegate = addFoodDelegate
-//        resultsTableController.resultDelegate = resultDelegate
-//        
-//        searchController = UISearchController(searchResultsController: resultsTableController)
-//        searchController.searchBar.delegate = self
-//        searchController.searchBar.autocapitalizationType = .none
-//        searchController.searchBar.placeholder = "Search foods"
 
         // Place the search bar in the navigation bar.
         navigationItem.searchController = searchController
@@ -156,32 +142,24 @@ class SearchItemTableViewController: UIViewController {
         
         definesPresentationContext = true
         
-        // TODO: use pallete colors
-//        let barcodeButton = UIBarButtonItem(image: UIImage(systemName: "barcode.viewfinder"), primaryAction: didTapBarcodeButton())
-//        let quickAddButton = UIBarButtonItem(image: UIImage(systemName: "flame"), primaryAction: didTapQuickAddButton())
-//        navigationItem.rightBarButtonItems = [barcodeButton, quickAddButton]
-//        navigationItem.rightBarButtonItem?.isEnabled = scannerAvailable
-        
         updateFetchedResultsController(for: .all)
     }
 
-    func didTapBarcodeButton() -> UIAction {
-        return UIAction { [self] _ in
-            guard scannerAvailable else { return }
-            // works: ean13
-            //fails: ean8 (doesn
-            let viewController = DataScannerViewController(
-                recognizedDataTypes: [.barcode()],
-                qualityLevel: .accurate,
-                recognizesMultipleItems: false,
-                isHighFrameRateTrackingEnabled: false,
-                isHighlightingEnabled: true)
-            
-            viewController.delegate = self
-            try? viewController.startScanning()
-            present(viewController, animated: true)
-
+    func didTapBarcodeButton() {
+        guard scannerAvailable else {
+            // TODO: Show alert
+            return
         }
+        // works: ean13
+        //fails: ean8 (doesn
+        let viewController = DataScannerViewController(
+            recognizedDataTypes: [.barcode()],
+            isHighFrameRateTrackingEnabled: false,
+            isHighlightingEnabled: true)
+        
+        viewController.delegate = self
+        try? viewController.startScanning()
+        present(viewController, animated: true)
     }
     
     func didTapQuickAddButton() -> UIAction {
@@ -378,36 +356,39 @@ extension SearchItemTableViewController: DataScannerViewControllerDelegate {
     
     func dataScanner(_ dataScanner: DataScannerViewController, didAdd addedItems: [RecognizedItem], allItems: [RecognizedItem]) {
         guard let item = addedItems.first else { return }
+        
         dataScanner.stopScanning()
         
         if case .barcode(let barcode) = item {
             searchTask?.cancel()
             searchTask = Task {
-//                guard var barcodeID = barcode.payloadStringValue else { return }
-//                // Convert from EDA-13 (13 digits) to UPC (12 digits)
-//                if barcodeID.first == "0" {
-//                    barcodeID.removeFirst()
-//                }
-//                print("barcode", barcodeID)
-//                guard let food = try? await foodService.getFoods(query: barcodeID, dataTypes: DataType.allCases).first
-//                else {
-//                    let generator = UIImpactFeedbackGenerator(style: .medium)
-//                    generator.impactOccurred()
-//                    dismiss(animated: true)
-//                    showFoodNotFoundAlert(id: barcodeID)
-//                    return
-//                }
-//                
-//                let generator = UIImpactFeedbackGenerator(style: .medium)
-//                generator.impactOccurred()
+                guard var barcodeID = barcode.payloadStringValue else { return }
+                // Convert from EDA-13 (13 digits) to UPC (12 digits)
+                if barcodeID.first == "0" {
+                    barcodeID.removeFirst()
+                }
+                print("barcode", barcodeID)
+                guard let food = try? await foodService.getFoods(query: barcodeID, dataTypes: [.branded], pageSize: 1, pageNumber: 1).foods.first
+                else {
+                    let generator = UIImpactFeedbackGenerator(style: .medium)
+                    generator.impactOccurred()
+                    dismiss(animated: true)
+                    showFoodNotFoundAlert(id: barcodeID)
+                    return
+                }
                 
-//                let foodDetailViewController = FoodDetailTableViewController(food: food, meal: meal, foodService: foodService)
+                let generator = UIImpactFeedbackGenerator(style: .medium)
+                generator.impactOccurred()
+                
+                let addFoodDetailViewController = AddFoodDetailViewController(fdcFood: food, userProfile: userProfile, foodService: foodService)
+                addFoodDetailViewController.delegate = addFoodDelegate
+//                addFoodDetailViewController.delegate = delegate
 //                foodDetailViewController.delegate = delegate
 //                foodDetailViewController.historyDelegate = self
-//                
-//                // Only 1 view controlelr can be presented at once. Dismiss the barcode scanning view
-//                dismiss(animated: true)
-//                present(UINavigationController(rootViewController: foodDetailViewController), animated: true)
+                
+                // Only 1 view controlelr can be presented at once. Dismiss the barcode scanning view
+                dismiss(animated: true)
+                present(UINavigationController(rootViewController: addFoodDetailViewController), animated: true)
             }
         }
     }
@@ -482,21 +463,23 @@ extension SearchItemTableViewController: SearchTabViewDelegate {
     }
 }
 
-//extension SearchItemTableViewController: SearchButtonRowViewDelegate {
-//    func searchButtonRowView(_ sender: SearchButtonRowView, didTapButton type: SearchButtonRowView.SearchButtonType) {
-//        switch type {
-//        case .barcode:
-//            return
-//        case .quickAdd:
-//            let quickAddViewController = QuickAddTableViewController(meal: Meal)
-//            return
-//        case .addRecipe:
-//            let createRecipeViewController = CreateRecipeViewController(userProfile: userProfile)
-//            present(UINavigationController(rootViewController: createRecipeViewController), animated: true)
-//            return
-//        case .addFood:
-//            let createFoodViewController = CreateFoodViewController()
-//            present(UINavigationController(rootViewController: createFoodViewController), animated: true)
-//        }
-//    }
-//}
+extension SearchItemTableViewController: SearchButtonRowViewDelegate {
+    func searchButtonRowView(_ sender: SearchButtonRowView, didTapButton type: SearchButtonRowView.SearchButtonType) {
+        // TODO: Maybe in future, can make it update diary
+        switch type {
+        case .barcode:
+            print("tap barcode")
+            didTapBarcodeButton()
+        case .quickAdd:
+            let quickAddViewController = QuickAddFoodViewController()  // creates food in main context, does not updte diary
+            present(UINavigationController(rootViewController: quickAddViewController), animated: true)
+            return
+        case .addRecipe:
+            let createRecipeViewController = CreateRecipeViewController(userProfile: userProfile)  // creates food in main context, does not updte diary
+            present(UINavigationController(rootViewController: createRecipeViewController), animated: true)
+        case .addFood:
+            let createFoodViewController = CreateFoodViewController()  // creates food in main context, does not updte diary
+            present(UINavigationController(rootViewController: createFoodViewController), animated: true)
+        }
+    }
+}

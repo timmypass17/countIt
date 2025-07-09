@@ -23,7 +23,6 @@ class SearchIngredientViewController: SearchItemTableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         title = "Add Ingredient"
-        searchButtonRowView.delegate = self
         
         resultsPaginatedViewController = IngredientsResultViewController(recipeEntry: recipeEntry, userProfile: userProfile, foodService: foodService)
         resultsPaginatedViewController.addFoodDelegate = addFoodDelegate
@@ -57,25 +56,5 @@ extension SearchIngredientViewController {
         addIngredientDetailViewController.delegate = addFoodDelegate
         addIngredientDetailViewController.dismissDelegate = self
         present(UINavigationController(rootViewController: addIngredientDetailViewController), animated: true)
-    }
-}
-
-extension SearchIngredientViewController: SearchButtonRowViewDelegate {
-    func searchButtonRowView(_ sender: SearchButtonRowView, didTapButton type: SearchButtonRowView.SearchButtonType) {
-        switch type {
-        case .barcode:
-            return
-        case .quickAdd:
-            let quickAddViewController = QuickAddFoodViewController()
-            present(UINavigationController(rootViewController: quickAddViewController), animated: true)
-            return
-        case .addRecipe:
-            let createRecipeViewController = CreateRecipeViewController(userProfile: userProfile)
-            present(UINavigationController(rootViewController: createRecipeViewController), animated: true)
-            return
-        case .addFood:
-            let createFoodViewController = CreateFoodViewController()
-            present(UINavigationController(rootViewController: createFoodViewController), animated: true)
-        }
     }
 }
