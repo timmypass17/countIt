@@ -16,25 +16,32 @@ class ProfileViewController: UIViewController {
     }()
     
     enum Section: Int, CaseIterable {
-        case profile, goals, delete
+        case profile, goals
     }
     
-    
-    struct GoalModel {
-        var title: String
-        var description: String
-    }
-    
-    var goalModels: [GoalModel] = [
-        GoalModel(title: "Starting Weight", description: ""),
-        GoalModel(title: "Current Weight", description: ""),
-        GoalModel(title: "Goal Weight", description: ""),
-//        GoalModel(title: "Weekly Goal", description: ""),
-//        GoalModel(title: "Activity Level", description: ""),
-    ]
+    lazy var moreButton: UIBarButtonItem = {
+        let deleteAction = UIAction(title: "Delete Account", image: UIImage(systemName: "trash"), attributes: .destructive) { [weak self] _ in
+            self?.showDeleteAccountAlert()
+        }
+
+        let menu = UIMenu(title: "", children: [deleteAction])
+        let button = UIBarButtonItem(image: UIImage(systemName: "ellipsis"), menu: menu)
+        button.tintColor = .white
+        return button
+    }()
     
     let userProfile: UserProfile
     let foodService = FoodService()
+    
+    let sexIndexPath = IndexPath(row: 0, section: 0)
+    let heightIndexPath = IndexPath(row: 1, section: 0)
+    let dobIndexPath = IndexPath(row: 2, section: 0)
+    
+    let startingWeightIndexPath = IndexPath(row: 0, section: 1)
+    let currentWeightIndexPath = IndexPath(row: 1, section: 1)
+    let goalWeightIndexPath = IndexPath(row: 2, section: 1)
+    let weeklyGoalWeightIndexPath = IndexPath(row: 3, section: 1)
+    let activityLevelIndexPath = IndexPath(row: 4, section: 1)
     
     init(userProfile: UserProfile) {
         self.userProfile = userProfile
@@ -69,8 +76,10 @@ class ProfileViewController: UIViewController {
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
         ])
+        
+        navigationItem.rightBarButtonItem = moreButton
     }
-    
+
     func showDeleteAccountAlert() {
         let message = "Are you sure you want to delete your account and all your data? This action is permanent and cannot be undone."
         let alertController = UIAlertController(
@@ -115,96 +124,79 @@ extension ProfileViewController: UITableViewDataSource {
             return 3
         case .goals:
             return 5
-        case .delete:
-            return 1
         }
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let section = Section(rawValue: indexPath.section) else { return UITableViewCell() }
-        switch section {
-        case .profile:
-            if indexPath.row == 0 {
-                let cell = tableView.dequeueReusableCell(withIdentifier: OnboardingSegmentedTableViewCell.reuseIdentifier) as! OnboardingSegmentedTableViewCell
-                cell.update(title: "Sex", sex: userProfile.sex)
-                cell.delegate = self
-                return cell
-            } else if indexPath.row == 1 {
-                let cell = tableView.dequeueReusableCell(withIdentifier: HeightTableViewCell.reuseIdentifier) as! HeightTableViewCell
-                cell.update(title: "Height", heightCm: userProfile.heightCm, heightUnit: userProfile.heightUnit)
-                return cell
-            } else if indexPath.row == 2 {
-                let cell = tableView.dequeueReusableCell(withIdentifier: DatePickerTableViewCell.reuseIdentifier) as! DatePickerTableViewCell
-                cell.delegate = self
-                cell.update(title: "Date of Birth", date: userProfile.dateOfBirth)
-                return cell
-            } else {
-                return UITableViewCell()
-            }
-        case .goals:
-            if indexPath.row == 0 {
-                let cell = tableView.dequeueReusableCell(withIdentifier: ProfileSelectableTableViewCell.reuseIdentifier, for: indexPath) as! ProfileSelectableTableViewCell
-                let startingUserWeight = foodService.getStartingUserWeight()
-                let startWeight = startingUserWeight?.getWeight(userProfile.weightUnit)?.trimmed ?? ""
-                cell.update(title: "Starting Weight", description: "\(startWeight) \(userProfile.weightUnit.pluralSymbol)")
-                cell.accessoryType = .disclosureIndicator
-                return cell
-            }
-            if indexPath.row == 1 {
-                let cell = tableView.dequeueReusableCell(withIdentifier: ProfileSelectableTableViewCell.reuseIdentifier, for: indexPath) as! ProfileSelectableTableViewCell
-                let currentUserWeight = foodService.getCurrentUserWeight()
-                let currentWeight = currentUserWeight?.getWeight(userProfile.weightUnit)?.trimmed ?? ""
-                cell.update(title: "Current Weight", description: "\(currentWeight) \(userProfile.weightUnit.pluralSymbol)")
-                cell.accessoryType = .disclosureIndicator
-                return cell
-            }
-            if indexPath.row == 2 {
-                let cell = tableView.dequeueReusableCell(withIdentifier: ProfileSelectableTableViewCell.reuseIdentifier, for: indexPath) as! ProfileSelectableTableViewCell
-                let goalWeight = userProfile.goalWeight?.trimmed ?? ""
-                cell.update(title: "Goal Weight", description: "\(goalWeight) \(userProfile.weightUnit.pluralSymbol)")
-                cell.accessoryType = .disclosureIndicator
-                return cell
-            }
-            if indexPath.row == 3 {
-                let cell = tableView.dequeueReusableCell(withIdentifier: MenuPickerTableViewCell<WeeklyWeightGoal>.reuseIdentifier, for: indexPath) as! MenuPickerTableViewCell<WeeklyWeightGoal>
-                let options: [WeeklyWeightGoal]
-                switch userProfile.weightGoal {
-                case .loseWeight:
-                    options = WeeklyWeightGoal.lossGoals
-                case .gainWeight:
-                    options = WeeklyWeightGoal.gainGoals
-                case .maintainWeight:
-                    options = WeeklyWeightGoal.maintainGoal
-                }
-
-                cell.update(title: "Weekly Goal", options: options, selected: userProfile.weeklyGoal) { weeklyGoal in
-                    return weeklyGoal.displayName(unit: self.userProfile.weightUnit)
-                } descriptionProvider: { weeklyGoal in
-                    return weeklyGoal.description(unit: self.userProfile.weightUnit)
-                } onSelect: { selectedWeeklyGoal in
-                    self.userProfile.weeklyGoal = selectedWeeklyGoal
-                    CoreDataStack.shared.saveContext()
-                }
-                return cell
-            }
-            
-            if indexPath.row == 4 {
-                let cell = tableView.dequeueReusableCell(withIdentifier: MenuPickerTableViewCell<ActivityLevel>.reuseIdentifier, for: indexPath) as! MenuPickerTableViewCell<ActivityLevel>
-
-                cell.update(title: "Activity Level", options: ActivityLevel.allCases, selected: userProfile.activityLevel) { activityLevel in
-                    return activityLevel.displayName
-                } descriptionProvider: { activityLevel in
-                    return activityLevel.description
-                } onSelect: { selectedActivityLevel in
-                    self.userProfile.activityLevel = selectedActivityLevel
-                    CoreDataStack.shared.saveContext()
-                }
-                return cell
-            }
-            return UITableViewCell()
-        case .delete:
-            let cell = tableView.dequeueReusableCell(withIdentifier: DeleteAccountTableViewCell.reuseIdentifier, for: indexPath) as! DeleteAccountTableViewCell
+        if indexPath == sexIndexPath {
+            let cell = tableView.dequeueReusableCell(withIdentifier: OnboardingSegmentedTableViewCell.reuseIdentifier) as! OnboardingSegmentedTableViewCell
+            cell.update(title: "Sex", sex: userProfile.sex)
+            cell.delegate = self
             return cell
+        } else if indexPath == heightIndexPath {
+            let cell = tableView.dequeueReusableCell(withIdentifier: HeightTableViewCell.reuseIdentifier) as! HeightTableViewCell
+            cell.update(title: "Height", heightCm: userProfile.heightCm, heightUnit: userProfile.heightUnit)
+            return cell
+        } else if indexPath == dobIndexPath {
+            let cell = tableView.dequeueReusableCell(withIdentifier: DatePickerTableViewCell.reuseIdentifier) as! DatePickerTableViewCell
+            cell.delegate = self
+            cell.update(title: "Date of Birth", date: userProfile.dateOfBirth)
+            return cell
+        } else if indexPath == startingWeightIndexPath {
+            let cell = tableView.dequeueReusableCell(withIdentifier: ProfileSelectableTableViewCell.reuseIdentifier, for: indexPath) as! ProfileSelectableTableViewCell
+            let startingUserWeight = foodService.getStartingUserWeight()
+            let startWeight = startingUserWeight?.getWeight(userProfile.weightUnit)?.trimmed ?? ""
+            cell.update(title: "Starting Weight", description: "\(startWeight) \(userProfile.weightUnit.pluralSymbol)")
+            cell.accessoryType = .disclosureIndicator
+            return cell
+        } else if indexPath == currentWeightIndexPath {
+            let cell = tableView.dequeueReusableCell(withIdentifier: ProfileSelectableTableViewCell.reuseIdentifier, for: indexPath) as! ProfileSelectableTableViewCell
+            let currentUserWeight = foodService.getCurrentUserWeight()
+            let currentWeight = currentUserWeight?.getWeight(userProfile.weightUnit)?.trimmed ?? ""
+            cell.update(title: "Current Weight", description: "\(currentWeight) \(userProfile.weightUnit.pluralSymbol)")
+            cell.accessoryType = .disclosureIndicator
+            return cell
+        } else if indexPath == goalWeightIndexPath {
+            let cell = tableView.dequeueReusableCell(withIdentifier: ProfileSelectableTableViewCell.reuseIdentifier, for: indexPath) as! ProfileSelectableTableViewCell
+            let goalWeight = userProfile.goalWeight?.trimmed ?? ""
+            cell.update(title: "Goal Weight", description: "\(goalWeight) \(userProfile.weightUnit.pluralSymbol)")
+            cell.accessoryType = .disclosureIndicator
+            return cell
+        } else if indexPath == weeklyGoalWeightIndexPath {
+            let cell = tableView.dequeueReusableCell(withIdentifier: MenuPickerTableViewCell<WeeklyWeightGoal>.reuseIdentifier, for: indexPath) as! MenuPickerTableViewCell<WeeklyWeightGoal>
+            let options: [WeeklyWeightGoal]
+            switch userProfile.weightGoal {
+            case .loseWeight:
+                options = WeeklyWeightGoal.lossGoals
+            case .gainWeight:
+                options = WeeklyWeightGoal.gainGoals
+            case .maintainWeight:
+                options = WeeklyWeightGoal.maintainGoal
+            }
+
+            cell.update(title: "Weekly Goal", options: options, selected: userProfile.weeklyGoal) { weeklyGoal in
+                return weeklyGoal.displayName(unit: self.userProfile.weightUnit)
+            } descriptionProvider: { weeklyGoal in
+                return weeklyGoal.description(unit: self.userProfile.weightUnit)
+            } onSelect: { selectedWeeklyGoal in
+                self.userProfile.weeklyGoal = selectedWeeklyGoal
+                CoreDataStack.shared.saveContext()
+            }
+            return cell
+        } else if indexPath == activityLevelIndexPath {
+            let cell = tableView.dequeueReusableCell(withIdentifier: MenuPickerTableViewCell<ActivityLevel>.reuseIdentifier, for: indexPath) as! MenuPickerTableViewCell<ActivityLevel>
+
+            cell.update(title: "Activity Level", options: ActivityLevel.allCases, selected: userProfile.activityLevel) { activityLevel in
+                return activityLevel.displayName
+            } descriptionProvider: { activityLevel in
+                return activityLevel.description
+            } onSelect: { selectedActivityLevel in
+                self.userProfile.activityLevel = selectedActivityLevel
+                CoreDataStack.shared.saveContext()
+            }
+            return cell
+        } else {
+            return UITableViewCell()
         }
     }
     
@@ -247,6 +239,32 @@ extension ProfileViewController: UITableViewDelegate {
         tableView.deselectRow(at: indexPath, animated: true)
         switch section {
         case .profile:
+            if indexPath.row == 1 {
+                switch userProfile.heightUnit {
+                case .feet:
+                    let heightFeetPickerViewController = HeightFeetPickerViewController(heightCm: Int(userProfile.heightCm ?? 167))
+                    heightFeetPickerViewController.delegate = self
+                    
+                    let navigationController = UINavigationController(rootViewController: heightFeetPickerViewController)
+                    
+                    if let sheet = navigationController.sheetPresentationController {
+                        sheet.detents = [.medium()]
+                    }
+                    
+                    self.present(navigationController, animated: true)
+                case .cm:
+                    let heightCmPickerViewController = HeightCmPickerViewController(heightCm: Int(userProfile.heightCm ?? 167))
+                    heightCmPickerViewController.delegate = self
+                    
+                    let navigationController = UINavigationController(rootViewController: heightCmPickerViewController)
+                    
+                    if let sheet = navigationController.sheetPresentationController {
+                        sheet.detents = [.medium()]
+                    }
+                    
+                    self.present(navigationController, animated: true)
+                }
+            }
             return
         case .goals:
             if indexPath.row == 0 {
@@ -307,8 +325,6 @@ extension ProfileViewController: UITableViewDelegate {
                 }
                 present(vc, animated: true, completion: nil)
             }
-        case .delete:
-            showDeleteAccountAlert()
         }
     }
     
@@ -361,8 +377,6 @@ extension ProfileViewController: UITableViewDelegate {
             footer.update(currentUnit: userProfile.weightUnit)
             footer.delegate = self
             return footer
-        case .delete:
-            return nil
         }
     }
     
@@ -376,6 +390,7 @@ extension ProfileViewController: HeightPreferenceFooterViewDelegate {
     func heightPreferenceFooterView(_ footerView: HeightPreferenceFooterView, didUpdateHeightPreference heightUnit: HeightUnit) {
         userProfile.heightUnit = heightUnit
         tableView.reloadRows(at: [IndexPath(row: 1, section: 0)], with: .automatic)
+        CoreDataStack.shared.saveContext()
     }
 }
 
@@ -383,6 +398,7 @@ extension ProfileViewController: HeightFeetPickerViewControllerDelegate {
     func heightFeetPickerViewController(_ viewController: HeightFeetPickerViewController, didUpdateHeight height: (feet: Int, inches: Int)) {
         self.userProfile.heightCm = Int16(convertToCentimeters(feet: height.feet, inches: height.inches))
         tableView.reloadRows(at: [IndexPath(row: 1, section: 0)], with: .automatic)
+        CoreDataStack.shared.saveContext()
     }
 }
 
@@ -391,6 +407,7 @@ extension ProfileViewController: HeightCmPickerViewControllerDelegate {
     func heightCmPickerViewController(_ viewController: HeightCmPickerViewController, didUpdateHeight heightCm: Int) {
         self.userProfile.heightCm = Int16(heightCm)
         tableView.reloadRows(at: [IndexPath(row: 1, section: 0)], with: .automatic)
+        CoreDataStack.shared.saveContext()
     }
 }
 
@@ -398,5 +415,6 @@ extension ProfileViewController: UnitPreferenceFooterViewDelegate {
     func unitPreferenceFooterView(_ footerView: UnitPreferenceFooterView, didUpdateUnitPreference weightUnit: WeightUnit) {
         userProfile.weightUnit = weightUnit
         tableView.reloadSections(IndexSet(integer: 1), with: .automatic)
+        CoreDataStack.shared.saveContext()
     }
 }

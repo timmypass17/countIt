@@ -150,7 +150,7 @@
 		32A292492DDDA69D004272A7 /* FoodInfoPortion+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32A292452DDDA673004272A7 /* FoodInfoPortion+CoreDataClass.swift */; };
 		32A2924A2DDDA69D004272A7 /* FoodInfoPortion+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32A292462DDDA673004272A7 /* FoodInfoPortion+CoreDataProperties.swift */; };
 		32B0933D2B9C02F50047E6E2 /* QuantityViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32B0933C2B9C02F50047E6E2 /* QuantityViewController.swift */; };
-		32B257602BBDD739003C7C7C /* QuickAddTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32B2575F2BBDD739003C7C7C /* QuickAddTableViewController.swift */; };
+		32B257602BBDD739003C7C7C /* QuickAddFoodViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32B2575F2BBDD739003C7C7C /* QuickAddFoodViewController.swift */; };
 		32BD0C792DD198EF0098253F /* UserNutrientGoal+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32BD0C752DD198EF0098253F /* UserNutrientGoal+CoreDataClass.swift */; };
 		32BD0C7A2DD198EF0098253F /* UserNutrientGoal+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32BD0C762DD198EF0098253F /* UserNutrientGoal+CoreDataProperties.swift */; };
 		32BD0C7F2DD19B150098253F /* UserProfile+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32BD0C7D2DD19B150098253F /* UserProfile+CoreDataClass.swift */; };
@@ -368,7 +368,7 @@
 		32A292452DDDA673004272A7 /* FoodInfoPortion+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FoodInfoPortion+CoreDataClass.swift"; sourceTree = "<group>"; };
 		32A292462DDDA673004272A7 /* FoodInfoPortion+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FoodInfoPortion+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		32B0933C2B9C02F50047E6E2 /* QuantityViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuantityViewController.swift; sourceTree = "<group>"; };
-		32B2575F2BBDD739003C7C7C /* QuickAddTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickAddTableViewController.swift; sourceTree = "<group>"; };
+		32B2575F2BBDD739003C7C7C /* QuickAddFoodViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickAddFoodViewController.swift; sourceTree = "<group>"; };
 		32BD0C752DD198EF0098253F /* UserNutrientGoal+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserNutrientGoal+CoreDataClass.swift"; sourceTree = "<group>"; };
 		32BD0C762DD198EF0098253F /* UserNutrientGoal+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserNutrientGoal+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		32BD0C7D2DD19B150098253F /* UserProfile+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserProfile+CoreDataClass.swift"; sourceTree = "<group>"; };
@@ -703,7 +703,7 @@
 				32762B842E010FDE001BB96F /* CreateFoodViewController.swift */,
 				326DB7D02E08C3C000849E3F /* CreateRecipeViewController.swift */,
 				3249A9552E0DFB7C0064E79F /* SearchIngredientViewController.swift */,
-				32B2575F2BBDD739003C7C7C /* QuickAddTableViewController.swift */,
+				32B2575F2BBDD739003C7C7C /* QuickAddFoodViewController.swift */,
 				3259E77E2E163F6400F90965 /* SearchFoodViewController.swift */,
 				322AB8EA2E170EEC003B74AC /* AddIngredientViewController.swift */,
 			);
@@ -1138,7 +1138,7 @@
 				324E47BD2E1EFD0E0001F9E2 /* PrivacyPolicyViewController.swift in Sources */,
 				326DB7D12E08C3C000849E3F /* CreateRecipeViewController.swift in Sources */,
 				32C276DF2E18937200637863 /* FoodsSearchAPIRequest.swift in Sources */,
-				32B257602BBDD739003C7C7C /* QuickAddTableViewController.swift in Sources */,
+				32B257602BBDD739003C7C7C /* QuickAddFoodViewController.swift in Sources */,
 				32D3F7582E1C92200012CD2B /* EditMealTypeViewController.swift in Sources */,
 				32F51A4A2B92C1A70080CC09 /* SceneDelegate.swift in Sources */,
 				3242C8E62DF0D82300F05FF8 /* AddFoodDetailViewController.swift in Sources */,

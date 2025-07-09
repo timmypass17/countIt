@@ -28,6 +28,7 @@ class SearchItemTableViewController: UIViewController {
     var history: [FoodEntry] = []
     var myRecipes: [FoodEntry] = []
     var myFoods: [FoodEntry] = []
+    var searchButtonRowView: SearchButtonRowView
     var selectedTab: SearchTabView.TabItem = .all
     
     var searchController: UISearchController!
@@ -44,7 +45,7 @@ class SearchItemTableViewController: UIViewController {
     var debounceTimer: Timer?
     
     weak var addFoodDelegate: AddFoodDetailViewControllerDelegate?
-    weak var quickAddDelegate: QuickAddTableViewControllerDelegate?
+    weak var quickAddDelegate: QuickAddViewControllerDelegate?
     weak var resultDelegate: ResultTableViewCellDelegate?
 
     var scannerAvailable: Bool {
@@ -62,6 +63,7 @@ class SearchItemTableViewController: UIViewController {
         self.userProfile = userProfile
         self.visibleTabs = visibleTabs
         self.visibleButtonTypes = visibleButtonTypes
+        self.searchButtonRowView = SearchButtonRowView(visibleButtonTypes: visibleButtonTypes)
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -102,9 +104,7 @@ class SearchItemTableViewController: UIViewController {
         searchTabView.translatesAutoresizingMaskIntoConstraints = false
         searchTabView.delegate = self
         
-        let searchButtonRowView = SearchButtonRowView(visibleButtonTypes: visibleButtonTypes)
         searchButtonRowView.translatesAutoresizingMaskIntoConstraints = false
-        searchButtonRowView.delegate = self
         
         view.addSubview(searchTabView)
         view.addSubview(searchButtonRowView)
@@ -482,20 +482,21 @@ extension SearchItemTableViewController: SearchTabViewDelegate {
     }
 }
 
-extension SearchItemTableViewController: SearchButtonRowViewDelegate {
-    func searchButtonRowView(_ sender: SearchButtonRowView, didTapButton type: SearchButtonRowView.SearchButtonType) {
-        switch type {
-        case .barcode:
-            return
-        case .quickAdd:
-            return
-        case .addRecipe:
-            let createRecipeViewController = CreateRecipeViewController(userProfile: userProfile)
-            present(UINavigationController(rootViewController: createRecipeViewController), animated: true)
-            return
-        case .addFood:
-            let createFoodViewController = CreateFoodViewController()
-            present(UINavigationController(rootViewController: createFoodViewController), animated: true)
-        }
-    }
-}
+//extension SearchItemTableViewController: SearchButtonRowViewDelegate {
+//    func searchButtonRowView(_ sender: SearchButtonRowView, didTapButton type: SearchButtonRowView.SearchButtonType) {
+//        switch type {
+//        case .barcode:
+//            return
+//        case .quickAdd:
+//            let quickAddViewController = QuickAddTableViewController(meal: Meal)
+//            return
+//        case .addRecipe:
+//            let createRecipeViewController = CreateRecipeViewController(userProfile: userProfile)
+//            present(UINavigationController(rootViewController: createRecipeViewController), animated: true)
+//            return
+//        case .addFood:
+//            let createFoodViewController = CreateFoodViewController()
+//            present(UINavigationController(rootViewController: createFoodViewController), animated: true)
+//        }
+//    }
+//}

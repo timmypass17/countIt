@@ -34,15 +34,12 @@ class AddFoodDetailViewController: FoodDetailTableViewController {
     }
     */
 
-    // TODO: This add button should do something
     func didTapAddButton() -> UIAction {
         return UIAction { [self] _ in
             do {
                 // Add to main directly
                 let food = try foodService.addFood(fdcFood, foodEntry: foodEntry, with: fdcFood.selectedFoodPortion, quantity: fdcFood.quantity, to: meal, context: CoreDataStack.shared.context)
                 foodService.addHistoryIfNeeded(fdcFood: fdcFood, context: CoreDataStack.shared.context)
-//                try foodContext.save()
-//                CoreDataStack.shared.saveContext()
                 self.delegate?.addFoodDetailViewController(self, didAddFood: food)
             } catch {
                 print("Error adding food: \(error)")

@@ -65,11 +65,22 @@ class TextFieldInputTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func update(title: String, valueText: String?, placeholderText: String, unit: String) {
+    func update(title: String, valueText: String?, placeholderText: String, unit: String?) {
         titleLabel.text = title
         amountTextField.text = valueText
         amountTextField.placeholder = placeholderText
         unitLabel.text = unit
+        
+        if let unit = unit, !unit.isEmpty {
+            unitLabel.text = unit
+            if !container.arrangedSubviews.contains(unitLabel) {
+                container.addArrangedSubview(unitLabel)
+            }
+        } else {
+            unitLabel.text = nil
+            container.removeArrangedSubview(unitLabel)  // tells the stack view to stop managing the view (might be visible)
+            unitLabel.removeFromSuperview() // Fully removes from view hierarchy and screen
+        }
     }
     
     func amountTextValueChanged() -> UIAction {

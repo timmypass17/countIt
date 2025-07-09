@@ -621,8 +621,8 @@ extension DiaryViewController: ReorderMealTableViewControllerDelegate {
     }
 }
 
-extension DiaryViewController: QuickAddTableViewControllerDelegate {
-    func quickAddTableViewController(_ viewController: QuickAddTableViewController, didAddFoodEntry: FoodEntry) {
+extension DiaryViewController: QuickAddViewControllerDelegate {
+    func quickAddViewController(_ viewController: QuickAddFoodViewController, didAddFoodEntry: FoodEntry) {
         updateUI()
     }
 }

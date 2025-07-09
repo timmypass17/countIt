@@ -24,7 +24,8 @@ class SearchFoodViewController: SearchItemTableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        // TODO: Change result to foodResults and ingredientResults?
+        searchButtonRowView.delegate = self
+
         let foodResultsViewController = FoodResultsViewController(meal: meal, foodService: foodService, userProfile: userProfile)
         foodResultsViewController.addFoodDelegate = addFoodDelegate
         resultsPaginatedViewController = foodResultsViewController
@@ -81,4 +82,27 @@ extension SearchFoodViewController: DiaryViewControllerDelegate {
         navigationItem.titleView = titleView
     }
     
+}
+
+
+extension SearchFoodViewController: SearchButtonRowViewDelegate {
+    func searchButtonRowView(_ sender: SearchButtonRowView, didTapButton type: SearchButtonRowView.SearchButtonType) {
+        // TODO: Maybe in future, can make it update diary
+        switch type {
+        case .barcode:
+            return
+        case .quickAdd:
+            guard let meal else { return }
+            let quickAddViewController = QuickAddFoodViewController()  // creates food in main context, does not updte diary
+            present(UINavigationController(rootViewController: quickAddViewController), animated: true)
+            return
+        case .addRecipe:
+            let createRecipeViewController = CreateRecipeViewController(userProfile: userProfile)  // creates food in main context, does not updte diary
+            present(UINavigationController(rootViewController: createRecipeViewController), animated: true)
+            return
+        case .addFood:
+            let createFoodViewController = CreateFoodViewController()  // creates food in main context, does not updte diary
+            present(UINavigationController(rootViewController: createFoodViewController), animated: true)
+        }
+    }
 }

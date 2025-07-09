@@ -17,12 +17,6 @@ class SettingsViewController: UIViewController {
         return tableView
     }()
     
-    lazy var moreButton: UIBarButtonItem = {
-        let button = UIBarButtonItem(image: UIImage(systemName: "ellipsis"), primaryAction: nil)
-        button.tintColor = .white
-        return button
-    }()
-    
     struct Section {
         var title: String
         var data: [Model]
@@ -140,8 +134,6 @@ class SettingsViewController: UIViewController {
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
         ])
-        
-        navigationItem.rightBarButtonItem = moreButton
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -236,7 +228,11 @@ extension SettingsViewController: MFMailComposeViewControllerDelegate {
             message: "There is no email account associated to this device. If you have any questions, please feel free to reach out to us at \(email)",
             preferredStyle: .alert)
         
-        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { _ in }))
+        alert.addAction(UIAlertAction(title: "OK", style: .default) { _ in
+            if let selectedIndexPath = self.tableView.indexPathForSelectedRow {
+                self.tableView.deselectRow(at: selectedIndexPath, animated: true)
+            }
+        })
         self.present(alert, animated: true, completion: nil)
     }
 }

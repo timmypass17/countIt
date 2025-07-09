@@ -119,30 +119,4 @@ class NutritionTextFieldTableViewCell: TextFieldUnitTableViewCell {
         textField.placeholder = placeholder
         self.editingChangedAction = editingChangedAction
     }
-    
-//    func update(_ nutrientId: NutrientId, value: Double?, editingChangedAction: @escaping (String?) -> Void) {
-//        titleLabel.text = nutrientId.description
-//        unitLabel.text = nutrientId.unitName
-//        // set text field
-//        if let value {
-//            textField.text = value.trimmed
-//        } else {
-//            textField.text = nil
-//        }
-//        textField.placeholder = nutrientId.isRequired ? "Required" : "Optional"
-//        self.editingChangedAction = editingChangedAction
-//    }
-//    
-//    func update(title: String, description: String, value: Double?, placeholderText: String, editingChangedAction: @escaping (String?) -> Void) {
-//        titleLabel.text = title
-//        unitLabel.text = "g"
-//        // set text field
-//        if let value {
-//            textField.text = value.trimmed
-//        } else {
-//            textField.text = nil
-//        }
-//        textField.placeholder = placeholderText
-//        self.editingChangedAction = editingChangedAction
-//    }
 }
