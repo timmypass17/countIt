@@ -9,7 +9,7 @@ import UIKit
 import CoreData
 
 protocol AddFoodDetailViewControllerDelegate: AnyObject {
-    func addFoodDetailViewController(_ tableViewController: FoodDetailTableViewController, didAddFood food: FoodEntry)
+    func addFoodDetailViewController(_ tableViewController: UIViewController, didAddFood food: FoodEntry)
 }
 
 // TODO: Make a AddIngredientDetailViewController: FoodDetailTableViewController with addIngredientDelegate

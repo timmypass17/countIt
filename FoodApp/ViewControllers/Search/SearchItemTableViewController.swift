@@ -25,6 +25,8 @@ class SearchItemTableViewController: UIViewController {
         return view
     }()
     
+    private let overlay = ScannerOverlayView()
+    
     var history: [FoodEntry] = []
     var myRecipes: [FoodEntry] = []
     var myFoods: [FoodEntry] = []
@@ -143,6 +145,7 @@ class SearchItemTableViewController: UIViewController {
         definesPresentationContext = true
         
         updateFetchedResultsController(for: .all)
+        
     }
 
     func didTapBarcodeButton() {
@@ -152,14 +155,29 @@ class SearchItemTableViewController: UIViewController {
         }
         // works: ean13
         //fails: ean8 (doesn
-        let viewController = DataScannerViewController(
+        let scannerViewController = DataScannerViewController(
             recognizedDataTypes: [.barcode()],
             isHighFrameRateTrackingEnabled: false,
             isHighlightingEnabled: true)
         
-        viewController.delegate = self
-        try? viewController.startScanning()
-        present(viewController, animated: true)
+        scannerViewController.delegate = self
+        try? scannerViewController.startScanning()
+        present(scannerViewController, animated: true) {
+            // Add overlay after presentation
+            let overlay = ScannerOverlayView()
+            overlay.isUserInteractionEnabled = false
+            overlay.backgroundColor = .clear
+            overlay.translatesAutoresizingMaskIntoConstraints = false
+
+            scannerViewController.view.addSubview(overlay)
+            
+            NSLayoutConstraint.activate([
+                overlay.topAnchor.constraint(equalTo: scannerViewController.view.topAnchor),
+                overlay.bottomAnchor.constraint(equalTo: scannerViewController.view.bottomAnchor),
+                overlay.leadingAnchor.constraint(equalTo: scannerViewController.view.leadingAnchor),
+                overlay.trailingAnchor.constraint(equalTo: scannerViewController.view.trailingAnchor)
+            ])
+        }
     }
     
     func didTapQuickAddButton() -> UIAction {
@@ -479,7 +497,50 @@ extension SearchItemTableViewController: SearchButtonRowViewDelegate {
             present(UINavigationController(rootViewController: createRecipeViewController), animated: true)
         case .addFood:
             let createFoodViewController = CreateFoodViewController()  // creates food in main context, does not updte diary
+            createFoodViewController.delegate = self
             present(UINavigationController(rootViewController: createFoodViewController), animated: true)
         }
     }
 }
+
+extension SearchItemTableViewController: CreateFoodViewControllerDelegate {
+    func createFoodViewController(_ viewController: CreateFoodViewController, didCreateFood foodEntry: FoodEntry) {
+        addFoodDelegate?.addFoodDetailViewController(self, didAddFood: foodEntry)
+    }
+}
+
+class ScannerOverlayView: UIView {
+    
+    // Define the size of the transparent scan area
+    private let scanRect = CGRect(x: 0, y: 0, width: 250, height: 150)
+
+    override func draw(_ rect: CGRect) {
+        super.draw(rect)
+        
+        // Define full-screen path
+        let path = UIBezierPath(rect: rect)
+        
+        // Center the scan area
+        let scanAreaOrigin = CGPoint(
+            x: (rect.width - scanRect.width) / 2,
+            y: (rect.height - scanRect.height) / 2
+        )
+        let scanArea = CGRect(origin: scanAreaOrigin, size: scanRect.size)
+        
+        // Add rounded cutout path
+        let cutoutPath = UIBezierPath(roundedRect: scanArea, cornerRadius: 12)
+        path.append(cutoutPath)
+        path.usesEvenOddFillRule = true
+
+        // Create a shape layer mask
+        let fillLayer = CAShapeLayer()
+        fillLayer.path = path.cgPath
+        fillLayer.fillRule = .evenOdd
+        fillLayer.fillColor = UIColor.black.withAlphaComponent(0.6).cgColor
+        
+        // Apply the mask
+        layer.sublayers?.forEach { $0.removeFromSuperlayer() } // remove previous
+        layer.addSublayer(fillLayer)
+    }
+}
+

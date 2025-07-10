@@ -487,7 +487,7 @@ extension DiaryViewController: UITableViewDelegate {
 }
 
 extension DiaryViewController: AddFoodDetailViewControllerDelegate {
-    func addFoodDetailViewController(_ tableViewController: FoodDetailTableViewController, didAddFood foodEntry: FoodEntry) {
+    func addFoodDetailViewController(_ tableViewController: UIViewController, didAddFood foodEntry: FoodEntry) {
         do {
             try foodEntry.managedObjectContext?.save()
             CoreDataStack.shared.saveContext()

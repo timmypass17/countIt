@@ -298,7 +298,7 @@ extension CreateRecipeViewController: ViewControllerDismissDelegate {
 
 
 extension CreateRecipeViewController: AddFoodDetailViewControllerDelegate {
-    func addFoodDetailViewController(_ tableViewController: FoodDetailTableViewController, didAddFood food: FoodEntry) {
+    func addFoodDetailViewController(_ tableViewController: UIViewController, didAddFood food: FoodEntry) {
         // Adds an ingredient
         // Ingreident may be added from main context (e.g. "My Colleciton", search)
         // existingObject doesn't work for some reason

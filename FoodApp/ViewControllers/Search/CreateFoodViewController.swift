@@ -8,6 +8,10 @@
 import UIKit
 import CoreData
 
+protocol CreateFoodViewControllerDelegate: AnyObject {
+    func createFoodViewController(_ viewController: CreateFoodViewController, didCreateFood foodEntry: FoodEntry)
+}
+
 class CreateFoodViewController: UIViewController {
     
     let tableView: UITableView = {
@@ -59,6 +63,8 @@ class CreateFoodViewController: UIViewController {
         button.isEnabled = false
         return button
     }()
+    
+    weak var delegate: CreateFoodViewControllerDelegate?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -116,6 +122,7 @@ class CreateFoodViewController: UIViewController {
                 try self.childContext.save()
                 CoreDataStack.shared.saveContext()
                 self.dismiss(animated: true)
+                self.delegate?.createFoodViewController(self, didCreateFood: self.foodEntry)
             } catch {
                 print("Error saving food entry")
             }
