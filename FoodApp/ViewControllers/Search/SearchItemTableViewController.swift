@@ -267,6 +267,11 @@ extension SearchItemTableViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
             let history = fetchedResultsController.object(at: indexPath)
+//            // Delete ingredients (have to manuall
+//            let ingredients = history.foodEntry?.ingredients ?? []
+//            for ingredient in ingredients {
+//                CoreDataStack.shared.context.delete(ingredient)
+//            }
             CoreDataStack.shared.context.delete(history)
             CoreDataStack.shared.saveContext()
         }
@@ -490,6 +495,7 @@ extension SearchItemTableViewController: SearchButtonRowViewDelegate {
             didTapBarcodeButton()
         case .quickAdd:
             let quickAddViewController = QuickAddFoodViewController()  // creates food in main context, does not updte diary
+            quickAddViewController.delegate = self
             present(UINavigationController(rootViewController: quickAddViewController), animated: true)
             return
         case .addRecipe:
@@ -505,6 +511,12 @@ extension SearchItemTableViewController: SearchButtonRowViewDelegate {
 
 extension SearchItemTableViewController: CreateFoodViewControllerDelegate {
     func createFoodViewController(_ viewController: CreateFoodViewController, didCreateFood foodEntry: FoodEntry) {
+        addFoodDelegate?.addFoodDetailViewController(self, didAddFood: foodEntry)
+    }
+}
+
+extension SearchItemTableViewController: QuickAddViewControllerDelegate {
+    func quickAddViewController(_ viewController: QuickAddFoodViewController, didAddFoodEntry foodEntry: FoodEntry) {
         addFoodDelegate?.addFoodDetailViewController(self, didAddFood: foodEntry)
     }
 }

@@ -45,6 +45,7 @@ class FoodEntryTableViewCell: UITableViewCell {
     
     let container: UIStackView = {
         let hstack = UIStackView()
+        hstack.spacing = 8
         hstack.axis = .horizontal
         hstack.translatesAutoresizingMaskIntoConstraints = false
         return hstack

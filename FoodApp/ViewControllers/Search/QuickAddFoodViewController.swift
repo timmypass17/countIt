@@ -97,14 +97,13 @@ class QuickAddFoodViewController: UIViewController {
             }
             
             do {
-                // We just adding to history, (does not log to any meals)
-                let history = History(context: self.childContext)
-                history.fdcId = self.foodEntry.foodInfo!.fdcId
-                history.createdAt_ = .now
-                history.foodEntry = self.foodEntry
+                if let fdcFood = self.foodEntry.convertToFDCFood() {
+                    self.foodService.addHistoryIfNeeded(fdcFood: fdcFood, context: self.childContext)
+                }
                 
                 try self.childContext.save()
                 CoreDataStack.shared.saveContext()
+                delegate?.quickAddViewController(self, didAddFoodEntry: foodEntry)
                 self.dismiss(animated: true)
             } catch {
                 print("Error quick add: \(error)")

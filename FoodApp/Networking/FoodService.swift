@@ -412,9 +412,6 @@ class FoodService: FoodServiceProtocol {
             }
         }
         
-        
-        // Add copy to history
-//        updateFoodHistoryIfNeeded(food: food, context: context)
         return food
     }
     
@@ -485,9 +482,14 @@ class FoodService: FoodServiceProtocol {
         history.foodEntry = foodEntryCopy
     }
     
+    // TODO: Can this take in foodEntry instead?
     // Saves fdcFood to main context
     func addHistoryIfNeeded(fdcFood: FoodItem, context: NSManagedObjectContext) {
-        guard getFoodHistory(fdcId: Int(fdcFood.fdcId)) == nil else { return }
+        guard getFoodHistory(fdcId: Int(fdcFood.fdcId)) == nil else {
+            print("timmy ingredient history exists already")
+            return
+        }
+        print("timmy new ingredient")
         
         let history = History(context: context)
         history.fdcId = Int64(fdcFood.fdcId)
@@ -688,3 +690,5 @@ class FoodService: FoodServiceProtocol {
         return searchResult
     }
 }
+
+// TODO: Change foodEntry ingreidents relationship to nullify, to fix bug with deleting recipe, deletes related ingredeitns

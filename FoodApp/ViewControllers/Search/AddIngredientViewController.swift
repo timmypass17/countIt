@@ -29,26 +29,18 @@ class AddIngredientViewController: FoodDetailTableViewController {
     }
     
 
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
-    // TODO: This add button should do something
     func didTapAddButton() -> UIAction {
         return UIAction { [self] _ in
             do {
+                print("timmy tap add ingredient button")
                 guard let recipeContext: NSManagedObjectContext = recipeEntry.managedObjectContext else { return }
                 
-                let ingredientEntry = try foodService.addFood(fdcFood, foodEntry: foodEntry, with: fdcFood.selectedFoodPortion, quantity: fdcFood.quantity, to: meal, context: recipeContext)
-                foodService.addHistoryIfNeeded(fdcFood: fdcFood, context: recipeContext)
-//                try recipeContext.save()
-//                CoreDataStack.shared.saveContext()
+                let ingredientEntry = try foodService.addFood(fdcFood, foodEntry: foodEntry, with: fdcFood.selectedFoodPortion, quantity: fdcFood.quantity, to: meal, context: recipeContext)   // add to recipe box
+                
+                // add to history in main
+                foodService.addHistoryIfNeeded(fdcFood: fdcFood, context: CoreDataStack.shared.context)
+                CoreDataStack.shared.saveContext()
+                
                 self.delegate?.addFoodDetailViewController(self, didAddFood: ingredientEntry)
             } catch {
                 print("Error adding food: \(error)")

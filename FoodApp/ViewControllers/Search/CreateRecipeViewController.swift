@@ -115,18 +115,7 @@ class CreateRecipeViewController: UIViewController {
                 history.createdAt_ = .now
                 history.foodEntry = self.recipeEntry
                 
-//                // Update ingredients
-//                for ingredient in foodEntry.ingredients {
-//                    guard let fdcId = ingredient.foodInfo?.fdcId else { continue }
-//                    if fdcId < 0 {
-//                        ingredient.isCustom = true
-//                    } else {
-//                        ingredient.isCustom = true
-//                    }
-//                    ingredient.is
-//                }
-
-                try self.recipeContext.save()
+                try self.recipeContext.save()   // fully commit recipe context changes
                 CoreDataStack.shared.saveContext()
                 self.dismiss(animated: true)
             } catch {
