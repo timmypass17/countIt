@@ -21,21 +21,21 @@ class CreateRecipeViewController: UIViewController {
     enum Section: Int, CaseIterable {
         case name, ingredients
     }
-    
+        
     lazy var recipeEntry: FoodEntry = {
-        var foodEntry = FoodEntry(context: recipeContext)
-        foodEntry.quantity = 1
-        foodEntry.gramWeight = nil
-        foodEntry.amount = 1
-        foodEntry.modifier = "serving"
-        foodEntry.portionId = 0 // 0 means user generated
-        foodEntry.isCustom = true
-        foodEntry.isRecipe = true
+        var recipeEntry = FoodEntry(context: recipeContext)
+        recipeEntry.quantity = 1
+        recipeEntry.gramWeight = nil
+        recipeEntry.amount = 1
+        recipeEntry.modifier = "serving"
+        recipeEntry.portionId = 0 // 0 means user generated
+        recipeEntry.isCustom = true
+        recipeEntry.isRecipe = true
         
         let foodInfo = FoodInfo(context: recipeContext)
         foodInfo.fdcId = Int64.random(in: Int64.min..<0)    // negative means user generated
         foodInfo.brandName_ = nil
-        foodEntry.foodInfo = foodInfo
+        recipeEntry.foodInfo = foodInfo
         
         for nutrientId in NutrientId.allCases {
             let foodInfoNutrient = FoodInfoNutrient(context: recipeContext)
@@ -43,7 +43,9 @@ class CreateRecipeViewController: UIViewController {
             foodInfo.addToNutrients_(foodInfoNutrient)
         }
         
-        return foodEntry
+        recipeEntry.meal = meal
+        
+        return recipeEntry
     }()
     
     var recipeContext: NSManagedObjectContext = CoreDataStack.shared.childContext()
@@ -60,18 +62,17 @@ class CreateRecipeViewController: UIViewController {
         return button
     }()
     
+    let meal: Meal
     let userProfile: UserProfile
     
-    init(userProfile: UserProfile) {
+    weak var addFoodDelegate: AddFoodDetailViewControllerDelegate?
+    
+    init(meal: Meal, userProfile: UserProfile) {
+        self.meal = recipeContext.object(with: meal.objectID) as! Meal
         self.userProfile = userProfile
         super.init(nibName: nil, bundle: nil)
-//        print("timmy init CreateRecipeViewController")
     }
-    
-    deinit {
-//        print("timmy deinit CreateRecipeViewController")
-    }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -110,14 +111,15 @@ class CreateRecipeViewController: UIViewController {
                 foodPortion.foodInfo = self.recipeEntry.foodInfo
                 
                 // We just adding to history, (does not log to any meals)
-                let history = History(context: self.recipeContext)
-                history.fdcId = self.recipeEntry.foodInfo!.fdcId
-                history.createdAt_ = .now
-                history.foodEntry = self.recipeEntry
-                
-                try self.recipeContext.save()   // fully commit recipe context changes
+                if let fdcRecipe = recipeEntry.convertToFDCFood() {
+                    self.foodService.addHistoryIfNeeded(fdcFood: fdcRecipe, context: CoreDataStack.shared.context)
+                }
+                                
+                try recipeContext.save()   // fully commit recipe context changes
                 CoreDataStack.shared.saveContext()
-                self.dismiss(animated: true)
+                dismiss(animated: true)
+                
+                addFoodDelegate?.addFoodDetailViewController(self, didAddFood: recipeEntry)
             } catch {
                 print("Error saving food entry")
             }
@@ -287,18 +289,11 @@ extension CreateRecipeViewController: ViewControllerDismissDelegate {
 
 
 extension CreateRecipeViewController: AddFoodDetailViewControllerDelegate {
-    func addFoodDetailViewController(_ tableViewController: UIViewController, didAddFood food: FoodEntry) {
-        // Adds an ingredient
+    // Adds an ingredient
+    func addFoodDetailViewController(_ tableViewController: UIViewController, didAddFood ingredient: FoodEntry) {
         // Ingreident may be added from main context (e.g. "My Colleciton", search)
         // existingObject doesn't work for some reason
-        guard let ingredient = recipeContext.object(with: food.objectID) as? FoodEntry else {
-            print("timmy fail to get ingredient")
-            return
-        }
-        print("timmy add ingredient")
-        ingredient.index = Int16(recipeEntry.ingredients.count)   // setting relationship does change size of relationship
-        ingredient.parent = recipeEntry
-        recipeEntry.addToIngredients_(ingredient)
+        
         let indexPath = IndexPath(row: Int(ingredient.index), section: 1)
         tableView.insertRows(at: [indexPath], with: .automatic)
         self.updateSaveButton()

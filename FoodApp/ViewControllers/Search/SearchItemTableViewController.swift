@@ -9,7 +9,7 @@ import UIKit
 import VisionKit
 import CoreData
 
-class SearchItemTableViewController: UIViewController {
+class SearchItemTableViewController: UIViewController, DataScannerViewControllerDelegate {
     
     let tableView: UITableView = {
         let tableView = UITableView(frame: .zero, style: .insetGrouped)
@@ -47,7 +47,7 @@ class SearchItemTableViewController: UIViewController {
     var debounceTimer: Timer?
     
     weak var addFoodDelegate: AddFoodDetailViewControllerDelegate?
-    weak var quickAddDelegate: QuickAddViewControllerDelegate?
+    weak var quickAddDelegate: QuickAddItemControllerDelegate?
     weak var resultDelegate: ResultTableViewCellDelegate?
 
     var scannerAvailable: Bool {
@@ -105,7 +105,7 @@ class SearchItemTableViewController: UIViewController {
         let searchTabView = SearchTabView(visibleTabs: visibleTabs)
         searchTabView.translatesAutoresizingMaskIntoConstraints = false
         searchTabView.delegate = self
-        searchButtonRowView.delegate = self
+//        searchButtonRowView.delegate = self
         searchButtonRowView.translatesAutoresizingMaskIntoConstraints = false
         
         view.addSubview(searchTabView)
@@ -148,37 +148,37 @@ class SearchItemTableViewController: UIViewController {
         
     }
 
-    func didTapBarcodeButton() {
-        guard scannerAvailable else {
-            // TODO: Show alert
-            return
-        }
-        // works: ean13
-        //fails: ean8 (doesn
-        let scannerViewController = DataScannerViewController(
-            recognizedDataTypes: [.barcode()],
-            isHighFrameRateTrackingEnabled: false,
-            isHighlightingEnabled: true)
-        
-        scannerViewController.delegate = self
-        try? scannerViewController.startScanning()
-        present(scannerViewController, animated: true) {
-            // Add overlay after presentation
-            let overlay = ScannerOverlayView()
-            overlay.isUserInteractionEnabled = false
-            overlay.backgroundColor = .clear
-            overlay.translatesAutoresizingMaskIntoConstraints = false
-
-            scannerViewController.view.addSubview(overlay)
-            
-            NSLayoutConstraint.activate([
-                overlay.topAnchor.constraint(equalTo: scannerViewController.view.topAnchor),
-                overlay.bottomAnchor.constraint(equalTo: scannerViewController.view.bottomAnchor),
-                overlay.leadingAnchor.constraint(equalTo: scannerViewController.view.leadingAnchor),
-                overlay.trailingAnchor.constraint(equalTo: scannerViewController.view.trailingAnchor)
-            ])
-        }
-    }
+//    func didTapBarcodeButton() {
+//        guard scannerAvailable else {
+//            // TODO: Show alert
+//            return
+//        }
+//        // works: ean13
+//        //fails: ean8 (doesn
+//        let scannerViewController = DataScannerViewController(
+//            recognizedDataTypes: [.barcode()],
+//            isHighFrameRateTrackingEnabled: false,
+//            isHighlightingEnabled: true)
+//        
+//        scannerViewController.delegate = self
+//        try? scannerViewController.startScanning()
+//        present(scannerViewController, animated: true) {
+//            // Add overlay after presentation
+//            let overlay = ScannerOverlayView()
+//            overlay.isUserInteractionEnabled = false
+//            overlay.backgroundColor = .clear
+//            overlay.translatesAutoresizingMaskIntoConstraints = false
+//
+//            scannerViewController.view.addSubview(overlay)
+//            
+//            NSLayoutConstraint.activate([
+//                overlay.topAnchor.constraint(equalTo: scannerViewController.view.topAnchor),
+//                overlay.bottomAnchor.constraint(equalTo: scannerViewController.view.bottomAnchor),
+//                overlay.leadingAnchor.constraint(equalTo: scannerViewController.view.leadingAnchor),
+//                overlay.trailingAnchor.constraint(equalTo: scannerViewController.view.trailingAnchor)
+//            ])
+//        }
+//    }
     
     func didTapQuickAddButton() -> UIAction {
         return UIAction { [self] _ in
@@ -210,6 +210,39 @@ class SearchItemTableViewController: UIViewController {
         
         self.contentUnavailableView.isHidden = !(self.fetchedResultsController.fetchedObjects?.isEmpty ?? true)
     }
+
+    func dataScanner(_ dataScanner: DataScannerViewController, becameUnavailableWithError error: DataScannerViewController.ScanningUnavailable) {
+        // Implement this delegate method to disable or remove the data-scanning controls in your interface.
+        // For example, the scanner calls this method when users tap Don’t Allow the first time the system prompt appears, as described in Provide a reason for using the camera.
+        navigationItem.rightBarButtonItem?.isEnabled = scannerAvailable
+    }
+    
+    func dataScanner(_ dataScanner: DataScannerViewController, didAdd addedItems: [RecognizedItem], allItems: [RecognizedItem]) {
+        guard let item = addedItems.first else { return }
+        
+        dataScanner.stopScanning()
+        
+        if case .barcode(let barcode) = item {
+            guard var barcodeID = barcode.payloadStringValue else { return }
+            // Convert from EDA-13 (13 digits) to UPC (12 digits)
+            if barcodeID.first == "0" {
+                barcodeID.removeFirst()
+            }
+            handleBarcodeScan(barcodeID: barcodeID)
+        }
+    }
+    
+    func handleBarcodeScan(barcodeID: String) {
+        // overridden in subclass
+    }
+    
+    func showFoodNotFoundAlert(id: String) {
+//        "This item is not in the database.\n\(id)"
+        let alert = UIAlertController(title: "Item not found", message: "This item is not in the database. Please try using the search bar to find a similar product.\n\(id)", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Got it!", style: .cancel, handler: nil))
+        self.present(alert, animated: true, completion: nil)
+    }
+    
 }
 
 extension SearchItemTableViewController: UITableViewDataSource {
@@ -355,12 +388,6 @@ extension SearchItemTableViewController: UISearchBarDelegate {
     
 }
 
-//extension SearchItemTableViewController: SearchTitleViewDelegate {
-//    func searchTitleView(_ sender: SearchTitleView, didSelectMeal meal: Meal) {
-////        self.meal = meal
-//    }
-//}
-
 extension SearchItemTableViewController: HistoryTableViewCellDelegate {
     func historyTableViewCell(_ cell: HistoryTableViewCell, didSelectDeleteButton: Bool) {
 //        guard let indexPath = tableView.indexPath(for: cell) else { return }
@@ -369,72 +396,6 @@ extension SearchItemTableViewController: HistoryTableViewCellDelegate {
 //        CoreDataStack.shared.saveContext()
     }
 }
-
-extension SearchItemTableViewController: DataScannerViewControllerDelegate {
-    func dataScanner(_ dataScanner: DataScannerViewController, becameUnavailableWithError error: DataScannerViewController.ScanningUnavailable) {
-        // Implement this delegate method to disable or remove the data-scanning controls in your interface.
-        // For example, the scanner calls this method when users tap Don’t Allow the first time the system prompt appears, as described in Provide a reason for using the camera.
-        navigationItem.rightBarButtonItem?.isEnabled = scannerAvailable
-    }
-    
-    func dataScanner(_ dataScanner: DataScannerViewController, didAdd addedItems: [RecognizedItem], allItems: [RecognizedItem]) {
-        guard let item = addedItems.first else { return }
-        
-        dataScanner.stopScanning()
-        
-        if case .barcode(let barcode) = item {
-            searchTask?.cancel()
-            searchTask = Task {
-                guard var barcodeID = barcode.payloadStringValue else { return }
-                // Convert from EDA-13 (13 digits) to UPC (12 digits)
-                if barcodeID.first == "0" {
-                    barcodeID.removeFirst()
-                }
-                print("barcode", barcodeID)
-                guard let food = try? await foodService.getFoods(query: barcodeID, dataTypes: [.branded], pageSize: 1, pageNumber: 1).foods.first
-                else {
-                    let generator = UIImpactFeedbackGenerator(style: .medium)
-                    generator.impactOccurred()
-                    dismiss(animated: true)
-                    showFoodNotFoundAlert(id: barcodeID)
-                    return
-                }
-                
-                let generator = UIImpactFeedbackGenerator(style: .medium)
-                generator.impactOccurred()
-                
-                let addFoodDetailViewController = AddFoodDetailViewController(fdcFood: food, userProfile: userProfile, foodService: foodService)
-                addFoodDetailViewController.delegate = addFoodDelegate
-//                addFoodDetailViewController.delegate = delegate
-//                foodDetailViewController.delegate = delegate
-//                foodDetailViewController.historyDelegate = self
-                
-                // Only 1 view controlelr can be presented at once. Dismiss the barcode scanning view
-                dismiss(animated: true)
-                present(UINavigationController(rootViewController: addFoodDetailViewController), animated: true)
-            }
-        }
-    }
-    
-    func showFoodNotFoundAlert(id: String) {
-//        "This item is not in the database.\n\(id)"
-        let alert = UIAlertController(title: "Item not found", message: "This item is not in the database. Please try using the search bar to find a similar product.\n\(id)", preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "Got it!", style: .cancel, handler: nil))
-        self.present(alert, animated: true, completion: nil)
-    }
-}
-
-//extension SearchItemTableViewController: DiaryViewControllerDelegate {
-//    func diaryViewController(_ viewController: DiaryViewController, mealPlanChanged mealPlan: MealPlan) {
-////        guard let meal = mealPlan.meals.first else { return }
-////        self.meal = meal
-////
-////        let titleView = SearchTitleView(selectedMeal: meal, meals: mealPlan.meals)
-////        titleView.delegate = self
-////        navigationItem.titleView = titleView
-//    }
-//    
-//}
 
 extension SearchItemTableViewController: SearchTabViewDelegate {
     
@@ -486,37 +447,14 @@ extension SearchItemTableViewController: SearchTabViewDelegate {
     }
 }
 
-extension SearchItemTableViewController: SearchButtonRowViewDelegate {
-    func searchButtonRowView(_ sender: SearchButtonRowView, didTapButton type: SearchButtonRowView.SearchButtonType) {
-        // TODO: Maybe in future, can make it update diary
-        switch type {
-        case .barcode:
-            print("tap barcode")
-            didTapBarcodeButton()
-        case .quickAdd:
-            let quickAddViewController = QuickAddFoodViewController()  // creates food in main context, does not updte diary
-            quickAddViewController.delegate = self
-            present(UINavigationController(rootViewController: quickAddViewController), animated: true)
-            return
-        case .addRecipe:
-            let createRecipeViewController = CreateRecipeViewController(userProfile: userProfile)  // creates food in main context, does not updte diary
-            present(UINavigationController(rootViewController: createRecipeViewController), animated: true)
-        case .addFood:
-            let createFoodViewController = CreateFoodViewController()  // creates food in main context, does not updte diary
-            createFoodViewController.delegate = self
-            present(UINavigationController(rootViewController: createFoodViewController), animated: true)
-        }
-    }
-}
-
-extension SearchItemTableViewController: CreateFoodViewControllerDelegate {
-    func createFoodViewController(_ viewController: CreateFoodViewController, didCreateFood foodEntry: FoodEntry) {
+extension SearchItemTableViewController: CreateItemViewControllerDelegate {
+    func createItemViewController(_ viewController: CreateItemViewController, didCreateFood foodEntry: FoodEntry) {
         addFoodDelegate?.addFoodDetailViewController(self, didAddFood: foodEntry)
     }
 }
 
-extension SearchItemTableViewController: QuickAddViewControllerDelegate {
-    func quickAddViewController(_ viewController: QuickAddFoodViewController, didAddFoodEntry foodEntry: FoodEntry) {
+extension SearchItemTableViewController: QuickAddItemControllerDelegate {
+    func quickAddItemViewController(_ viewController: QuickAddItemViewController, didAddFoodEntry foodEntry: FoodEntry) {
         addFoodDelegate?.addFoodDetailViewController(self, didAddFood: foodEntry)
     }
 }

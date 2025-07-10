@@ -1,0 +1,201 @@
+//
+//  QuickAddTableViewController.swift
+//  FoodApp
+//
+//  Created by Timmy Nguyen on 4/3/24.
+//
+
+import UIKit
+import CoreData
+
+protocol QuickAddItemControllerDelegate: AnyObject {
+    func quickAddItemViewController(_ viewController: QuickAddItemViewController, didAddFoodEntry foodEntry: FoodEntry)
+}
+
+class QuickAddItemViewController: UIViewController {
+    
+    let tableView: UITableView = {
+        let tableView = UITableView(frame: .zero, style: .insetGrouped)
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+        return tableView
+    }()
+    
+    lazy var foodEntry: FoodEntry = {
+        var foodEntry = FoodEntry(context: context)
+        foodEntry.quantity = 1
+        foodEntry.gramWeight = nil
+        foodEntry.amount = 1
+        foodEntry.modifier = "serving"
+        foodEntry.portionId = 0
+        foodEntry.isCustom = true
+        foodEntry.isRecipe = false
+        
+        let foodInfo = FoodInfo(context: context)
+        foodInfo.fdcId = Int64.random(in: Int64.min..<0)
+        foodInfo.brandName_ = "Quick Add"
+        foodEntry.foodInfo = foodInfo
+        
+        for nutrientId in NutrientId.allCases {
+            let foodInfoNutrient = FoodInfoNutrient(context: context)
+            foodInfoNutrient.nutrientId = nutrientId
+            foodInfo.addToNutrients_(foodInfoNutrient)
+        }
+        
+        let foodPortion = FoodInfoPortion(context: context)
+        foodPortion.id = 0
+        foodPortion.gramWeight = nil
+        foodPortion.amount = 1
+        foodPortion.modifier = "serving"
+        foodPortion.foodInfo = foodInfo
+        
+        return foodEntry
+    }()
+    
+    var context: NSManagedObjectContext
+    
+    init(context: NSManagedObjectContext) {
+        self.context = context
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    
+    let nutrientIds: [NutrientId] = [.calories, .carbs, .protein, .fatTotal]
+    
+    let foodService = FoodService()
+    weak var delegate: QuickAddItemControllerDelegate?
+//    weak var addFoodDelegate: AddFoodDetailViewControllerDelegate?
+    
+    lazy var saveButton: UIBarButtonItem = {
+        let button = UIBarButtonItem(title: "Save", style: .plain, target: self, action: nil)
+        button.isEnabled = false
+        return button
+    }()
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        tableView.register(TextFieldInputTableViewCell.self, forCellReuseIdentifier: TextFieldInputTableViewCell.reuseIdentifier)
+        tableView.register(NutritionTextFieldTableViewCell.self, forCellReuseIdentifier: NutritionTextFieldTableViewCell.reuseIdentifier)
+        navigationItem.title = "Quick Add"
+        navigationItem.leftBarButtonItem = UIBarButtonItem(systemItem: .cancel, primaryAction: didTapCancelButton())
+        navigationItem.rightBarButtonItem = saveButton
+        tableView.dataSource = self
+        view.addSubview(tableView)
+        
+        NSLayoutConstraint.activate([
+            tableView.topAnchor.constraint(equalTo: view.topAnchor),
+            tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+        ])
+        
+        updateUI()
+    }
+    
+    func didTapCancelButton() -> UIAction {
+        return UIAction { _ in
+            self.dismiss(animated: true)
+        }
+    }
+    
+    
+//    func didTapAddButton() -> UIAction {
+//        return UIAction { [self] _ in
+//            let nutrients = foodEntry.foodInfo?.nutrients ?? []
+//            // fill in nil values
+//            for nutrient in nutrients {
+//                if nutrient.value == nil {
+//                    nutrient.value = 0
+//                }
+//            }
+//            
+//            do {
+//                if let fdcFood = self.foodEntry.convertToFDCFood() {
+//                    self.foodService.addHistoryIfNeeded(fdcFood: fdcFood, context: self.childContext)
+//                }
+//                
+//                try self.childContext.save()
+//                CoreDataStack.shared.saveContext()
+//                delegate?.quickAddItemViewController(self, didAddFoodEntry: foodEntry)
+//                addFoodDelegate?.addFoodDetailViewController(self, didAddFood: foodEntry)
+//                self.dismiss(animated: true)
+//            } catch {
+//                print("Error quick add: \(error)")
+//            }
+//        }
+//    }
+//    
+    func updateUI() {
+        let shouldEnableAddButton = foodEntry.foodInfo?.name != "" && foodEntry.foodInfo?.nutrients[.calories]?.value != nil
+        navigationItem.rightBarButtonItem?.isEnabled = shouldEnableAddButton
+    }
+}
+
+extension QuickAddItemViewController: UITableViewDataSource {
+    
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return 1
+    }
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 5
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        if indexPath.row == 0 {
+            let cell = tableView.dequeueReusableCell(withIdentifier: TextFieldInputTableViewCell.reuseIdentifier, for: indexPath) as! TextFieldInputTableViewCell
+            cell.update(title: "Name", valueText: foodEntry.foodInfo?.name_, placeholderText: "Required", unit: "")
+            cell.delegate = self
+            cell.selectionStyle = .none
+            return cell
+        } else {
+            let cell = tableView.dequeueReusableCell(withIdentifier: NutritionTextFieldTableViewCell.reuseIdentifier, for: indexPath) as! NutritionTextFieldTableViewCell
+            
+            let nutrientId = nutrientIds[indexPath.row - 1]
+            cell.update(
+                title: nutrientId.description,
+                unit: nutrientId.unitName,
+                value: foodEntry.foodInfo?.nutrients[nutrientId]?.value,
+                placeholder: nutrientId.isRequired ? "Required" : "Optional") { valueText in
+                    guard let valueText, let value = Double(valueText) else {
+                        self.foodEntry.foodInfo?.nutrients[nutrientId]?.value = nil
+                        self.updateUI()
+                        return
+                    }
+                    
+                    self.foodEntry.foodInfo?.nutrients[nutrientId]?.value = value
+                    self.updateUI()
+                }
+            cell.selectionStyle = .none
+            return cell
+        }
+    }
+}
+
+extension QuickAddItemViewController: QuickAddTableViewCellDelegate {
+    func quickAddTableViewCell(_ cell: QuickAddTableViewCell, textFieldValueChanged text: String?) {
+        guard let indexPath = tableView.indexPath(for: cell) else { return }
+        if indexPath == IndexPath(row: 0, section: 0) {
+            foodEntry.foodInfo?.name_ = text
+        } else {
+            let nutrientId = nutrientIds[indexPath.row - 1]
+            if let text, let nutrientAmount = Double(text) {
+                foodEntry.foodInfo?.nutrients[nutrientId]?.value = nutrientAmount
+            } else {
+                foodEntry.foodInfo?.nutrients[nutrientId]?.value = nil
+            }
+        }
+        updateUI()
+    }
+    
+}
+
+extension QuickAddItemViewController: TextFieldInputTableViewCellDelegate {
+    func textFieldInputTableViewCell(_ sender: TextFieldInputTableViewCell, textDidChange text: String?) {
+        foodEntry.foodInfo?.name_ = text
+        updateUI()
+    }
+}

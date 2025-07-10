@@ -1,5 +1,5 @@
 //
-//  QuickAddFoodViewController.swift
+//  QuickAddIngredientViewController.swift
 //  FoodApp
 //
 //  Created by Timmy Nguyen on 7/10/25.
@@ -7,16 +7,17 @@
 
 import UIKit
 
-class QuickAddFoodViewController: QuickAddItemViewController {
+class QuickAddIngredientViewController: QuickAddItemViewController {
+
+    let recipeEntry: FoodEntry
     
-    var meal: Meal
     weak var addFoodDelegate: AddFoodDetailViewControllerDelegate?
     
-    init(meal: Meal) {
-        self.meal = meal
-        super.init(context: CoreDataStack.shared.context)
-        foodEntry.index = Int16(meal.foodEntries.count)
-        foodEntry.meal = meal
+    init(recipeEntry: FoodEntry) {
+        self.recipeEntry = recipeEntry
+        super.init(context: recipeEntry.managedObjectContext!)
+        foodEntry.index = Int16(recipeEntry.ingredients.count)
+        foodEntry.parent = recipeEntry
     }
     
     @MainActor required init?(coder: NSCoder) {

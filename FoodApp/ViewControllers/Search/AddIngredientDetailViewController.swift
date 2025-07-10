@@ -8,10 +8,10 @@
 import UIKit
 import CoreData
 
-class AddIngredientViewController: FoodDetailTableViewController {
+class AddIngredientDetailViewController: FoodDetailTableViewController {
     let recipeEntry: FoodEntry
 
-    weak var delegate: AddFoodDetailViewControllerDelegate?
+    weak var addFoodDelegate: AddFoodDetailViewControllerDelegate?
     
     init(recipeEntry: FoodEntry, foodEntry: FoodEntry?, fdcFood: FoodItem, userProfile: UserProfile, foodService: FoodService) {
         self.recipeEntry = recipeEntry
@@ -35,13 +35,16 @@ class AddIngredientViewController: FoodDetailTableViewController {
                 print("timmy tap add ingredient button")
                 guard let recipeContext: NSManagedObjectContext = recipeEntry.managedObjectContext else { return }
                 
-                let ingredientEntry = try foodService.addFood(fdcFood, foodEntry: foodEntry, with: fdcFood.selectedFoodPortion, quantity: fdcFood.quantity, to: meal, context: recipeContext)   // add to recipe box
+                let ingredientEntry = try foodService.addFood(fdcFood, foodEntry: foodEntry, with: fdcFood.selectedFoodPortion, quantity: fdcFood.quantity, to: nil, context: recipeContext)   // add to recipe box
+                ingredientEntry.index = Int16(recipeEntry.ingredients.count)   // setting relationship does change size of relationship
+                ingredientEntry.parent = recipeEntry
+                recipeEntry.addToIngredients_(ingredientEntry)  // maybe unnecessarry
                 
                 // add to history in main
                 foodService.addHistoryIfNeeded(fdcFood: fdcFood, context: CoreDataStack.shared.context)
-                CoreDataStack.shared.saveContext()
+                CoreDataStack.shared.saveContext() // save history
                 
-                self.delegate?.addFoodDetailViewController(self, didAddFood: ingredientEntry)
+                self.addFoodDelegate?.addFoodDetailViewController(self, didAddFood: ingredientEntry)
             } catch {
                 print("Error adding food: \(error)")
             }

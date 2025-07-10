@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import VisionKit
 
 class SearchFoodViewController: SearchItemTableViewController {
     
@@ -24,6 +25,7 @@ class SearchFoodViewController: SearchItemTableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        searchButtonRowView.delegate = self
 
         let foodResultsViewController = FoodResultsViewController(meal: meal, foodService: foodService, userProfile: userProfile)
         foodResultsViewController.addFoodDelegate = addFoodDelegate
@@ -46,6 +48,66 @@ class SearchFoodViewController: SearchItemTableViewController {
     
     @MainActor required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+
+    override func handleBarcodeScan(barcodeID: String) {
+        searchTask?.cancel()
+        searchTask = Task {
+            print("barcode", barcodeID)
+            guard let food = try? await foodService.getFoods(query: barcodeID, dataTypes: [.branded], pageSize: 1, pageNumber: 1).foods.first
+            else {
+                let generator = UIImpactFeedbackGenerator(style: .medium)
+                generator.impactOccurred()
+                dismiss(animated: true)
+                showFoodNotFoundAlert(id: barcodeID)
+                return
+            }
+
+            let generator = UIImpactFeedbackGenerator(style: .medium)
+            generator.impactOccurred()
+            // TODO: Pass meal
+            let addFoodDetailViewController = AddFoodDetailViewController(fdcFood: food, meal: meal, userProfile: userProfile, foodService: foodService)
+            addFoodDetailViewController.delegate = addFoodDelegate
+    //                addFoodDetailViewController.delegate = delegate
+    //                foodDetailViewController.delegate = delegate
+    //                foodDetailViewController.historyDelegate = self
+
+            // Only 1 view controlelr can be presented at once. Dismiss the barcode scanning view
+            dismiss(animated: true)
+            present(UINavigationController(rootViewController: addFoodDetailViewController), animated: true)
+        }
+    }
+    
+    func didTapBarcodeButton() {
+        guard scannerAvailable else {
+            // TODO: Show alert
+            return
+        }
+        // works: ean13
+        //fails: ean8 (doesn
+        let scannerViewController = DataScannerViewController(
+            recognizedDataTypes: [.barcode()],
+            isHighFrameRateTrackingEnabled: false,
+            isHighlightingEnabled: true)
+        
+        scannerViewController.delegate = self
+        try? scannerViewController.startScanning()
+        present(scannerViewController, animated: true) {
+            // Add overlay after presentation
+            let overlay = ScannerOverlayView()
+            overlay.isUserInteractionEnabled = false
+            overlay.backgroundColor = .clear
+            overlay.translatesAutoresizingMaskIntoConstraints = false
+
+            scannerViewController.view.addSubview(overlay)
+            
+            NSLayoutConstraint.activate([
+                overlay.topAnchor.constraint(equalTo: scannerViewController.view.topAnchor),
+                overlay.bottomAnchor.constraint(equalTo: scannerViewController.view.bottomAnchor),
+                overlay.leadingAnchor.constraint(equalTo: scannerViewController.view.leadingAnchor),
+                overlay.trailingAnchor.constraint(equalTo: scannerViewController.view.trailingAnchor)
+            ])
+        }
     }
 }
 
@@ -81,4 +143,30 @@ extension SearchFoodViewController: DiaryViewControllerDelegate {
         navigationItem.titleView = titleView
     }
     
+}
+
+extension SearchFoodViewController: SearchButtonRowViewDelegate {
+    func searchButtonRowView(_ sender: SearchButtonRowView, didTapButton type: SearchButtonRowView.SearchButtonType) {
+        // TODO: Maybe in future, can make it update diary
+        switch type {
+        case .barcode:
+            didTapBarcodeButton()
+        case .quickAdd:
+            guard let meal else { return }
+            let quickAddFoodViewController = QuickAddFoodViewController(meal: meal)
+            quickAddFoodViewController.addFoodDelegate = addFoodDelegate
+            present(UINavigationController(rootViewController: quickAddFoodViewController), animated: true)
+            return
+        case .addRecipe:
+            guard let meal else { return }
+            let createRecipeViewController = CreateRecipeViewController(meal: meal, userProfile: userProfile)
+            createRecipeViewController.addFoodDelegate = addFoodDelegate
+            present(UINavigationController(rootViewController: createRecipeViewController), animated: true)
+        case .addFood:
+            guard let meal else { return }
+            let createFoodViewController = CreateFoodViewController(meal: meal)
+            createFoodViewController.addFoodDelegate = addFoodDelegate
+            present(UINavigationController(rootViewController: createFoodViewController), animated: true)
+        }
+    }
 }

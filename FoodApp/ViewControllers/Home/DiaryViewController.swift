@@ -294,6 +294,7 @@ extension DiaryViewController: UITableViewDataSource {
         if indexPath.section == 0 {
             let cell = tableView.dequeueReusableCell(withIdentifier: CaloriesConsumedView.reuseIdentifier, for: indexPath)
                         
+            // TODO: 1 green line is sorta clean
             cell.contentConfiguration = UIHostingConfiguration {
                 CaloriesConsumedView(mealPlan: mealPlan)
                     .environment(\.managedObjectContext, CoreDataStack.shared.context)
@@ -488,21 +489,19 @@ extension DiaryViewController: UITableViewDelegate {
 
 extension DiaryViewController: AddFoodDetailViewControllerDelegate {
     func addFoodDetailViewController(_ tableViewController: UIViewController, didAddFood foodEntry: FoodEntry) {
-        do {
-            try foodEntry.managedObjectContext?.save()
-            CoreDataStack.shared.saveContext()
-            NotificationCenter.default.post(name: .mealPlanUpdated, object: nil, userInfo: nil)
-        } catch {
-            print("Error saving food: \(error)")
-        }
+        NotificationCenter.default.post(name: .mealPlanUpdated, object: nil, userInfo: nil)
         
+        print("timmy did add food")
+
         guard let meal = foodEntry.meal,
               // Have to compare objectID (doing $0 == meal fails across diff context, need to use objectID)
               let section = mealPlan.meals.firstIndex(where: { $0.objectID == meal.objectID })
         else { return }
+        
         let indexPath = IndexPath(row: Int(foodEntry.index), section: section + 2)
         tableView.insertRows(at: [indexPath], with: .automatic)
         reloadTableViewHeader(section: section + 2)
+        tableView.reloadSections(IndexSet([0, 1]), with: .automatic)
     }
 }
 
@@ -621,8 +620,8 @@ extension DiaryViewController: ReorderMealTableViewControllerDelegate {
     }
 }
 
-extension DiaryViewController: QuickAddViewControllerDelegate {
-    func quickAddViewController(_ viewController: QuickAddFoodViewController, didAddFoodEntry: FoodEntry) {
+extension DiaryViewController: QuickAddItemControllerDelegate {
+    func quickAddItemViewController(_ viewController: QuickAddItemViewController, didAddFoodEntry: FoodEntry) {
         updateUI()
     }
 }
