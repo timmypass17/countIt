@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import CoreData
 
 class IngredientsResultViewController: ResultsPaginatedViewController {
 
@@ -22,10 +23,29 @@ class IngredientsResultViewController: ResultsPaginatedViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
     }
     
+    override func resultTableViewCell(_ cell: ResultTableViewCell, didTapAddButton: Bool) {
+        guard let indexPath = tableView.indexPath(for: cell) else { return }
+
+        do {
+            guard let recipeContext: NSManagedObjectContext = recipeEntry.managedObjectContext else { return }
+            let fdcFood = foodResponse.foods[indexPath.row]
+            
+            let ingredientEntry = try foodService.addFood(fdcFood, with: fdcFood.selectedFoodPortion, quantity: fdcFood.quantity , context: recipeContext)   // add to recipe box
+            ingredientEntry.index = Int16(recipeEntry.ingredients.count)   // setting relationship does change size of relationship
+            ingredientEntry.parent = recipeEntry
+            recipeEntry.addToIngredients_(ingredientEntry)  // maybe unnecessarry
+            
+            // add to history in main
+            foodService.addHistoryIfNeeded(fdcFood: fdcFood, context: CoreDataStack.shared.context)
+            CoreDataStack.shared.saveContext() // save history
+            
+            self.addFoodDelegate?.addFoodDetailViewController(self, didAddFood: ingredientEntry)
+        } catch {
+            print("Error adding food: \(error)")
+        }
+    }
 }
 
 extension IngredientsResultViewController {

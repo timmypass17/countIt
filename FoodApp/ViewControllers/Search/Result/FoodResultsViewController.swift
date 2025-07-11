@@ -40,4 +40,19 @@ class FoodResultsViewController: ResultsPaginatedViewController {
         present(UINavigationController(rootViewController: addFoodDetailViewController), animated: true)
     }
     
+    override func resultTableViewCell(_ cell: ResultTableViewCell, didTapAddButton: Bool) {
+        guard let indexPath = tableView.indexPath(for: cell) else { return }
+        
+        do {
+            let fdcFood = foodResponse.foods[indexPath.row]
+            let foodEntry = try foodService.addFood(fdcFood,  with: fdcFood.selectedFoodPortion, quantity: fdcFood.quantity, to: meal, context: CoreDataStack.shared.context)
+            foodService.addHistoryIfNeeded(fdcFood: fdcFood, context: CoreDataStack.shared.context)
+            
+            CoreDataStack.shared.saveContext()
+            addFoodDelegate?.addFoodDetailViewController(self, didAddFood: foodEntry)
+        } catch {
+            print("Error: \(error)")
+        }
+        
+    }
 }

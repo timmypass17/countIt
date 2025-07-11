@@ -9,7 +9,7 @@ import UIKit
 
 // Don’t need explicit DispatchQueue.main.async calls, updates UI on main thread (if u try to update ui from background thread like making network request, app can crash)
 @MainActor
-class ResultsPaginatedViewController: UIViewController {
+class ResultsPaginatedViewController: UIViewController, ResultTableViewCellDelegate {
     
     let tableView: UITableView = {
         let tableView = UITableView(frame: .zero, style: .insetGrouped)
@@ -190,6 +190,12 @@ class ResultsPaginatedViewController: UIViewController {
             self.dismiss(animated: true, completion: nil)
         }
     }
+    
+    // MARK: - ResultTableViewCellDelegate
+
+    func resultTableViewCell(_ cell: ResultTableViewCell, didTapAddButton: Bool) {
+
+    }
 }
 
 // MARK: - UITableViewDataSource
@@ -216,6 +222,7 @@ extension ResultsPaginatedViewController: UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(withIdentifier: ResultTableViewCell.reuseIdentifier, for: indexPath) as! ResultTableViewCell
         let item = foodResponse.foods[indexPath.row]
         cell.update(with: item)
+        cell.delegate = self
         return cell
     }
     
@@ -228,6 +235,7 @@ extension ResultsPaginatedViewController: UITableViewDataSource {
     }
     
 }
+
 
 extension ResultsPaginatedViewController: UITableViewDelegate {
 //    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {

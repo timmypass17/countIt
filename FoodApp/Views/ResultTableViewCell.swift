@@ -12,8 +12,11 @@ protocol ResultTableViewCellDelegate: AnyObject {
 }
 
 class ResultTableViewCell: UITableViewCell {
-    static let reuseIdentifier = "ResultCell"
-
+    
+    class var reuseIdentifier: String {
+        return "ResultTableViewCell"
+    }
+    
     let titleLabel: UILabel = {
         let label = UILabel()
         label.numberOfLines = 1
@@ -21,9 +24,6 @@ class ResultTableViewCell: UITableViewCell {
         label.font = UIFont.boldSystemFont(ofSize: 16.0)
         label.setContentHuggingPriority(.required, for: .horizontal)    // hug its content to never stretch
         label.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)    // should shrink
-//            .required (1000) on hugging means “do not grow beyond intrinsic size.”
-//            .defaultLow (250) on titleLabel’s compression resistance means “if we must squeeze, let me truncate first.”
-//            .required on the image view’s compression resistance means “never shrink the image”
         return label
     }()
     
@@ -46,7 +46,9 @@ class ResultTableViewCell: UITableViewCell {
     
     lazy var plusButton: UIButton = {
         let button = UIButton(type: .custom)
-        button.setImage(UIImage(systemName: "plus"), for: .normal)
+        let image = UIImage(systemName: "plus")
+        button.setImage(image, for: .normal)
+        button.tintColor = .secondaryLabel
         button.setContentHuggingPriority(.required, for: .horizontal)
         button.setContentCompressionResistancePriority(.required, for: .horizontal)
         button.addAction(didTapPlusButton(), for: .touchUpInside)
@@ -116,19 +118,42 @@ class ResultTableViewCell: UITableViewCell {
     }
     
     func didTapPlusButton() -> UIAction {
-        return UIAction { [self] _ in
+        return UIAction { [weak self] _ in
+            guard let self else { return }
+
+            // Haptic feedback
+            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+
+            // Swap image to checkmark
+            UIView.transition(with: self.plusButton, duration: 0.2, options: .transitionCrossDissolve, animations: {
+                self.plusButton.setImage(UIImage(systemName: "checkmark.circle.fill"), for: .normal)
+                self.plusButton.tintColor = .white
+            })
+
+            // Grow big
+            UIView.animate(withDuration: 0.25, animations: {
+                self.plusButton.transform = CGAffineTransform(scaleX: 1.5, y: 1.5)
+            }, completion: { _ in
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { // pause for 0.5 seconds
+                    // Shrink back to original
+                    UIView.animate(withDuration: 0.25) {
+                        self.plusButton.transform = .identity
+                    } completion: { _ in
+                        UIView.transition(with: self.plusButton, duration: 0.15, options: .transitionCrossDissolve, animations: {
+                            self.plusButton.setImage(UIImage(systemName: "plus"), for: .normal)
+                            self.plusButton.tintColor = .secondaryLabel
+                        })
+                    }
+                    
+                    self.plusButton.isUserInteractionEnabled = true
+                }
+            })
+
+            // Disable button temporarily
+            self.plusButton.isUserInteractionEnabled = false
+
+            // Notify delegate
             delegate?.resultTableViewCell(self, didTapAddButton: true)
-//            if let meal {
-//                let foodEntry = CoreDataStack.shared.addFoodEntry(food, to: meal, servingSize: selectedFoodPortion, numberOfServings: 1, servingSizeUnit: food.servingSizeUnit ?? "g")
-//                delegate?.resultTableViewCell(self, didAddFoodEntry: foodEntry)
-//                
-//                if let food = foodEntry.food {
-//                    food.updatedAt = .now
-//                    historyDelegate?.resultTableViewCell(self, didUpdateHistoryWithFood: food)
-//                }
-//            }
-//            let generator = UIImpactFeedbackGenerator(style: .medium)
-//            generator.impactOccurred()
         }
     }
 }

@@ -94,8 +94,7 @@ class MealPlanDateView: UIView {
             selectedDate = Calendar.current.date(byAdding: .day, value: 1, to: selectedDate)!
             
             delegate?.mealPlanDateViewDelegate(self, datePickerValueChanged: selectedDate)
-            let generator = UIImpactFeedbackGenerator(style: .medium)
-            generator.impactOccurred()
+            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
     }
     

@@ -109,6 +109,23 @@ class SearchFoodViewController: SearchItemTableViewController {
             ])
         }
     }
+    
+    override func resultTableViewCell(_ cell: ResultTableViewCell, didTapAddButton: Bool) {
+        guard let indexPath = tableView.indexPath(for: cell) else { return }
+        
+        do {
+            let history = fetchedResultsController.object(at: indexPath)
+            guard let fdcFood =  history.foodEntry?.convertToFDCFood() else { return }
+
+            let foodEntry = try foodService.addFood(fdcFood,  with: fdcFood.selectedFoodPortion, quantity: fdcFood.quantity, to: meal, context: CoreDataStack.shared.context)
+            foodService.addHistoryIfNeeded(fdcFood: fdcFood, context: CoreDataStack.shared.context)
+            
+            CoreDataStack.shared.saveContext()
+            addFoodDelegate?.addFoodDetailViewController(self, didAddFood: foodEntry)
+        } catch {
+            print("Error: \(error)")
+        }
+    }
 }
 
 extension SearchFoodViewController {

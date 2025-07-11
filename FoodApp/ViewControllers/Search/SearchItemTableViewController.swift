@@ -9,7 +9,7 @@ import UIKit
 import VisionKit
 import CoreData
 
-class SearchItemTableViewController: UIViewController, DataScannerViewControllerDelegate {
+class SearchItemTableViewController: UIViewController, DataScannerViewControllerDelegate, ResultTableViewCellDelegate {
     
     let tableView: UITableView = {
         let tableView = UITableView(frame: .zero, style: .insetGrouped)
@@ -243,6 +243,10 @@ class SearchItemTableViewController: UIViewController, DataScannerViewController
         self.present(alert, animated: true, completion: nil)
     }
     
+    func resultTableViewCell(_ cell: ResultTableViewCell, didTapAddButton: Bool) {
+        // override
+    }
+    
 }
 
 extension SearchItemTableViewController: UITableViewDataSource {
@@ -263,10 +267,8 @@ extension SearchItemTableViewController: UITableViewDataSource {
         cell.delegate = self
         let history = fetchedResultsController.object(at: indexPath)
         cell.update(history: history)
-        cell.accessoryType = .disclosureIndicator
         return cell
     }
-    
 }
 
 extension SearchItemTableViewController: UITableViewDelegate {
@@ -386,15 +388,6 @@ extension SearchItemTableViewController: UISearchBarDelegate {
         searchBar.resignFirstResponder()
     }
     
-}
-
-extension SearchItemTableViewController: HistoryTableViewCellDelegate {
-    func historyTableViewCell(_ cell: HistoryTableViewCell, didSelectDeleteButton: Bool) {
-//        guard let indexPath = tableView.indexPath(for: cell) else { return }
-//        let history = fetchedResultsController.object(at: indexPath)
-//        CoreDataStack.shared.context.delete(history)
-//        CoreDataStack.shared.saveContext()
-    }
 }
 
 extension SearchItemTableViewController: SearchTabViewDelegate {
