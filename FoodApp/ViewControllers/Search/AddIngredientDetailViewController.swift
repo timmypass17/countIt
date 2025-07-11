@@ -24,7 +24,6 @@ class AddIngredientDetailViewController: FoodDetailTableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-//        print("timmy ingredients count: \(foodEntry?.ingredients.map { $0.foodInfo?.name ?? "" })")
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Add Ingredient", primaryAction: didTapAddButton())
     }
     
@@ -32,7 +31,6 @@ class AddIngredientDetailViewController: FoodDetailTableViewController {
     func didTapAddButton() -> UIAction {
         return UIAction { [self] _ in
             do {
-                print("timmy tap add ingredient button")
                 guard let recipeContext: NSManagedObjectContext = recipeEntry.managedObjectContext else { return }
                 
                 let ingredientEntry = try foodService.addFood(fdcFood, foodEntry: foodEntry, with: fdcFood.selectedFoodPortion, quantity: fdcFood.quantity, to: nil, context: recipeContext)   // add to recipe box

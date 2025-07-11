@@ -130,11 +130,10 @@ extension SearchIngredientViewController {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let history = fetchedResultsController.object(at: indexPath)
         guard let foodEntry = history.foodEntry,
-              var food = foodEntry.convertToFDCFood(),
-              let selectedFoodPortion = food.foodPortions.first(where: { $0.id == foodEntry.portionId })
+              var food = foodEntry.convertToFDCFood()
         else { return }
         
-        food.selectedFoodPortion = selectedFoodPortion
+        // Add from my collection
         let addIngredientDetailViewController = AddIngredientDetailViewController(recipeEntry: recipeEntry, foodEntry: foodEntry, fdcFood: food, userProfile: userProfile, foodService: foodService)
         addIngredientDetailViewController.addFoodDelegate = addFoodDelegate
         addIngredientDetailViewController.dismissDelegate = self

@@ -38,7 +38,6 @@ class AddFoodDetailViewController: FoodDetailTableViewController {
         return UIAction { [self] _ in
             do {
                 // Add food to meal
-                
                 let food = try foodService.addFood(fdcFood, foodEntry: foodEntry, with: fdcFood.selectedFoodPortion, quantity: fdcFood.quantity, to: meal, context: CoreDataStack.shared.context)
                 // Add to history
                 foodService.addHistoryIfNeeded(fdcFood: fdcFood, context: CoreDataStack.shared.context)

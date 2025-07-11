@@ -395,6 +395,7 @@ class FoodService: FoodServiceProtocol {
             }
         }
         
+        // Uses food entry to add ingredients
         if let foodEntry {
             let ingredients = foodEntry.ingredients
             for ingredient in ingredients {

@@ -147,47 +147,6 @@ class SearchItemTableViewController: UIViewController, DataScannerViewController
         updateFetchedResultsController(for: .all)
         
     }
-
-//    func didTapBarcodeButton() {
-//        guard scannerAvailable else {
-//            // TODO: Show alert
-//            return
-//        }
-//        // works: ean13
-//        //fails: ean8 (doesn
-//        let scannerViewController = DataScannerViewController(
-//            recognizedDataTypes: [.barcode()],
-//            isHighFrameRateTrackingEnabled: false,
-//            isHighlightingEnabled: true)
-//        
-//        scannerViewController.delegate = self
-//        try? scannerViewController.startScanning()
-//        present(scannerViewController, animated: true) {
-//            // Add overlay after presentation
-//            let overlay = ScannerOverlayView()
-//            overlay.isUserInteractionEnabled = false
-//            overlay.backgroundColor = .clear
-//            overlay.translatesAutoresizingMaskIntoConstraints = false
-//
-//            scannerViewController.view.addSubview(overlay)
-//            
-//            NSLayoutConstraint.activate([
-//                overlay.topAnchor.constraint(equalTo: scannerViewController.view.topAnchor),
-//                overlay.bottomAnchor.constraint(equalTo: scannerViewController.view.bottomAnchor),
-//                overlay.leadingAnchor.constraint(equalTo: scannerViewController.view.leadingAnchor),
-//                overlay.trailingAnchor.constraint(equalTo: scannerViewController.view.trailingAnchor)
-//            ])
-//        }
-//    }
-    
-    func didTapQuickAddButton() -> UIAction {
-        return UIAction { [self] _ in
-//            guard let meal else { return }
-//            let quickAddTableViewController = QuickAddTableViewController(meal: meal)
-//            quickAddTableViewController.delegate = quickAddDelegate
-//            present(UINavigationController(rootViewController: quickAddTableViewController), animated: true)
-        }
-    }
     
     func updateUnavailableView() {
         switch selectedTab {

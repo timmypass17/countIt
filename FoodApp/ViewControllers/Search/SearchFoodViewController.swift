@@ -53,7 +53,6 @@ class SearchFoodViewController: SearchItemTableViewController {
     override func handleBarcodeScan(barcodeID: String) {
         searchTask?.cancel()
         searchTask = Task {
-            print("barcode", barcodeID)
             guard let food = try? await foodService.getFoods(query: barcodeID, dataTypes: [.branded], pageSize: 1, pageNumber: 1).foods.first
             else {
                 let generator = UIImpactFeedbackGenerator(style: .medium)
@@ -65,13 +64,10 @@ class SearchFoodViewController: SearchItemTableViewController {
 
             let generator = UIImpactFeedbackGenerator(style: .medium)
             generator.impactOccurred()
-            // TODO: Pass meal
+
             let addFoodDetailViewController = AddFoodDetailViewController(fdcFood: food, meal: meal, userProfile: userProfile, foodService: foodService)
             addFoodDetailViewController.delegate = addFoodDelegate
-    //                addFoodDetailViewController.delegate = delegate
-    //                foodDetailViewController.delegate = delegate
-    //                foodDetailViewController.historyDelegate = self
-
+            
             // Only 1 view controlelr can be presented at once. Dismiss the barcode scanning view
             dismiss(animated: true)
             present(UINavigationController(rootViewController: addFoodDetailViewController), animated: true)
@@ -112,12 +108,23 @@ class SearchFoodViewController: SearchItemTableViewController {
     
     override func resultTableViewCell(_ cell: ResultTableViewCell, didTapAddButton: Bool) {
         guard let indexPath = tableView.indexPath(for: cell) else { return }
-        
+//
+//        do {
+//            // Add food to meal
+//            let food = try foodService.addFood(fdcFood, foodEntry: foodEntry, with: fdcFood.selectedFoodPortion, quantity: fdcFood.quantity, to: meal, context: CoreDataStack.shared.context)
+//            // Add to history
+//            foodService.addHistoryIfNeeded(fdcFood: fdcFood, context: CoreDataStack.shared.context)
+//            CoreDataStack.shared.saveContext()
+//            self.delegate?.addFoodDetailViewController(self, didAddFood: food)
+//        } catch {
+//            print("Error adding food: \(error)")
+//        }
+//        
         do {
             let history = fetchedResultsController.object(at: indexPath)
             guard let fdcFood =  history.foodEntry?.convertToFDCFood() else { return }
 
-            let foodEntry = try foodService.addFood(fdcFood,  with: fdcFood.selectedFoodPortion, quantity: fdcFood.quantity, to: meal, context: CoreDataStack.shared.context)
+            let foodEntry = try foodService.addFood(fdcFood, foodEntry: history.foodEntry,  with: fdcFood.selectedFoodPortion, quantity: fdcFood.quantity, to: meal, context: CoreDataStack.shared.context)
             foodService.addHistoryIfNeeded(fdcFood: fdcFood, context: CoreDataStack.shared.context)
             
             CoreDataStack.shared.saveContext()

@@ -64,13 +64,6 @@ class FoodDetailTableViewController: UITableViewController {
         self.userProfile = userProfile
         self.foodService = foodService
         
-//        self.fdcFood.quantity = numberOfServings
-//        if let selectedFoodPortion {
-//            self.fdcFood.selectedFoodPortion = selectedFoodPortion
-//        } else {
-//            self.fdcFood.selectedFoodPortion = fdcFood.foodPortions[fdcFood.foodPortions.count / 2]
-//        }
-        
         for nutrientId in NutrientId.macronutrients {
             let foodNutrient = fdcFood.foodNutrients[nutrientId] ?? FoodNutrient.empty(nutrientId)
             macronutrients.append(foodNutrient)
@@ -95,7 +88,6 @@ class FoodDetailTableViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-//        tableView.backgroundColor = .secondarySystemGroupedBackground
         tableView.backgroundColor = .background
         navigationItem.title = fdcFood.description
         navigationItem.leftBarButtonItem = UIBarButtonItem(systemItem: .cancel, primaryAction: cancelButtonTapped())
