@@ -101,33 +101,7 @@ class QuickAddItemViewController: UIViewController {
         }
     }
     
-    
-//    func didTapAddButton() -> UIAction {
-//        return UIAction { [self] _ in
-//            let nutrients = foodEntry.foodInfo?.nutrients ?? []
-//            // fill in nil values
-//            for nutrient in nutrients {
-//                if nutrient.value == nil {
-//                    nutrient.value = 0
-//                }
-//            }
-//            
-//            do {
-//                if let fdcFood = self.foodEntry.convertToFDCFood() {
-//                    self.foodService.addHistoryIfNeeded(fdcFood: fdcFood, context: self.childContext)
-//                }
-//                
-//                try self.childContext.save()
-//                CoreDataStack.shared.saveContext()
-//                delegate?.quickAddItemViewController(self, didAddFoodEntry: foodEntry)
-//                addFoodDelegate?.addFoodDetailViewController(self, didAddFood: foodEntry)
-//                self.dismiss(animated: true)
-//            } catch {
-//                print("Error quick add: \(error)")
-//            }
-//        }
-//    }
-//    
+
     func updateUI() {
         let shouldEnableAddButton = foodEntry.foodInfo?.name != "" && foodEntry.foodInfo?.nutrients[.calories]?.value != nil
         navigationItem.rightBarButtonItem?.isEnabled = shouldEnableAddButton
