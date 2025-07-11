@@ -8,7 +8,7 @@
 import UIKit
 import CoreData
 
-// TODO: Unsaved ingredients are unexepctly being saved if user discards recipe midway and saves something else later
+// TODO: Creating recipe and adding ingreideint using add food doesn't save history's ingredient properly
 class CreateRecipeViewController: UIViewController {
 
     let tableView: UITableView = {
@@ -109,17 +109,19 @@ class CreateRecipeViewController: UIViewController {
                 foodPortion.amount = self.recipeEntry.amount
                 foodPortion.modifier = self.recipeEntry.modifier
                 foodPortion.foodInfo = self.recipeEntry.foodInfo
-                
-                // We just adding to history, (does not log to any meals)
-                if let fdcRecipe = recipeEntry.convertToFDCFood() {
-                    self.foodService.addHistoryIfNeeded(fdcFood: fdcRecipe, context: CoreDataStack.shared.context)
-                }
                                 
                 try recipeContext.save()   // fully commit recipe context changes
                 CoreDataStack.shared.saveContext()
+                
+                // We just adding to history, (does not log to any meals)
+                if let fdcRecipe = recipeEntry.convertToFDCFood() {
+                    print("timmy ingredients: \(fdcRecipe.ingredients.map { $0.description })")
+                    self.foodService.addHistoryIfNeeded(fdcFood: fdcRecipe, context: CoreDataStack.shared.context)
+                    CoreDataStack.shared.saveContext()
+                }
+                addFoodDelegate?.addFoodDetailViewController(self, didAddFood: recipeEntry) // add to meal in diary
                 dismiss(animated: true)
                 
-                addFoodDelegate?.addFoodDetailViewController(self, didAddFood: recipeEntry)
             } catch {
                 print("Error saving food entry")
             }
@@ -295,6 +297,8 @@ extension CreateRecipeViewController: AddFoodDetailViewControllerDelegate {
         // existingObject doesn't work for some reason
         
         let indexPath = IndexPath(row: Int(ingredient.index), section: 1)
+        print("timmy ingredient index: \(ingredient.index)")
+        print("timmy ingredients: \(recipeEntry.ingredients.map { $0.foodInfo?.name })")
         tableView.insertRows(at: [indexPath], with: .automatic)
         self.updateSaveButton()
     }

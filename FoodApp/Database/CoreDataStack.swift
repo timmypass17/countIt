@@ -19,9 +19,9 @@ class CoreDataStack {
         return context
     }
     
-    func childContext() -> NSManagedObjectContext {
+    func childContext(parentContext: NSManagedObjectContext? = CoreDataStack.shared.context) -> NSManagedObjectContext {
         let childContext = NSManagedObjectContext(.mainQueue)
-        childContext.parent = context
+        childContext.parent = parentContext
         return childContext
     }
 

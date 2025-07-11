@@ -529,8 +529,9 @@ class FoodService: FoodServiceProtocol {
         foodEntryCopy.isCustom = fdcFood.fdcId < 0
         foodEntryCopy.isRecipe = fdcFood.ingredients.count > 0
         
-        // TODO: Copy ingredients
+        // Copy ingredients
         for (i, ingredient) in fdcFood.ingredients.enumerated() {
+            print("timmy history: \(ingredient.description)")
             let ingredientCopy = FoodEntry(context: context)
             ingredientCopy.amount = ingredient.selectedFoodPortion.amount
             ingredientCopy.gramWeight = ingredient.selectedFoodPortion.gramWeight
@@ -540,19 +541,21 @@ class FoodService: FoodServiceProtocol {
             ingredientCopy.quantity = Int16(ingredient.quantity)
             
             if let ingredientFoodInfo = getFoodInfo(fdcId: ingredient.fdcId, context: context) {
+                print("timmy history info 1: \(ingredientFoodInfo.name)")
                 ingredientCopy.foodInfo = ingredientFoodInfo
             } else {
-                let ingredientFoodInfo = createFoodInfo(fdcFood, context: context)
+                let ingredientFoodInfo = createFoodInfo(ingredient, context: context)
+                print("timmy history info 2: \(ingredientFoodInfo.name)")
                 ingredientCopy.foodInfo = ingredientFoodInfo
                 
                 // Add nutrients relationship to foodInfo
                 for nutrientId in NutrientId.allCases {
-                    let foodInfoNutrient = createFoodInfoNutrients(fdcFood, nutrientId: nutrientId, context: context)
+                    let foodInfoNutrient = createFoodInfoNutrients(ingredient, nutrientId: nutrientId, context: context)
                     ingredientFoodInfo.addToNutrients_(foodInfoNutrient)
                 }
                 
                 // Add portion relationship
-                for (index, fdcPortion) in fdcFood.foodPortions.enumerated() {
+                for (index, fdcPortion) in ingredient.foodPortions.enumerated() {
                     let portion = createFoodInfoPortion(fdcPortion, context: context)
                     ingredientFoodInfo.addToPortions_(portion)
                 }

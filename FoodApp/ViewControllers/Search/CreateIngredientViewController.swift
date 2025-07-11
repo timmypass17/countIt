@@ -18,10 +18,13 @@ class CreateIngredientViewController: CreateItemViewController {
     weak var addFoodDelegate: AddFoodDetailViewControllerDelegate?
     
     init(recipeEntry: FoodEntry) {
-        self.recipeEntry = recipeEntry
-        super.init(context: recipeEntry.managedObjectContext!)
-        foodEntry.index = Int16(recipeEntry.ingredients.count)
-        foodEntry.parent = recipeEntry
+        let childContext = CoreDataStack.shared.childContext(parentContext: recipeEntry.managedObjectContext)
+        let recipeEntryInChildContext = childContext.object(with: recipeEntry.objectID) as! FoodEntry
+        self.recipeEntry = recipeEntryInChildContext
+        super.init(childContext: childContext)
+        foodEntry.index = Int16(recipeEntryInChildContext.ingredients.count)
+        foodEntry.parent = recipeEntryInChildContext
+        recipeEntryInChildContext.addToIngredients_(foodEntry)
     }
     
     @MainActor required init?(coder: NSCoder) {
@@ -37,7 +40,7 @@ class CreateIngredientViewController: CreateItemViewController {
     @objc func didTapSaveButton() {
         do {
             // Remove grams, custom foods don't follow base 100g, they use their own
-            let foodPortion = FoodInfoPortion(context: recipeEntry.managedObjectContext!)
+            let foodPortion = FoodInfoPortion(context: childContext)
             foodPortion.id = self.foodEntry.portionId
             foodPortion.gramWeight = self.foodEntry.gramWeight
             foodPortion.amount = self.foodEntry.amount
@@ -47,9 +50,11 @@ class CreateIngredientViewController: CreateItemViewController {
             if let fdcFood = self.foodEntry.convertToFDCFood() {
                 self.foodService.addHistoryIfNeeded(fdcFood: fdcFood, context: CoreDataStack.shared.context)
                 CoreDataStack.shared.saveContext()
-                addFoodDelegate?.addFoodDetailViewController(self, didAddFood: foodEntry)
+//                try recipeEntry.managedObjectContext?.save()
             }
 
+            try childContext.save()
+            addFoodDelegate?.addFoodDetailViewController(self, didAddFood: foodEntry)
             self.dismiss(animated: true)
         } catch {
             print("Error saving food entry")

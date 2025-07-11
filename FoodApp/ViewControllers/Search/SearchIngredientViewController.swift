@@ -93,9 +93,7 @@ class SearchIngredientViewController: SearchItemTableViewController {
             
             let addIngredientViewController = AddIngredientDetailViewController(recipeEntry: recipeEntry, foodEntry: nil, fdcFood: food, userProfile: userProfile, foodService: foodService)
             addIngredientViewController.addFoodDelegate = addFoodDelegate
-//            let addFoodDetailViewController = AddFoodDetailViewController(fdcFood: food, meal: meal, userProfile: userProfile, foodService: foodService)
-//            addFoodDetailViewController.delegate = addFoodDelegate
-//            
+
             // Only 1 view controlelr can be presented at once. Dismiss the barcode scanning view
             dismiss(animated: true)
             present(UINavigationController(rootViewController: addIngredientViewController), animated: true)
@@ -110,7 +108,7 @@ class SearchIngredientViewController: SearchItemTableViewController {
             guard let fdcFood =  history.foodEntry?.convertToFDCFood(),
                   let recipeContext: NSManagedObjectContext = recipeEntry.managedObjectContext else { return }
             
-            let ingredientEntry = try foodService.addFood(fdcFood, with: fdcFood.selectedFoodPortion, quantity: fdcFood.quantity , context: recipeContext)   // add to recipe box
+            let ingredientEntry = try foodService.addFood(fdcFood, foodEntry: history.foodEntry, with: fdcFood.selectedFoodPortion, quantity: fdcFood.quantity , context: recipeContext)   // add to recipe box
             ingredientEntry.index = Int16(recipeEntry.ingredients.count)   // setting relationship does change size of relationship
             ingredientEntry.parent = recipeEntry
             recipeEntry.addToIngredients_(ingredientEntry)  // maybe unnecessarry
@@ -130,11 +128,11 @@ extension SearchIngredientViewController {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let history = fetchedResultsController.object(at: indexPath)
         guard let foodEntry = history.foodEntry,
-              var food = foodEntry.convertToFDCFood()
+              let fdcFood = foodEntry.convertToFDCFood()
         else { return }
         
         // Add from my collection
-        let addIngredientDetailViewController = AddIngredientDetailViewController(recipeEntry: recipeEntry, foodEntry: foodEntry, fdcFood: food, userProfile: userProfile, foodService: foodService)
+        let addIngredientDetailViewController = AddIngredientDetailViewController(recipeEntry: recipeEntry, foodEntry: foodEntry, fdcFood: fdcFood, userProfile: userProfile, foodService: foodService)
         addIngredientDetailViewController.addFoodDelegate = addFoodDelegate
         addIngredientDetailViewController.dismissDelegate = self
         present(UINavigationController(rootViewController: addIngredientDetailViewController), animated: true)
