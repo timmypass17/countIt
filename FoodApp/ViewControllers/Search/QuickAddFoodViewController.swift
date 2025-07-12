@@ -12,9 +12,9 @@ class QuickAddFoodViewController: QuickAddItemViewController {
     var meal: Meal
     weak var addFoodDelegate: AddFoodDetailViewControllerDelegate?
     
-    let childContext = CoreDataStack.shared.childContext()
     
     init(meal: Meal) {
+        let childContext = CoreDataStack.shared.childContext()
         let mealInChildContext = childContext.object(with: meal.objectID) as! Meal
         self.meal = mealInChildContext
         super.init(context: childContext)

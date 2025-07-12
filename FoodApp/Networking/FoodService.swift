@@ -146,6 +146,7 @@ class FoodService: FoodServiceProtocol {
     
     // NSBatchDeleteRequest - deletes items efficiently without having to fetch them.
     // note: Ignore's deletion rules
+    // May take a long time
     // https://www.avanderlee.com/swift/nsbatchdeleterequest-core-data/
     func deleteAccount() throws {
         for entityName in CoreDataStack.shared.persistentContainer.managedObjectModel.entities.map({ $0.name! }) {
@@ -531,7 +532,6 @@ class FoodService: FoodServiceProtocol {
         
         // Copy ingredients
         for (i, ingredient) in fdcFood.ingredients.enumerated() {
-            print("timmy history: \(ingredient.description)")
             let ingredientCopy = FoodEntry(context: context)
             ingredientCopy.amount = ingredient.selectedFoodPortion.amount
             ingredientCopy.gramWeight = ingredient.selectedFoodPortion.gramWeight
@@ -541,11 +541,9 @@ class FoodService: FoodServiceProtocol {
             ingredientCopy.quantity = Int16(ingredient.quantity)
             
             if let ingredientFoodInfo = getFoodInfo(fdcId: ingredient.fdcId, context: context) {
-                print("timmy history info 1: \(ingredientFoodInfo.name)")
                 ingredientCopy.foodInfo = ingredientFoodInfo
             } else {
                 let ingredientFoodInfo = createFoodInfo(ingredient, context: context)
-                print("timmy history info 2: \(ingredientFoodInfo.name)")
                 ingredientCopy.foodInfo = ingredientFoodInfo
                 
                 // Add nutrients relationship to foodInfo

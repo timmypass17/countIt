@@ -21,7 +21,7 @@ class QuickAddItemViewController: UIViewController {
     }()
     
     lazy var foodEntry: FoodEntry = {
-        var foodEntry = FoodEntry(context: context)
+        var foodEntry = FoodEntry(context: childContext)
         foodEntry.quantity = 1
         foodEntry.gramWeight = nil
         foodEntry.amount = 1
@@ -30,18 +30,18 @@ class QuickAddItemViewController: UIViewController {
         foodEntry.isCustom = true
         foodEntry.isRecipe = false
         
-        let foodInfo = FoodInfo(context: context)
+        let foodInfo = FoodInfo(context: childContext)
         foodInfo.fdcId = Int64.random(in: Int64.min..<0)
         foodInfo.brandName_ = "Quick Add"
         foodEntry.foodInfo = foodInfo
         
         for nutrientId in NutrientId.allCases {
-            let foodInfoNutrient = FoodInfoNutrient(context: context)
+            let foodInfoNutrient = FoodInfoNutrient(context: childContext)
             foodInfoNutrient.nutrientId = nutrientId
             foodInfo.addToNutrients_(foodInfoNutrient)
         }
         
-        let foodPortion = FoodInfoPortion(context: context)
+        let foodPortion = FoodInfoPortion(context: childContext)
         foodPortion.id = 0
         foodPortion.gramWeight = nil
         foodPortion.amount = 1
@@ -51,10 +51,10 @@ class QuickAddItemViewController: UIViewController {
         return foodEntry
     }()
     
-    var context: NSManagedObjectContext
+    var childContext: NSManagedObjectContext
     
     init(context: NSManagedObjectContext) {
-        self.context = context
+        self.childContext = context
         super.init(nibName: nil, bundle: nil)
     }
     

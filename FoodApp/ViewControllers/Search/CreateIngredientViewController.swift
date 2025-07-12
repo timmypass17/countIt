@@ -50,7 +50,6 @@ class CreateIngredientViewController: CreateItemViewController {
             if let fdcFood = self.foodEntry.convertToFDCFood() {
                 self.foodService.addHistoryIfNeeded(fdcFood: fdcFood, context: CoreDataStack.shared.context)
                 CoreDataStack.shared.saveContext()
-//                try recipeEntry.managedObjectContext?.save()
             }
 
             try childContext.save()

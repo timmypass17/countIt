@@ -14,10 +14,12 @@ class QuickAddIngredientViewController: QuickAddItemViewController {
     weak var addFoodDelegate: AddFoodDetailViewControllerDelegate?
     
     init(recipeEntry: FoodEntry) {
-        self.recipeEntry = recipeEntry
-        super.init(context: recipeEntry.managedObjectContext!)
-        foodEntry.index = Int16(recipeEntry.ingredients.count)
-        foodEntry.parent = recipeEntry
+        let childContext = CoreDataStack.shared.childContext(parentContext: recipeEntry.managedObjectContext)
+        let recipeEntryInChildContext = childContext.object(with: recipeEntry.objectID) as! FoodEntry
+        self.recipeEntry = recipeEntryInChildContext
+        super.init(context: childContext)
+        foodEntry.index = Int16(recipeEntryInChildContext.ingredients.count)
+        foodEntry.parent = recipeEntryInChildContext
     }
     
     @MainActor required init?(coder: NSCoder) {
@@ -43,6 +45,8 @@ class QuickAddIngredientViewController: QuickAddItemViewController {
             if let fdcFood = self.foodEntry.convertToFDCFood() {
                 self.foodService.addHistoryIfNeeded(fdcFood: fdcFood, context: CoreDataStack.shared.context)
                 CoreDataStack.shared.saveContext()
+                
+                try childContext.save()
                 addFoodDelegate?.addFoodDetailViewController(self, didAddFood: foodEntry)
             }
             self.dismiss(animated: true)
