@@ -52,7 +52,7 @@ class CreateIngredientViewController: CreateItemViewController {
                 CoreDataStack.shared.saveContext()
             }
 
-            try childContext.save()
+            try childContext.save() // save to recipe
             addFoodDelegate?.addFoodDetailViewController(self, didAddFood: foodEntry)
             self.dismiss(animated: true)
         } catch {

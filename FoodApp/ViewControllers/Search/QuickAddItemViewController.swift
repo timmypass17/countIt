@@ -17,6 +17,7 @@ class QuickAddItemViewController: UIViewController {
     let tableView: UITableView = {
         let tableView = UITableView(frame: .zero, style: .insetGrouped)
         tableView.translatesAutoresizingMaskIntoConstraints = false
+        tableView.keyboardDismissMode = .onDrag
         return tableView
     }()
     
@@ -123,6 +124,7 @@ extension QuickAddItemViewController: UITableViewDataSource {
             let cell = tableView.dequeueReusableCell(withIdentifier: TextFieldInputTableViewCell.reuseIdentifier, for: indexPath) as! TextFieldInputTableViewCell
             cell.update(title: "Name", valueText: foodEntry.foodInfo?.name_, placeholderText: "Required", unit: "")
             cell.delegate = self
+            cell.amountTextField.keyboardType = .default
             cell.selectionStyle = .none
             return cell
         } else {
@@ -143,6 +145,7 @@ extension QuickAddItemViewController: UITableViewDataSource {
                     self.foodEntry.foodInfo?.nutrients[nutrientId]?.value = value
                     self.updateUI()
                 }
+            cell.textField.keyboardType = .decimalPad
             cell.selectionStyle = .none
             return cell
         }

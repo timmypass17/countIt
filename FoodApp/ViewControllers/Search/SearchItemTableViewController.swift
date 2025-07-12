@@ -14,6 +14,7 @@ class SearchItemTableViewController: UIViewController, DataScannerViewController
     let tableView: UITableView = {
         let tableView = UITableView(frame: .zero, style: .insetGrouped)
         tableView.translatesAutoresizingMaskIntoConstraints = false
+        tableView.keyboardDismissMode = .onDrag
         return tableView
     }()
     

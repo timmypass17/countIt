@@ -73,7 +73,7 @@ class ProgressViewController: UIViewController {
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
         ])
         
-        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Edit", primaryAction: nil)
+//        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Edit", primaryAction: nil)
     }
     
     override func viewWillAppear(_ animated: Bool) {

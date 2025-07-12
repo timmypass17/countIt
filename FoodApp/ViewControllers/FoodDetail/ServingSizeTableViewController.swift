@@ -38,7 +38,9 @@ class ServingSizeTableViewController: UITableViewController {
         let createButton = UIBarButtonItem(image: UIImage(systemName: "square.and.pencil"), primaryAction: createButtonTapped())
         let doneButton = UIBarButtonItem(systemItem: .done, primaryAction: didTapDoneButton())
         navigationItem.leftBarButtonItem = cancelButton
-        navigationItem.rightBarButtonItems = [doneButton, createButton]
+        // TODO: Allow grams
+//        navigationItem.rightBarButtonItems = [doneButton, createButton]
+        navigationItem.rightBarButtonItems = [doneButton]
     }
 
     // MARK: - Table view data source

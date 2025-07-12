@@ -46,7 +46,7 @@ class QuickAddIngredientViewController: QuickAddItemViewController {
                 self.foodService.addHistoryIfNeeded(fdcFood: fdcFood, context: CoreDataStack.shared.context)
                 CoreDataStack.shared.saveContext()
                 
-                try childContext.save()
+                try childContext.save() // save to recipeContext
                 addFoodDelegate?.addFoodDetailViewController(self, didAddFood: foodEntry)
             }
             self.dismiss(animated: true)
