@@ -13,7 +13,7 @@ class PrivacyPolicyViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        tableView.backgroundColor = .background
+        tableView.backgroundColor = Settings.shared.currentTheme.background.uiColor
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "PrivacyCell")
         navigationItem.title = "Privacy Policy"
         navigationItem.largeTitleDisplayMode = .never
@@ -34,7 +34,7 @@ class PrivacyPolicyViewController: UITableViewController {
         var config = cell.defaultContentConfiguration()
         config.text = privacyText
         cell.contentConfiguration = config
-        cell.backgroundColor = .cellBackground
+        cell.backgroundColor = Settings.shared.currentTheme.cellBackground.uiColor
         return cell
     }
     

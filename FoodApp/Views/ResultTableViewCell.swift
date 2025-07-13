@@ -84,7 +84,7 @@ class ResultTableViewCell: UITableViewCell {
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        backgroundColor = .cellBackground
+        backgroundColor = Settings.shared.currentTheme.cellBackground.uiColor
 
         titleContainer.addArrangedSubview(titleLabel)
         titleContainer.addArrangedSubview(checkmarkImageView)
@@ -127,7 +127,7 @@ class ResultTableViewCell: UITableViewCell {
             // Swap image to checkmark
             UIView.transition(with: self.plusButton, duration: 0.2, options: .transitionCrossDissolve, animations: {
                 self.plusButton.setImage(UIImage(systemName: "checkmark.circle.fill"), for: .normal)
-                self.plusButton.tintColor = .white
+                self.plusButton.tintColor = Settings.shared.currentTheme.label.uiColor
             })
 
             // Grow big
@@ -141,7 +141,7 @@ class ResultTableViewCell: UITableViewCell {
                     } completion: { _ in
                         UIView.transition(with: self.plusButton, duration: 0.15, options: .transitionCrossDissolve, animations: {
                             self.plusButton.setImage(UIImage(systemName: "plus"), for: .normal)
-                            self.plusButton.tintColor = .secondaryLabel
+                            self.plusButton.tintColor = Settings.shared.currentTheme.secondary.uiColor
                         })
                     }
                     

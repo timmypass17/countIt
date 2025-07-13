@@ -81,7 +81,7 @@ struct WeightProgressView: View {
                             .foregroundStyle(.blue)
 
                         Text("Current Weight")
-                            .foregroundColor(.secondary)
+                            .foregroundColor(Settings.shared.currentTheme.secondary.color)
                             .font(.subheadline)
                     }
                     
@@ -90,12 +90,12 @@ struct WeightProgressView: View {
                             .font(.title)
                             .fontWeight(.semibold)
                         Text("/ \(goalWeight.trimmed) \(userProfile.weightUnit.singularSymbol)")
-                            .foregroundColor(.secondary)
+                            .foregroundColor(Settings.shared.currentTheme.secondary.color)
                             .font(.title2)
                     }
                     
                     Text("\(formatDateMonthDayYear(filteredUserWeights.last?.date_ ?? Date())) - \(formatDateMonthDayYear(filteredUserWeights.first?.date_ ?? Date()))")
-                        .foregroundColor(.secondary)
+                        .foregroundColor(Settings.shared.currentTheme.secondary.color)
                         .font(.subheadline)
                         .padding(.top, 2)
                 }
@@ -114,14 +114,14 @@ struct WeightProgressView: View {
                         .annotation(position: .top, alignment: .leading) {
                             Text("Goal: \(goalWeight.trimmed) \(userProfile.weightUnit.rawValue)")
                                 .font(.caption)
-                                .foregroundColor(.gray)
+                                .foregroundColor(Settings.shared.currentTheme.secondary.color)
                         }
                 }
 //                .chartYScale(domain: 0...(max(userProfile.goalWeight, filteredUserWeights.max { $0.weightInKg < $1.weightInKg } ) * 1.25))
                 .frame(height: 300)
 //                .foregroundStyle(nutrientId.progressColor)
                 .padding()
-                .background(Color("cellBackground"), in: RoundedRectangle(cornerRadius: 8))
+                .background(Settings.shared.currentTheme.cellBackground.color, in: RoundedRectangle(cornerRadius: 8))
                 .padding(.bottom, 12)
 
                 ProgressListView(filteredData: filteredData, unit: userProfile.weightUnit.singularSymbol)
@@ -130,7 +130,7 @@ struct WeightProgressView: View {
             .animation(.default, value: filteredUserWeights.count) // animation trigger when value changes
         }
         .navigationTitle("Weight")
-        .background(Color("background"))
+        .background(Settings.shared.currentTheme.background.color)
         .toolbar {
             ToolbarItem {
                 Button {
@@ -183,18 +183,18 @@ struct ProgressHeaderView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             Text(title)
-                .foregroundColor(.secondary)
+                .foregroundColor(Settings.shared.currentTheme.secondary.color)
                 .font(.subheadline)
             
             HStack(alignment: .firstTextBaseline, spacing: 4) {
                 Text("\(amount?.trimmed ?? "-")")
                     .font(.title)
                 Text(unit)
-                    .foregroundColor(.secondary)
+                    .foregroundColor(Settings.shared.currentTheme.secondary.color)
             }
             
             Text(dateRangeString)
-                .foregroundColor(.secondary)
+                .foregroundColor(Settings.shared.currentTheme.secondary.color)
                 .font(.subheadline)
         }
         .padding(.vertical, 4)
@@ -216,7 +216,7 @@ struct ProgressListView: View {
                 
                 Text("\(filteredData.count) Entries")
             }
-            .foregroundColor(.secondary)
+            .foregroundColor(Settings.shared.currentTheme.secondary.color)
             .font(.caption)
             .padding(.bottom, 6)
             .padding(.horizontal, 12)
@@ -226,7 +226,7 @@ struct ProgressListView: View {
                     ProgressDetailViewCell(filteredData: filteredData, i: i, userWeight: userWeight, unit: unit)
                 }
             }
-            .background(Color("cellBackground"), in: RoundedRectangle(cornerRadius: 8))
+            .background(Settings.shared.currentTheme.cellBackground.color, in: RoundedRectangle(cornerRadius: 8))
         }
     }
 }
@@ -252,9 +252,9 @@ struct ProgressDetailViewCell: View {
                     Text("\(userWeight.amount.trimmed) \(unit)")
                         .font(.headline)
                     
-                    Text(Date().formatted(date: .abbreviated, time: .omitted))
+                    Text(userWeight.date.formatted(date: .abbreviated, time: .omitted))
                         .font(.subheadline)
-                        .foregroundColor(.secondary)
+                        .foregroundColor(Settings.shared.currentTheme.secondary.color)
                         .lineLimit(1)
                 }
                 

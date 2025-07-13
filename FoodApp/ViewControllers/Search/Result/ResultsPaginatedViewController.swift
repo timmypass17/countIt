@@ -14,7 +14,7 @@ class ResultsPaginatedViewController: UIViewController, ResultTableViewCellDeleg
     let tableView: UITableView = {
         let tableView = UITableView(frame: .zero, style: .insetGrouped)
         tableView.translatesAutoresizingMaskIntoConstraints = false
-        tableView.backgroundColor = .background
+        tableView.backgroundColor = Settings.shared.currentTheme.background.uiColor
         tableView.keyboardDismissMode = .onDrag
         return tableView
     }()

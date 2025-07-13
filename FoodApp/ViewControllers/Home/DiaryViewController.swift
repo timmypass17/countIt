@@ -19,7 +19,7 @@ class DiaryViewController: UIViewController {
     
     let tableView: UITableView = {
         let tableView = UITableView(frame: .zero, style: .insetGrouped)
-        tableView.backgroundColor = .background
+        tableView.backgroundColor = Settings.shared.currentTheme.background.uiColor
         tableView.translatesAutoresizingMaskIntoConstraints = false
         return tableView
     }()
@@ -31,7 +31,6 @@ class DiaryViewController: UIViewController {
     let foodService: FoodService
     let goalIndexPath = IndexPath(row: 0, section: 0)
     weak var delegate: DiaryViewControllerDelegate?
-    
     
     enum Section: Int, CaseIterable {
         case goal
@@ -101,34 +100,70 @@ class DiaryViewController: UIViewController {
         updateUI()
         
         self.delegate?.diaryViewController(self, mealPlanChanged: self.mealPlan)    // updates mealPlan title for search
+        
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(updateUI),
+                                               name: .themeUpdated,
+                                               object: nil)
     }
     
     override func setEditing(_ editing: Bool, animated: Bool) {
         super.setEditing(editing, animated: animated)
     }
     
+//    override func viewWillAppear(_ animated: Bool) {
+//        print("viewWillAppear")
+//        super.viewWillAppear(animated)
+//        let appearance = UINavigationBarAppearance()
+//        appearance.configureWithOpaqueBackground() // use `.configureWithTransparentBackground()` if you want it transparent
+//        appearance.backgroundColor = Settings.shared.currentTheme.background.uiColor
+//
+//        // Optionally adjust title color
+//        appearance.titleTextAttributes = [.foregroundColor: UIColor.label]
+//        appearance.largeTitleTextAttributes = [.foregroundColor: UIColor.label]
+//
+//        navigationController?.navigationBar.standardAppearance = appearance
+//        navigationController?.navigationBar.scrollEdgeAppearance = appearance // important!
+//        navigationController?.navigationBar.compactAppearance = appearance // optional for compact height
+//        navigationController?.navigationBar.tintColor = Settings.shared.currentTheme.background.uiColor
+//        navigationController?.navigationBar.isTranslucent = false
+//    }
+    
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
     }
     
-    func updateUI() {
+    @objc func updateUI() {
         let optionsButton = UIBarButtonItem(
             image: UIImage(systemName: "ellipsis")?.withRenderingMode(.alwaysTemplate),
-            menu: buildMenu()
+            menu: self.buildMenu()
         )
-        optionsButton.tintColor = .white
-
-//        let profileBarButton = UIBarButtonItem(
-//            image: UIImage(systemName: "person.fill")?.withRenderingMode(.alwaysTemplate),
-//            primaryAction: didTapProfileButton()
-//        )
-//        profileBarButton.tintColor = .white
-
-//        navigationItem.leftBarButtonItem = optionsButton
-//        navigationItem.rightBarButtonItem = profileBarButton
+        optionsButton.tintColor = Settings.shared.currentTheme.label.uiColor
         
-        navigationItem.rightBarButtonItem = optionsButton        
-        tableView.reloadData()
+        self.navigationItem.rightBarButtonItem = optionsButton
+        self.tableView.backgroundColor = Settings.shared.currentTheme.background.uiColor
+        self.mealPlanDateView?.updateUI()
+        self.tableView.reloadData()
+        self.reloadAllSectionHeaders()
+        
+        let appearance = UINavigationBarAppearance()
+        appearance.configureWithOpaqueBackground() // use `.configureWithTransparentBackground()` if you want it transparent
+        appearance.backgroundColor = Settings.shared.currentTheme.background.uiColor
+
+        // Optionally adjust title color
+        appearance.titleTextAttributes = [.foregroundColor: Settings.shared.currentTheme.label.uiColor]
+        appearance.largeTitleTextAttributes = [.foregroundColor: Settings.shared.currentTheme.label.uiColor]
+
+        navigationController?.navigationBar.standardAppearance = appearance
+        navigationController?.navigationBar.scrollEdgeAppearance = appearance
+        navigationController?.navigationBar.compactAppearance = appearance // optional for compact height
+//        navigationController?.navigationBar.tintColor = Settings.shared.currentTheme.label.uiColor
+        navigationController?.navigationBar.isTranslucent = false
+    }
+    
+    func reloadAllSectionHeaders() {
+        let all = IndexSet(integersIn: 0..<tableView.numberOfSections)
+        tableView.reloadSections(all, with: .none)
     }
     
     func didTapProfileButton() -> UIAction {
@@ -299,19 +334,20 @@ extension DiaryViewController: UITableViewDataSource {
                 CaloriesConsumedView(mealPlan: mealPlan)
                     .environment(\.managedObjectContext, CoreDataStack.shared.context)
             }
-            cell.backgroundColor = .cellBackground
+            cell.backgroundColor = Settings.shared.currentTheme.cellBackground.uiColor
             cell.selectionStyle = .none
             return cell
         }
         
         if indexPath.section == 1 {
+            print("timmy update")
             let cell = tableView.dequeueReusableCell(withIdentifier: MacrosView.reuseIdentifier, for: indexPath)
             
             cell.contentConfiguration = UIHostingConfiguration {
                 MacrosView(mealPlan: mealPlan, userProfile: userProfile)  // uses coredata fetch, updated automatically when core data changes
                     .environment(\.managedObjectContext, CoreDataStack.shared.context)
             }
-            cell.backgroundColor = .cellBackground
+            cell.backgroundColor = Settings.shared.currentTheme.cellBackground.uiColor
             cell.selectionStyle = .none
             return cell
         }
@@ -340,7 +376,6 @@ extension DiaryViewController: UITableViewDelegate {
               let mealPlan
         else { return nil }
         
-        // TODO: Instead of using date picke, just use label and show "Today", "Yesterday", 
         let header = tableView.dequeueReusableHeaderFooterView(withIdentifier: MealHeaderView.reuseIdentifier) as! MealHeaderView
         let meal = mealPlan.meals[section - 2]
         header.update(with: meal)

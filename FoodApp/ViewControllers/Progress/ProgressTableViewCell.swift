@@ -82,13 +82,7 @@ class ProgressTableViewCell: UITableViewCell {
         stackView.axis = .vertical
         return stackView
     }()
-    
-//    let unitContainer: UIStackView = {
-//        let stackView = UIStackView()
-//        stackView.axis = .horizontal
-//        return stackView
-//    }()
-//    
+
     let container: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .horizontal
@@ -135,7 +129,7 @@ class ProgressTableViewCell: UITableViewCell {
             
         ])
         
-        backgroundColor = .cellBackground
+        backgroundColor = Settings.shared.currentTheme.cellBackground.uiColor
         accessoryType = .disclosureIndicator
     }
     
@@ -156,5 +150,9 @@ class ProgressTableViewCell: UITableViewCell {
         hostingController.rootView.goal = goal
         hostingController.rootView.color = color
         titleLabel.textColor = UIColor(color)
+        
+        backgroundColor = Settings.shared.currentTheme.cellBackground.uiColor
+        amountLabel.textColor = Settings.shared.currentTheme.label.uiColor
+        goalLabel.textColor = Settings.shared.currentTheme.secondary.uiColor
     }
 }

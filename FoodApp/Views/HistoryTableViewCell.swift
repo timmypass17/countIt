@@ -36,5 +36,10 @@ class HistoryTableViewCell: ResultTableViewCell {
             withConfiguration: UIImage.SymbolConfiguration(paletteColors: [.white, sealColor])
         )
         checkmarkImageView.image = image
+        
+        backgroundColor = Settings.shared.currentTheme.cellBackground.uiColor
+        titleLabel.textColor = Settings.shared.currentTheme.label.uiColor
+        descriptionLabel.textColor = Settings.shared.currentTheme.secondary.uiColor
+        plusButton.tintColor = Settings.shared.currentTheme.secondary.uiColor
     }
 }

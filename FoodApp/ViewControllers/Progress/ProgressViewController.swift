@@ -12,7 +12,7 @@ class ProgressViewController: UIViewController {
     
     let tableView: UITableView = {
         let tableView = UITableView(frame: .zero, style: .insetGrouped)
-        tableView.backgroundColor = .background
+        tableView.backgroundColor = Settings.shared.currentTheme.background.uiColor
         tableView.translatesAutoresizingMaskIntoConstraints = false
         return tableView
     }()
@@ -59,6 +59,7 @@ class ProgressViewController: UIViewController {
         tableView.register(ProgressTableViewCell.self, forCellReuseIdentifier: ProgressTableViewCell.reuseIdentifier)
         tableView.dataSource = self
         tableView.delegate = self
+        tableView.backgroundColor = Settings.shared.currentTheme.background.uiColor
         
         NotificationCenter.default.addObserver(self, selector: #selector(handleMealPlanUpdated), name: .mealPlanUpdated, object: nil)
 
@@ -73,9 +74,20 @@ class ProgressViewController: UIViewController {
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
         ])
         
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(updateUI),
+                                               name: .themeUpdated,
+                                               object: nil)
+        
 //        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Edit", primaryAction: nil)
     }
     
+    @objc func updateUI() {
+        view.backgroundColor = Settings.shared.currentTheme.background.uiColor
+        tableView.backgroundColor = Settings.shared.currentTheme.background.uiColor
+        tableView.reloadData()
+    }
+        
     override func viewWillAppear(_ animated: Bool) {
         if let indexPath = tableView.indexPathForSelectedRow {
             tableView.deselectRow(at: indexPath, animated: true)

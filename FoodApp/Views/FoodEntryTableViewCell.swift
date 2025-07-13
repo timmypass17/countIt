@@ -15,6 +15,7 @@ class FoodEntryTableViewCell: UITableViewCell {
         label.numberOfLines = 1
         label.lineBreakMode = .byTruncatingTail
         label.font = UIFont.boldSystemFont(ofSize: 16.0)
+        label.textColor = Settings.shared.currentTheme.label.uiColor
         return label
     }()
     
@@ -23,7 +24,7 @@ class FoodEntryTableViewCell: UITableViewCell {
         label.numberOfLines = 1
         label.lineBreakMode = .byTruncatingTail
         label.font = UIFont.preferredFont(forTextStyle: .caption1)
-        label.textColor = .secondaryLabel
+        label.textColor = Settings.shared.currentTheme.secondary.uiColor
         return label
     }()
     
@@ -34,6 +35,7 @@ class FoodEntryTableViewCell: UITableViewCell {
         label.font = UIFont.boldSystemFont(ofSize: 16.0)
         label.setContentHuggingPriority(.required, for: .horizontal)
         label.setContentCompressionResistancePriority(.required, for: .horizontal)
+        label.textColor = Settings.shared.currentTheme.label.uiColor
         return label
     }()
     
@@ -53,7 +55,7 @@ class FoodEntryTableViewCell: UITableViewCell {
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        backgroundColor = .cellBackground
+        backgroundColor = Settings.shared.currentTheme.cellBackground.uiColor
         
         labelContainer.addArrangedSubview(titleLabel)
         labelContainer.addArrangedSubview(descriptionLabel)
@@ -79,5 +81,10 @@ class FoodEntryTableViewCell: UITableViewCell {
         titleLabel.text = foodEntry.foodInfo?.name
         descriptionLabel.text = foodEntry.description()
         caloriesLabel.text = "\(Int(foodEntry.getNutrientAmount(.calories, quantity: Int(foodEntry.quantity))))"
+        
+        titleLabel.textColor = Settings.shared.currentTheme.label.uiColor
+        descriptionLabel.textColor = Settings.shared.currentTheme.secondary.uiColor
+        caloriesLabel.textColor = Settings.shared.currentTheme.label.uiColor
+        backgroundColor = Settings.shared.currentTheme.cellBackground.uiColor
     }
 }

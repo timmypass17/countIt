@@ -15,6 +15,7 @@ class SearchItemTableViewController: UIViewController, DataScannerViewController
         let tableView = UITableView(frame: .zero, style: .insetGrouped)
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.keyboardDismissMode = .onDrag
+        tableView.backgroundColor = Settings.shared.currentTheme.background.uiColor
         return tableView
     }()
     
@@ -32,6 +33,7 @@ class SearchItemTableViewController: UIViewController, DataScannerViewController
     var myRecipes: [FoodEntry] = []
     var myFoods: [FoodEntry] = []
     var searchButtonRowView: SearchButtonRowView
+    var searchTabView: SearchTabView
     var selectedTab: SearchTabView.TabItem = .all
     
     var searchController: UISearchController!
@@ -66,6 +68,7 @@ class SearchItemTableViewController: UIViewController, DataScannerViewController
         self.userProfile = userProfile
         self.visibleTabs = visibleTabs
         self.visibleButtonTypes = visibleButtonTypes
+        self.searchTabView = SearchTabView(visibleTabs: visibleTabs)
         self.searchButtonRowView = SearchButtonRowView(visibleButtonTypes: visibleButtonTypes)
         super.init(nibName: nil, bundle: nil)
     }
@@ -99,11 +102,11 @@ class SearchItemTableViewController: UIViewController, DataScannerViewController
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .background
+        view.backgroundColor = Settings.shared.currentTheme.background.uiColor
         tableView.dataSource = self
         tableView.delegate = self
 
-        let searchTabView = SearchTabView(visibleTabs: visibleTabs)
+//        let searchTabView = SearchTabView(visibleTabs: visibleTabs)
         searchTabView.translatesAutoresizingMaskIntoConstraints = false
         searchTabView.delegate = self
 //        searchButtonRowView.delegate = self
@@ -135,7 +138,7 @@ class SearchItemTableViewController: UIViewController, DataScannerViewController
         ])
         
         tableView.register(HistoryTableViewCell.self, forCellReuseIdentifier: HistoryTableViewCell.reuseIdentifier)
-        tableView.backgroundColor = .background
+        tableView.backgroundColor = Settings.shared.currentTheme.background.uiColor
 
         // Place the search bar in the navigation bar.
         navigationItem.searchController = searchController
@@ -147,6 +150,19 @@ class SearchItemTableViewController: UIViewController, DataScannerViewController
         
         updateFetchedResultsController(for: .all)
         
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(updateUI),
+                                               name: .themeUpdated,
+                                               object: nil)
+    }
+    
+    @objc func updateUI() {
+        print("timmy search reload")
+        view.backgroundColor = Settings.shared.currentTheme.background.uiColor
+        tableView.backgroundColor = Settings.shared.currentTheme.background.uiColor
+        tableView.reloadData()
+        searchTabView.updateUI()
+        searchButtonRowView.updateUI()
     }
     
     func updateUnavailableView() {

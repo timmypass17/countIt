@@ -47,7 +47,7 @@ struct WeeklyNutrientChartView: View {
                         yEnd: .value("Goal", goal),
                         width: .fixed(barWidth)
                     )
-                    .foregroundStyle(Color.gray.opacity(0.3))
+                    .foregroundStyle(Settings.shared.currentTheme.progress.color)
                 }
             }
         }
@@ -58,6 +58,7 @@ struct WeeklyNutrientChartView: View {
                     AxisValueLabel {
                         Text(item.label)
                             .bold(Calendar.current.isDateInToday(item.date))
+                            .foregroundStyle(Settings.shared.currentTheme.secondary.color)
                     }
                 }
             }

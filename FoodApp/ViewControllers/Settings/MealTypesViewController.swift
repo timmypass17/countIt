@@ -29,7 +29,7 @@ class MealTypesViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         title = "Meal Types"
-        tableView.backgroundColor = .background
+        tableView.backgroundColor = Settings.shared.currentTheme.background.uiColor
 
         tableView.register(MealTypeTableViewCell.self, forCellReuseIdentifier: MealTypeTableViewCell.reuseIdentifier)
         tableView.register(AddItemTableViewCell.self, forCellReuseIdentifier: AddItemTableViewCell.reuseIdentifier)

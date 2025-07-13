@@ -17,7 +17,16 @@ class SearchTabView: UIView {
         case all, myRecipes, myFoods
     }
 
-    private let underlineView = UIView()
+    private let underlineView: UIView = {
+        let view = UIView()
+        view.backgroundColor = Settings.shared.currentTheme.label.uiColor
+        view.layer.cornerRadius = 1
+        view.clipsToBounds = true
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+    private var underlineLeadingConstraint: NSLayoutConstraint?
+    private var underlineWidthConstraint: NSLayoutConstraint?
     private var selectedButton: UIButton?
     
     let container: UIStackView = {
@@ -30,9 +39,7 @@ class SearchTabView: UIView {
     }()
 
     private var buttons: [UIButton] = []
-
     private var visibleTabs: [TabItem]
-
     weak var delegate: SearchTabViewDelegate?
     
     init(visibleTabs: [TabItem] = TabItem.allCases) {
@@ -42,7 +49,7 @@ class SearchTabView: UIView {
     }
     
     private func setup() {
-        backgroundColor = .background
+        backgroundColor = Settings.shared.currentTheme.background.uiColor
 
         addSubview(container)
         addSubview(underlineView)
@@ -54,9 +61,6 @@ class SearchTabView: UIView {
             container.trailingAnchor.constraint(equalTo: layoutMarginsGuide.trailingAnchor)
         ])
 
-        underlineView.backgroundColor = .white
-        underlineView.layer.cornerRadius = 1
-        underlineView.clipsToBounds = true
 
         for tab in visibleTabs {
             let button = makeButton(for: tab)
@@ -73,65 +77,9 @@ class SearchTabView: UIView {
 
         container.addArrangedSubview(UIView()) // Spacer
 
-        DispatchQueue.main.async {
-            guard let selectedButton = self.selectedButton else { return }
-            let buttonFrame = selectedButton.convert(selectedButton.bounds, to: self)
-            // Initalize with no animaton
-            self.underlineView.frame = CGRect(
-                x: buttonFrame.origin.x,
-                y: buttonFrame.maxY - 2,
-                width: buttonFrame.width,
-                height: 2
-            )
-        }
-
-        updateButtonColors()
+        updateUI()
     }
-    
-//    override init(frame: CGRect) {
-//        super.init(frame: frame)
-//        backgroundColor = UIColor(hex: "#1c1c1e")
-//
-//        allButton.addTarget(self, action: #selector(buttonTapped(_:)), for: .touchUpInside)
-//        recipesButton.addTarget(self, action: #selector(buttonTapped(_:)), for: .touchUpInside)
-//        foodsButton.addTarget(self, action: #selector(buttonTapped(_:)), for: .touchUpInside)
-//
-//        container.addArrangedSubview(allButton)
-//        container.addArrangedSubview(recipesButton)
-//        container.addArrangedSubview(foodsButton)
-//        container.addArrangedSubview(UIView())
-//
-//        addSubview(container)
-//        addSubview(underlineView)
-//
-//        underlineView.backgroundColor = .white
-//        underlineView.layer.cornerRadius = 1
-//        underlineView.clipsToBounds = true
-//
-//        NSLayoutConstraint.activate([
-//            container.topAnchor.constraint(equalTo: layoutMarginsGuide.topAnchor),
-//            container.bottomAnchor.constraint(equalTo: layoutMarginsGuide.bottomAnchor),
-//            container.leadingAnchor.constraint(equalTo: layoutMarginsGuide.leadingAnchor),
-//            container.trailingAnchor.constraint(equalTo: layoutMarginsGuide.trailingAnchor)
-//        ])
-//
-//        // Set default selected button after layout
-//        selectedButton = allButton
-//        // you’re delaying the execution of that code block until the next run loop cycle, after all current layout and constraint updates are finished.
-//        DispatchQueue.main.async {
-//            guard let selectedButton = self.selectedButton else { return }
-//            let buttonFrame = selectedButton.convert(selectedButton.bounds, to: self)
-//            // Initalize with no animaton
-//            self.underlineView.frame = CGRect(
-//                x: buttonFrame.origin.x,
-//                y: buttonFrame.maxY - 2,
-//                width: buttonFrame.width,
-//                height: 2
-//            )
-//        }
-//        updateButtonColors()
-//    }
-    
+
     private func makeButton(for tab: TabItem) -> UIButton {
         let button = UIButton()
         switch tab {
@@ -153,7 +101,6 @@ class SearchTabView: UIView {
 
     @objc private func buttonTapped(_ sender: UIButton) {
         selectedButton = sender
-//        let buttons = [allButton, recipesButton, foodsButton]
         if let index = buttons.firstIndex(where: { $0 == selectedButton }) {
             let selectedTab = visibleTabs[index]
             delegate?.searchTabView(self, didSelectTab: selectedTab)
@@ -165,13 +112,13 @@ class SearchTabView: UIView {
     func updateUI() {
         updateButtonColors()
         updateUnderline()
+        backgroundColor = Settings.shared.currentTheme.background.uiColor
     }
 
     private func updateButtonColors() {
-//        let buttons = [allButton, recipesButton, foodsButton]
         for button in buttons {
             let isSelected = (button == selectedButton)
-            button.setTitleColor(isSelected ? .white : .secondaryLabel, for: .normal)
+            button.setTitleColor(isSelected ? Settings.shared.currentTheme.label.uiColor : Settings.shared.currentTheme.secondary.uiColor, for: .normal)
             button.titleLabel?.font = UIFont.systemFont(
                 ofSize: UIFont.preferredFont(forTextStyle: .body).pointSize,
                 weight: isSelected ? .semibold : .regular
@@ -181,14 +128,27 @@ class SearchTabView: UIView {
 
     private func updateUnderline() {
         guard let selectedButton = selectedButton else { return }
-        let buttonFrame = selectedButton.convert(selectedButton.bounds, to: self)
+
+        underlineView.backgroundColor = Settings.shared.currentTheme.label.uiColor
+
+        underlineLeadingConstraint?.isActive = false
+        underlineWidthConstraint?.isActive = false
+
+        underlineLeadingConstraint = underlineView.leadingAnchor.constraint(equalTo: selectedButton.leadingAnchor)
+        underlineWidthConstraint = underlineView.widthAnchor.constraint(equalTo: selectedButton.widthAnchor)
+
+        NSLayoutConstraint.activate([
+            underlineLeadingConstraint!,
+            underlineWidthConstraint!,
+            underlineView.bottomAnchor.constraint(equalTo: selectedButton.bottomAnchor),
+            underlineView.heightAnchor.constraint(equalToConstant: 2)
+        ])
+
         UIView.animate(withDuration: 0.25) {
-            self.underlineView.frame = CGRect(
-                x: buttonFrame.origin.x,
-                y: buttonFrame.maxY - 2,
-                width: buttonFrame.width,
-                height: 2
-            )
+            // forces the view to immediately update its layout, only if needed
+            // “If any layout changes (e.g. constraints) are pending, apply them now.”
+            // used to make sure constraint changes are reflected immediately, especially inside animations.
+            self.layoutIfNeeded()
         }
     }
     

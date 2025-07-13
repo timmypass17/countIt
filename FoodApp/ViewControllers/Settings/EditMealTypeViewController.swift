@@ -50,7 +50,7 @@ class EditMealTypeViewController: UIViewController {
         title = "Rename \"\(userMealTypeDraft.name)\""
         tableView.register(TextFieldInputTableViewCell.self, forCellReuseIdentifier: TextFieldInputTableViewCell.reuseIdentifier)
         tableView.dataSource = self
-        tableView.backgroundColor = .background
+        tableView.backgroundColor = Settings.shared.currentTheme.background.uiColor
 
         view.addSubview(tableView)
         

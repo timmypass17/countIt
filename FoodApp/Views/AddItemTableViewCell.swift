@@ -12,7 +12,7 @@ class AddItemTableViewCell: UITableViewCell {
     
     var plusImageView: UIImageView = {
         let imageView = UIImageView(image: UIImage(systemName: "plus"))
-        imageView.tintColor = .secondaryLabel
+        imageView.tintColor = Settings.shared.currentTheme.secondary.uiColor
         imageView.contentMode = .scaleAspectFit
         imageView.setContentHuggingPriority(.required, for: .horizontal)
         imageView.setContentCompressionResistancePriority(.required, for: .horizontal)
@@ -21,7 +21,7 @@ class AddItemTableViewCell: UITableViewCell {
     
     var titleLabel: UILabel = {
         let label = UILabel()
-        label.textColor = .secondaryLabel
+        label.textColor = Settings.shared.currentTheme.secondary.uiColor
         return label
     }()
     
@@ -36,7 +36,7 @@ class AddItemTableViewCell: UITableViewCell {
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        backgroundColor = .cellBackground
+        backgroundColor = Settings.shared.currentTheme.cellBackground.uiColor
         container.addArrangedSubview(plusImageView)
         container.addArrangedSubview(titleLabel)
         
@@ -56,5 +56,9 @@ class AddItemTableViewCell: UITableViewCell {
     
     func update(title: String) {
         titleLabel.text = title
+        
+        titleLabel.textColor = Settings.shared.currentTheme.secondary.uiColor
+        plusImageView.tintColor = Settings.shared.currentTheme.secondary.uiColor
+        backgroundColor = Settings.shared.currentTheme.cellBackground.uiColor
     }
 }

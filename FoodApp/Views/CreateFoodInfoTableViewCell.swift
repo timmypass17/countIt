@@ -47,7 +47,7 @@ class CreateFoodInfoTableViewCell: UITableViewCell {
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        backgroundColor = .cellBackground
+        backgroundColor = Settings.shared.currentTheme.cellBackground.uiColor
 
         labelContainer.addArrangedSubview(titleLabel)
         labelContainer.addArrangedSubview(secondaryLabel)

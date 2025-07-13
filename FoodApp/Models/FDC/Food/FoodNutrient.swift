@@ -320,13 +320,13 @@ enum NutrientId: Int, Codable, CaseIterable {
     var color: Color {
         switch self {
         case .calories:
-            return Color(uiColor: UIColor(hex: "#2E8AFF"))  // blue
+            return Settings.shared.currentTheme.color1.color
         case .carbs:
-            return Color(uiColor: UIColor(hex: "#DFAB01"))  // yellow
+            return Settings.shared.currentTheme.color2.color
         case .protein:
-            return Color(uiColor: UIColor(hex: "#E03E3E"))  // red/pink
+            return Settings.shared.currentTheme.color3.color
         case .fatTotal:
-            return Color(uiColor: UIColor(hex: "#0F7B6C"))  // green
+            return Settings.shared.currentTheme.color4.color
         default:
             return .purple
         }

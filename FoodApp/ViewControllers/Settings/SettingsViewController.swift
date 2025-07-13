@@ -46,19 +46,19 @@ class SettingsViewController: UIViewController {
                     image: UIImage(systemName: "person.fill")!,
                     text: "My Profile",
                     secondary: "",
-                    backgroundColor: .cellBackground
+                    backgroundColor: Settings.shared.currentTheme.cellBackground.uiColor
                 ),
                 Model(
                     image: UIImage(systemName: "figure")!,
                     text: "Weight",
                     secondary: "",
-                    backgroundColor: .cellBackground
+                    backgroundColor: Settings.shared.currentTheme.cellBackground.uiColor
                 ),
                 Model(
                     image: UIImage(systemName: "fork.knife")!,
                     text: "Meal Types",
                     secondary: "",
-                    backgroundColor: .cellBackground
+                    backgroundColor: Settings.shared.currentTheme.cellBackground.uiColor
                 )
             ]
         ),
@@ -69,7 +69,7 @@ class SettingsViewController: UIViewController {
                     image: UIImage(systemName: "moon.fill")!,
                     text: "Theme",
                     secondary: "",
-                    backgroundColor: .cellBackground
+                    backgroundColor: Settings.shared.currentTheme.cellBackground.uiColor
                 ),
             ]
         ),
@@ -80,13 +80,13 @@ class SettingsViewController: UIViewController {
                     image: UIImage(systemName: "envelope.fill")!,
                     text: "Contact Us",
                     secondary: "",
-                    backgroundColor: .cellBackground
+                    backgroundColor: Settings.shared.currentTheme.cellBackground.uiColor
                 ),
                 Model(
                     image: UIImage(systemName: "ant.fill")!,
                     text: "Bug Report",
                     secondary: "",
-                    backgroundColor: .cellBackground
+                    backgroundColor: Settings.shared.currentTheme.cellBackground.uiColor
                 )
             ]
         ),
@@ -97,7 +97,7 @@ class SettingsViewController: UIViewController {
                     image: UIImage(systemName: "shield.fill")!,
                     text: "Privacy Policy",
                     secondary: "",
-                    backgroundColor: .cellBackground
+                    backgroundColor: Settings.shared.currentTheme.cellBackground.uiColor
                 )
             ]
         )
@@ -119,7 +119,7 @@ class SettingsViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        tableView.backgroundColor = .background
+        tableView.backgroundColor = Settings.shared.currentTheme.background.uiColor
         navigationItem.title = "Profile"
         navigationController?.navigationBar.prefersLargeTitles = false
         tableView.dataSource = self
@@ -134,6 +134,16 @@ class SettingsViewController: UIViewController {
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
         ])
+        
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(updateUI),
+                                               name: .themeUpdated,
+                                               object: nil)
+    }
+    
+    @objc func updateUI() {
+        self.tableView.backgroundColor = Settings.shared.currentTheme.background.uiColor
+        tableView.reloadData()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -181,6 +191,9 @@ extension SettingsViewController: UITableViewDelegate {
         } else if indexPath == IndexPath(row: 2, section: 0) {
             let mealTypesViewController = MealTypesViewController(userProfile: userProfile)
             navigationController?.pushViewController(mealTypesViewController, animated: true)
+        } else if indexPath == IndexPath(row: 0, section: 1) {
+            let themeViewController = ThemeViewController()
+            navigationController?.pushViewController(themeViewController, animated: true)
         } else if indexPath == IndexPath(row: 0, section: 2) {
             // Contact us
             guard MFMailComposeViewController.canSendMail() else {

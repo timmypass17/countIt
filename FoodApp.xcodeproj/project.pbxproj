@@ -22,6 +22,8 @@
 		32267A742DF397B2001B9CFC /* History+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32267A702DF397AA001B9CFC /* History+CoreDataProperties.swift */; };
 		322AB8EB2E170EEC003B74AC /* AddIngredientDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 322AB8EA2E170EEC003B74AC /* AddIngredientDetailViewController.swift */; };
 		322AB8ED2E170F80003B74AC /* IngredientsResultViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 322AB8EC2E170F80003B74AC /* IngredientsResultViewController.swift */; };
+		322FDA142E222D4D00C8453E /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 328FA9682B9BE560002A6FB6 /* Settings.swift */; };
+		322FDDAF2E23118C00C8453E /* ThemeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 322FDDAE2E23118C00C8453E /* ThemeViewController.swift */; };
 		3230A7822E1B18B7004C14F5 /* AddWeightViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3230A7812E1B18B7004C14F5 /* AddWeightViewController.swift */; };
 		323FB6B42DC95E3600A71C53 /* ResultsPaginatedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 323FB6B32DC95E3600A71C53 /* ResultsPaginatedViewController.swift */; };
 		323FB7662DCADDD000A71C53 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 323FB7652DCADDD000A71C53 /* SettingsViewController.swift */; };
@@ -260,6 +262,7 @@
 		32267A702DF397AA001B9CFC /* History+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "History+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		322AB8EA2E170EEC003B74AC /* AddIngredientDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddIngredientDetailViewController.swift; sourceTree = "<group>"; };
 		322AB8EC2E170F80003B74AC /* IngredientsResultViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IngredientsResultViewController.swift; sourceTree = "<group>"; };
+		322FDDAE2E23118C00C8453E /* ThemeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeViewController.swift; sourceTree = "<group>"; };
 		3230A7812E1B18B7004C14F5 /* AddWeightViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddWeightViewController.swift; sourceTree = "<group>"; };
 		323FB6B32DC95E3600A71C53 /* ResultsPaginatedViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultsPaginatedViewController.swift; sourceTree = "<group>"; };
 		323FB7652DCADDD000A71C53 /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
@@ -495,6 +498,7 @@
 				32D3F7532E1C88900012CD2B /* MealTypesViewController.swift */,
 				32D3F7572E1C92200012CD2B /* EditMealTypeViewController.swift */,
 				324E47BC2E1EFD0E0001F9E2 /* PrivacyPolicyViewController.swift */,
+				322FDDAE2E23118C00C8453E /* ThemeViewController.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -1095,6 +1099,7 @@
 				32A292492DDDA69D004272A7 /* FoodInfoPortion+CoreDataClass.swift in Sources */,
 				32A2924A2DDDA69D004272A7 /* FoodInfoPortion+CoreDataProperties.swift in Sources */,
 				32C386502DC5AF7E0018D282 /* SurveyFoodItem.swift in Sources */,
+				322FDA142E222D4D00C8453E /* Settings.swift in Sources */,
 				3290A3602DD2E139008A4320 /* NutrientGoal+CoreDataClass.swift in Sources */,
 				3290A3612DD2E139008A4320 /* NutrientGoal+CoreDataProperties.swift in Sources */,
 				320E6C3A2DC4336700ABD356 /* MealPlan+CoreDataClass.swift in Sources */,
@@ -1206,6 +1211,7 @@
 				32762A812DFF4D07001BB96F /* Meal+CoreDataProperties.swift in Sources */,
 				32CB60B62BABCE78002DA0C2 /* CalendarViewController.swift in Sources */,
 				32C386562DC5B82B0018D282 /* BrandedFoodItem.swift in Sources */,
+				322FDDAF2E23118C00C8453E /* ThemeViewController.swift in Sources */,
 				320EE1D12DCDBAC500D6B07D /* HeightFeetPickerViewController.swift in Sources */,
 				325463C02DD03FF400BEDCE0 /* OnboardingPageViewController.swift in Sources */,
 				329F33A12E206A4500148EC8 /* CreateIngredientViewController.swift in Sources */,

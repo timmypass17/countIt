@@ -12,6 +12,7 @@ class SearchFoodViewController: SearchItemTableViewController {
     
     // Initally meal can mealplan not loaded yet
     var meal: Meal?
+    var searchTitleView: SearchTitleView?
     
     init(
         meal: Meal?,
@@ -19,6 +20,8 @@ class SearchFoodViewController: SearchItemTableViewController {
         userProfile: UserProfile
     ) {
         self.meal = meal
+    
+        
         super.init(foodService: foodService, userProfile: userProfile, visibleTabs: [.all, .myRecipes, .myFoods], visibleButtonTypes: [.barcode, .quickAdd, .addRecipe, .addFood])
     }
     
@@ -37,17 +40,23 @@ class SearchFoodViewController: SearchItemTableViewController {
         searchController.searchBar.autocapitalizationType = .none
         searchController.searchBar.placeholder = "Search food"
         
+        if let meal, let meals = meal.mealPlan?.meals {
+            searchTitleView = SearchTitleView(selectedMeal: meal, meals: meals)
+            searchTitleView?.delegate = self
+            navigationItem.titleView = searchTitleView
+        }
+        
         navigationItem.searchController = searchController
         
-        if let meal, let meals = meal.mealPlan?.meals {
-            let titleView = SearchTitleView(selectedMeal: meal, meals: meals)
-            titleView.delegate = self
-            navigationItem.titleView = titleView
-        }
     }
     
     @MainActor required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func updateUI() {
+        super.updateUI()
+        searchTitleView?.updateUI()
     }
 
     override func handleBarcodeScan(barcodeID: String) {

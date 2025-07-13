@@ -12,12 +12,20 @@ import AuthenticationServices
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
+    var tabBarController: UITabBarController?
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         let foodService = FoodService()
         window = UIWindow(windowScene: windowScene)
+        
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(updateTheme),
+                                               name: .themeUpdated,
+                                               object: nil)
 
+        updateTheme()
+        
         if let userProfile = foodService.getUserProfile() {
             // Show main tab bar controller
             self.showMainApp(userProfile: userProfile)
@@ -47,30 +55,15 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         settingsViewController.tabBarItem = UITabBarItem(title: nil, image: UIImage(systemName: "person.fill"), tag: 3)
 
         // Set view controllers
-        let tabBarController = UITabBarController()
-        tabBarController.viewControllers = [
+        tabBarController = UITabBarController()
+        tabBarController?.viewControllers = [
             diaryViewController,
             searchViewController,
             progressViewController,
             settingsViewController
         ].map { UINavigationController(rootViewController: $0) }
 
-        // Customize tab bar appearance
-        let appearance = UITabBarAppearance()
-        appearance.configureWithOpaqueBackground()
-        appearance.backgroundColor = UIColor(hex: "#191919")
-
-        // Set selected and unselected icon colors
-        appearance.stackedLayoutAppearance.selected.iconColor = .white
-        appearance.stackedLayoutAppearance.normal.iconColor = .secondaryLabel
-
-        tabBarController.tabBar.standardAppearance = appearance
-        if #available(iOS 15.0, *) {
-            tabBarController.tabBar.scrollEdgeAppearance = appearance
-        }
-
-        // Also update tint color to match selected icon
-        tabBarController.tabBar.tintColor = .white
+        updateTabBar()
         
         // Set as root
         if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
@@ -78,6 +71,32 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             window.rootViewController = tabBarController
             window.makeKeyAndVisible()
         }
+    }
+    
+    @objc func updateTheme() {
+        // Changes colors like title color, menu background, button pressed colors (system color stuff)
+        window?.overrideUserInterfaceStyle = Settings.shared.currentTheme.uiUserInterfaceStyle
+        updateTabBar()
+    }
+    
+    func updateTabBar() {
+        // Customize tab bar appearance
+        let appearance = UITabBarAppearance()
+        appearance.configureWithOpaqueBackground()
+        appearance.backgroundColor = Settings.shared.currentTheme.tabBar.uiColor
+
+        // Set selected and unselected icon colors
+        appearance.stackedLayoutAppearance.selected.iconColor = Settings.shared.currentTheme.label.uiColor
+        appearance.stackedLayoutAppearance.normal.iconColor = Settings.shared.currentTheme.secondary.uiColor
+
+        tabBarController?.tabBar.standardAppearance = appearance
+        if #available(iOS 15.0, *) {
+            tabBarController?.tabBar.scrollEdgeAppearance = appearance
+        }
+
+        // Also update tint color to match selected icon
+        tabBarController?.tabBar.tintColor = Settings.shared.currentTheme.label.uiColor
+        
     }
     
     func showOnboarding() {

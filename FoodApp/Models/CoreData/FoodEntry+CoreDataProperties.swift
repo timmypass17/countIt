@@ -48,22 +48,22 @@ extension FoodEntry {
     // Ingredients can only be other FoodEntry, not recipe
     func getNutrientAmount(_ nutrientID: NutrientId, quantity: Int = 1) -> Double {
         if isCustom {
-            print("timmy isCustom: \(foodInfo?.name)")
+//            print("timmy isCustom: \(foodInfo?.name)")
             if isRecipe {
-                print("timmy isRecipe \(foodInfo?.name)")
+//                print("timmy isRecipe \(foodInfo?.name)")
                 var ingredientAmount = 0.0
                 for ingredient in ingredients {
                     ingredientAmount += ingredient.getNutrientAmount(nutrientID, quantity: Int(ingredient.quantity))
-                    print("timmy ingredient: \(ingredient.foodInfo?.name) \(ingredient.quantity) \(ingredientAmount) cal")
+//                    print("timmy ingredient: \(ingredient.foodInfo?.name) \(ingredient.quantity) \(ingredientAmount) cal")
                 }
                 return (ingredientAmount) * Double(quantity)
             } else {
-                print("timmy isCustom: \(foodInfo?.name)")
+//                print("timmy isCustom: \(foodInfo?.name)")
                 let ingredientAmount = (foodInfo?.nutrients[nutrientID]?.value ?? 0) * Double(quantity)
                 return ingredientAmount
             }
         } else {
-            print("timmy fdc: \(foodInfo?.name)")
+//            print("timmy fdc: \(foodInfo?.name)")
             guard let amountPer100g = foodInfo?.nutrients[nutrientID]?.value else { return 0 }
             return (amountPer100g / 100) * Double(gramWeight ?? 0) * Double(quantity)
         }

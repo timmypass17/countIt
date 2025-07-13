@@ -12,6 +12,7 @@ extension Notification.Name {
     static let mealPlanUpdated = Notification.Name("mealPlanUpdated")
     static let onboardingBackButton = Notification.Name("onboardingBack")
     static let reloadDiary = Notification.Name("reloadDiary")
+    static let themeUpdated = Notification.Name("themeUpdated")
 }
 
 class OnboardingViewController: UIViewController {
@@ -29,7 +30,7 @@ class OnboardingViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .background
+        view.backgroundColor = Settings.shared.currentTheme.background.uiColor
         
         addChild(pageViewController)
         view.addSubview(pageViewController.view)

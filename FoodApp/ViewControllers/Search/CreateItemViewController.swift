@@ -19,7 +19,7 @@ class CreateItemViewController: UIViewController {
     
     let tableView: UITableView = {
         let tableView = UITableView(frame: .zero, style: .insetGrouped)
-        tableView.backgroundColor = .background
+        tableView.backgroundColor = Settings.shared.currentTheme.background.uiColor
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.keyboardDismissMode = .onDrag
         return tableView

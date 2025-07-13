@@ -52,6 +52,8 @@ class SearchButtonRowView: UIView {
             container.leadingAnchor.constraint(equalTo: layoutMarginsGuide.leadingAnchor),
             container.trailingAnchor.constraint(equalTo: layoutMarginsGuide.trailingAnchor)
         ])
+        
+        updateUI()
     }
     
     private func makeButton(for buttonType: SearchButtonType) -> SearchButtonView {
@@ -76,6 +78,12 @@ class SearchButtonRowView: UIView {
         let type = visibleButtonTypes[index]
         delegate?.searchButtonRowView(self, didTapButton: type)
     }
+    
+    func updateUI() {
+        for button in searchButtonsView {
+            button.backgroundColor = Settings.shared.currentTheme.cellBackground.uiColor
+        }
+    }
 }
 
 class SearchButtonView: UIControl {
@@ -83,13 +91,14 @@ class SearchButtonView: UIControl {
     let imageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFit
+        imageView.tintColor = Settings.shared.currentTheme.color1.uiColor
         return imageView
     }()
     
     let titleLabel: UILabel = {
         let label = UILabel()
         label.font = .preferredFont(forTextStyle: .footnote)
-        label.textColor = .systemBlue
+        label.textColor = Settings.shared.currentTheme.color1.uiColor
         label.adjustsFontSizeToFitWidth = true  // shrink text
         label.minimumScaleFactor = 0.7 // down to 70%
         label.lineBreakMode = .byClipping
@@ -123,7 +132,7 @@ class SearchButtonView: UIControl {
             container.trailingAnchor.constraint(equalTo: layoutMarginsGuide.trailingAnchor)
         ])
         
-        backgroundColor = .cellBackground
+        backgroundColor = Settings.shared.currentTheme.cellBackground.uiColor
         layer.cornerRadius = 8
         clipsToBounds = true
         isUserInteractionEnabled = true

@@ -88,7 +88,7 @@ class FoodDetailTableViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        tableView.backgroundColor = .background
+        tableView.backgroundColor = Settings.shared.currentTheme.background.uiColor
         navigationItem.title = fdcFood.description
         navigationItem.leftBarButtonItem = UIBarButtonItem(systemItem: .cancel, primaryAction: cancelButtonTapped())
         tableView.register(SelectTableViewCell.self, forCellReuseIdentifier: SelectTableViewCell.reuseIdentifier)
@@ -158,7 +158,7 @@ class FoodDetailTableViewController: UITableViewController {
             cell.contentConfiguration = UIHostingConfiguration {    // tableView.reloadData() or use swiftui state mangement
                 MacrosView(mealPlan: meal?.mealPlan, userProfile: userProfile, nutrients: nutrients)
             }
-            cell.backgroundColor = .cellBackground
+            cell.backgroundColor = Settings.shared.currentTheme.cellBackground.uiColor
             cell.selectionStyle = .none
             return cell
         case .ingredients:

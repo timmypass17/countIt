@@ -21,10 +21,10 @@ struct CaloriesConsumedView: View {
 
     // Notion Dark Mode-Inspired Colors
     let mealColors: [Color] = [
-        Color(hex: "#2E8AFF"), // Blue
-        Color(hex: "#F5A623"), // Yellow
-        Color(hex: "#FF6B6B"), // Red
-        Color(hex: "#29CC7A")  // Green
+        Settings.shared.currentTheme.color1.color,
+        Settings.shared.currentTheme.color2.color,
+        Settings.shared.currentTheme.color3.color,
+        Settings.shared.currentTheme.color4.color
     ]
     
     init(mealPlan: MealPlan) {
@@ -60,10 +60,10 @@ struct CaloriesConsumedView: View {
         VStack(alignment: .leading, spacing: 0) {
             HStack {
                 Image(systemName: NutrientId.calories.symbol)
-                    .foregroundStyle(NutrientId.calories.progressColor)
+                    .foregroundStyle(Settings.shared.currentTheme.color1.color)
 
                 Text("Calories Consumed")
-                    .foregroundColor(.secondary)
+                    .foregroundColor(Settings.shared.currentTheme.secondary.color)
                     .font(.subheadline)
             }
             .padding(.bottom, 12)
@@ -71,18 +71,31 @@ struct CaloriesConsumedView: View {
             HStack(alignment: .lastTextBaseline) {
                 Text("\(Int(caloriesConsumed))")
                     .font(.system(size: 42, weight: .semibold))
+                    .foregroundStyle(Settings.shared.currentTheme.label.color)
                 VStack(alignment: .leading) {
                     Text("cal")
                         .bold()
+                        .foregroundStyle(Settings.shared.currentTheme.label.color)
                     Text("/ \(Int(caloriesGoal))")
                         .bold()
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(Settings.shared.currentTheme.secondary.color)
                 }
             }
             .padding(.bottom, 12)
             
             VStack(alignment: .leading, spacing: 8) {
                 Chart {
+                    if caloriesConsumed < caloriesGoal {
+                        BarMark(
+                            xStart: .value("Amount", 0),
+                            xEnd: .value("Goal", caloriesGoal),
+                            y: .value("Type", "Calories"),
+                            height: 24
+                        )
+                        .foregroundStyle(Settings.shared.currentTheme.progress.color)
+                        .cornerRadius(4)
+                    }
+                    
                     ForEach(sortedMeals, id: \.self) { meal in
                         BarMark(
                             x: .value("Amount", min(meal.nutrientAmount(.calories), caloriesGoal)),
@@ -93,16 +106,6 @@ struct CaloriesConsumedView: View {
                         .cornerRadius(4)
                     }
 
-                    if caloriesConsumed < caloriesGoal {
-                        BarMark(
-                            xStart: .value("Amount", 0),
-                            xEnd: .value("Goal", caloriesGoal),
-                            y: .value("Type", "Calories"),
-                            height: 24
-                        )
-                        .foregroundStyle(Color.gray.opacity(0.2))
-                        .cornerRadius(4)
-                    }
                 }
                 .frame(height: 50) // fixed chart height
                 .chartXScale(domain: 0...caloriesGoal)
@@ -184,7 +187,7 @@ struct TagCloudView: View {
                         .frame(width: 8, height: 8)
                     Text(tag.0)
                         .font(.caption2)
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(Settings.shared.currentTheme.secondary.color)
                 }
                 .padding([.horizontal, .vertical], 4)
                 .alignmentGuide(.leading, computeValue: { d in

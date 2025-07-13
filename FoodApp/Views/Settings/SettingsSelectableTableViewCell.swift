@@ -22,7 +22,7 @@ class SettingsSelectableTableViewCell: SettingsTableViewCell {
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        backgroundColor = .cellBackground
+        backgroundColor = Settings.shared.currentTheme.cellBackground.uiColor
         container.addArrangedSubview(secondaryLabel)
     }
     
@@ -97,7 +97,7 @@ class SettingsTableViewCell: UITableViewCell {
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        backgroundColor = .cellBackground
+        backgroundColor = Settings.shared.currentTheme.cellBackground.uiColor
 
         iconContainer.addSubview(iconImageView)
         container.addArrangedSubview(iconContainer)
@@ -127,9 +127,15 @@ class SettingsTableViewCell: UITableViewCell {
     }
     
     func update(with model: SettingsViewController.Model) {
-        iconImageView.image = model.image
-        iconContainer.backgroundColor = model.backgroundColor
+        iconImageView.image = model.image?.withRenderingMode(.alwaysTemplate)
+        iconImageView.tintColor = Settings.shared.currentTheme.label.uiColor
+
+        //        iconContainer.backgroundColor = Settings.shared.currentTheme.label.uiColor
         label.text = model.text
+        
+        label.textColor = Settings.shared.currentTheme.label.uiColor
+        backgroundColor = Settings.shared.currentTheme.cellBackground.uiColor
+
 //        secondaryLabel.text = model.secondary
 //        accessoryType = .disclosureIndicator
     }

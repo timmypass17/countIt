@@ -16,7 +16,7 @@ class MealPlanDateView: UIView {
     
     var selectedDate: Date {
         didSet {
-            updateDateText()
+            updateUI()
         }
     }
     
@@ -26,13 +26,14 @@ class MealPlanDateView: UIView {
         let button = UIButton()
         button.setTitle("Today", for: .normal)
         button.addAction(didTapDateButton(), for: .touchUpInside)
+        button.setTitleColor(Settings.shared.currentTheme.label.uiColor, for: .normal)
         return button
     }()
     
     var previousButton: UIButton = {
         let button = UIButton()
         button.setImage(UIImage(systemName: "chevron.left"), for: .normal)
-        button.tintColor = .label
+        button.tintColor = Settings.shared.currentTheme.label.uiColor
         button.widthAnchor.constraint(equalToConstant: 50).isActive = true
         return button
     }()
@@ -40,7 +41,7 @@ class MealPlanDateView: UIView {
     var nextButton: UIButton = {
         let button = UIButton()
         button.setImage(UIImage(systemName: "chevron.right"), for: .normal)
-        button.tintColor = .label
+        button.tintColor = Settings.shared.currentTheme.label.uiColor
         button.widthAnchor.constraint(equalToConstant: 50).isActive = true
         return button
     }()
@@ -117,5 +118,12 @@ class MealPlanDateView: UIView {
         } else {
             dateButton.setTitle(selectedDate.formatted(date: .abbreviated, time: .omitted), for: .normal)
         }
+    }
+    
+    func updateUI() {
+        updateDateText()
+        previousButton.tintColor = Settings.shared.currentTheme.label.uiColor
+        nextButton.tintColor = Settings.shared.currentTheme.label.uiColor
+        dateButton.setTitleColor(Settings.shared.currentTheme.label.uiColor, for: .normal)
     }
 }

@@ -20,13 +20,14 @@ class NutrientView: UIView {
         label.font = .preferredFont(forTextStyle: .caption1)
         label.numberOfLines = 1
         label.lineBreakMode = .byTruncatingTail
+        label.textColor = Settings.shared.currentTheme.label.uiColor
         return label
     }()
     
     var unitLabel: UILabel = {
         let label = UILabel()
         label.font = .preferredFont(forTextStyle: .caption1)
-        label.textColor = .secondaryLabel
+        label.textColor = Settings.shared.currentTheme.secondary.uiColor
         label.numberOfLines = 1
         label.lineBreakMode = .byTruncatingTail
         return label
@@ -77,5 +78,8 @@ class NutrientView: UIView {
 
         amountLabel.text = "\(Int(amount))"
         unitLabel.text = unit
+        
+        amountLabel.textColor = Settings.shared.currentTheme.label.uiColor
+        unitLabel.textColor = Settings.shared.currentTheme.secondary.uiColor
     }
 }

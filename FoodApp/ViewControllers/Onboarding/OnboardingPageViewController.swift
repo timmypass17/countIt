@@ -131,22 +131,22 @@ class OnboardingPageViewController: UIPageViewController {
             settingsViewController
         ].map { UINavigationController(rootViewController: $0) }
 
-        // Customize tab bar appearance
-        let appearance = UITabBarAppearance()
-        appearance.configureWithOpaqueBackground()
-        appearance.backgroundColor = .background
+//        // Customize tab bar appearance
+//        let appearance = UITabBarAppearance()
+//        appearance.configureWithOpaqueBackground()
+//        appearance.backgroundColor = Settings.shared.currentTheme.background.uiColor
 
         // Set selected and unselected icon colors
-        appearance.stackedLayoutAppearance.selected.iconColor = .white
-        appearance.stackedLayoutAppearance.normal.iconColor = .secondaryLabel
+//        appearance.stackedLayoutAppearance.selected.iconColor = .white
+//        appearance.stackedLayoutAppearance.normal.iconColor = .secondaryLabel
 
-        tabBarController.tabBar.standardAppearance = appearance
-        if #available(iOS 15.0, *) {
-            tabBarController.tabBar.scrollEdgeAppearance = appearance
-        }
+//        tabBarController.tabBar.standardAppearance = appearance
+//        if #available(iOS 15.0, *) {
+//            tabBarController.tabBar.scrollEdgeAppearance = appearance
+//        }
 
         // Also update tint color to match selected icon
-        tabBarController.tabBar.tintColor = .white
+//        tabBarController.tabBar.tintColor = .white
         
         // Set as root
         if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,

@@ -14,7 +14,7 @@ class MealHeaderView: UITableViewHeaderFooterView {
         let label = UILabel()
         label.numberOfLines = 1
         label.lineBreakMode = .byTruncatingTail
-        label.textColor = .secondaryLabel
+        label.textColor = Settings.shared.currentTheme.secondary.uiColor
         label.font = .preferredFont(forTextStyle: .caption1)
         return label
     }()
@@ -76,5 +76,7 @@ class MealHeaderView: UITableViewHeaderFooterView {
                 tintColor: UIColor(nutrientId.color)
             )
         }
+        
+        titleLabel.textColor = Settings.shared.currentTheme.label.uiColor
     }
 }

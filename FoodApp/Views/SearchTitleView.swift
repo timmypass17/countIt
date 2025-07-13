@@ -21,7 +21,7 @@ class SearchTitleView: UIView {
         let button = UIButton()
         button.tintColor = .white
         var imageConfig = UIImage.SymbolConfiguration(pointSize: 12, weight: .regular, scale: .default)
-        imageConfig = imageConfig.applying(UIImage.SymbolConfiguration(hierarchicalColor: .white))
+        imageConfig = imageConfig.applying(UIImage.SymbolConfiguration(hierarchicalColor: Settings.shared.currentTheme.label.uiColor))
         var config = UIButton.Configuration.plain()
         config.image = UIImage(systemName: "chevron.up.chevron.down", withConfiguration: imageConfig)
         config.imagePadding = 4
@@ -76,6 +76,13 @@ class SearchTitleView: UIView {
     
     func updateUI() {
         mealButton.setTitle(selectedMeal.name, for: .normal)
+
+        mealButton.tintColor = Settings.shared.currentTheme.label.uiColor
+        var config = mealButton.configuration ?? UIButton.Configuration.plain()
+        var imageConfig = UIImage.SymbolConfiguration(pointSize: 12, weight: .regular, scale: .default)
+        imageConfig = imageConfig.applying(UIImage.SymbolConfiguration(hierarchicalColor: Settings.shared.currentTheme.label.uiColor))
+        config.image = UIImage(systemName: "chevron.up.chevron.down", withConfiguration: imageConfig)
+        mealButton.configuration = config
     }
     
     func didTapMenuOption(for meal: Meal) -> UIAction {
