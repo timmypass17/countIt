@@ -69,7 +69,6 @@ class MealHeaderView: UITableViewHeaderFooterView {
         
         for i in 0..<nutrientsView.count {
             let nutrientId = nutrientIds[i]
-            let firstLetter = nutrientId.description.first!.lowercased()
             nutrientsView[i].update(
                 amount: meal.nutrientAmount(nutrientId),
                 unit: nutrientId.unitName,

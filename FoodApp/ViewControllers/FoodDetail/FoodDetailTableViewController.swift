@@ -34,6 +34,8 @@ class FoodDetailTableViewController: UITableViewController {
 
     let servingSizeIndexPath = IndexPath(row: 0, section: 0)
     let quantityIndexPath = IndexPath(row: 1, section: 0)
+    
+    let model = MacrosViewModel(nutrients: [:])
 
     enum Section: Int, CaseIterable {
         case servingSize
@@ -79,6 +81,19 @@ class FoodDetailTableViewController: UITableViewController {
             minerals.append(foodNutrient)
         }
 
+        let calories = fdcFood.getNutrientAmount(.calories, quantity: fdcFood.quantity)
+        let carbs = fdcFood.getNutrientAmount(.carbs, quantity: fdcFood.quantity)
+        let protein = fdcFood.getNutrientAmount(.protein, quantity: fdcFood.quantity)
+        let fats = fdcFood.getNutrientAmount(.fatTotal, quantity: fdcFood.quantity)
+        let nutrients: [NutrientId: Double] = [
+            .calories: calories,
+            .carbs: carbs,
+            .protein: protein,
+            .fatTotal: fats
+        ]
+        
+        model.nutrients = nutrients
+        
         super.init(style: .insetGrouped)
     }
     
@@ -144,19 +159,8 @@ class FoodDetailTableViewController: UITableViewController {
             return UITableViewCell()
         case .charts:
             let cell = tableView.dequeueReusableCell(withIdentifier: MacrosView.reuseIdentifier, for: indexPath)
-            let calories = fdcFood.getNutrientAmount(.calories, quantity: fdcFood.quantity)
-            let carbs = fdcFood.getNutrientAmount(.carbs, quantity: fdcFood.quantity)
-            let protein = fdcFood.getNutrientAmount(.protein, quantity: fdcFood.quantity)
-            let fats = fdcFood.getNutrientAmount(.fatTotal, quantity: fdcFood.quantity)
-            let nutrients: [NutrientId: Double] = [
-                .calories: calories,
-                .carbs: carbs,
-                .protein: protein,
-                .fatTotal: fats
-            ]
-
             cell.contentConfiguration = UIHostingConfiguration {    // tableView.reloadData() or use swiftui state mangement
-                MacrosView(mealPlan: meal?.mealPlan, userProfile: userProfile, nutrients: nutrients)
+                MacrosView(mealPlan: meal?.mealPlan, userProfile: userProfile, model: model)
             }
             cell.backgroundColor = Settings.shared.currentTheme.cellBackground.uiColor
             cell.selectionStyle = .none
@@ -303,14 +307,44 @@ class FoodDetailTableViewController: UITableViewController {
 extension FoodDetailTableViewController: SelectTableViewControllerDelegate {
     func selectTableViewController(_ sender: ServingSizeTableViewController, didSelectPortion foodPortion: FoodPortion) {
         fdcFood.selectedFoodPortion = foodPortion
-        tableView.reloadData()
+        
+        let calories = fdcFood.getNutrientAmount(.calories, quantity: fdcFood.quantity)
+        let carbs = fdcFood.getNutrientAmount(.carbs, quantity: fdcFood.quantity)
+        let protein = fdcFood.getNutrientAmount(.protein, quantity: fdcFood.quantity)
+        let fats = fdcFood.getNutrientAmount(.fatTotal, quantity: fdcFood.quantity)
+        let nutrients: [NutrientId: Double] = [
+            .calories: calories,
+            .carbs: carbs,
+            .protein: protein,
+            .fatTotal: fats
+        ]
+        
+        model.nutrients = nutrients // don't reload data, will recreate swiftui view = no animation. Use states to trigger animations
+        
+        let sections: [Int] = visibleSections.enumerated().map { $0.offset }.filter { $0 != Section.charts.rawValue }
+        tableView.reloadSections(IndexSet(sections), with: .automatic)
     }
 }
 
 extension FoodDetailTableViewController: QuantityTableViewControllerDelegate {
     func quantityTableViewController(_ sender: QuantityViewController, didSelectQuantity quantity: Int) {
         fdcFood.quantity = quantity
-        tableView.reloadData()
+
+        let calories = fdcFood.getNutrientAmount(.calories, quantity: fdcFood.quantity)
+        let carbs = fdcFood.getNutrientAmount(.carbs, quantity: fdcFood.quantity)
+        let protein = fdcFood.getNutrientAmount(.protein, quantity: fdcFood.quantity)
+        let fats = fdcFood.getNutrientAmount(.fatTotal, quantity: fdcFood.quantity)
+        let nutrients: [NutrientId: Double] = [
+            .calories: calories,
+            .carbs: carbs,
+            .protein: protein,
+            .fatTotal: fats
+        ]
+        
+        model.nutrients = nutrients // don't reload data, will recreate swiftui view = no animation. Use states to trigger animations
+        
+        let sections: [Int] = visibleSections.enumerated().map { $0.offset }.filter { $0 != Section.charts.rawValue }
+        tableView.reloadSections(IndexSet(sections), with: .automatic)
     }
 }
 

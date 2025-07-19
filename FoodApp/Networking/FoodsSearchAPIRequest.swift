@@ -18,7 +18,7 @@ struct FoodsSearchAPIRequest: APIRequest {
 
         urlComponents.queryItems = [
             "query": query,
-            "requireAllWords": "true",
+//            "requireAllWords": "true",
             "dataType": dataTypes.map { $0.rawValue }.joined(separator: ","),
             "pageSize": "\(pageSize)",
             "pageNumber": "\(pageNumber)",

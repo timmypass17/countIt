@@ -67,7 +67,7 @@ class SettingsViewController: UIViewController {
             data: [
                 Model(
                     image: UIImage(systemName: "moon.fill")!,
-                    text: "Theme",
+                    text: "Appearance",
                     secondary: "",
                     backgroundColor: Settings.shared.currentTheme.cellBackground.uiColor
                 ),

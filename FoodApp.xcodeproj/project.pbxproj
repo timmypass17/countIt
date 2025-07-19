@@ -1463,7 +1463,7 @@
 				DEVELOPMENT_TEAM = 8KHAQ7W8KV;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = FoodApp/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = BananaBite;
+				INFOPLIST_KEY_CFBundleDisplayName = CountIt;
 				INFOPLIST_KEY_NSCameraUsageDescription = "Your camera is used to scan food barcodes.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
@@ -1475,7 +1475,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.example.DuduMelon;
 				PRODUCT_NAME = BananaBite;
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1500,7 +1500,7 @@
 				DEVELOPMENT_TEAM = 8KHAQ7W8KV;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = FoodApp/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = BananaBite;
+				INFOPLIST_KEY_CFBundleDisplayName = CountIt;
 				INFOPLIST_KEY_NSCameraUsageDescription = "Your camera is used to scan food barcodes.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
@@ -1512,7 +1512,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.example.DuduMelon;
 				PRODUCT_NAME = BananaBite;
 				PROVISIONING_PROFILE_SPECIFIER = "";

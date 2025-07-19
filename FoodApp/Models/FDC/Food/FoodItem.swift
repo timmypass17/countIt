@@ -52,8 +52,13 @@ extension FoodItem {
                 }
                 return (ingredientAmount) * Double(quantity)
             } else {
-                let ingredientAmount = (foodNutrients[nutrientID]?.amount ?? 0) * Double(quantity)
-                return ingredientAmount
+                guard let amountPerServing = foodNutrients[nutrientID]?.amount,
+                      let baseGrams = foodPortions.first?.gramWeight    // theres only 1 food portion for custom
+                else {
+                    return (foodNutrients[nutrientID]?.amount ?? 0) * Double(quantity)
+                }
+                
+                return (amountPerServing / baseGrams) * Double(selectedFoodPortion.gramWeight ?? 0) * Double(quantity)
             }
         } else {
             guard let amountPer100g = foodNutrients[nutrientID]?.amount else { return 0 }

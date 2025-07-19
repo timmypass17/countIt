@@ -26,7 +26,7 @@ class ProfileViewController: UIViewController {
 
         let menu = UIMenu(title: "", children: [deleteAction])
         let button = UIBarButtonItem(image: UIImage(systemName: "ellipsis"), menu: menu)
-        button.tintColor = .white
+        button.tintColor = Settings.shared.currentTheme.label.uiColor
         return button
     }()
     

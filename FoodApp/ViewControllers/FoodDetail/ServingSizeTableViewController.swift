@@ -36,11 +36,13 @@ class ServingSizeTableViewController: UITableViewController {
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: reuseIdentifier)
         let cancelButton = UIBarButtonItem(systemItem: .cancel, primaryAction: cancelButtonTapped())
         let createButton = UIBarButtonItem(image: UIImage(systemName: "square.and.pencil"), primaryAction: createButtonTapped())
+        if !foodPortions.contains(where: { $0.gramWeight != nil }) {
+            createButton.isEnabled = false
+        }
         let doneButton = UIBarButtonItem(systemItem: .done, primaryAction: didTapDoneButton())
         navigationItem.leftBarButtonItem = cancelButton
-        // TODO: Allow grams
-//        navigationItem.rightBarButtonItems = [doneButton, createButton]
-        navigationItem.rightBarButtonItems = [doneButton]
+        navigationItem.rightBarButtonItems = [doneButton, createButton]
+//        navigationItem.rightBarButtonItems = [doneButton]
     }
 
     // MARK: - Table view data source
@@ -108,12 +110,12 @@ class ServingSizeTableViewController: UITableViewController {
         let alert = UIAlertController(title: "Custom Serving Size", message: "Enter your own serving size (\(servingSizeUnit)) below", preferredStyle: .alert)
 
         alert.addTextField { textField in
-//            textField.placeholder = "Ex. 100"
-//            textField.keyboardType = .decimalPad
-//            let textChangedAction = UIAction { _ in
-//                alert.actions[1].isEnabled = textField.text!.count > 0 && textField.text!.isNumeric
-//            }
-//            textField.addAction(textChangedAction, for: .allEditingEvents)
+            textField.placeholder = "Ex. 100"
+            textField.keyboardType = .decimalPad
+            let textChangedAction = UIAction { _ in
+                alert.actions[1].isEnabled = textField.text!.count > 0 && textField.text!.isNumeric
+            }
+            textField.addAction(textChangedAction, for: .allEditingEvents)
         }
         
         // add the actions (buttons)
@@ -123,9 +125,10 @@ class ServingSizeTableViewController: UITableViewController {
                   let gramWeight = Float(gramString)
             else { return }
             let customServingSize = FoodPortion(id: -1, gramWeight: Double(gramWeight), modifier: nil)
+//            fdcFood.selectedFoodPortion = customServingSize
             // TODO: Fix custom measurement
-//            self.delegate?.selectTableViewController(self, didSelectMeasurement: customServingSize)
-//            self.navigationController?.dismiss(animated: true)
+            self.delegate?.selectTableViewController(self, didSelectPortion: customServingSize)
+            self.navigationController?.dismiss(animated: true)
         }))
 
         // show the alert

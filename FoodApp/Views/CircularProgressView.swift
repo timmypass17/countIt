@@ -53,6 +53,8 @@ struct CircularProgressView: View {
                     .fontWeight(.semibold)
                     .font(.system(size: progressSize))
                     .foregroundStyle(Settings.shared.currentTheme.label.color)
+                    .contentTransition(.numericText())
+                    .animation(.default, value: current)
 
                     Text("\(total.formatted(.number)) \(unitName)")
                         .foregroundStyle(Settings.shared.currentTheme.secondary.color)

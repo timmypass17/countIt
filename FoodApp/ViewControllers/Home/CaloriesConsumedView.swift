@@ -72,6 +72,8 @@ struct CaloriesConsumedView: View {
                 Text("\(Int(caloriesConsumed))")
                     .font(.system(size: 42, weight: .semibold))
                     .foregroundStyle(Settings.shared.currentTheme.label.color)
+                    .contentTransition(.numericText())
+                    .animation(.default, value: caloriesConsumed)
                 VStack(alignment: .leading) {
                     Text("cal")
                         .bold()

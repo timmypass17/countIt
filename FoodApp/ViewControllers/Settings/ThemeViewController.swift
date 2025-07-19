@@ -29,7 +29,7 @@ class ThemeViewController: UIViewController {
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "ThemeCell")
         tableView.dataSource = self
         tableView.delegate = self
-        navigationItem.title = "Theme"
+        navigationItem.title = "Appearance"
         navigationItem.largeTitleDisplayMode = .never
         
         view.addSubview(tableView)
@@ -39,6 +39,11 @@ class ThemeViewController: UIViewController {
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
         ])
+    }
+    
+    func updateUI() {
+        tableView.backgroundColor = Settings.shared.currentTheme.background.uiColor
+        tableView.reloadData()
     }
 
 }
@@ -70,10 +75,9 @@ extension ThemeViewController: UITableViewDataSource {
 
         return cell
     }
-    
-    func updateUI() {
-        tableView.backgroundColor = Settings.shared.currentTheme.background.uiColor
-        tableView.reloadData()
+
+    func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
+        return "Some appearance changes may require restarting the app to fully apply."
     }
 }
 

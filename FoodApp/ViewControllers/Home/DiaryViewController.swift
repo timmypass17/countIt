@@ -111,24 +111,6 @@ class DiaryViewController: UIViewController {
         super.setEditing(editing, animated: animated)
     }
     
-//    override func viewWillAppear(_ animated: Bool) {
-//        print("viewWillAppear")
-//        super.viewWillAppear(animated)
-//        let appearance = UINavigationBarAppearance()
-//        appearance.configureWithOpaqueBackground() // use `.configureWithTransparentBackground()` if you want it transparent
-//        appearance.backgroundColor = Settings.shared.currentTheme.background.uiColor
-//
-//        // Optionally adjust title color
-//        appearance.titleTextAttributes = [.foregroundColor: UIColor.label]
-//        appearance.largeTitleTextAttributes = [.foregroundColor: UIColor.label]
-//
-//        navigationController?.navigationBar.standardAppearance = appearance
-//        navigationController?.navigationBar.scrollEdgeAppearance = appearance // important!
-//        navigationController?.navigationBar.compactAppearance = appearance // optional for compact height
-//        navigationController?.navigationBar.tintColor = Settings.shared.currentTheme.background.uiColor
-//        navigationController?.navigationBar.isTranslucent = false
-//    }
-    
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
     }
@@ -340,11 +322,11 @@ extension DiaryViewController: UITableViewDataSource {
         }
         
         if indexPath.section == 1 {
-            print("timmy update")
             let cell = tableView.dequeueReusableCell(withIdentifier: MacrosView.reuseIdentifier, for: indexPath)
-            
+            let vm = MacrosViewModel(nutrients: [:])
+
             cell.contentConfiguration = UIHostingConfiguration {
-                MacrosView(mealPlan: mealPlan, userProfile: userProfile)  // uses coredata fetch, updated automatically when core data changes
+                MacrosView(mealPlan: mealPlan, userProfile: userProfile, model: vm)  // uses coredata fetch, updated automatically when core data changes
                     .environment(\.managedObjectContext, CoreDataStack.shared.context)
             }
             cell.backgroundColor = Settings.shared.currentTheme.cellBackground.uiColor
