@@ -109,3 +109,63 @@ extension MealPlan {
     @NSManaged public func removeFromNutrientGoals_(_ values: NSSet)
 
 }
+
+extension MealPlan {
+    static let sample: MealPlan = {
+        let context = CoreDataStack.shared.childContext()
+        let mealPlan = MealPlan(context: context)
+        
+        mealPlan.date = .now
+        mealPlan.dateKey = formatDateAsDateKey(.now)
+
+        let calorieGoal = NutrientGoal(context: context)
+        calorieGoal.value = 2000
+        calorieGoal.nutrientId = .calories
+        mealPlan.addToNutrientGoals_(calorieGoal)
+                
+        let carbGoal = NutrientGoal(context: context)
+        carbGoal.value = 250 // grams
+        carbGoal.nutrientId = .carbs
+        mealPlan.addToNutrientGoals_(carbGoal)
+
+        let proteinGoal = NutrientGoal(context: context)
+        proteinGoal.value = 150 // grams
+        proteinGoal.nutrientId = .protein
+        mealPlan.addToNutrientGoals_(proteinGoal)
+
+        let fatGoal = NutrientGoal(context: context)
+        fatGoal.value = 70 // grams
+        fatGoal.nutrientId = .fatTotal
+        mealPlan.addToNutrientGoals_(fatGoal)
+        
+        
+        let mealNames = ["Breakfast", "Lunch", "Dinner", "Snack"]
+        
+        for (index, mealName) in mealNames.enumerated() {
+            let meal = Meal(context: context)
+            meal.index = Int16(index)
+            meal.name = mealName
+            meal.mealPlan = mealPlan
+            mealPlan.addToMeals_(meal)
+        }
+        
+        let breakfast = mealPlan.meals[0]
+        let egg = FoodEntry(context: context)
+        
+        let foodInfo = FoodInfo(context: context)
+        foodInfo.fdcId = Int64.random(in: Int64.min..<0)    // negative means user generated
+        foodInfo.brandName_ = nil
+        egg.foodInfo = foodInfo
+        
+        for nutrientId in NutrientId.allCases {
+            let foodInfoNutrient = FoodInfoNutrient(context: context)
+            foodInfoNutrient.nutrientId = nutrientId
+            foodInfo.addToNutrients_(foodInfoNutrient)
+        }
+        
+        egg.foodInfo?.nutrients[.calories]?.value = 100
+        breakfast.addToFoodEntries_(egg)
+        
+        return mealPlan
+    }()
+}

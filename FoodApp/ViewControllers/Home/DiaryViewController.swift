@@ -8,6 +8,7 @@
 import UIKit
 import SwiftUI
 import CoreData
+import WidgetKit
 
 protocol DiaryViewControllerDelegate: AnyObject {
     func diaryViewController(_ viewController: DiaryViewController, mealPlanChanged mealPlan: MealPlan)
@@ -422,6 +423,8 @@ extension DiaryViewController: UITableViewDelegate {
             
             reloadTableViewHeader(section: indexPath.section)
             NotificationCenter.default.post(name: .mealPlanUpdated, object: nil, userInfo: nil)
+            WidgetCenter.shared.reloadTimelines(ofKind: MacroWidget.kind)
+            print("Timmy reload widget")
         } catch {
             print("Error deleting food: \(error)")
         }
@@ -519,6 +522,9 @@ extension DiaryViewController: AddFoodDetailViewControllerDelegate {
         tableView.insertRows(at: [indexPath], with: .automatic)
         reloadTableViewHeader(section: section + 2)
         tableView.reloadSections(IndexSet([0, 1]), with: .automatic)
+        
+        WidgetCenter.shared.reloadTimelines(ofKind: MacroWidget.kind)
+        print("Timmy reload widget")
     }
 }
 
@@ -531,6 +537,8 @@ extension DiaryViewController: UpdateFoodDetailViewControllerDelegate {
         tableView.reloadRows(at: [indexPath, IndexPath(row: 0, section: 0), IndexPath(row: 0, section: 1)], with: .automatic)
         reloadTableViewHeader(section: section + 2)
         NotificationCenter.default.post(name: .mealPlanUpdated, object: nil, userInfo: nil)
+        WidgetCenter.shared.reloadTimelines(ofKind: MacroWidget.kind)
+        print("Timmy reload widget")
     }
 }
 

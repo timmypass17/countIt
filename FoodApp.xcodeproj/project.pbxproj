@@ -109,6 +109,15 @@
 		3262FBB12DFD49A7006CB8A4 /* Inter_28pt-BlackItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3262FB632DFD49A7006CB8A4 /* Inter_28pt-BlackItalic.ttf */; };
 		3262FBB22DFD49A7006CB8A4 /* Inter_18pt-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3262FB4C2DFD49A7006CB8A4 /* Inter_18pt-SemiBold.ttf */; };
 		3262FBB32DFD49A7006CB8A4 /* Inter_28pt-SemiBoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3262FB712DFD49A7006CB8A4 /* Inter_28pt-SemiBoldItalic.ttf */; };
+		3268A9062E2C1B0300A34AC9 /* FoodService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 328FA94D2B93B9D9002A6FB6 /* FoodService.swift */; };
+		3268A90B2E2C1B4C00A34AC9 /* MacroMediumView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3268A90A2E2C1B4C00A34AC9 /* MacroMediumView.swift */; };
+		3268A90C2E2C1B4C00A34AC9 /* MacroMediumView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3268A90A2E2C1B4C00A34AC9 /* MacroMediumView.swift */; };
+		3268A90D2E2C1BCF00A34AC9 /* FoodsSearchAPIRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32C276DE2E18937200637863 /* FoodsSearchAPIRequest.swift */; };
+		3268A90E2E2C1BDD00A34AC9 /* APIRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 328FA9492B93B704002A6FB6 /* APIRequest.swift */; };
+		3268A90F2E2C1BE800A34AC9 /* FoodListAPIRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32C276E22E1893A100637863 /* FoodListAPIRequest.swift */; };
+		3268A9102E2C1BEE00A34AC9 /* FoodAPIRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32515EC52DD3D4FD00594145 /* FoodAPIRequest.swift */; };
+		3268A9112E2C203500A34AC9 /* CaloriesConsumedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 326FB8E22DDC4FF40015500E /* CaloriesConsumedView.swift */; };
+		3268A9122E2C33D100A34AC9 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 32F51A532B92C1AA0080CC09 /* Assets.xcassets */; };
 		326DB7D12E08C3C000849E3F /* CreateRecipeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 326DB7D02E08C3C000849E3F /* CreateRecipeViewController.swift */; };
 		326FB8E32DDC4FF40015500E /* CaloriesConsumedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 326FB8E22DDC4FF40015500E /* CaloriesConsumedView.swift */; };
 		32723CF62BA63BE70074732C /* DiaryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32723CF52BA63BE70074732C /* DiaryViewController.swift */; };
@@ -345,6 +354,7 @@
 		3262FB762DFD49A7006CB8A4 /* Inter-VariableFont_opsz,wght.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Inter-VariableFont_opsz,wght.ttf"; sourceTree = "<group>"; };
 		3262FB772DFD49A7006CB8A4 /* OFL.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = OFL.txt; sourceTree = "<group>"; };
 		3262FB782DFD49A7006CB8A4 /* README.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = README.txt; sourceTree = "<group>"; };
+		3268A90A2E2C1B4C00A34AC9 /* MacroMediumView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacroMediumView.swift; sourceTree = "<group>"; };
 		326DB7D02E08C3C000849E3F /* CreateRecipeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateRecipeViewController.swift; sourceTree = "<group>"; };
 		326FB8E22DDC4FF40015500E /* CaloriesConsumedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaloriesConsumedView.swift; sourceTree = "<group>"; };
 		32723CF52BA63BE70074732C /* DiaryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiaryViewController.swift; sourceTree = "<group>"; };
@@ -789,6 +799,7 @@
 				32DFCB0F2BC1F971001BDA8E /* SingleMacroWidget.swift */,
 				32DFCAE52BC1CA29001BDA8E /* MacroWidget.swift */,
 				32DFCB0A2BC1F108001BDA8E /* WidgetView.swift */,
+				3268A90A2E2C1B4C00A34AC9 /* MacroMediumView.swift */,
 				32DFCAE72BC1CA2C001BDA8E /* Assets.xcassets */,
 				32DFCAE92BC1CA2C001BDA8E /* Info.plist */,
 			);
@@ -989,6 +1000,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3268A9122E2C33D100A34AC9 /* Assets.xcassets in Resources */,
 				32DFCAE82BC1CA2C001BDA8E /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1091,11 +1103,13 @@
 				3242C8E22DF0C22C00F05FF8 /* CDFoodItem.swift in Sources */,
 				32DFCB0C2BC1F1B6001BDA8E /* WidgetView.swift in Sources */,
 				32267A732DF397B2001B9CFC /* History+CoreDataClass.swift in Sources */,
+				3268A9062E2C1B0300A34AC9 /* FoodService.swift in Sources */,
 				32267A742DF397B2001B9CFC /* History+CoreDataProperties.swift in Sources */,
 				32DFCB032BC1D459001BDA8E /* FoodPortion.swift in Sources */,
 				32C388772DC6B1B30018D282 /* FoundationFoodItem.swift in Sources */,
 				32BD0C812DD19E440098253F /* UserProfile+CoreDataClass.swift in Sources */,
 				32BD0C822DD19E440098253F /* UserProfile+CoreDataProperties.swift in Sources */,
+				3268A9112E2C203500A34AC9 /* CaloriesConsumedView.swift in Sources */,
 				32A292492DDDA69D004272A7 /* FoodInfoPortion+CoreDataClass.swift in Sources */,
 				32A2924A2DDDA69D004272A7 /* FoodInfoPortion+CoreDataProperties.swift in Sources */,
 				32C386502DC5AF7E0018D282 /* SurveyFoodItem.swift in Sources */,
@@ -1103,7 +1117,9 @@
 				3290A3602DD2E139008A4320 /* NutrientGoal+CoreDataClass.swift in Sources */,
 				3290A3612DD2E139008A4320 /* NutrientGoal+CoreDataProperties.swift in Sources */,
 				320E6C3A2DC4336700ABD356 /* MealPlan+CoreDataClass.swift in Sources */,
+				3268A9102E2C1BEE00A34AC9 /* FoodAPIRequest.swift in Sources */,
 				3262F83E2DFCC2EB006CB8A4 /* UserWeight+CoreDataClass.swift in Sources */,
+				3268A90F2E2C1BE800A34AC9 /* FoodListAPIRequest.swift in Sources */,
 				3262F83F2DFCC2EB006CB8A4 /* UserWeight+CoreDataProperties.swift in Sources */,
 				320E6C3F2DC4336700ABD356 /* MealPlan+CoreDataProperties.swift in Sources */,
 				32BD0C832DD19FF00098253F /* UserNutrientGoal+CoreDataProperties.swift in Sources */,
@@ -1113,14 +1129,17 @@
 				32DFCAE62BC1CA29001BDA8E /* MacroWidget.swift in Sources */,
 				32762A8E2DFF5322001BB96F /* FoodEntry+CoreDataClass.swift in Sources */,
 				32762A8F2DFF5322001BB96F /* FoodEntry+CoreDataProperties.swift in Sources */,
+				3268A90C2E2C1B4C00A34AC9 /* MacroMediumView.swift in Sources */,
 				32870FAE2DD6D1E4005099D1 /* FoodInfoNutrient+CoreDataClass.swift in Sources */,
 				32870FAF2DD6D1E4005099D1 /* FoodInfoNutrient+CoreDataProperties.swift in Sources */,
 				32762A822DFF4D07001BB96F /* Meal+CoreDataClass.swift in Sources */,
+				3268A90D2E2C1BCF00A34AC9 /* FoodsSearchAPIRequest.swift in Sources */,
 				32762A832DFF4D07001BB96F /* Meal+CoreDataProperties.swift in Sources */,
 				32762A882DFF4D4C001BB96F /* FoodInfo+CoreDataClass.swift in Sources */,
 				32762A892DFF4D4C001BB96F /* FoodInfo+CoreDataProperties.swift in Sources */,
 				32DFCB022BC1D459001BDA8E /* FoodItem.swift in Sources */,
 				32DFCB072BC1D894001BDA8E /* FoodApp.xcdatamodeld in Sources */,
+				3268A90E2E2C1BDD00A34AC9 /* APIRequest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1194,6 +1213,7 @@
 				3262F83C2DFCC2DC006CB8A4 /* UserWeight+CoreDataClass.swift in Sources */,
 				3262F83D2DFCC2DC006CB8A4 /* UserWeight+CoreDataProperties.swift in Sources */,
 				3290A35E2DD2CCE2008A4320 /* NutrientGoal+CoreDataClass.swift in Sources */,
+				3268A90B2E2C1B4C00A34AC9 /* MacroMediumView.swift in Sources */,
 				3290A35F2DD2CCE2008A4320 /* NutrientGoal+CoreDataProperties.swift in Sources */,
 				3242C8E42DF0D7E700F05FF8 /* UpdateFoodDetailViewController.swift in Sources */,
 				32DFCAF22BC1CC97001BDA8E /* MacroWidget.swift in Sources */,

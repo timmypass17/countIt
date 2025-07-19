@@ -10,7 +10,7 @@ import Foundation
 
 struct Settings {
     static var shared = Settings()
-    private let defaults = UserDefaults.standard
+    private let defaults = UserDefaults(suiteName: "group.com.example.DuduMelon")!
     private init() {}
 
     private func save<T: Encodable>(_ value: T, for key: String) {

@@ -99,6 +99,7 @@ struct CaloriesConsumedView: View {
                     }
                     
                     ForEach(Array(sortedMeals.enumerated()), id: \.element) { index, meal in
+                        // sum of previous meals
                         let prevSum = sortedMeals
                             .prefix(index)
                             .reduce(0) { $0 + $1.nutrientAmount(.calories) }

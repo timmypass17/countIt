@@ -79,6 +79,7 @@ func extractQuantityAndModifier(from string: String) -> (Double, String)? {
 extension Color {
     static let ui = Color.UI()
     
+    // Make sure color assets have widget target membership or else widget will be black
     struct UI {
         let moon1 = UIColor(named: "moon.1")!
         let moon2 = UIColor(named: "moon.2")!

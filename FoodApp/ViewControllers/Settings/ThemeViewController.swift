@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import WidgetKit
 
 protocol ThemeViewControllerDelegate: AnyObject {
     func themeViewController(_ controller: ThemeViewController, didSelectTheme theme: UIUserInterfaceStyle)
@@ -87,6 +88,7 @@ extension ThemeViewController: UITableViewDelegate {
         let theme = themes[indexPath.row]
         Settings.shared.currentTheme = theme
         NotificationCenter.default.post(name: .themeUpdated, object: nil)
+        WidgetCenter.shared.reloadTimelines(ofKind: MacroWidget.kind)
 //        delegate?.themeTableViewController(self, didSelectTheme: theme)
         updateUI()
     }
