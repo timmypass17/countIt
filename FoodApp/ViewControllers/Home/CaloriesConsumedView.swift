@@ -98,14 +98,24 @@ struct CaloriesConsumedView: View {
                         .cornerRadius(4)
                     }
                     
-                    ForEach(sortedMeals, id: \.self) { meal in
-                        BarMark(
-                            x: .value("Amount", min(meal.nutrientAmount(.calories), caloriesGoal)),
-                            y: .value("Type", "Calories"),
-                            height: 24
-                        )
-                        .foregroundStyle(by: .value("Meal", meal.name))
-                        .cornerRadius(4)
+                    ForEach(Array(sortedMeals.enumerated()), id: \.element) { index, meal in
+                        let prevSum = sortedMeals
+                            .prefix(index)
+                            .reduce(0) { $0 + $1.nutrientAmount(.calories) }
+                        
+                        let amount = meal.nutrientAmount(.calories)
+                        let remaining = caloriesGoal - prevSum
+                        let clamped = min(max(remaining, 0), amount)
+
+                        if clamped > 0 {
+                            BarMark(
+                                x: .value("Amount", clamped),
+                                y: .value("Type", "Calories"),
+                                height: 24
+                            )
+                            .foregroundStyle(by: .value("Meal", meal.name))
+                            .cornerRadius(4)
+                        }
                     }
 
                 }
