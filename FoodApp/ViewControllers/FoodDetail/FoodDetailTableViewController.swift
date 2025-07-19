@@ -256,6 +256,7 @@ class FoodDetailTableViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
         switch visibleSections[indexPath.section] {
         case .servingSize:
             if indexPath.row == 0 {
