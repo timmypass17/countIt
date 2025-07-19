@@ -251,11 +251,16 @@ extension SearchItemTableViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let history = fetchedResultsController.object(at: indexPath)
         guard let foodEntry = history.foodEntry,
-              var food = foodEntry.convertToFDCFood(),
-              let selectedFoodPortion = food.foodPortions.first(where: { $0.id == foodEntry.portionId })
+              var food = foodEntry.convertToFDCFood()
         else { return }
         
-        food.selectedFoodPortion = selectedFoodPortion
+        if let selectedFoodPortion = food.foodPortions.first(where: { $0.id == foodEntry.portionId }) {
+            food.selectedFoodPortion = selectedFoodPortion
+        } else {
+            // May be custom user generated
+            food.selectedFoodPortion = FoodPortion(id: Int(foodEntry.portionId), amount: foodEntry.amount, gramWeight: foodEntry.gramWeight, modifier: foodEntry.modifier)
+        }
+        
 //        let addFoodDetailViewController = AddFoodDetailViewController(foodEntry: history.foodEntry, fdcFood: food, meal: meal, userProfile: userProfile, foodService: foodService, selectedFoodPortion: food.selectedFoodPortion)
 //        addFoodDetailViewController.delegate = addFoodDelegate
 //        addFoodDetailViewController.dismissDelegate = self

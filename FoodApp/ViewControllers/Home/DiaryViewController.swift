@@ -260,6 +260,7 @@ class DiaryViewController: UIViewController {
                     let mealPlan = try foodService.copyMeals(from: previousMealPlan, to: mealPlan)
                     self.mealPlan = mealPlan
                     tableView.reloadData()
+                    NotificationCenter.default.post(name: .mealPlanUpdated, object: nil)
                 } catch{
                     print("Error copying meals: \(error)")
                 }
@@ -632,6 +633,7 @@ extension DiaryViewController: CalendarViewControllerDelegate {
         
         do {
             self.mealPlan = try foodService.copyMeals(from: otherMealPlan, to: mealPlan)
+            NotificationCenter.default.post(name: .mealPlanUpdated, object: nil)
         } catch {
             print("Error copying meal by date: \(error)")
         }

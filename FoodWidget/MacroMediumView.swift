@@ -67,8 +67,8 @@ struct MacroMediumView: View {
                     .foregroundColor(appTheme.secondary.color)
                     .font(.subheadline)
             }
-            .padding(.bottom, 12)
-//            
+            .padding(.bottom, 8)
+//
             HStack(alignment: .lastTextBaseline) {
                 Text("\(Int(caloriesConsumed))")
                     .font(.system(size: 36, weight: .semibold))
@@ -86,7 +86,7 @@ struct MacroMediumView: View {
                         .foregroundStyle(appTheme.secondary.color)
                 }
             }
-            .padding(.bottom, 12)
+            .padding(.bottom, 8)
             
             VStack(alignment: .leading, spacing: 8) {
                 Chart {
@@ -134,11 +134,11 @@ struct MacroMediumView: View {
                 .chartXAxis {
                     AxisMarks { value in
                         AxisGridLine()
-                            .foregroundStyle(appTheme.uiUserInterfaceStyle == .dark ? Color.gray.opacity(0.6) : Color.gray.opacity(0.3))
+                            .foregroundStyle(appTheme.secondary.color)
                         AxisTick()
-                            .foregroundStyle(appTheme.uiUserInterfaceStyle == .dark ? Color.white : Color.black)
+                            .foregroundStyle(appTheme.secondary.color)
                         AxisValueLabel()
-                            .foregroundStyle(appTheme.uiUserInterfaceStyle == .dark ? Color.white : Color.black)
+                            .foregroundStyle(appTheme.secondary.color)
                     }
                 }
 

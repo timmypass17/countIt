@@ -98,6 +98,7 @@ class ProgressViewController: UIViewController {
     @objc func handleMealPlanUpdated() {
         loadCurrentWeekMealPlans()
         tableView.reloadData()
+        WidgetCenter.shared.reloadTimelines(ofKind: MacroWidget.kind)   // calorie goal update
     }
 }
 
