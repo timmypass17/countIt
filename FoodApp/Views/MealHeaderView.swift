@@ -14,7 +14,7 @@ class MealHeaderView: UITableViewHeaderFooterView {
         let label = UILabel()
         label.numberOfLines = 1
         label.lineBreakMode = .byTruncatingTail
-        label.textColor = .secondaryLabel
+        label.textColor = Settings.shared.currentTheme.secondary.uiColor
         label.font = .preferredFont(forTextStyle: .caption1)
         return label
     }()
@@ -33,29 +33,30 @@ class MealHeaderView: UITableViewHeaderFooterView {
         return container
     }()
     
-    var caloriesView: NutrientView = NutrientView()
-    var carbsView: NutrientView = NutrientView()
-    var proteinView: NutrientView = NutrientView()
-    var fatsView: NutrientView = NutrientView()
+    let nutrientIds: [NutrientId] = [.calories, .carbs, .protein, .fatTotal]
     
+    private lazy var nutrientsView: [NutrientView] = {
+        return nutrientIds.map { _ in NutrientView() }
+    }()
+
     override init(reuseIdentifier: String?) {
         super.init(reuseIdentifier: reuseIdentifier)
-        nutrientContainer.addArrangedSubview(caloriesView)
-        nutrientContainer.addArrangedSubview(carbsView)
-        nutrientContainer.addArrangedSubview(proteinView)
-        nutrientContainer.addArrangedSubview(fatsView)
-
+        nutrientsView.forEach {
+            nutrientContainer.addArrangedSubview($0)
+        }
 
         container.addArrangedSubview(titleLabel)
         container.addArrangedSubview(nutrientContainer)
 
-        self.addSubview(container)
+        contentView.addSubview(container)
+//        container.layer.borderColor = UIColor.blue.cgColor
+//        container.layer.borderWidth = 1
 
         NSLayoutConstraint.activate([
-            container.topAnchor.constraint(equalTo: self.layoutMarginsGuide.topAnchor),
-            container.bottomAnchor.constraint(equalTo: self.layoutMarginsGuide.bottomAnchor),
-            container.leadingAnchor.constraint(equalTo: self.layoutMarginsGuide.leadingAnchor),
-            container.trailingAnchor.constraint(equalTo: self.layoutMarginsGuide.trailingAnchor),
+            container.topAnchor.constraint(equalTo: contentView.layoutMarginsGuide.topAnchor),
+            container.bottomAnchor.constraint(equalTo: contentView.layoutMarginsGuide.bottomAnchor),
+            container.leadingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.leadingAnchor),
+            container.trailingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.trailingAnchor),
         ])
     }
     
@@ -63,12 +64,18 @@ class MealHeaderView: UITableViewHeaderFooterView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    
     func update(with meal: Meal) {
-//        titleLabel.text = meal.name.uppercased()
-//        caloriesView.update(amount: meal.getTotalNutrients(.calories), unit: "cal", iconImage: UIImage(systemName: "c.circle"), tintColor: .systemBlue)
-//        carbsView.update(amount: meal.getTotalNutrients(.carbs), unit: "g", iconImage: UIImage(systemName: "c.circle"), tintColor: .systemYellow)
-//        proteinView.update(amount: meal.getTotalNutrients(.protein), unit: "g", iconImage: UIImage(systemName: "p.circle"), tintColor: .systemPink)
-//        fatsView.update(amount: meal.getTotalNutrients(.totalFat), unit: "g", iconImage: UIImage(systemName: "f.circle"), tintColor: .systemGreen)
+        titleLabel.text = meal.name.uppercased()
+        
+        for i in 0..<nutrientsView.count {
+            let nutrientId = nutrientIds[i]
+            nutrientsView[i].update(
+                amount: meal.nutrientAmount(nutrientId),
+                unit: nutrientId.unitName,
+                tintColor: UIColor(nutrientId.color)
+            )
+        }
+        
+        titleLabel.textColor = Settings.shared.currentTheme.label.uiColor
     }
 }

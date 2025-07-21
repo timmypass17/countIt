@@ -8,22 +8,31 @@
 import UIKit
 
 protocol ResultTableViewCellDelegate: AnyObject {
-    func resultTableViewCell(_ cell: ResultTableViewCell, didAddFoodEntry foodEntry: Food)
-}
-
-protocol ResultTableViewCellHistoryDelegate: AnyObject {
-    func resultTableViewCell(_ cell: ResultTableViewCell, didUpdateHistoryWithFood food: Food)
+    func resultTableViewCell(_ cell: ResultTableViewCell, didTapAddButton: Bool)
 }
 
 class ResultTableViewCell: UITableViewCell {
-    static let reuseIdentifier = "ResultCell"
-
+    
+    class var reuseIdentifier: String {
+        return "ResultTableViewCell"
+    }
+    
     let titleLabel: UILabel = {
         let label = UILabel()
         label.numberOfLines = 1
         label.lineBreakMode = .byTruncatingTail
         label.font = UIFont.boldSystemFont(ofSize: 16.0)
+        label.setContentHuggingPriority(.required, for: .horizontal)    // hug its content to never stretch
+        label.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)    // should shrink
         return label
+    }()
+    
+    let checkmarkImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.image = UIImage(systemName: "checkmark.seal.fill")
+        imageView.setContentHuggingPriority(.required, for: .horizontal)
+        imageView.setContentCompressionResistancePriority(.required, for: .horizontal)
+        return imageView
     }()
     
     let descriptionLabel: UILabel = {
@@ -37,7 +46,9 @@ class ResultTableViewCell: UITableViewCell {
     
     lazy var plusButton: UIButton = {
         let button = UIButton(type: .custom)
-        button.setImage(UIImage(systemName: "plus"), for: .normal)
+        let image = UIImage(systemName: "plus")
+        button.setImage(image, for: .normal)
+        button.tintColor = .secondaryLabel
         button.setContentHuggingPriority(.required, for: .horizontal)
         button.setContentCompressionResistancePriority(.required, for: .horizontal)
         button.addAction(didTapPlusButton(), for: .touchUpInside)
@@ -50,34 +61,37 @@ class ResultTableViewCell: UITableViewCell {
         return button
     }()
     
+    let titleContainer: UIStackView = {
+        let stackView = UIStackView()
+        stackView.axis = .horizontal
+        return stackView
+    }()
+    
     let labelContainer: UIStackView = {
-        let hstack = UIStackView()
-        hstack.axis = .vertical
-        return hstack
+        let stackView = UIStackView()
+        stackView.axis = .vertical
+        return stackView
     }()
     
     let container: UIStackView = {
-        let hstack = UIStackView()
-        hstack.axis = .horizontal
-        hstack.translatesAutoresizingMaskIntoConstraints = false
-        return hstack
+        let stackView = UIStackView()
+        stackView.axis = .horizontal
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        return stackView
     }()
-    
-    var food: Food!
-    var meal: Meal!
-    
+        
     weak var delegate: ResultTableViewCellDelegate?
-    weak var historyDelegate: ResultTableViewCellHistoryDelegate?
 
-    var selectedFoodPortion: FoodPortion {
-        return FoodPortion(gramWeight: 0, modifier: "")
-//        return food.foodPortions[(food.foodPortions.count - 1) / 2]
-    }
-    
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
+        backgroundColor = Settings.shared.currentTheme.cellBackground.uiColor
+
+        titleContainer.addArrangedSubview(titleLabel)
+        titleContainer.addArrangedSubview(checkmarkImageView)
+        titleContainer.addArrangedSubview(UIView())
+        titleContainer.setCustomSpacing(8, after: titleLabel)
         
-        labelContainer.addArrangedSubview(titleLabel)
+        labelContainer.addArrangedSubview(titleContainer)
         labelContainer.addArrangedSubview(descriptionLabel)
         
         container.addArrangedSubview(labelContainer)
@@ -97,27 +111,49 @@ class ResultTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func update(with food: Food) {
-        self.food = food
-        titleLabel.text = food.description
-//        descriptionLabel.text = food.getFoodEntryDescriptionFormatted(foodPortion: selectedFoodPortion)
+    func update(with foodItem: FoodItem) {
+        titleLabel.text = foodItem.description
+        descriptionLabel.text = foodItem.getFoodPortionDescription(foodPortion: foodItem.selectedFoodPortion, numberOfServings: 1, options: FoodEntryOptions.allCases)
+        
     }
     
     func didTapPlusButton() -> UIAction {
-        return UIAction { [self] _ in
-//            print(#function)
-//            if let meal {
-//                print("Has meal")
-//                let foodEntry = CoreDataStack.shared.addFoodEntry(food, to: meal, servingSize: selectedFoodPortion, numberOfServings: 1, servingSizeUnit: food.servingSizeUnit ?? "g")
-//                delegate?.resultTableViewCell(self, didAddFoodEntry: foodEntry)
-//                
-//                if let food = foodEntry.food {
-//                    food.updatedAt = .now
-//                    historyDelegate?.resultTableViewCell(self, didUpdateHistoryWithFood: food)
-//                }
-//            }
-//            let generator = UIImpactFeedbackGenerator(style: .medium)
-//            generator.impactOccurred()
+        return UIAction { [weak self] _ in
+            guard let self else { return }
+
+            // Haptic feedback
+            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+
+            // Swap image to checkmark
+            UIView.transition(with: self.plusButton, duration: 0.2, options: .transitionCrossDissolve, animations: {
+                self.plusButton.setImage(UIImage(systemName: "checkmark.circle.fill"), for: .normal)
+                self.plusButton.tintColor = Settings.shared.currentTheme.label.uiColor
+            })
+
+            // Grow big
+            UIView.animate(withDuration: 0.25, animations: {
+                self.plusButton.transform = CGAffineTransform(scaleX: 1.5, y: 1.5)
+            }, completion: { _ in
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { // pause for 0.5 seconds
+                    // Shrink back to original
+                    UIView.animate(withDuration: 0.25) {
+                        self.plusButton.transform = .identity
+                    } completion: { _ in
+                        UIView.transition(with: self.plusButton, duration: 0.15, options: .transitionCrossDissolve, animations: {
+                            self.plusButton.setImage(UIImage(systemName: "plus"), for: .normal)
+                            self.plusButton.tintColor = Settings.shared.currentTheme.secondary.uiColor
+                        })
+                    }
+                    
+                    self.plusButton.isUserInteractionEnabled = true
+                }
+            })
+
+            // Disable button temporarily
+            self.plusButton.isUserInteractionEnabled = false
+
+            // Notify delegate
+            delegate?.resultTableViewCell(self, didTapAddButton: true)
         }
     }
 }

@@ -9,22 +9,22 @@ import UIKit
 
 protocol EditGoalTableViewControllerDelegate: AnyObject {
     // Note: Dictionarys in Swift are passed by value (i.e. creates a copy)
-    func editGoalTableViewController(_ viewController: EditGoalTableViewController, didUpdateNutrientGoals nutrientGoals: [NutrientID: Float])
+    func editGoalTableViewController(_ viewController: EditGoalTableViewController, didUpdateNutrientGoals nutrientGoals: [NutrientId: Float])
 }
 
 class EditGoalTableViewController: UITableViewController {
     
-    var nutrientGoals: [NutrientID: Float]
+    var nutrientGoals: [NutrientId: Float]
     weak var delegate: EditGoalTableViewControllerDelegate?
     
     enum Section: CaseIterable {
-        static var allCases: [EditGoalTableViewController.Section] =
-            [.nutrients(NutrientID.mainNutrients), .vitamins(NutrientID.vitamins), .minerals(NutrientID.minerals) ]
+        static var allCases: [EditGoalTableViewController.Section] = []
+//            [.nutrients(NutrientId.mainNutrients), .vitamins(NutrientId.vitamins), .minerals(NutrientId.minerals) ]
         
-        case nutrients([NutrientID]), vitamins([NutrientID]), minerals([NutrientID])
+        case nutrients([NutrientId]), vitamins([NutrientId]), minerals([NutrientId])
     }
     
-    init(nutrientGoals: [NutrientID : Float]) {
+    init(nutrientGoals: [NutrientId : Float]) {
         self.nutrientGoals = nutrientGoals
         super.init(style: .insetGrouped)
     }
@@ -64,7 +64,7 @@ class EditGoalTableViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: GoalTableViewCell.reuseIdentifier, for: indexPath) as! GoalTableViewCell
         let section = Section.allCases[indexPath.section]
-        let nutrientID: NutrientID
+        let nutrientID: NutrientId
         switch section {
         case .nutrients(let nutrients):
             nutrientID = nutrients[indexPath.row]

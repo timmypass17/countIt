@@ -21,7 +21,7 @@ class SearchTitleView: UIView {
         let button = UIButton()
         button.tintColor = .white
         var imageConfig = UIImage.SymbolConfiguration(pointSize: 12, weight: .regular, scale: .default)
-        imageConfig = imageConfig.applying(UIImage.SymbolConfiguration(hierarchicalColor: .white))
+        imageConfig = imageConfig.applying(UIImage.SymbolConfiguration(hierarchicalColor: Settings.shared.currentTheme.label.uiColor))
         var config = UIButton.Configuration.plain()
         config.image = UIImage(systemName: "chevron.up.chevron.down", withConfiguration: imageConfig)
         config.imagePadding = 4
@@ -42,7 +42,7 @@ class SearchTitleView: UIView {
             actions.append(didTapMenuOption(for: meal))
         }
         
-        mealButton.menu = UIMenu(title: "Meal Type", options: .singleSelection, children: actions)
+        mealButton.menu = UIMenu(title: getMealButtonTitle(date: selectedMeal.mealPlan?.date), options: .singleSelection, children: actions)
         
         addSubview(mealButton)
         
@@ -57,24 +57,42 @@ class SearchTitleView: UIView {
         updateUI()
     }
     
+    func getMealButtonTitle(date: Date?) -> String {
+        guard let date else { return "" }
+        if Calendar.current.isDateInToday(date) {
+            return "Today"
+        } else if Calendar.current.isDateInTomorrow(date) {
+            return "Tomorrow"
+        } else if Calendar.current.isDateInYesterday(date) {
+            return "Yesterday"
+        } else {
+            return date.formatted(date: .abbreviated, time: .omitted)
+        }
+    }
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
     func updateUI() {
-//        mealButton.setTitle(selectedMeal.name, for: .normal)
+        mealButton.setTitle(selectedMeal.name, for: .normal)
+
+        mealButton.tintColor = Settings.shared.currentTheme.label.uiColor
+        var config = mealButton.configuration ?? UIButton.Configuration.plain()
+        var imageConfig = UIImage.SymbolConfiguration(pointSize: 12, weight: .regular, scale: .default)
+        imageConfig = imageConfig.applying(UIImage.SymbolConfiguration(hierarchicalColor: Settings.shared.currentTheme.label.uiColor))
+        config.image = UIImage(systemName: "chevron.up.chevron.down", withConfiguration: imageConfig)
+        mealButton.configuration = config
     }
     
     func didTapMenuOption(for meal: Meal) -> UIAction {
         let isSelected = meal == selectedMeal
         let state: UIMenuElement.State = isSelected ? .on : .off
-        return UIAction(title: "", state: state,  handler: { [self] _ in
+        return UIAction(title: meal.name, state: state,  handler: { [self] _ in
+            selectedMeal = meal
+            delegate?.searchTitleView(self, didSelectMeal: selectedMeal)
+            updateUI()
         })
-//        return UIAction(title: meal.name, state: state,  handler: { [self] _ in
-//            selectedMeal = meal
-//            delegate?.searchTitleView(self, didSelectMeal: selectedMeal)
-//            updateUI()
-//        })
     }
 
 }

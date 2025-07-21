@@ -9,28 +9,31 @@ import UIKit
 
 protocol MealPlanDateViewDelegate: AnyObject {
     func mealPlanDateViewDelegate(_ sender: MealPlanDateView, datePickerValueChanged date: Date)
-
+    func mealPlanDateViewDelegate(_ sender: MealPlanDateView, didTapDateButton date: Date)
 }
 
 class MealPlanDateView: UIView {
     
     var selectedDate: Date {
-        return Calendar.current.startOfDay(for: datePicker.date)
+        didSet {
+            updateUI()
+        }
     }
     
     weak var delegate: MealPlanDateViewDelegate?
     
-    var datePicker: UIDatePicker = {
-        let picker = UIDatePicker()
-        picker.datePickerMode = .date
-        picker.preferredDatePickerStyle = .compact
-        return picker
+    lazy var dateButton: UIButton = {
+        let button = UIButton()
+        button.setTitle("Today", for: .normal)
+        button.addAction(didTapDateButton(), for: .touchUpInside)
+        button.setTitleColor(Settings.shared.currentTheme.label.uiColor, for: .normal)
+        return button
     }()
     
     var previousButton: UIButton = {
         let button = UIButton()
         button.setImage(UIImage(systemName: "chevron.left"), for: .normal)
-        button.tintColor = .label
+        button.tintColor = Settings.shared.currentTheme.label.uiColor
         button.widthAnchor.constraint(equalToConstant: 50).isActive = true
         return button
     }()
@@ -38,7 +41,7 @@ class MealPlanDateView: UIView {
     var nextButton: UIButton = {
         let button = UIButton()
         button.setImage(UIImage(systemName: "chevron.right"), for: .normal)
-        button.tintColor = .label
+        button.tintColor = Settings.shared.currentTheme.label.uiColor
         button.widthAnchor.constraint(equalToConstant: 50).isActive = true
         return button
     }()
@@ -50,27 +53,35 @@ class MealPlanDateView: UIView {
         return stackView
     }()
     
-    init() {
+    init(date: Date) {
+        self.selectedDate = date
+//        datePicker.addAction(datePickerValueChanged(), for: .valueChanged)
         super.init(frame: .zero)
-        datePicker.addAction(datePickerValueChanged(), for: .valueChanged)
         previousButton.addAction(didTapPreviousButton(), for: .touchUpInside)
         nextButton.addAction(didTapNextButton(), for: .touchUpInside)
 
         container.addArrangedSubview(previousButton)
-        container.addArrangedSubview(datePicker)
+//        container.addArrangedSubview(datePicker)
+        container.addArrangedSubview(dateButton)
         container.addArrangedSubview(nextButton)
         self.addSubview(container)
         
         NSLayoutConstraint.activate([
-            container.topAnchor.constraint(equalTo: self.topAnchor),
-            container.bottomAnchor.constraint(equalTo: self.bottomAnchor),
-            container.leadingAnchor.constraint(equalTo: self.leadingAnchor),
-            container.trailingAnchor.constraint(equalTo: self.trailingAnchor),
+            container.topAnchor.constraint(equalTo: topAnchor),
+            container.bottomAnchor.constraint(equalTo: bottomAnchor),
+            container.leadingAnchor.constraint(equalTo: leadingAnchor),
+            container.trailingAnchor.constraint(equalTo: trailingAnchor),
         ])
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    func didTapDateButton() -> UIAction {
+        return UIAction { _ in
+            self.delegate?.mealPlanDateViewDelegate(self, didTapDateButton: self.selectedDate)
+        }
     }
     
     func datePickerValueChanged() -> UIAction {
@@ -81,19 +92,38 @@ class MealPlanDateView: UIView {
     
     func didTapNextButton() -> UIAction {
         return UIAction { [self] _ in
-            datePicker.date = Calendar.current.date(byAdding: .day, value: 1, to: selectedDate)!
+            selectedDate = Calendar.current.date(byAdding: .day, value: 1, to: selectedDate)!
+            
+            delegate?.mealPlanDateViewDelegate(self, datePickerValueChanged: selectedDate)
+            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+        }
+    }
+    
+    func didTapPreviousButton() -> UIAction {
+        return UIAction { [self] _ in
+            selectedDate = Calendar.current.date(byAdding: .day, value: -1, to: selectedDate)!
             delegate?.mealPlanDateViewDelegate(self, datePickerValueChanged: selectedDate)
             let generator = UIImpactFeedbackGenerator(style: .medium)
             generator.impactOccurred()
         }
     }
     
-    func didTapPreviousButton() -> UIAction {
-        return UIAction { [self] _ in
-            datePicker.date = Calendar.current.date(byAdding: .day, value: -1, to: selectedDate)!
-            delegate?.mealPlanDateViewDelegate(self, datePickerValueChanged: selectedDate)
-            let generator = UIImpactFeedbackGenerator(style: .medium)
-            generator.impactOccurred()
+    func updateDateText() {
+        if Calendar.current.isDateInToday(selectedDate) {
+            dateButton.setTitle("Today", for: .normal)
+        } else if Calendar.current.isDateInTomorrow(selectedDate) {
+            dateButton.setTitle("Tomorrow", for: .normal)
+        } else if Calendar.current.isDateInYesterday(selectedDate) {
+            dateButton.setTitle("Yesterday", for: .normal)
+        } else {
+            dateButton.setTitle(selectedDate.formatted(date: .abbreviated, time: .omitted), for: .normal)
         }
+    }
+    
+    func updateUI() {
+        updateDateText()
+        previousButton.tintColor = Settings.shared.currentTheme.label.uiColor
+        nextButton.tintColor = Settings.shared.currentTheme.label.uiColor
+        dateButton.setTitleColor(Settings.shared.currentTheme.label.uiColor, for: .normal)
     }
 }

@@ -57,6 +57,7 @@ class SelectTableViewCell: UITableViewCell {
         
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
+        backgroundColor = Settings.shared.currentTheme.cellBackground.uiColor
 
         iconContainer.addSubview(iconImageView)
         container.addArrangedSubview(iconContainer)

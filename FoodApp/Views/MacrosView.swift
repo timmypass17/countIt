@@ -6,32 +6,69 @@
 //
 
 import SwiftUI
+import Charts
 
-class MacroData: ObservableObject {
-    @Published var amount: Float
-    @Published var goal: Float
-    
-    init(amount: Float, goal: Float) {
-        self.amount = amount
-        self.goal = goal
+class MacrosViewModel: ObservableObject {
+    @Published var nutrients: [NutrientId: Double]
+
+    init(nutrients: [NutrientId: Double]) {
+        self.nutrients = nutrients
     }
 }
+
 struct MacrosView: View {
     static let reuseIdentifier = "MacrosView"
     
-    @ObservedObject var calories: MacroData
-    @ObservedObject var carbs: MacroData
-    @ObservedObject var protein: MacroData
-    @ObservedObject var fats: MacroData
+    @FetchRequest
+    var meals: FetchedResults<Meal>
+    
+    var userProfile: UserProfile
+    
+    var mealPlan: MealPlan?
+    
+    @ObservedObject var model: MacrosViewModel
+
+//    var nutrients: [NutrientId: Double]?
+
+    let nutrientIds: [NutrientId] = [.calories, .carbs, .protein, .fatTotal]
+    
+    init(mealPlan: MealPlan?, userProfile: UserProfile, model: MacrosViewModel) {
+        self.model = model
+        self.userProfile = userProfile
+        if let mealPlan {
+            self.mealPlan = mealPlan
+            _meals = FetchRequest(fetchRequest: Meal.fetchMeals(for: mealPlan))
+        } else {
+            _meals = FetchRequest(fetchRequest: Meal.emptyFetchRequest())
+        }
+    }
 
     var body: some View {
         Grid(horizontalSpacing: 20) {
             GridRow {
-                CircularProgressView(title: "Calories", current: calories.amount, total: calories.goal, color: .blue, unitName: "cal")
-                CircularProgressView(title: "Carbs", current: carbs.amount, total: carbs.goal, color: .yellow, unitName: "g")
-                CircularProgressView(title: "Protein", current: protein.amount, total: protein.goal, color: .pink, unitName: "g")
-                CircularProgressView(title: "Fat", current: fats.amount, total: fats.goal, color: .green, unitName: "g")
+                ForEach(nutrientIds, id: \.rawValue) { nutrientId in
+                    let consumed = model.nutrients[nutrientId] ?? Double((getNutrientConsumed(nutrientId)))
+                    let goal = mealPlan?.nutrientGoals[nutrientId]?.value ??
+                               userProfile.userNutrientGoals[nutrientId]?.value ?? 0
+                    CircularProgressView(
+                        title: nutrientId.shortDescription,
+                        current: Float(consumed),
+                        total: Float(goal),
+                        color: nutrientId.color,
+                        unitName: nutrientId.unitName
+                    )
+                }
             }
         }
+        .padding(.vertical, 4)
+    }
+    
+    func getNutrientConsumed(_ nutrientId: NutrientId) -> Double {
+        var total = 0.0
+        for meal in meals {
+            total += meal.nutrientAmount(nutrientId)
+        }
+        return total
     }
 }
+

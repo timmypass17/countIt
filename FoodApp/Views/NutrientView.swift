@@ -20,13 +20,14 @@ class NutrientView: UIView {
         label.font = .preferredFont(forTextStyle: .caption1)
         label.numberOfLines = 1
         label.lineBreakMode = .byTruncatingTail
+        label.textColor = Settings.shared.currentTheme.label.uiColor
         return label
     }()
     
     var unitLabel: UILabel = {
         let label = UILabel()
         label.font = .preferredFont(forTextStyle: .caption1)
-        label.textColor = .secondaryLabel
+        label.textColor = Settings.shared.currentTheme.secondary.uiColor
         label.numberOfLines = 1
         label.lineBreakMode = .byTruncatingTail
         return label
@@ -52,6 +53,7 @@ class NutrientView: UIView {
         
         container.addArrangedSubview(iconImageView)
         container.addArrangedSubview(textContainer)
+        container.setCustomSpacing(2, after: iconImageView)
         
         self.addSubview(container)
         
@@ -67,13 +69,17 @@ class NutrientView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
 
-    func update(amount: Float, unit: String, iconImage: UIImage?, tintColor: UIColor) {
-        var config = UIImage.SymbolConfiguration(pointSize: 12)
-        let colors: [UIColor] = [.label, tintColor]
-        config = config.applying(UIImage.SymbolConfiguration(paletteColors: colors))
-        iconImageView.image = iconImage?.withConfiguration(config)
-        
+    func update(amount: Double, unit: String, tintColor: UIColor) {
+        let config = UIImage.SymbolConfiguration(pointSize: 6, weight: .regular)
+        let image = UIImage(systemName: "circle.fill", withConfiguration: config)
+        iconImageView.image = image?
+            .withRenderingMode(.alwaysTemplate) // ignore original color
+        iconImageView.tintColor = tintColor
+
         amountLabel.text = "\(Int(amount))"
         unitLabel.text = unit
+        
+        amountLabel.textColor = Settings.shared.currentTheme.label.uiColor
+        unitLabel.textColor = Settings.shared.currentTheme.secondary.uiColor
     }
 }

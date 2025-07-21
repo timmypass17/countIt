@@ -53,7 +53,7 @@ class GoalTableViewCell: UITableViewCell {
         return bar
     }()
     
-    var nutrientID: NutrientID!
+    var nutrientID: NutrientId!
     weak var delegate: GoalTableViewCellDelegate?
         
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -83,12 +83,12 @@ class GoalTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func update(nutrientID: NutrientID, goal: Int) {
+    func update(nutrientID: NutrientId, goal: Int) {
         self.nutrientID = nutrientID
         primaryLabel.text = nutrientID.description
         amountTextField.text = "\(goal)"
         amountTextField.placeholder = "\(goal)"
-        unitLabel.text = nutrientID.unit
+//        unitLabel.text = nutrientID.unit
     }
     
     func amountTextFieldEditingChanged() -> UIAction {

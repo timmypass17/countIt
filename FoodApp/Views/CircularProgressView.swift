@@ -27,9 +27,10 @@ struct CircularProgressView: View {
             ZStack {
                 Circle()
                     .stroke(
-                        color.opacity(0.1),
+                        Settings.shared.currentTheme.progress.color,
                         lineWidth: lineWidth
                     )
+                    
                 Circle()
                     .trim(from: 0, to: CGFloat(progress))
                     .stroke(
@@ -51,16 +52,17 @@ struct CircularProgressView: View {
                     }
                     .fontWeight(.semibold)
                     .font(.system(size: progressSize))
-                    
+                    .foregroundStyle(Settings.shared.currentTheme.label.color)
+                    .contentTransition(.numericText())
+                    .animation(.default, value: current)
+
                     Text("\(total.formatted(.number)) \(unitName)")
-//                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(Settings.shared.currentTheme.secondary.color)
                         .font(.system(size: totalSize))
                 }
             }
             Text(title)
-                .foregroundStyle(.secondary)
-//                .font(.subheadline)
+                .foregroundStyle(Settings.shared.currentTheme.secondary.color)
                 .font(.system(size: titleSize))
         }
         

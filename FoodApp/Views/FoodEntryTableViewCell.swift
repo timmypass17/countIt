@@ -15,6 +15,7 @@ class FoodEntryTableViewCell: UITableViewCell {
         label.numberOfLines = 1
         label.lineBreakMode = .byTruncatingTail
         label.font = UIFont.boldSystemFont(ofSize: 16.0)
+        label.textColor = Settings.shared.currentTheme.label.uiColor
         return label
     }()
     
@@ -23,7 +24,7 @@ class FoodEntryTableViewCell: UITableViewCell {
         label.numberOfLines = 1
         label.lineBreakMode = .byTruncatingTail
         label.font = UIFont.preferredFont(forTextStyle: .caption1)
-        label.textColor = .secondaryLabel
+        label.textColor = Settings.shared.currentTheme.secondary.uiColor
         return label
     }()
     
@@ -34,6 +35,7 @@ class FoodEntryTableViewCell: UITableViewCell {
         label.font = UIFont.boldSystemFont(ofSize: 16.0)
         label.setContentHuggingPriority(.required, for: .horizontal)
         label.setContentCompressionResistancePriority(.required, for: .horizontal)
+        label.textColor = Settings.shared.currentTheme.label.uiColor
         return label
     }()
     
@@ -45,6 +47,7 @@ class FoodEntryTableViewCell: UITableViewCell {
     
     let container: UIStackView = {
         let hstack = UIStackView()
+        hstack.spacing = 8
         hstack.axis = .horizontal
         hstack.translatesAutoresizingMaskIntoConstraints = false
         return hstack
@@ -52,6 +55,8 @@ class FoodEntryTableViewCell: UITableViewCell {
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
+        backgroundColor = Settings.shared.currentTheme.cellBackground.uiColor
+        
         labelContainer.addArrangedSubview(titleLabel)
         labelContainer.addArrangedSubview(descriptionLabel)
         
@@ -72,14 +77,14 @@ class FoodEntryTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func update(with foodEntry: Food) {
-//        guard let food = foodEntry.food?.convertToFDCFood() else { return }
-//        titleLabel.text = food.description
-//        if foodEntry.food?.brandName == "Quick Add" {
-//            descriptionLabel.text = "Quick Add"
-//        } else {
-//            descriptionLabel.text = food.getFoodEntryDescriptionFormatted(foodPortion: foodEntry.servingSize, numberOfServings: Int(foodEntry.numberOfServings), options: [.servingSize, .brandName])
-//        }
-//        caloriesLabel.text = "\(Int(food.getNutrientPerServing(.calories, foodPortion: foodEntry.servingSize) * Float(foodEntry.numberOfServings)))"
+    func  update(_ foodEntry: FoodEntry) {
+        titleLabel.text = foodEntry.foodInfo?.name
+        descriptionLabel.text = foodEntry.description()
+        caloriesLabel.text = "\(Int(foodEntry.getNutrientAmount(.calories, quantity: Int(foodEntry.quantity))))"
+        
+        titleLabel.textColor = Settings.shared.currentTheme.label.uiColor
+        descriptionLabel.textColor = Settings.shared.currentTheme.secondary.uiColor
+        caloriesLabel.textColor = Settings.shared.currentTheme.label.uiColor
+        backgroundColor = Settings.shared.currentTheme.cellBackground.uiColor
     }
 }

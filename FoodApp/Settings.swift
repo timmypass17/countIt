@@ -10,29 +10,34 @@ import Foundation
 
 struct Settings {
     static var shared = Settings()
-    private let defaults = UserDefaults.standard
-    
-    private func archiveJSON<T: Encodable>(value: T, key: String) {
-        let data = try! JSONEncoder().encode(value)
-        let string = String(data: data, encoding: .utf8)
-        defaults.set(string, forKey: key)
-    }
-    
-    private func unarchiveJSON<T: Decodable>(key: String) -> T? {
-        guard let string = defaults.string(forKey: key),
-              let data = string.data(using: .utf8) else {
-            return nil
+    private let defaults = UserDefaults(suiteName: "group.com.example.DuduMelon")!
+    private init() {}
+
+    private func save<T: Encodable>(_ value: T, for key: String) {
+        do {
+            let data = try JSONEncoder().encode(value)
+            defaults.set(data, forKey: key)
+        } catch {
+            print("⚠️ Settings save failed:", error)
         }
-        
-        return try! JSONDecoder().decode(T.self, from: data)
     }
     
-    var userDailyValues: [NutrientID: Float] {
+    private func load<T: Decodable>(_ key: String, default defaultValue: T) -> T {
+        guard
+            let data = defaults.data(forKey: key),
+            let value = try? JSONDecoder().decode(T.self, from: data)
+        else {
+            return defaultValue
+        }
+        return value
+    }
+
+    var currentTheme: AppTheme {
         get {
-            return unarchiveJSON(key: "UserDailyValues") ?? UserDailyValues.default2000
+            return load("currentTheme", default: DarkTheme())
         }
         set {
-            archiveJSON(value: newValue, key: "UserDailyValues")
+            save(newValue, for: "currentTheme")
         }
     }
 }

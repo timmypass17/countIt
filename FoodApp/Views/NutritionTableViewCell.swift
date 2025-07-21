@@ -59,7 +59,8 @@ class NutritionTableViewCell: UITableViewCell {
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-
+        backgroundColor = Settings.shared.currentTheme.cellBackground.uiColor
+        
         hstack.addArrangedSubview(nameLabel)
         hstack.addArrangedSubview(amountLabel)
         hstack.addArrangedSubview(percentLabel)
@@ -83,22 +84,59 @@ class NutritionTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func update(with foodNutrient: FoodNutrient, foodPortion: FoodPortion, quantity: Int) {
-        nameLabel.text = foodNutrient.description
-        let nutrientAmount = (calculateNutrientPerServing(nutrientPer100g: foodNutrient.amount ?? 0, servingSizeGramWeight: foodPortion.gramWeight) * Float(quantity))
-        if let nutrientID = foodNutrient.nutrient?.id,
-           let nutrientGoal = Settings.shared.userDailyValues[nutrientID] {
-            let progress = nutrientAmount / nutrientGoal
-            if nutrientAmount < 1 {
-                amountLabel.text = "\(nutrientAmount.formattedString(decimalPlaces: 1)) \(foodNutrient.nutrient?.unitName ?? "Unspecified")"
-            } else {
-                amountLabel.text = "\(Int(nutrientAmount)) \(foodNutrient.nutrient?.unitName ?? "Unspecified")"
-            }
-            let dailyValuePercent = Int((progress * 100).rounded())
-            percentLabel.text = dailyValuePercent > 0 ? "\(Int((progress * 100).rounded()))%" : "-"
-            progressView.progress = progress
+    func update(nutrientId: NutrientId, amount: Double, goal: Double) {
+        nameLabel.text = nutrientId.description
+        amountLabel.text = "\(amount.trimmed) \(nutrientId.unitName)"
+        
+        var progress = 0.0
+        if goal > 0 {
+            progress = amount / goal
+        }
+        let percentage = Int(((progress) * 100).rounded())
+        if percentage < 1 {
+            percentLabel.text = "-"
         } else {
-            amountLabel.text = "Missing nutrient goal"
+            percentLabel.text = "\(percentage)%"
+        }
+        
+        
+        if nutrientId.isSecondary {
+            nameLabel.textColor = .secondaryLabel
+            leadingConstraint.constant = 25
+        }  else if nutrientId.isTertiary {
+            nameLabel.textColor = .secondaryLabel
+            leadingConstraint.constant = 50
+        } else {
+            nameLabel.textColor = .label
+            leadingConstraint.constant = 0
+        }
+        
+        progressView.isHidden = true
+    }
+    
+    func update(with foodNutrient: FoodNutrient, foodPortion: FoodPortion, quantity: Int, goal: Double, isCustom: Bool) {
+        nameLabel.text = foodNutrient.nutrient?.id.description
+        
+        let amount: Double
+        let amountRaw = foodNutrient.amount ?? 0
+        if isCustom {
+            amount = (amountRaw * Double(quantity))
+        } else {
+            // USDA 100g conversion
+            amount = (amountRaw / 100) * Double(foodPortion.gramWeight ?? 0) * Double(quantity)
+        }
+        
+        amountLabel.text = "\(amount.trimmed) \(foodNutrient.nutrient?.unitName ?? "")"
+        
+        var progress = 0.0
+        if goal > 0 {
+            progress = amount / goal
+        }
+        let percentage = Int(((progress) * 100).rounded())
+        if percentage < 1 {
+            percentLabel.text = "-"
+        } else {
+            percentLabel.text = "\(percentage)%"
         }
         
         if let isSecondary = foodNutrient.nutrient?.id.isSecondary, isSecondary == true {
@@ -115,17 +153,17 @@ class NutritionTableViewCell: UITableViewCell {
         progressView.isHidden = true
     }
     
-    func update(nutrientID: NutrientID, nutrientAmount: Float, nutrientGoal: Float) {
+    func update(nutrientID: NutrientId, nutrientAmount: Float, nutrientGoal: Float) {
         nameLabel.text = nutrientID.description
         var progress: Float = 0
         if nutrientGoal > 0 {
             progress = nutrientAmount / nutrientGoal
         }
-        if nutrientAmount < 1 {
-            amountLabel.text = "\(nutrientAmount.formattedString(decimalPlaces: 1)) \(nutrientID.unit)"
-        } else {
-            amountLabel.text = "\(Int(nutrientAmount)) \(nutrientID.unit)"
-        }
+//        if nutrientAmount < 1 {
+//            amountLabel.text = "\(nutrientAmount.formattedString(decimalPlaces: 1)) \(nutrientID.unit)"
+//        } else {
+//            amountLabel.text = "\(Int(nutrientAmount)) \(nutrientID.unit)"
+//        }
         percentLabel.text = "\(Int((progress * 100).rounded()))%"
         progressView.progress = progress
     }

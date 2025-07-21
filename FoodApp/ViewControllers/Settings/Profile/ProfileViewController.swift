@@ -1,0 +1,420 @@
+//
+//  ProfileViewController.swift
+//  FoodApp
+//
+//  Created by Timmy Nguyen on 6/13/25.
+//
+
+import UIKit
+
+class ProfileViewController: UIViewController {
+
+    let tableView: UITableView = {
+        let tableView = UITableView(frame: .zero, style: .insetGrouped)
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+        return tableView
+    }()
+    
+    enum Section: Int, CaseIterable {
+        case profile, goals
+    }
+    
+    lazy var moreButton: UIBarButtonItem = {
+        let deleteAction = UIAction(title: "Delete Account", image: UIImage(systemName: "trash"), attributes: .destructive) { [weak self] _ in
+            self?.showDeleteAccountAlert()
+        }
+
+        let menu = UIMenu(title: "", children: [deleteAction])
+        let button = UIBarButtonItem(image: UIImage(systemName: "ellipsis"), menu: menu)
+        button.tintColor = Settings.shared.currentTheme.label.uiColor
+        return button
+    }()
+    
+    let userProfile: UserProfile
+    let foodService = FoodService()
+    
+    let sexIndexPath = IndexPath(row: 0, section: 0)
+    let heightIndexPath = IndexPath(row: 1, section: 0)
+    let dobIndexPath = IndexPath(row: 2, section: 0)
+    
+    let startingWeightIndexPath = IndexPath(row: 0, section: 1)
+    let currentWeightIndexPath = IndexPath(row: 1, section: 1)
+    let goalWeightIndexPath = IndexPath(row: 2, section: 1)
+    let weeklyGoalWeightIndexPath = IndexPath(row: 3, section: 1)
+    let activityLevelIndexPath = IndexPath(row: 4, section: 1)
+    
+    init(userProfile: UserProfile) {
+        self.userProfile = userProfile
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        title = "My Profile"
+        tableView.backgroundColor = Settings.shared.currentTheme.background.uiColor
+        tableView.register(OnboardingSegmentedTableViewCell.self, forCellReuseIdentifier: OnboardingSegmentedTableViewCell.reuseIdentifier)
+        tableView.register(HeightTableViewCell.self, forCellReuseIdentifier: HeightTableViewCell.reuseIdentifier)
+        tableView.register(DatePickerTableViewCell.self, forCellReuseIdentifier: DatePickerTableViewCell.reuseIdentifier)
+        tableView.register(HeightPreferenceFooterView.self, forHeaderFooterViewReuseIdentifier: HeightPreferenceFooterView.reuseIdentifier)
+        tableView.register(ProfileSelectableTableViewCell.self, forCellReuseIdentifier: ProfileSelectableTableViewCell.reuseIdentifier)
+        tableView.register(DeleteAccountTableViewCell.self, forCellReuseIdentifier: DeleteAccountTableViewCell.reuseIdentifier)
+        tableView.register(MenuPickerTableViewCell<ActivityLevel>.self, forCellReuseIdentifier: MenuPickerTableViewCell<ActivityLevel>.reuseIdentifier)
+        tableView.register(MenuPickerTableViewCell<WeeklyWeightGoal>.self, forCellReuseIdentifier: MenuPickerTableViewCell<WeeklyWeightGoal>.reuseIdentifier)
+        tableView.register(UnitPreferenceFooterView.self, forHeaderFooterViewReuseIdentifier: UnitPreferenceFooterView.reuseIdentifier)
+
+        tableView.dataSource = self
+        tableView.delegate = self
+        
+        view.addSubview(tableView)
+        NSLayoutConstraint.activate([
+            tableView.topAnchor.constraint(equalTo: view.topAnchor),
+            tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+        ])
+        
+        navigationItem.rightBarButtonItem = moreButton
+    }
+
+    func showDeleteAccountAlert() {
+        let message = "Are you sure you want to delete your account and all your data? This action is permanent and cannot be undone."
+        let alertController = UIAlertController(
+            title: "Delete Account?",
+            message: message,
+            preferredStyle: .alert
+        )
+
+        alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+
+        alertController.addAction(UIAlertAction(title: "Delete", style: .destructive, handler: { _ in
+            do {
+                try self.foodService.deleteAccount()
+                self.showOnboarding()
+            } catch {
+                print("Failed to delete account: \(error)")
+            }
+        }))
+
+        self.present(alertController, animated: true, completion: nil)
+    }
+    
+    func showOnboarding() {
+        if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+           let window = windowScene.windows.first {
+            window.rootViewController = OnboardingViewController()
+            window.makeKeyAndVisible()
+        }
+    }
+}
+
+
+extension ProfileViewController: UITableViewDataSource {
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return 3
+    }
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        guard let section = Section(rawValue: section) else { return 0 }
+        switch section {
+        case .profile:
+            return 3
+        case .goals:
+            return 5
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        if indexPath == sexIndexPath {
+            let cell = tableView.dequeueReusableCell(withIdentifier: OnboardingSegmentedTableViewCell.reuseIdentifier) as! OnboardingSegmentedTableViewCell
+            cell.update(title: "Sex", sex: userProfile.sex)
+            cell.delegate = self
+            return cell
+        } else if indexPath == heightIndexPath {
+            let cell = tableView.dequeueReusableCell(withIdentifier: HeightTableViewCell.reuseIdentifier) as! HeightTableViewCell
+            cell.update(title: "Height", heightCm: userProfile.heightCm, heightUnit: userProfile.heightUnit)
+            return cell
+        } else if indexPath == dobIndexPath {
+            let cell = tableView.dequeueReusableCell(withIdentifier: DatePickerTableViewCell.reuseIdentifier) as! DatePickerTableViewCell
+            cell.delegate = self
+            cell.update(title: "Date of Birth", date: userProfile.dateOfBirth)
+            return cell
+        } else if indexPath == startingWeightIndexPath {
+            let cell = tableView.dequeueReusableCell(withIdentifier: ProfileSelectableTableViewCell.reuseIdentifier, for: indexPath) as! ProfileSelectableTableViewCell
+            let startingUserWeight = foodService.getStartingUserWeight()
+            let startWeight = startingUserWeight?.getWeight(userProfile.weightUnit)?.trimmed ?? ""
+            cell.update(title: "Starting Weight", description: "\(startWeight) \(userProfile.weightUnit.pluralSymbol)")
+            cell.accessoryType = .disclosureIndicator
+            return cell
+        } else if indexPath == currentWeightIndexPath {
+            let cell = tableView.dequeueReusableCell(withIdentifier: ProfileSelectableTableViewCell.reuseIdentifier, for: indexPath) as! ProfileSelectableTableViewCell
+            let currentUserWeight = foodService.getCurrentUserWeight()
+            let currentWeight = currentUserWeight?.getWeight(userProfile.weightUnit)?.trimmed ?? ""
+            cell.update(title: "Current Weight", description: "\(currentWeight) \(userProfile.weightUnit.pluralSymbol)")
+            cell.accessoryType = .disclosureIndicator
+            return cell
+        } else if indexPath == goalWeightIndexPath {
+            let cell = tableView.dequeueReusableCell(withIdentifier: ProfileSelectableTableViewCell.reuseIdentifier, for: indexPath) as! ProfileSelectableTableViewCell
+            let goalWeight = userProfile.goalWeight?.trimmed ?? ""
+            cell.update(title: "Goal Weight", description: "\(goalWeight) \(userProfile.weightUnit.pluralSymbol)")
+            cell.accessoryType = .disclosureIndicator
+            return cell
+        } else if indexPath == weeklyGoalWeightIndexPath {
+            let cell = tableView.dequeueReusableCell(withIdentifier: MenuPickerTableViewCell<WeeklyWeightGoal>.reuseIdentifier, for: indexPath) as! MenuPickerTableViewCell<WeeklyWeightGoal>
+            let options: [WeeklyWeightGoal]
+            switch userProfile.weightGoal {
+            case .loseWeight:
+                options = WeeklyWeightGoal.lossGoals
+            case .gainWeight:
+                options = WeeklyWeightGoal.gainGoals
+            case .maintainWeight:
+                options = WeeklyWeightGoal.maintainGoal
+            }
+
+            cell.update(title: "Weekly Goal", options: options, selected: userProfile.weeklyGoal) { weeklyGoal in
+                return weeklyGoal.displayName(unit: self.userProfile.weightUnit)
+            } descriptionProvider: { weeklyGoal in
+                return weeklyGoal.description(unit: self.userProfile.weightUnit)
+            } onSelect: { selectedWeeklyGoal in
+                self.userProfile.weeklyGoal = selectedWeeklyGoal
+                CoreDataStack.shared.saveContext()
+            }
+            return cell
+        } else if indexPath == activityLevelIndexPath {
+            let cell = tableView.dequeueReusableCell(withIdentifier: MenuPickerTableViewCell<ActivityLevel>.reuseIdentifier, for: indexPath) as! MenuPickerTableViewCell<ActivityLevel>
+
+            cell.update(title: "Activity Level", options: ActivityLevel.allCases, selected: userProfile.activityLevel) { activityLevel in
+                return activityLevel.displayName
+            } descriptionProvider: { activityLevel in
+                return activityLevel.description
+            } onSelect: { selectedActivityLevel in
+                self.userProfile.activityLevel = selectedActivityLevel
+                CoreDataStack.shared.saveContext()
+            }
+            return cell
+        } else {
+            return UITableViewCell()
+        }
+    }
+    
+//    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+//        guard let section = Section(rawValue: section) else { return nil }
+//        switch section {
+//        case .profile:
+//            return "Personal Info"
+//        case .goals:
+//            return nil
+//        case .delete:
+//            return nil
+//        }
+//    }
+}
+
+
+extension ProfileViewController: OnboardingSegmentedTableViewCellDelegate {
+    func onboardingSegmentedTableViewCell(_ cell: OnboardingSegmentedTableViewCell, didSelectSex sex: Sex) {
+        userProfile.sex = sex
+        CoreDataStack.shared.saveContext()
+    }
+}
+
+extension ProfileViewController: DatePickerTableViewCellDelegate {
+    func datePickerTableViewCell(_ cell: DatePickerTableViewCell, didUpdateDate date: Date) {
+        userProfile.dateOfBirth = date
+        CoreDataStack.shared.saveContext()
+    }
+}
+
+extension ProfileViewController: UITableViewDelegate {
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 50
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        guard let section = Section(rawValue: indexPath.section) else { return }
+        tableView.deselectRow(at: indexPath, animated: true)
+        switch section {
+        case .profile:
+            if indexPath.row == 1 {
+                switch userProfile.heightUnit {
+                case .feet:
+                    let heightFeetPickerViewController = HeightFeetPickerViewController(heightCm: Int(userProfile.heightCm ?? 167))
+                    heightFeetPickerViewController.delegate = self
+                    
+                    let navigationController = UINavigationController(rootViewController: heightFeetPickerViewController)
+                    
+                    if let sheet = navigationController.sheetPresentationController {
+                        sheet.detents = [.medium()]
+                    }
+                    
+                    self.present(navigationController, animated: true)
+                case .cm:
+                    let heightCmPickerViewController = HeightCmPickerViewController(heightCm: Int(userProfile.heightCm ?? 167))
+                    heightCmPickerViewController.delegate = self
+                    
+                    let navigationController = UINavigationController(rootViewController: heightCmPickerViewController)
+                    
+                    if let sheet = navigationController.sheetPresentationController {
+                        sheet.detents = [.medium()]
+                    }
+                    
+                    self.present(navigationController, animated: true)
+                }
+            }
+            return
+        case .goals:
+            if indexPath.row == 0 {
+                let startingUserWeight = foodService.getStartingUserWeight()
+                let startWeight = startingUserWeight?.getWeight(userProfile.weightUnit)?.trimmed ?? ""
+                let updateNutrientViewController = UpdateNutrientViewController(primaryText: "Starting Weight", initialAmount: Double(startWeight) ?? 0, unit: userProfile.weightUnit.singularSymbol) { newCurrentWeight in
+                    switch self.userProfile.weightUnit {
+                    case .pounds:
+                        startingUserWeight?.weightInKg = convertPoundsToKilograms(newCurrentWeight)
+                    case .kilograms:
+                        startingUserWeight?.weightInKg = newCurrentWeight
+                    }
+                    CoreDataStack.shared.saveContext()
+                    self.tableView.reloadSections(IndexSet(integer: indexPath.section), with: .automatic)
+                }
+                
+                updateNutrientViewController.title = "Update Starting Weight"
+                let vc = UINavigationController(rootViewController: updateNutrientViewController)
+
+                if let sheet = vc.sheetPresentationController {
+                    sheet.detents = [.medium()]
+                }
+                present(vc, animated: true, completion: nil)
+            } else if indexPath.row == 1 {
+                let currentUserWeight = foodService.getCurrentUserWeight()
+                let currentWeight = currentUserWeight?.getWeight(userProfile.weightUnit)?.trimmed ?? ""
+                let updateNutrientViewController = UpdateNutrientViewController(primaryText: "Latest Weight", initialAmount: Double(currentWeight) ?? 0, unit: userProfile.weightUnit.singularSymbol) { newCurrentWeight in
+                    switch self.userProfile.weightUnit {
+                    case .pounds:
+                        currentUserWeight?.weightInKg = convertPoundsToKilograms(newCurrentWeight)
+                    case .kilograms:
+                        currentUserWeight?.weightInKg = newCurrentWeight
+                    }
+                    CoreDataStack.shared.saveContext()
+                    self.tableView.reloadSections(IndexSet(integer: indexPath.section), with: .automatic)
+                }
+                
+                updateNutrientViewController.title = "Update Latest Weight"
+                let vc = UINavigationController(rootViewController: updateNutrientViewController)
+
+                if let sheet = vc.sheetPresentationController {
+                    sheet.detents = [.medium()]
+                }
+                present(vc, animated: true, completion: nil)
+            } else if indexPath.row == 2 {
+                let goalWeight = userProfile.goalWeight
+                let updateNutrientViewController = UpdateNutrientViewController(primaryText: "Goal Weight", initialAmount: goalWeight ?? 0, unit: userProfile.weightUnit.singularSymbol) { newCurrentWeight in
+                    self.userProfile.setGoalWeight(weight: newCurrentWeight)
+                    CoreDataStack.shared.saveContext()
+                    self.tableView.reloadSections(IndexSet(integer: indexPath.section), with: .automatic)
+                }
+                
+                updateNutrientViewController.title = "Set Goal Weight"
+                let vc = UINavigationController(rootViewController: updateNutrientViewController)
+
+                if let sheet = vc.sheetPresentationController {
+                    sheet.detents = [.medium()]
+                }
+                present(vc, animated: true, completion: nil)
+            }
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
+        return indexPath
+//        guard let section = Section(rawValue: indexPath.section), section == .profile else { return nil }
+//        
+//        if indexPath.row == 1 {
+//            switch userProfile.heightUnit {
+//            case .feet:
+//                let heightFeetPickerViewController = HeightFeetPickerViewController(heightCm: Int(userProfile.heightCm ?? 167))
+//                heightFeetPickerViewController.delegate = self
+//
+//                let navigationController = UINavigationController(rootViewController: heightFeetPickerViewController)
+//                
+//                if let sheet = navigationController.sheetPresentationController {
+//                    sheet.detents = [.medium()]
+//                }
+//
+//                self.present(navigationController, animated: true)
+//            case .cm:
+//                let heightCmPickerViewController = HeightCmPickerViewController(heightCm: Int(userProfile.heightCm ?? 167))
+//                heightCmPickerViewController.delegate = self
+//
+//                let navigationController = UINavigationController(rootViewController: heightCmPickerViewController)
+//                
+//                if let sheet = navigationController.sheetPresentationController {
+//                    sheet.detents = [.medium()]
+//                }
+//
+//                self.present(navigationController, animated: true)
+//            }
+//        }
+//        
+//        return indexPath
+    }
+    
+    
+    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+        guard let section = Section(rawValue: section) else { return nil }
+
+        switch section {
+        case .profile:
+            let footer = tableView.dequeueReusableHeaderFooterView(withIdentifier: HeightPreferenceFooterView.reuseIdentifier) as! HeightPreferenceFooterView
+            footer.update(heightUnit: userProfile.heightUnit)
+            footer.delegate = self
+            return footer
+        case .goals:
+            let footer = tableView.dequeueReusableHeaderFooterView(withIdentifier: UnitPreferenceFooterView.reuseIdentifier) as! UnitPreferenceFooterView
+            footer.update(currentUnit: userProfile.weightUnit)
+            footer.delegate = self
+            return footer
+        }
+    }
+    
+    func tableView(_ tv: UITableView, heightForFooterInSection sec: Int) -> CGFloat {
+        return 42
+    }
+}
+
+
+extension ProfileViewController: HeightPreferenceFooterViewDelegate {
+    func heightPreferenceFooterView(_ footerView: HeightPreferenceFooterView, didUpdateHeightPreference heightUnit: HeightUnit) {
+        userProfile.heightUnit = heightUnit
+        tableView.reloadRows(at: [IndexPath(row: 1, section: 0)], with: .automatic)
+        CoreDataStack.shared.saveContext()
+    }
+}
+
+extension ProfileViewController: HeightFeetPickerViewControllerDelegate {
+    func heightFeetPickerViewController(_ viewController: HeightFeetPickerViewController, didUpdateHeight height: (feet: Int, inches: Int)) {
+        self.userProfile.heightCm = Int16(convertToCentimeters(feet: height.feet, inches: height.inches))
+        tableView.reloadRows(at: [IndexPath(row: 1, section: 0)], with: .automatic)
+        CoreDataStack.shared.saveContext()
+    }
+}
+
+
+extension ProfileViewController: HeightCmPickerViewControllerDelegate {
+    func heightCmPickerViewController(_ viewController: HeightCmPickerViewController, didUpdateHeight heightCm: Int) {
+        self.userProfile.heightCm = Int16(heightCm)
+        tableView.reloadRows(at: [IndexPath(row: 1, section: 0)], with: .automatic)
+        CoreDataStack.shared.saveContext()
+    }
+}
+
+extension ProfileViewController: UnitPreferenceFooterViewDelegate {
+    func unitPreferenceFooterView(_ footerView: UnitPreferenceFooterView, didUpdateUnitPreference weightUnit: WeightUnit) {
+        userProfile.weightUnit = weightUnit
+        tableView.reloadSections(IndexSet(integer: 1), with: .automatic)
+        CoreDataStack.shared.saveContext()
+    }
+}

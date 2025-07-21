@@ -2,7 +2,7 @@
 //  FoodInfo+CoreDataProperties.swift
 //  FoodApp
 //
-//  Created by Timmy Nguyen on 5/1/25.
+//  Created by Timmy Nguyen on 6/15/25.
 //
 //
 
@@ -17,29 +17,71 @@ extension FoodInfo {
     }
 
     @NSManaged public var brandName_: String?
-    @NSManaged public var dataType_: String?
-    @NSManaged public var description_: String?
+    @NSManaged public var name_: String?
     @NSManaged public var fdcId: Int64
-    @NSManaged public var food_: NSSet?
+    @NSManaged public var foodEntries_: NSSet?
     @NSManaged public var nutrients_: NSSet?
     @NSManaged public var portions_: NSSet?
 
+    var name: String {
+        get {
+            return name_ ?? ""
+        }
+        set {
+            name_ = newValue
+        }
+    }
+    
+    var nutrients: [FoodInfoNutrient] {
+        get {
+            return (nutrients_?.allObjects as! [FoodInfoNutrient])
+        }
+        set {
+            nutrients_ = NSSet(array: newValue)
+        }
+    }
+    
+    var portions: [FoodInfoPortion] {
+        get {
+            return (portions_?.allObjects as! [FoodInfoPortion])
+        }
+        set {
+            portions_ = NSSet(array: newValue)
+        }
+    }
+    
+    func convertToFoodNutrients() -> [FoodNutrient] {
+        return nutrients.compactMap { foodInfoNutrient in
+            guard let nutrientId = foodInfoNutrient.nutrientId else { return nil }
+            return FoodNutrient(nutrient: Nutrient(id: nutrientId, name: nutrientId.description, unitName: nutrientId.unitName, rank: 0), amount: foodInfoNutrient.value)
+        }
+    }
+    
+    func convertToFoodPortions() -> [FoodPortion] {
+        return portions.compactMap { portion in
+            return FoodPortion(
+                id: Int(portion.id),
+                amount: portion.amount,
+                gramWeight: portion.gramWeight,
+                modifier: portion.modifier)
+        }
+    }
 }
 
-// MARK: Generated accessors for food_
+// MARK: Generated accessors for foodEntries_
 extension FoodInfo {
 
-    @objc(addFood_Object:)
-    @NSManaged public func addToFood_(_ value: Food)
+    @objc(addFoodEntries_Object:)
+    @NSManaged public func addToFoodEntries_(_ value: FoodEntry)
 
-    @objc(removeFood_Object:)
-    @NSManaged public func removeFromFood_(_ value: Food)
+    @objc(removeFoodEntries_Object:)
+    @NSManaged public func removeFromFoodEntries_(_ value: FoodEntry)
 
-    @objc(addFood_:)
-    @NSManaged public func addToFood_(_ values: NSSet)
+    @objc(addFoodEntries_:)
+    @NSManaged public func addToFoodEntries_(_ values: NSSet)
 
-    @objc(removeFood_:)
-    @NSManaged public func removeFromFood_(_ values: NSSet)
+    @objc(removeFoodEntries_:)
+    @NSManaged public func removeFromFoodEntries_(_ values: NSSet)
 
 }
 
@@ -47,10 +89,10 @@ extension FoodInfo {
 extension FoodInfo {
 
     @objc(addNutrients_Object:)
-    @NSManaged public func addToNutrients_(_ value: Nutrient)
+    @NSManaged public func addToNutrients_(_ value: FoodInfoNutrient)
 
     @objc(removeNutrients_Object:)
-    @NSManaged public func removeFromNutrients_(_ value: Nutrient)
+    @NSManaged public func removeFromNutrients_(_ value: FoodInfoNutrient)
 
     @objc(addNutrients_:)
     @NSManaged public func addToNutrients_(_ values: NSSet)
@@ -64,10 +106,10 @@ extension FoodInfo {
 extension FoodInfo {
 
     @objc(addPortions_Object:)
-    @NSManaged public func addToPortions_(_ value: Portion)
+    @NSManaged public func addToPortions_(_ value: FoodInfoPortion)
 
     @objc(removePortions_Object:)
-    @NSManaged public func removeFromPortions_(_ value: Portion)
+    @NSManaged public func removeFromPortions_(_ value: FoodInfoPortion)
 
     @objc(addPortions_:)
     @NSManaged public func addToPortions_(_ values: NSSet)

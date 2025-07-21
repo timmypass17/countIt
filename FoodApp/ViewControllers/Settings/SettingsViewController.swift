@@ -1,0 +1,251 @@
+//
+//  SettingsViewController.swift
+//  FoodApp
+//
+//  Created by Timmy Nguyen on 5/6/25.
+//
+
+import UIKit
+import SwiftUI
+import MessageUI
+
+class SettingsViewController: UIViewController {
+    
+    private let tableView: UITableView = {
+        let tableView = UITableView(frame: .zero, style: .insetGrouped)
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+        return tableView
+    }()
+    
+    struct Section {
+        var title: String
+        var data: [Model]
+    }
+    
+    struct Model {
+        let image: UIImage?
+        let text: String
+        var secondary: String?
+        var backgroundColor: UIColor?
+        let isOn: Bool?
+        
+        init(image: UIImage, text: String, secondary: String? = nil, backgroundColor: UIColor?, isOn: Bool? = nil) {
+            self.image = image
+            self.text = text
+            self.secondary = secondary
+            self.backgroundColor = backgroundColor
+            self.isOn = isOn
+        }
+    }
+    
+    var sections = [
+        Section(
+            title: "",
+            data: [
+                Model(
+                    image: UIImage(systemName: "person.fill")!,
+                    text: "My Profile",
+                    secondary: "",
+                    backgroundColor: Settings.shared.currentTheme.cellBackground.uiColor
+                ),
+                Model(
+                    image: UIImage(systemName: "figure")!,
+                    text: "Weight",
+                    secondary: "",
+                    backgroundColor: Settings.shared.currentTheme.cellBackground.uiColor
+                ),
+                Model(
+                    image: UIImage(systemName: "fork.knife")!,
+                    text: "Meal Types",
+                    secondary: "",
+                    backgroundColor: Settings.shared.currentTheme.cellBackground.uiColor
+                )
+            ]
+        ),
+        Section(
+            title: "",
+            data: [
+                Model(
+                    image: UIImage(systemName: "moon.fill")!,
+                    text: "Appearance",
+                    secondary: "",
+                    backgroundColor: Settings.shared.currentTheme.cellBackground.uiColor
+                ),
+            ]
+        ),
+        Section(
+            title: "",
+            data: [
+                Model(
+                    image: UIImage(systemName: "envelope.fill")!,
+                    text: "Contact Us",
+                    secondary: "",
+                    backgroundColor: Settings.shared.currentTheme.cellBackground.uiColor
+                ),
+                Model(
+                    image: UIImage(systemName: "ant.fill")!,
+                    text: "Bug Report",
+                    secondary: "",
+                    backgroundColor: Settings.shared.currentTheme.cellBackground.uiColor
+                )
+            ]
+        ),
+        Section(
+            title: "",
+            data: [
+                Model(
+                    image: UIImage(systemName: "shield.fill")!,
+                    text: "Privacy Policy",
+                    secondary: "",
+                    backgroundColor: Settings.shared.currentTheme.cellBackground.uiColor
+                )
+            ]
+        )
+    ]
+    
+    let userProfile: UserProfile
+    let foodService = FoodService()
+    
+    private let email = "timmysappstuff@gmail.com"
+    
+    init(userProfile: UserProfile) {
+        self.userProfile = userProfile
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        tableView.backgroundColor = Settings.shared.currentTheme.background.uiColor
+        navigationItem.title = "Profile"
+        navigationController?.navigationBar.prefersLargeTitles = false
+        tableView.dataSource = self
+        tableView.delegate = self
+        tableView.register(SettingsSelectableTableViewCell.self, forCellReuseIdentifier: SettingsSelectableTableViewCell.reuseIdentifier)
+        
+        view.addSubview(tableView)
+
+        NSLayoutConstraint.activate([
+            tableView.topAnchor.constraint(equalTo: view.topAnchor),
+            tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+        ])
+        
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(updateUI),
+                                               name: .themeUpdated,
+                                               object: nil)
+    }
+    
+    @objc func updateUI() {
+        self.tableView.backgroundColor = Settings.shared.currentTheme.background.uiColor
+        tableView.reloadData()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        if let selectedIndexPath = tableView.indexPathForSelectedRow {
+            tableView.deselectRow(at: selectedIndexPath, animated: true)
+        }
+    }
+}
+
+extension SettingsViewController: UITableViewDataSource {
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return sections.count
+    }
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return sections[section].data.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: SettingsSelectableTableViewCell.reuseIdentifier, for: indexPath) as! SettingsSelectableTableViewCell
+        let model = sections[indexPath.section].data[indexPath.row]
+        cell.update(with: model)
+        return cell
+
+    }
+}
+
+extension SettingsViewController: UITableViewDelegate {
+    
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        return sections[section].title
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        if indexPath == IndexPath(row: 0, section: 0)  {
+            let profileViewController = ProfileViewController(userProfile: userProfile)
+            navigationController?.pushViewController(profileViewController, animated: true)
+        } else if indexPath == IndexPath(row: 1, section: 0) {
+            let context = CoreDataStack.shared.context
+            let weightProgressView = WeightProgressView(userProfile: userProfile, foodService: foodService)
+            let hostingController = UIHostingController(rootView: weightProgressView
+                .environment(\.managedObjectContext, context))
+            navigationController?.pushViewController(hostingController, animated: true)
+        } else if indexPath == IndexPath(row: 2, section: 0) {
+            let mealTypesViewController = MealTypesViewController(userProfile: userProfile)
+            navigationController?.pushViewController(mealTypesViewController, animated: true)
+        } else if indexPath == IndexPath(row: 0, section: 1) {
+            let themeViewController = ThemeViewController()
+            navigationController?.pushViewController(themeViewController, animated: true)
+        } else if indexPath == IndexPath(row: 0, section: 2) {
+            // Contact us
+            guard MFMailComposeViewController.canSendMail() else {
+                showMailErrorAlert()
+                return
+            }
+            
+            let mailComposer = MFMailComposeViewController()
+            mailComposer.mailComposeDelegate = self
+            mailComposer.setToRecipients([email])
+            mailComposer.setSubject("Contact Us")
+            
+            present(mailComposer, animated: true)
+        } else if indexPath == IndexPath(row: 1, section: 2) {
+            guard MFMailComposeViewController.canSendMail() else {
+                showMailErrorAlert()
+                return
+            }
+            
+            let mailComposer = MFMailComposeViewController()
+            mailComposer.mailComposeDelegate = self
+            
+            mailComposer.setToRecipients([email])
+            mailComposer.setSubject("Bug Report")
+            
+            present(mailComposer, animated: true)
+        } else if indexPath == IndexPath(row: 0, section: 3) {
+            let privacyTableViewController = PrivacyPolicyViewController(style: .insetGrouped)
+            navigationController?.pushViewController(privacyTableViewController, animated: true)
+        }
+    }
+}
+
+extension SettingsViewController: MFMailComposeViewControllerDelegate {
+    func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
+        dismiss(animated: true)
+        if let selectedIndexPath = tableView.indexPathForSelectedRow {
+            tableView.deselectRow(at: selectedIndexPath, animated: true)
+        }
+    }
+    
+    func showMailErrorAlert() {
+        let alert = UIAlertController(
+            title: "No Email Account Found",
+            message: "There is no email account associated to this device. If you have any questions, please feel free to reach out to us at \(email)",
+            preferredStyle: .alert)
+        
+        alert.addAction(UIAlertAction(title: "OK", style: .default) { _ in
+            if let selectedIndexPath = self.tableView.indexPathForSelectedRow {
+                self.tableView.deselectRow(at: selectedIndexPath, animated: true)
+            }
+        })
+        self.present(alert, animated: true, completion: nil)
+    }
+}

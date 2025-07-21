@@ -9,7 +9,7 @@ import UIKit
 
 protocol GoalTableViewControllerDelegate: AnyObject {
     // Note: Dictionarys in Swift are passed by value (i.e. creates a copy)
-    func goalTableViewController(_ viewController: GoalTableViewController, didUpdateNutrientGoals nutrientGoals: [NutrientID: Float])
+    func goalTableViewController(_ viewController: GoalTableViewController, didUpdateNutrientGoals nutrientGoals: [NutrientId: Float])
 }
 
 class GoalTableViewController: UITableViewController {
@@ -18,10 +18,10 @@ class GoalTableViewController: UITableViewController {
     weak var delegate: GoalTableViewControllerDelegate?
     
     enum Section: CaseIterable {
-        static var allCases: [Section] =
-            [.nutrients(NutrientID.mainNutrients), .vitamins(NutrientID.vitamins), .minerals(NutrientID.minerals) ]
+        static var allCases: [Section] = []
+//            [.nutrients(NutrientID.mainNutrients), .vitamins(NutrientID.vitamins), .minerals(NutrientID.minerals) ]
         
-        case nutrients([NutrientID]), vitamins([NutrientID]), minerals([NutrientID])
+        case nutrients([NutrientId]), vitamins([NutrientId]), minerals([NutrientId])
     }
     
     init(mealPlan: MealPlan) {
@@ -61,7 +61,7 @@ class GoalTableViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: NutritionTableViewCell.reuseIdentifier, for: indexPath) as! NutritionTableViewCell
         let section = Section.allCases[indexPath.section]
-        let nutrientID: NutrientID
+        let nutrientID: NutrientId
         switch section {
         case .nutrients(let nutrients):
             nutrientID = nutrients[indexPath.row]
@@ -100,7 +100,7 @@ class GoalTableViewController: UITableViewController {
 }
 
 extension GoalTableViewController: EditGoalTableViewControllerDelegate {
-    func editGoalTableViewController(_ viewController: EditGoalTableViewController, didUpdateNutrientGoals nutrientGoals: [NutrientID : Float]) {
+    func editGoalTableViewController(_ viewController: EditGoalTableViewController, didUpdateNutrientGoals nutrientGoals: [NutrientId : Float]) {
 //        mealPlan.nutrientGoals = nutrientGoals
 //        tableView.reloadData()
 //        delegate?.goalTableViewController(self, didUpdateNutrientGoals: nutrientGoals) // propagate changes to hometableview

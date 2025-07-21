@@ -8,7 +8,7 @@
 import UIKit
 
 protocol QuickAddTableViewCellDelegate: AnyObject {
-    func quickAddTableViewCell(_ cell: QuickAddTableViewCell, textFieldValueChanged: String)
+    func quickAddTableViewCell(_ cell: QuickAddTableViewCell, textFieldValueChanged text: String?)
 }
 
 class QuickAddTableViewCell: UITableViewCell {
@@ -52,8 +52,6 @@ class QuickAddTableViewCell: UITableViewCell {
     }()
     
     weak var delegate: QuickAddTableViewCellDelegate?
-    var foodEntry: Food!
-    var foodNutrient: FoodNutrient?
         
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -61,7 +59,7 @@ class QuickAddTableViewCell: UITableViewCell {
         textField.rightView = unitLabel
         textField.rightViewMode = .always
         textField.inputAccessoryView = toolbar
-                
+        
         container.addArrangedSubview(primaryLabel)
         container.addArrangedSubview(textField)
         
@@ -74,52 +72,35 @@ class QuickAddTableViewCell: UITableViewCell {
             container.trailingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.trailingAnchor)
         ])
         
+        textField.addAction(textFieldValueChanged(), for: .editingChanged)
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func update(title: String) {
+    func update(title: String?) {
         primaryLabel.text = "Name*"
         textField.text = title
-        textField.placeholder = "Ex. Banana"
-        textField.addAction(titleValueChanged(), for: .editingChanged)
+        textField.placeholder = "Banana"
     }
     
-    func update(foodNutrient: FoodNutrient) {
-        self.foodNutrient = foodNutrient
-        primaryLabel.text = foodNutrient.description
-        if foodNutrient.nutrient?.id == .calories {
-            primaryLabel.text = foodNutrient.description + "*"
-        }
-        if let amount = foodNutrient.amount {
+    func update(foodNutrient: FoodInfoNutrient) {
+        primaryLabel.text = foodNutrient.nutrientId?.description
+
+        if let amount = foodNutrient.value {
             textField.text = String(amount)
-        }
-        unitLabel.text = foodNutrient.nutrient?.unitName
+        } 
+        unitLabel.text = foodNutrient.nutrientId?.unitName
         textField.placeholder = "0"
-        textField.addAction(nutrientAmountValueChanged(), for: .editingChanged)
     }
     
-    func titleValueChanged() -> UIAction {
+    func textFieldValueChanged() -> UIAction {
         return UIAction { [self] _ in
-//            guard let title = textField.text else { return }
-//            foodEntry.food?.name = title
-//            delegate?.quickAddTableViewCell(self, textFieldValueChanged: title)
+            delegate?.quickAddTableViewCell(self, textFieldValueChanged: textField.text)
         }
     }
-    
-    func nutrientAmountValueChanged() -> UIAction {
-        return UIAction { [self] _ in
-//            guard let nutrient = foodNutrient?.nutrient,
-//                  let index = foodEntry.food?.foodNutrients.firstIndex(where: { $0.nutrient?.id ?? .other == nutrient.id }),
-//                  let amount = textField.text
-//            else { return }
-//            foodEntry.food?.foodNutrients[index].amount = Float(amount)
-//            delegate?.quickAddTableViewCell(self, textFieldValueChanged: amount)
-        }
-    }
-    
+
     @objc func didTapDoneButton() {
         endEditing(true)
     }
